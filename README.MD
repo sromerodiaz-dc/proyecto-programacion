@@ -42,4 +42,40 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
 **Resultado:**
 ![teis](./images/panelHecho.png)
 
-#### Se crea un Issue y se relaciona al PROJECT creado en Github, además se crea un WebHook con Discord para automatizar las actualizaciones del codigo como Logs a un canal de discord.
+### Por otra parte...
+
+1. Se crea un ***Issue*** y se relaciona al `PROJECT` creado en GitHub.
+2. Se crea un *WebHook* con *Discord* para automatizar las actualizaciones del codigo como Logs a un canal de discord.
+3. Se comienza a implementar el **Game Loop** en la rama *``ISSUE-1``*.
+
+### Qué es un Game Loop?
+
+En desarrollo de `videojuegos` se conoce al "bucle principal del juego" o "Game Loop" como algo **increiblemente** fundamental:
+Imagina que estás jugando a tu videojuego favorito. `Corres, saltas, esquivas enemigos y completas misiones.` Bien, pues *todo* esto está siendo posible gracias al _**Game Loop**_.
+
+Pues volviendo a la pregunta principal, **qué es un Game Loop?** 
+Es la _base_ de la jugabilidad de un videojuego. Se trata de un ciclo que se repite constantemente mientras el juego está en funcionamiento, ``controlando el desarrollo de la partida y la experiencia del jugador``.
+
+#### ¿Cómo funciona el bucle de juego?
+| Fases del bucle | Descripción                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                        
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ENTRADA         | El bucle comienza capturando las acciones del jugador, como *presionar botones, mover el joystick o usar la pantalla táctil*                                                                                                                                                         |
+| PROCESAMIENTO   | Luego, el juego ``procesa`` estas entradas para determinar cómo *afectan el mundo del juego y el estado del jugador*. Por ejemplo, si presionas el botón de salto, tu personaje saltará en el juego.                                                                                 |
+| ACTUALIZACIÓN   | Con base en las entradas procesadas, *el bucle actualiza el estado del juego*, incluyendo la posición de los objetos, la física del entorno y las variables del jugador ``(salud, munición, etc.)``.                                                                                 |
+| RENDERIZADO     | Finalizando el ciclo, el bucle genera la `imagen` que se muestra en la pantalla, reflejando los cambios realizados en la etapa de actualización.                                                                                                                                     |
+| REPETICIÓN      | El ciclo *vuelve* a comenzar, ``capturando nuevas entradas del jugador, procesándolas y actualizando el juego en consecuencia``. Este proceso se repite **incesantemente** mientras el juego esté en ejecución lo que consigue una experiencia fluida e interactiva para el jugador. |
+
+- ***¿Por qué es importante el bucle de juego?***
+
+Es fundamental por varias razones:
+
+Crea una experiencia fluida: El bucle constante asegura que el juego responda instantáneamente a las acciones del jugador, proporcionando una sensación de control y realismo.
+
+Define la jugabilidad: El bucle determina cómo se desarrolla la partida, estableciendo las reglas y la interacción del jugador con el mundo del juego.
+
+Mantiene el juego en marcha: El ciclo repetitivo garantiza que el juego no se detenga ni se congele, manteniendo al jugador inmerso en la experiencia.
+
+Optimización: El bucle permite optimizar el rendimiento del juego, ejecutando solo las tareas necesarias en cada ciclo y evitando procesos innecesarios.
+
+En resumen, el bucle de juego es el corazón de un videojuego, controlando la jugabilidad, la fluidez y la experiencia general del jugador. Es un concepto fundamental para el diseño y desarrollo de videojuegos exitosos.
+
