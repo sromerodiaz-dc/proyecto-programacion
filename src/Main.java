@@ -1,17 +1,19 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+/*
+** Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+* */
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Intro with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        TeisPanel teisPanel = new TeisPanel();
+        ventana w = new ventana();
 
-        // Press Mayús+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        // Añado al JFrame un componente nuevo, en este caso, "teisPanel" que es un panel de la clase TeisPanel
+        // El "pack()" ajusta la ventana a la resolucion determinada (preferred size) y layouts de sus componentes, en este caso, TeisPanel.
+        w.add(teisPanel);
+        w.pack();
 
-            // Press Mayús+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        w.setVisible(true);
     }
 }
