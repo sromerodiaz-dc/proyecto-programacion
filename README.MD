@@ -41,3 +41,5 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
 ```
 **Resultado:**
 ![teis](./images/panelHecho.png)
+
+#### Se crea un Issue y se relaciona al PROJECT creado en Github, además se crea un WebHook con Discord para automatizar las actualizaciones del codigo como Logs a un canal de discord.

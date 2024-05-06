@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-/*
-* Santiago Agustin Romero Diaz
+/**
+* @author Santiago Agustin Romero Diaz
 * CFP Daniel Castelao
 * Proyecto: Teis
 *
@@ -25,7 +25,7 @@ public class TeisPanel extends JPanel implements Runnable{
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
 
-    //Constructor
+    // Constructor
     public TeisPanel() {
         setPreferredSize(new Dimension(screenWidth,screenHeight));
         setBackground(Color.black);

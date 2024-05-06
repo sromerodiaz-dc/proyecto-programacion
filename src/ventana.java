@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 /**
- * * Santiago Agustin Romero Diaz
+ * @author Santiago Agustin Romero Diaz
  * * CFP Daniel Castelao
  * * Proyecto: Teis
  * --------------------------------
