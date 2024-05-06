@@ -65,17 +65,34 @@ Es la _base_ de la jugabilidad de un videojuego. Se trata de un ciclo que se rep
 | RENDERIZADO     | Finalizando el ciclo, el bucle genera la `imagen` que se muestra en la pantalla, reflejando los cambios realizados en la etapa de actualización.                                                                                                                                     |
 | REPETICIÓN      | El ciclo *vuelve* a comenzar, ``capturando nuevas entradas del jugador, procesándolas y actualizando el juego en consecuencia``. Este proceso se repite **incesantemente** mientras el juego esté en ejecución lo que consigue una experiencia fluida e interactiva para el jugador. |
 
-- ***¿Por qué es importante el bucle de juego?***
+#### ¿Por qué es importante el bucle de juego?
 
 Es fundamental por varias razones:
 
-Crea una experiencia fluida: El bucle constante asegura que el juego responda instantáneamente a las acciones del jugador, proporcionando una sensación de control y realismo.
+*Crea una experiencia fluida**: El bucle constante asegura que el juego responda instantáneamente a las acciones del jugador, proporcionando una sensación de control y realismo.
 
-Define la jugabilidad: El bucle determina cómo se desarrolla la partida, estableciendo las reglas y la interacción del jugador con el mundo del juego.
+*Define la jugabilidad**: El bucle determina cómo se desarrolla la partida, estableciendo las reglas y la interacción del jugador con el mundo del juego.
 
-Mantiene el juego en marcha: El ciclo repetitivo garantiza que el juego no se detenga ni se congele, manteniendo al jugador inmerso en la experiencia.
+*Mantiene el juego en marcha**: El ciclo repetitivo garantiza que el juego no se detenga ni se congele, manteniendo al jugador inmerso en la experiencia.
 
-Optimización: El bucle permite optimizar el rendimiento del juego, ejecutando solo las tareas necesarias en cada ciclo y evitando procesos innecesarios.
+*Optimización**: El bucle permite optimizar el rendimiento del juego, ejecutando solo las tareas necesarias en cada ciclo y evitando procesos innecesarios.
 
-En resumen, el bucle de juego es el corazón de un videojuego, controlando la jugabilidad, la fluidez y la experiencia general del jugador. Es un concepto fundamental para el diseño y desarrollo de videojuegos exitosos.
+En resumen, ``el bucle de juego`` es el corazón de un *videojuego, controlando la jugabilidad, la fluidez y la experiencia general del jugador*. Es un concepto fundamental para el diseño y desarrollo de videojuegos exitosos.
 
+#### Definición de Game Loop:
+Este metodo es llamado por el _GameLoop_ despues de otro llamado *"Actualiza"* (aun por definir).
+**Instancia** un objeto para uso de gráficos de dos dimensiones y luego, a modo de prueba, ***defino un espacio en blanco situado
+en las coordenadas ``x:100, y:100, alto y ancho: 48px``***.
+```java
+public void paintComponent(Graphics g){
+    super.paintComponent(g);
+    
+    Graphics2D g2 = (Graphics2D)g;
+    g2.setColor(Color.white);
+    g2.fillRect(100,100,sizeFinal,sizeFinal);
+    g2.dispose();
+}
+```
+
+**Resultado:**
+![teis](./images/componente2DCreado.png)
