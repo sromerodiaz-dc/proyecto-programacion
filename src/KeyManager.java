@@ -12,8 +12,7 @@ public class KeyManager implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
-        switch (code) {
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 up = true;
                 break;
@@ -31,19 +30,18 @@ public class KeyManager implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode();
-        switch (code) {
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 up = false;
                 break;
             case KeyEvent.VK_S:
                 down = false;
                 break;
-            case KeyEvent.VK_A:
-                left = false;
-                break;
             case KeyEvent.VK_D:
                 right = false;
+                break;
+            case KeyEvent.VK_A:
+                left = false;
                 break;
         }
     }
