@@ -1,4 +1,4 @@
-name: Move Closed Issues to DONE
+name: Mover Pull Requests Cerrados a DONE
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - closed
 
 jobs:
-  move_issue:
+  mover_pull_request:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,14 +14,19 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const pullRequestNumber = context.payload.pull_request.number;
-            const projectColumnName = 'Pull Requests terminados'; // Replace with your project board column name
+            const numeroPullRequest = context.payload.pull_request.number;
+            const nombreColumnaProyecto = 'Pull Requests terminados'; // Reemplácese con el nombre de la columna de su tablero de proyectos
 
-            const pullRequest = await github.pulls.get(context.repo.owner, context.repo.repo, pullRequestNumber);
+            const pullRequest = await github.pulls.get(context.repo.owner, context.repo.repo, numeroPullRequest);
 
-            const columnId = pullRequest.data.project_column.id;
+            if (pullRequest.data.project_column) { // Verifica si el pull request está asociado a una columna del proyecto
+              const idColumna = pullRequest.data.project_column.id;
 
-            await github.projects.moveCard({
-              card_id: pullRequest.data.id,
-              column_id: columnId
-            });
+              await github.projects.moveCard({
+                card_id: pullRequest.data.id,
+                column_id: idColumna
+              });
+            } else {
+              console.log("El pull request no está asociado a una columna del proyecto. Ignorando...");
+            }
+
