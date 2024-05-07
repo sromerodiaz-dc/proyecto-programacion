@@ -21,15 +21,28 @@ public class TeisPanel extends JPanel implements Runnable{
     //Ancho y alto (uso valores mínimos por facilidad)
     private static final int screenWidth = sizeFinal * maxScreenColumnas;
     private static final int screenHeight =  sizeFinal * maxScreenFilas;
+    // FPS
+    final int fps = 30;
 
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
+
+    // Implementación de la clase KeyManager (Lectura de acciones de teclado)
+    KeyManager key = new KeyManager();
+
+    // Definición de la posición inicial y de la velocidad de movimiento
+    private static int playerX = 100;
+    private static int playerY = 100;
+    private static int speed = 5;
+
 
     // Constructor
     public TeisPanel() {
         setPreferredSize(new Dimension(screenWidth,screenHeight));
         setBackground(Color.black);
         setDoubleBuffered(true);
+        addKeyListener(key);
+        setFocusable(true);
     }
 
     /** Metodo que inicializa un "Thread"
@@ -49,6 +62,7 @@ public class TeisPanel extends JPanel implements Runnable{
         teisThread = new Thread(this);
         teisThread.start();
     }
+
     /**
      * Metodo que de manera inherente no retorna nada por ser implementacion de RUNNABLE.
      * Ejecutará el "Game Loop" (Explicación de lo que es en el README.MD).
@@ -65,17 +79,45 @@ public class TeisPanel extends JPanel implements Runnable{
      * */
     @Override
     public void run() {
-        while (teisThread != null) {
-            actualiza();
-            repaint();
+        // Implementación Delta / Iterador Game Loop
+        double tiempoEspera = (double) 1000000000/fps; // Calcula el tiempo de espera en nanosegundos por frame
+        double delta = 0; // Variable para acumular el delta time
+        long lastTime = System.nanoTime(); // Almacena el tiempo en nanosegundos del frame anterior
+        long currentTime; // Variable para almacenar el tiempo en nanosegundos del frame actual
+
+        // Implementación ShowFPS
+        long timer = 0; // Variable para acumular el tiempo desde la última medición de FPS
+        int espera = 0; // Contador de frames desde la última medición de FPS
+
+        while (teisThread != null) { // Bucle principal del juego
+            currentTime = System.nanoTime(); // Obtiene el tiempo en nanosegundos del frame actual
+            delta += (currentTime - lastTime) / tiempoEspera; // Acumula el delta time (tiempo transcurrido desde el último frame)
+            timer += (currentTime - lastTime); // Acumula el tiempo desde la última medición de FPS
+            lastTime = currentTime; // Actualiza el tiempo del frame anterior con el tiempo actual
+
+            if (delta >= 1) { // Si el delta time es mayor o igual a 1 (un frame completo)
+                actualiza(); // Llama al método `actualiza()` para actualizar el estado del juego
+                repaint(); // Solicita que el componente se repinte (actualice su visualización)
+                delta--; // Resta 1 al delta time para que no se acumule en el siguiente frame
+                espera ++; // Incrementa el contador de frames
+            }
+
+            if (timer >= 1000000000) { // Si ha pasado un segundo (1000000000 nanosegundos)
+                System.out.println("FPS: "+espera); // Imprime el valor de FPS (frames por segundo)
+                espera = 0; // Reinicia el contador de frames
+                timer = 0; // Reinicia el temporizador de FPS
+            }
         }
     }
 
+
     /**
-     * Actualizará información del juego
+     * Actualizará información del juego.
+     * Funcionalidades:
+     * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void actualiza() {
-
+        move();
     }
     /**
      * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.
@@ -93,8 +135,25 @@ public class TeisPanel extends JPanel implements Runnable{
 
         g2.setColor(Color.white);
 
-        g2.fillRect(100,100,sizeFinal,sizeFinal);
+        g2.fillRect(playerX,playerY,sizeFinal,sizeFinal);
 
         g2.dispose();
+    }
+
+    /**Metodo MOVE
+     * El juego al ser en 2D solo tiene dos dimensiones espaciales: X, Y
+     * Moverse hacia arriba o hacia la derecha es equivalente a SUMAR en la posición
+     * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual
+     */
+    private void move() {
+        if (key.up) {
+            playerY -= speed;
+        } else if (key.down) {
+            playerY += speed;
+        } else if (key.left) {
+            playerX -= speed;
+        } else if (key.right) {
+            playerX += speed;
+        }
     }
 }
