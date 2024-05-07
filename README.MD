@@ -1,3 +1,13 @@
+# Índice
+
+- [Introducción](#notas-de-desarrollo)
+- [Registro por semanas](#registro-semanal)
+- - [Semana 1](#semana-del-06052024)
+  - - [Game Loop](#qué-es-un-game-loop)
+    - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
+
+    
+
 # Notas de desarrollo
 
 ### En este documento estaré escribiendo los avances y registrandolos en una linea de tiempo
@@ -21,7 +31,8 @@ Mi idea es intentar desarrollar un juego en el que se pueda interactuar con vari
 implementaré otro mapa más allá del básico de inicio.
 Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gallegos y de Vigo. 
 
-# Semana del 06/05/2024
+# Registro semanal
+## Semana del 06/05/2024
 
 *Definición de las propiedades de la pantalla mostrada al iniciar el juego:*
 ```java
@@ -121,7 +132,7 @@ public void keyPressed(KeyEvent e) {
 }
 ```
 
-Al implementar este codigo en una clase llamada **KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
+Al implementar este codigo en una clase llamada **FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
 ````java
 private void move() {
         if (key.up) {
@@ -136,7 +147,7 @@ private void move() {
     }
 ````
 
-Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
+Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la GUI.ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
 este cuadrado parece _"desaparecer"_.
 La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
@@ -180,3 +191,16 @@ public void run() {
     }
 }
 ````
+### Implementación de Sprites hechos con Pixel Studio
+
+desarrollar esta parte...
+
+### Resultado de asociar movimiento con sprites (aún en fase temprana)
+
+_Estos son los **sprites** creados:_
+
+![moveGif](./images/muestraSprites.gif)
+
+_Este es el resultado de su **implementación**:_
+
+![moveGif](./images/moveTemprano.gif)
