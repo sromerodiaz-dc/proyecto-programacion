@@ -9,10 +9,15 @@ import javax.swing.*;
  * */
 
 public class ventana extends JFrame {
+    TeisPanel teisPanel = new TeisPanel();
     public ventana() {
-        setTitle("Teis");
-        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
+        setTitle("Teis");
+        add(teisPanel);
+        pack();
         setLocationRelativeTo(null);
+        setVisible(true);
+        teisPanel.startTeisThread();
     }
 }
