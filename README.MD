@@ -3,9 +3,9 @@
 - [Introducción](#notas-de-desarrollo)
 - [Registro por semanas](#registro-semanal)
 - - [Semana 1](#semana-del-06052024)
-  - - [Game Loop](#qué-es-un-game-loop)
+    - [Game Loop](#qué-es-un-game-loop)
     - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
-
+    - [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
     
 
 # Notas de desarrollo
@@ -193,9 +193,9 @@ public void run() {
 ````
 ### Implementación de Sprites hechos con Pixel Studio
 
-desarrollar esta parte...
+Falta por desarrollar esta parte...
 
-### Resultado de asociar movimiento con sprites (aún en fase temprana)
+_El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
 
 _Estos son los **sprites** creados:_
 
