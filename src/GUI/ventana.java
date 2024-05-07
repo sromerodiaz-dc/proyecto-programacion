@@ -1,3 +1,6 @@
+package GUI;
+
+import FX.TeisPanel;
 import javax.swing.*;
 
 /**
@@ -5,7 +8,7 @@ import javax.swing.*;
  * * CFP Daniel Castelao
  * * Proyecto: Teis
  * --------------------------------
- * Esta clase define la ventana (JFrame) sobre la que se implementaran diferentes JPanel, JButtons, etc.
+ * Esta clase define la GUI.ventana (JFrame) sobre la que se implementaran diferentes JPanel, JButtons, etc.
  * */
 
 public class ventana extends JFrame {

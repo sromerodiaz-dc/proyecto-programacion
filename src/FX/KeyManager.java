@@ -1,9 +1,17 @@
+package FX;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Esta clase se encarga de recoger las ordenes dadas por teclado por el usuario
+ * */
 public class KeyManager implements KeyListener {
     // Atributos
-    protected boolean up,down,left,right;
+    public boolean up,down,left,right;
 
     @Override
     public void keyTyped(KeyEvent e) {

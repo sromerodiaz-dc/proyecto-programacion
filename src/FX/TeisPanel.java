@@ -1,3 +1,7 @@
+package FX;
+
+import ENTITY.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -5,7 +9,7 @@ import java.awt.*;
 * @author Santiago Agustin Romero Diaz
 * CFP Daniel Castelao
 * Proyecto: Teis
-*
+* -
 * Esta clase llamada "gui" o interfaz gráfica sirve para determinar la resolucion, el escalado y demas propiedades del panel dentro del JFrame
 * */
 
@@ -13,7 +17,7 @@ public class TeisPanel extends JPanel implements Runnable{
     //Resolucion
     private static final int ResolucionPorDefecto = 16; // 16x16 (el más común)
     private static final int EscaladoPorDefecto = 3; // 3x16 (el más comun)
-    private static final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
+    public static final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
 
     //Propiedades pantalla
     private static final int maxScreenColumnas = 18;
@@ -27,14 +31,11 @@ public class TeisPanel extends JPanel implements Runnable{
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
 
-    // Implementación de la clase KeyManager (Lectura de acciones de teclado)
+    // Implementación de la clase FX.KeyManager (Lectura de acciones de teclado)
     KeyManager key = new KeyManager();
 
-    // Definición de la posición inicial y de la velocidad de movimiento
-    private static int playerX = 100;
-    private static int playerY = 100;
-    private static int speed = 5;
-
+    // Instancia de la clase PLAYER
+    Player player = new Player(this, key);
 
     // Constructor
     public TeisPanel() {
@@ -96,7 +97,7 @@ public class TeisPanel extends JPanel implements Runnable{
             lastTime = currentTime; // Actualiza el tiempo del frame anterior con el tiempo actual
 
             if (delta >= 1) { // Si el delta time es mayor o igual a 1 (un frame completo)
-                actualiza(); // Llama al método `actualiza()` para actualizar el estado del juego
+                update(); // Llama al método `actualiza()` para actualizar el estado del juego
                 repaint(); // Solicita que el componente se repinte (actualice su visualización)
                 delta--; // Resta 1 al delta time para que no se acumule en el siguiente frame
                 espera ++; // Incrementa el contador de frames
@@ -116,8 +117,8 @@ public class TeisPanel extends JPanel implements Runnable{
      * Funcionalidades:
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
-    public void actualiza() {
-        move();
+    public void update() {
+        player.actualiza();
     }
     /**
      * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.
@@ -132,28 +133,7 @@ public class TeisPanel extends JPanel implements Runnable{
         // Como el juego es en 2D, instanciaré la clase Graphics2D (extension de Graphics) para tener un control más sofisticado sobre la geometría, coordenadas, colores y textos.
         // Es como usar GridBagLayout en vez de BorderLayout.
         Graphics2D g2 = (Graphics2D)g;
-
-        g2.setColor(Color.white);
-
-        g2.fillRect(playerX,playerY,sizeFinal,sizeFinal);
-
+        player.pinta(g2);
         g2.dispose();
-    }
-
-    /**Metodo MOVE
-     * El juego al ser en 2D solo tiene dos dimensiones espaciales: X, Y
-     * Moverse hacia arriba o hacia la derecha es equivalente a SUMAR en la posición
-     * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual
-     */
-    private void move() {
-        if (key.up) {
-            playerY -= speed;
-        } else if (key.down) {
-            playerY += speed;
-        } else if (key.left) {
-            playerX -= speed;
-        } else if (key.right) {
-            playerX += speed;
-        }
     }
 }
