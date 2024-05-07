@@ -100,3 +100,83 @@ public void paintComponent(Graphics g){
 ### Desarrollo de `Key Inputs`
 
 Para desarrollar un _videojuego_ es **necesario** una serie de ``controles``. Esto es lo que estaré desarrollando en este apartado.
+```java
+@Override
+public void keyPressed(KeyEvent e) {
+    int code = e.getKeyCode();
+    switch (code) {
+        case KeyEvent.VK_W:
+            up = true;
+            break;
+        case KeyEvent.VK_S:
+            down = true;
+            break;
+        case KeyEvent.VK_A:
+            left = true;
+            break;
+        case KeyEvent.VK_D:
+            right = true;
+            break;
+    }
+}
+```
+
+Al implementar este codigo en una clase llamada **KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
+````java
+private void move() {
+        if (key.up) {
+            playerY -= speed;
+        } else if (key.down) {
+            playerY += speed;
+        } else if (key.left) {
+            playerX -= speed;
+        } else if (key.right) {
+            playerX += speed;
+        }
+    }
+````
+
+Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
+este cuadrado parece _"desaparecer"_.
+La explicación es la siguiente:
+El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
+y luego hacer repaint, este valor se ve modificado todas las veces que el ordenador **es capaz de llamar a la función por segundo**.
+Lo que haré para solucionar esto es ``CAPEARLO`` a _60 frames por segundo o menos_
+
+### Definiendo el GameLoop a 24 fps...
+El tiempo de ejecución es necesario capearlo para tener una sensación de fluidez y tener control sobre como se ejecutan los movimientos del juego.
+Al buscar información sobre esto encontré un método popular sobre el **Game Loop llamado Delta Iterator**:
+````java
+@Override
+public void run() {
+    // Implementación Delta / Iterador Game Loop
+    double tiempoEspera = (double) 1000000000/fps; // Calcula el tiempo de espera en nanosegundos por frame
+    double delta = 0; // Variable para acumular el delta time
+    long lastTime = System.nanoTime(); // Almacena el tiempo en nanosegundos del frame anterior
+    long currentTime; // Variable para almacenar el tiempo en nanosegundos del frame actual
+
+    // Implementación ShowFPS
+    long timer = 0; // Variable para acumular el tiempo desde la última medición de FPS
+    int espera = 0; // Contador de frames desde la última medición de FPS
+
+    while (teisThread != null) { // Bucle principal del juego
+        currentTime = System.nanoTime(); // Obtiene el tiempo en nanosegundos del frame actual
+        delta += (currentTime - lastTime) / tiempoEspera; // Acumula el delta time (tiempo transcurrido desde el último frame)
+        timer += (currentTime - lastTime); // Acumula el tiempo desde la última medición de FPS
+        lastTime = currentTime; // Actualiza el tiempo del frame anterior con el tiempo actual
+
+        if (delta >= 1) { // Si el delta time es mayor o igual a 1 (un frame completo)
+            actualiza(); // Llama al método `actualiza()` para actualizar el estado del juego
+            repaint(); // Solicita que el componente se repinte (actualice su visualización)
+            delta--; // Resta 1 al delta time para que no se acumule en el siguiente frame
+            espera ++; // Incrementa el contador de frames
+        }
+
+        if (timer >= 1000000000) { // Si ha pasado un segundo (1000000000 nanosegundos)
+            System.out.println("FPS: "+espera); // Imprime el valor de FPS (frames por segundo)
+            espera = 0; // Reinicia el contador de frames
+            timer = 0; // Reinicia el temporizador de FPS
+        }
+    }
+}
+````
