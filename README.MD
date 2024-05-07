@@ -195,6 +195,7 @@ public void run() {
 
 Falta por desarrollar esta parte...
 
+
 _El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
 
 _Estos son los **sprites** creados:_
