@@ -27,6 +27,16 @@ public class KeyManager implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                up = false;
+                break;
+            case KeyEvent.VK_S:
+                down = false;
+            case KeyEvent.VK_A:
+                left = false;
+            case KeyEvent.VK_D:
+                right = false;
+        }
     }
 }
