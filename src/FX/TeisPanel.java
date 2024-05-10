@@ -133,6 +133,7 @@ public class TeisPanel extends JPanel implements Runnable{
         // Como el juego es en 2D, instanciaré la clase Graphics2D (extension de Graphics) para tener un control más sofisticado sobre la geometría, coordenadas, colores y textos.
         // Es como usar GridBagLayout en vez de BorderLayout.
         Graphics2D g2 = (Graphics2D)g;
+        // Ahora este metodo se encuentra directamente en la clase Entity.
         player.pinta(g2);
         g2.dispose();
     }
