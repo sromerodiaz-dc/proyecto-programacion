@@ -4,8 +4,6 @@ import FX.KeyManager;
 import FX.TeisPanel;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -54,8 +52,7 @@ public class Player extends Entity{
             right1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/rightWalking1.png"));
             right2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/rightWalking2.png"));
             stop = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/frontStanding.png"));
-            stopR = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/rightStanding.png"));
-            stopL = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/leftStanding.png"));
+            stop2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/stop2.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,22 +61,5 @@ public class Player extends Entity{
     // Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
     public void actualiza(){
         move(keyManager);
-    }
-
-    // Metodo empleado para mostrar por pantalla al jugador.
-    // Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
-    // cambia el sprite empleado por otro nuevo.
-    public void pinta(Graphics2D g2){
-    //    g2.setColor(Color.white);//   g2.fillRect(x,y,TeisPanel.sizeFinal,TeisPanel.sizeFinal);
-        BufferedImage image = switch (sentido) {
-            case 'w' -> up1;
-            case 'a' -> left1;
-            case 's' -> down1;
-            case 'd' -> right1;
-            default -> stop;
-        };
-        // Dibuja la imagen con IMAGE en la posicion por defecto (100, 100) con los valores por defecto de
-        // resolucion 16x16 y su respectivo escalado "sizeFinal")
-        g2.drawImage(image,x,y,TeisPanel.sizeFinal,TeisPanel.sizeFinal,null);
     }
 }
