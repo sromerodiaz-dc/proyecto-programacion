@@ -13,7 +13,6 @@ import java.awt.*;
 * -
 * Esta clase llamada "gui" o interfaz gráfica sirve para determinar la resolucion, el escalado y demas propiedades del panel dentro del JFrame
 * */
-
 public class TeisPanel extends JPanel implements Runnable{
     //Resolucion
     private static final int ResolucionPorDefecto = 16; // 16x16 (el más común)

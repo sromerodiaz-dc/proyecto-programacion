@@ -13,7 +13,6 @@ import java.io.IOException;
  * -
  * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
  * */
-
 public class Player extends Entity{
     // Atributos
     TeisPanel teisPanel;
@@ -28,7 +27,10 @@ public class Player extends Entity{
         getPlayerImage();
     }
 
-    // Metodos
+    // METODOS
+    /**
+     * Metodo que define el estado inicial del jugador
+     * */
     public void setValoresPorDefecto() {
         x = 100;
         y = 100;
@@ -58,7 +60,9 @@ public class Player extends Entity{
         }
     }
 
-    // Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
+    /**
+     * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
+     * */
     public void actualiza(){
         move(keyManager);
     }
