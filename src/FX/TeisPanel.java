@@ -1,6 +1,7 @@
 package FX;
 
 import ENTITY.Player;
+import GPHICS.PiezaManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,11 +21,11 @@ public class TeisPanel extends JPanel implements Runnable{
     public static final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
 
     //Propiedades pantalla
-    private static final int maxScreenColumnas = 18;
-    private static final int maxScreenFilas = 12;
+    public static final int maxScreenColumnas = 18;
+    public static final int maxScreenFilas = 12;
     //Ancho y alto (uso valores mínimos por facilidad)
-    private static final int screenWidth = sizeFinal * maxScreenColumnas;
-    private static final int screenHeight =  sizeFinal * maxScreenFilas;
+    public static final int screenWidth = sizeFinal * maxScreenColumnas;
+    public static final int screenHeight =  sizeFinal * maxScreenFilas;
     // FPS
     final int fps = 30;
 
@@ -36,6 +37,9 @@ public class TeisPanel extends JPanel implements Runnable{
 
     // Instancia de la clase PLAYER
     Player player = new Player(this, key);
+
+    // Implementacion de backgrounds y mecanicas de colision
+    PiezaManager piezaM = new PiezaManager();
 
     // Constructor
     public TeisPanel() {
@@ -133,6 +137,10 @@ public class TeisPanel extends JPanel implements Runnable{
         // Como el juego es en 2D, instanciaré la clase Graphics2D (extension de Graphics) para tener un control más sofisticado sobre la geometría, coordenadas, colores y textos.
         // Es como usar GridBagLayout en vez de BorderLayout.
         Graphics2D g2 = (Graphics2D)g;
+
+        // Dibuja el fondo
+        piezaM.pinta(g2);
+
         // Ahora este metodo se encuentra directamente en la clase Entity.
         player.pinta(g2);
         g2.dispose();

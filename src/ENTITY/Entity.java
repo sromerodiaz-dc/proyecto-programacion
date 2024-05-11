@@ -70,30 +70,34 @@ public class Entity {
                 x += speed;
                 sentido = 'd';
             }
+            /*
+             * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
+             * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
+             * de movimiento.
+             * */
+            spriteCounter++;
+            // Cada 10 frames el spriteNum varía
+            if (spriteCounter > 10) {
+                if (spriteNum == 1){
+                    spriteNum = 2;
+                } else if (spriteNum == 2) {
+                    spriteNum = 1;
+                }
+                // Cada 10 frames los contadores son reseteados para que no incrementen al infinito y haya un control
+                // sobre las animaciones a lo largo del tiempo de juego.
+                spriteCounter = 0;
+            }
         } else {
+            sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
             stopNum++;
         }
-
-        /*
-        * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
-        * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
-        * de movimiento.
-        * */
-        spriteCounter++;
-        if (stopNum > 1) {
-            sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
-        }
-        // Cada 10 frames el spriteNum varía
-        if (spriteCounter > 10) {
+        if (stopNum > 10) {
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
                 spriteNum = 1;
             }
-            // Cada 10 frames los contadores son reseteados para que no incrementen al infinito y haya un control
-            // sobre las animaciones a lo largo del tiempo de juego.
-            stopNum = 1;
-            spriteCounter = 0;
+            stopNum = 0;
         }
     }
 

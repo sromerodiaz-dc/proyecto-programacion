@@ -33,7 +33,7 @@ public class Player extends Entity{
         x = 100;
         y = 100;
         speed = 5;
-        sentido = 'f';
+        sentido = '0';
     }
 
     /**
