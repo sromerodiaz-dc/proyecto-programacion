@@ -1,0 +1,49 @@
+name: Revisión Semanal de Código General (JavaDoc)
+on:
+  schedule:
+    - cron: 00 14 * * 1
+
+jobs:
+  create_issue:
+    name: Crea un Issue de revisión de JavaDoc
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Crea Issue
+        run: |
+          if [[ $CLOSE_PREVIOUS == true ]]; then
+            previous_issue_number=$(gh issue list \
+              --label "$LABELS" \
+              --json number \
+              --jq '.[0].number')
+            if [[ -n $previous_issue_number ]]; then
+              gh issue close "$previous_issue_number"
+              gh issue unpin "$previous_issue_number"
+            fi
+          fi
+          new_issue_url=$(gh issue create \
+            --title "$TITLE" \
+            --assignee "$ASSIGNEES" \
+            --label "$LABELS" \
+            --body "$BODY")
+          if [[ $PINNED == true ]]; then
+            gh issue pin "$new_issue_url"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TITLE: HACER JAVADOC
+          ASSIGNEES: cod3stealer
+          LABELS: testing
+          BODY: |
+            ### Por hacer:
+            - [ ] Hacer el JavaDoc de todas las clases
+            - [ ] Revision de los comentarios de cada clase
+            
+            ### Cosas que añadir
+            Se dejará por escrito en los comentarios
+            
+            - [Trabajo de comienzo de semana](https://github.com/cod3stealer/proyecto-programacion
+          PINNED: false
+          CLOSE_PREVIOUS: false
