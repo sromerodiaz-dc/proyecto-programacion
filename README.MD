@@ -191,11 +191,6 @@ public void run() {
     }
 }
 ````
-### Implementación de Sprites hechos con Pixel Studio
-
-Falta por desarrollar esta parte...
-
-
 _El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
 
 _Estos son los **sprites** creados:_
@@ -205,3 +200,18 @@ _Estos son los **sprites** creados:_
 _Este es el resultado de su **implementación**:_
 
 ![moveGif](./images/moveTemprano.gif)
+
+### Animación mejorada
+
+Metodo move() de la clase ENTITY
+Nueva implementación: 1 sprite cada 10 frames
+-Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
+-Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
+
+### Implementación de Sprites hechos con Pixel Studio
+
+He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
+y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imagenes interesantes logradas
+con un programa llamado Pixel Studio.
+
+Ahora estoy explorando el uso de una BBDD para guardar y emplear cosas como el mapeo de texturas entre otros.
