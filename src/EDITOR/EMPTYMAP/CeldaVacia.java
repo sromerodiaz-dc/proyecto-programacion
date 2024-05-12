@@ -1,18 +1,22 @@
-package EDITOR.CELDAS;
+package EDITOR.EMPTYMAP;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Celda extends JPanel{
+public class CeldaVacia extends JPanel{
     private boolean seleccionada;
+    ImageIcon imageIcon;
 
-    public Celda() {
+    public CeldaVacia(ImageIcon imageIcon) {
         this.seleccionada = false;
+        this.imageIcon = imageIcon;
 
-        setBackground(Color.WHITE);
+        setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        JLabel imageLabel = new JLabel(imageIcon);
+        add(imageLabel);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -33,7 +37,7 @@ public class Celda extends JPanel{
 
     public void deseleccionar() {
         seleccionada = false;
-        setBackground(Color.WHITE);
+        setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
     }
 }

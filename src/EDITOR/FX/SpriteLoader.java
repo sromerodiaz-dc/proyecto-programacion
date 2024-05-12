@@ -1,11 +1,9 @@
 package EDITOR.FX;
 
-import EDITOR.CELDAS.Tile;
+import EDITOR.SELECTPANEL.Tile;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class SpriteLoader {
     public static Tile[] loadSprites(String folderPath) throws IOException {
@@ -22,16 +20,9 @@ public class SpriteLoader {
 
         // Recorrer archivos en la carpeta
         for (int i = 0; i < numSprites; i++) {
-            File spriteFile = files[i];
-            if (!spriteFile.isFile()) {
-                continue; // Omitir si no es un archivo
-            }
-
-            // Cargar imagen como BufferedImage
-            BufferedImage image = ImageIO.read(spriteFile);
-
+            String spriteFile = files[i].getPath();
             // Crear objeto Tile con el ID y la imagen
-            sprites[i] = new Tile(i, image);
+            sprites[i] = new Tile(i, spriteFile);
         }
 
         return sprites;
