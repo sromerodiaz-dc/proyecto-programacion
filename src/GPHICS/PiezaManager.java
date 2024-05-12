@@ -25,12 +25,12 @@ public class PiezaManager {
     public PiezaManager() {
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
-        Pieza[] pieza = new Pieza[10];
+        pieza = new Pieza[10];
 
 
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
         // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
-        int[][] mapaPiezaNum = new int[TeisPanel.maxScreenColumnas][TeisPanel.maxScreenFilas];
+        mapaPiezaNum = new int[TeisPanel.maxScreenColumnas][TeisPanel.maxScreenFilas];
 
 
         // Carga las imágenes de las piezas.
