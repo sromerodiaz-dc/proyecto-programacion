@@ -77,7 +77,7 @@ public class Entity {
              * */
             spriteCounter++;
             // Cada 10 frames el spriteNum varía
-            if (spriteCounter > 10) {
+            if (spriteCounter > 8) {
                 if (spriteNum == 1){
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
@@ -91,7 +91,7 @@ public class Entity {
             sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
             stopNum++;
         }
-        if (stopNum > 10) {
+        if (stopNum > 15) {
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
