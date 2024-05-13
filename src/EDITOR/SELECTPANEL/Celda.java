@@ -1,22 +1,24 @@
 package EDITOR.SELECTPANEL;
 
+import EDITOR.EMPTYMAP.CeldaVacia;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Celda extends JPanel{
-    public boolean seleccionada;
-    ImageIcon imageIcon;
+    public static boolean seleccionada;
+    public ImageIcon imageIcon;
 
     public Celda(ImageIcon imageIcon) {
         seleccionada = false;
         this.imageIcon = imageIcon;
 
         setBackground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
-        if (imageIcon.getImage()!=null) {
+        if (imageIcon.getImage() != null) {
             JLabel imageLabel = new JLabel(escaladoImage(imageIcon));
             add(imageLabel);
         }
@@ -24,35 +26,39 @@ public class Celda extends JPanel{
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!seleccionada) {
-                    deseleccionarTodas();
-                    seleccionar();
-                } else {
+                System.out.println(seleccionada);
+                if (seleccionada)
                     deseleccionar();
+                else {
+                    deseleccionarTodas();
+                    CeldaVacia.imageIcon = seleccionar();
+                    System.out.println(seleccionada);
+                    System.out.println("b");
                 }
+
             }
         });
     }
 
-    public void seleccionar() {
+    public ImageIcon seleccionar() {
+        setBorder(BorderFactory.createLineBorder(Color.YELLOW,2,true));
         seleccionada = true;
-        setBorder(BorderFactory.createLineBorder(Color.YELLOW,1,true));
+        return imageIcon;
     }
 
     public void deseleccionar() {
-        seleccionada = false;
         setBackground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
+        seleccionada = false;
     }
-    public ImageIcon getImageIcon(){
-        return imageIcon;
-    }
+
     public static void deseleccionarTodas() {
         for (Celda celda : GridPanel.getCeldas()) {
             celda.deseleccionar();
         }
     }
-    public ImageIcon escaladoImage (ImageIcon imageIcon) {
+
+    public static ImageIcon escaladoImage (ImageIcon imageIcon) {
         // Get Image from Icon
         Image originalImage = imageIcon.getImage();
 

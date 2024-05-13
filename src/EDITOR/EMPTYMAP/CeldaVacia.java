@@ -1,43 +1,29 @@
 package EDITOR.EMPTYMAP;
 
+import EDITOR.SELECTPANEL.Celda;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class CeldaVacia extends JPanel{
-    private boolean seleccionada;
-    ImageIcon imageIcon;
+    public static ImageIcon imageIcon;
+    private JLabel imageLabel;
 
-    public CeldaVacia(ImageIcon imageIcon) {
-        this.seleccionada = false;
-        this.imageIcon = imageIcon;
-
+    public CeldaVacia() {
         setBackground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        JLabel imageLabel = new JLabel(imageIcon);
+        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        imageLabel = new JLabel();
         add(imageLabel);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!seleccionada) {
-                    seleccionar();
-                } else {
-                    deseleccionar();
+                if (imageIcon != null) {
+                    imageLabel.setIcon(Celda.escaladoImage(imageIcon));
                 }
             }
         });
-    }
-
-    public void seleccionar() {
-        seleccionada = true;
-        setBorder(BorderFactory.createLineBorder(Color.YELLOW,1,true));
-    }
-
-    public void deseleccionar() {
-        seleccionada = false;
-        setBackground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
     }
 }
