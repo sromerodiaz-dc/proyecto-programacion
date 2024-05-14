@@ -1,6 +1,5 @@
 package EDITOR.EMPTYMAP;
 
-import javax.management.StringValueExp;
 import javax.swing.*;
 import java.awt.*;
 
@@ -25,7 +24,7 @@ public class VacioPanel extends JPanel {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 CeldaVacia celda = new CeldaVacia(row, col);
-                formato[row][col] = (imageIcon == null) ? null : new ImageIcon(String.valueOf(imageIcon));
+                formato[row][col] = (imageIcon == null) ? null : imageIcon;
                 constraints.gridx = col;
                 constraints.gridy = row;
                 add(celda, constraints);

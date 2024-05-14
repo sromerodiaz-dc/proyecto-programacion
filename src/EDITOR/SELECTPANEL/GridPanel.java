@@ -11,7 +11,8 @@ import java.util.List;
 public class GridPanel extends JPanel {
     private static List<Celda> celdas; // Lista de paneles cuadrados
     Celda celda;
-    Tile sprite;
+    ImageIcon sprite;
+    public static ImageIcon[] sprites = SpriteLoader.loadSprites("Assets/player");
 
     public GridPanel(int rows, int cols) throws IOException {
         celdas = new ArrayList<>();
@@ -23,12 +24,10 @@ public class GridPanel extends JPanel {
         int contador = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                Tile[] sprites = SpriteLoader.loadSprites("Assets/player");
                 if (sprites.length > contador){
                     sprite = sprites[contador];
-                    System.out.println(sprites[contador]);
                     contador++;
-                    celda = new Celda(new ImageIcon(sprite.getSprite()));
+                    celda = new Celda(sprite);
                 } else {
                     celda = new Celda(new ImageIcon());
                 }

@@ -1,7 +1,6 @@
 package EDITOR.SELECTPANEL;
 
 import EDITOR.EMPTYMAP.CeldaVacia;
-import EDITOR.WORLD.CeldaWorld;
 
 import javax.swing.*;
 import java.awt.*;

@@ -95,6 +95,6 @@ public class GUI extends JFrame {
     }
 
     private void saveButtonClicked() throws IOException {
-        SpriteUtils.generateSpriteMap(SpriteLoader.loadSpritesAsImageIcons(),VacioPanel.formato);
+        SpriteUtils.generateSpriteMap(GridPanel.sprites,VacioPanel.formato);
     }
 }
