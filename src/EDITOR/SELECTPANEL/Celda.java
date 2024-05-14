@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Celda extends JPanel{
-    public static boolean seleccionada;
+    public boolean seleccionada;
     public ImageIcon imageIcon;
 
     public Celda(ImageIcon imageIcon) {
@@ -26,16 +26,12 @@ public class Celda extends JPanel{
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(seleccionada);
                 if (seleccionada)
                     deseleccionar();
                 else {
-                    deseleccionarTodas();
                     CeldaVacia.imageIcon = seleccionar();
-                    System.out.println(seleccionada);
-                    System.out.println("b");
+                    deseleccionarTodas();
                 }
-
             }
         });
     }
@@ -52,9 +48,10 @@ public class Celda extends JPanel{
         seleccionada = false;
     }
 
-    public static void deseleccionarTodas() {
+    public void deseleccionarTodas() {
         for (Celda celda : GridPanel.getCeldas()) {
-            celda.deseleccionar();
+            if (celda != this)
+                celda.deseleccionar();
         }
     }
 
