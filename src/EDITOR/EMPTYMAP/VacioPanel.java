@@ -6,8 +6,8 @@ import java.awt.*;
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
 
 public class VacioPanel extends JPanel {
-    private int gridRows = 16;
-    private int gridColumns = 16;
+    private int gridRows = 12;
+    private int gridColumns = 18;
     public static ImageIcon[][] formato;
 
     public VacioPanel() {
