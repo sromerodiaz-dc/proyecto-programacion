@@ -26,6 +26,7 @@ public class GridPanel extends JPanel {
                 Tile[] sprites = SpriteLoader.loadSprites("Assets/player");
                 if (sprites.length > contador){
                     sprite = sprites[contador];
+                    System.out.println(sprites[contador]);
                     contador++;
                     celda = new Celda(new ImageIcon(sprite.getSprite()));
                 } else {
@@ -38,6 +39,7 @@ public class GridPanel extends JPanel {
             }
         }
     }
+
     public static List<Celda> getCeldas() {
         return celdas;
     }

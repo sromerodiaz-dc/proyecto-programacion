@@ -1,21 +1,22 @@
 package EDITOR.EMPTYMAP;
 
+import javax.management.StringValueExp;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
 
 public class VacioPanel extends JPanel {
-    private int rows = 16;
-    private int cols = 16;
-    private List<CeldaVacia> celdas;
+    private int gridRows = 16;
+    private int gridColumns = 16;
+    public static ImageIcon[][] formato;
 
     public VacioPanel() {
-        iniciarComponente(rows, cols);
+        iniciarComponente(gridRows, gridColumns);
     }
 
     public void iniciarComponente(int rows, int cols) {
-        celdas = new ArrayList<>();
+        formato = new ImageIcon[rows][cols];
 
         setBackground(Color.DARK_GRAY);
         setLayout(new GridLayout(rows, cols));
@@ -23,8 +24,8 @@ public class VacioPanel extends JPanel {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                CeldaVacia celda = new CeldaVacia();
-                celdas.add(celda);
+                CeldaVacia celda = new CeldaVacia(row, col);
+                formato[row][col] = (imageIcon == null) ? null : new ImageIcon(String.valueOf(imageIcon));
                 constraints.gridx = col;
                 constraints.gridy = row;
                 add(celda, constraints);
@@ -32,7 +33,7 @@ public class VacioPanel extends JPanel {
         }
     }
 
-    public List<CeldaVacia> getCeldas() {
-        return celdas;
+    public static ImageIcon[][] getFormato() {
+        return formato;
     }
 }

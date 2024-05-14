@@ -1,6 +1,7 @@
 package EDITOR.SELECTPANEL;
 
 import EDITOR.EMPTYMAP.CeldaVacia;
+import EDITOR.WORLD.CeldaWorld;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +40,10 @@ public class Celda extends JPanel{
     public ImageIcon seleccionar() {
         setBorder(BorderFactory.createLineBorder(Color.YELLOW,2,true));
         seleccionada = true;
+        return imageIcon;
+    }
+
+    public ImageIcon getImageIcon() {
         return imageIcon;
     }
 

@@ -1,20 +1,18 @@
 package EDITOR.WORLD;
 
+import EDITOR.EMPTYMAP.CeldaVacia;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class CeldaWorld extends JPanel {
+    public static ImageIcon imageIcon;
+    private JLabel imageLabel;
+
     public CeldaWorld() {
         setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-        });
+        imageLabel = new JLabel();
+        add(imageLabel);
     }
 }
