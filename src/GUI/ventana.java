@@ -10,7 +10,6 @@ import javax.swing.*;
  * --------------------------------
  * Esta clase define la GUI.ventana (JFrame) sobre la que se implementaran diferentes JPanel, JButtons, etc.
  * */
-
 public class ventana extends JFrame {
     TeisPanel teisPanel = new TeisPanel();
     public ventana() {

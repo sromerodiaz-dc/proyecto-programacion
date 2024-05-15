@@ -1,13 +1,19 @@
 package EDITOR.EMPTYMAP;
 
 import EDITOR.SELECTPANEL.Celda;
-import EDITOR.WORLD.CeldaWorld;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
+ * */
 public class CeldaVacia extends JPanel {
     private JLabel imageLabel;
     public static ImageIcon imageIcon;

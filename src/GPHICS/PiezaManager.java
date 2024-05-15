@@ -5,6 +5,8 @@ import FX.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -17,6 +19,7 @@ public class PiezaManager {
     // Atributos
     Pieza[] pieza;
     int[][] mapaPiezaNum;
+    String[] imagePaths = getImagePaths();
     String mapName; // variable que usaré cuando haya más de un mapa
 
     /**
@@ -25,7 +28,7 @@ public class PiezaManager {
     public PiezaManager() {
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
-        pieza = new Pieza[10];
+        pieza = new Pieza[imagePaths.length];
 
 
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
@@ -36,7 +39,7 @@ public class PiezaManager {
         // Carga las imágenes de las piezas.
         getPiezaImage();
         // Carga el mapa.
-        loadMap("maps/default.txt");
+        loadMap("maps/prueba.txt");
     }
 
 
@@ -45,26 +48,29 @@ public class PiezaManager {
      */
     public void getPiezaImage() {
         try {
-            // Crea una Pieza en la posición 0 del arreglo 'pieza' y carga la imagen "background/grass01.png" para su atributo 'image'.
-            // Esta es la dinamica de cada par de lineas de codigo dentro del try.
-            pieza[0] = new Pieza();
-            pieza[0].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/grass01.png"));
-
-            pieza[1] = new Pieza();
-            pieza[1].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/wall.png"));
-
-            pieza[2] = new Pieza();
-            pieza[2].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/water01.png"));
-
-            pieza[3] = new Pieza();
-            pieza[3].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/alcantarilla.png"));
-
-            pieza[4] = new Pieza();
-            pieza[4].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/sueloEstandarPlaza.png"));
+            for (int i = 0; i < pieza.length && i < imagePaths.length; i++) {
+                pieza[i] = new Pieza();
+                pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+            }
         } catch (Exception e) {
-            // En caso de ocurrir una excepción al cargar las imágenes, se imprime el mensaje de error.
             System.out.println(e.getMessage());
         }
+    }
+
+    public String[] getImagePaths() {
+        ArrayList<String> imagePaths = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.replaceAll("^\\d+:\\s*Assets\\\\", "");
+                line = line.replaceAll("\\\\", "/");
+                imagePaths.add(line.trim());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return imagePaths.toArray(new String[0]);
     }
 
     /**

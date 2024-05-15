@@ -4,11 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
-
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
+ * */
 public class VacioPanel extends JPanel {
     private int gridRows = 12;
     private int gridColumns = 18;
-    public ImageIcon[][] formato;
+    public static ImageIcon[][] formato;
 
     public VacioPanel() {
         iniciarComponente(gridRows, gridColumns);

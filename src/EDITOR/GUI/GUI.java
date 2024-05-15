@@ -1,28 +1,30 @@
 package EDITOR.GUI;
 
-import EDITOR.EMPTYMAP.CeldaVacia;
 import EDITOR.EMPTYMAP.VacioPanel;
 import EDITOR.FX.SpriteLoader;
 import EDITOR.FX.SpriteUtils;
-import EDITOR.SELECTPANEL.Celda;
 import EDITOR.SELECTPANEL.GridPanel;
-import EDITOR.WORLD.WorldMap;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.swing.*;
-
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
+ * */
 public class GUI extends JFrame {
     // Propiedades de pantalla
     private static final int WIDTH = 1920;
     private static final int HEIGHT = 1080;
-    private static final int MENU_LEFT_X = 180;
+    private static final int MENU_LEFT_X = 445;
     private static final int MENU_LEFT_Y = 120;
     private static final int MENU_LEFT_WIDTH = 864;
     private static final int MENU_LEFT_HEIGHT = 576;
-    private static final int MENU_BOTTOM_X = 345;
+    private static final int MENU_BOTTOM_X = 615;
     private static final int MENU_BOTTOM_Y = 730;
     private static final int MENU_BOTTOM_WIDTH = 534;
     private static final int MENU_BOTTOM_HEIGHT = 180;
@@ -33,12 +35,12 @@ public class GUI extends JFrame {
 
     SpriteLoader spriteLoader = new SpriteLoader();
     SpriteUtils spriteUtils;
-    VacioPanel vacioPanel;
-    public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background");
+    public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
 
     public GUI() throws IOException {
         initGUI();
         setVisible(true);
+        System.out.println(Arrays.toString(sprites));
     }
 
     private void initGUI() throws IOException {
@@ -89,10 +91,11 @@ public class GUI extends JFrame {
         saveButton = new JButton("Guardar");
         saveButton.setBackground(Color.BLACK);
         saveButton.setForeground(Color.WHITE);
-        saveButton.setBounds(WIDTH - 800, HEIGHT - 500, 100, 50);
+        saveButton.setBounds(WIDTH - 550, HEIGHT - 500, 100, 50);
         saveButton.addActionListener(e -> {
             try {
                 saveButtonClicked();
+                System.exit(0);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -101,7 +104,6 @@ public class GUI extends JFrame {
 
     private void saveButtonClicked() throws IOException {
         spriteUtils = new SpriteUtils();
-        vacioPanel = new VacioPanel();
-        spriteUtils.generateSpriteMap(sprites,vacioPanel.formato);
+        spriteUtils.generateSpriteMap(sprites,VacioPanel.formato);
     }
 }

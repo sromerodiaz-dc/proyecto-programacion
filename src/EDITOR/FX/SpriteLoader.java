@@ -2,61 +2,71 @@ package EDITOR.FX;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
+ * */
 public class SpriteLoader {
-    public static ImageIcon[] loadSprites(String folderPath) {
+    public List<ImageIcon> loadSprites(String folderPath) {
         File folder = new File(folderPath);
         if (!folder.isDirectory()) {
             throw new IllegalArgumentException("No es una carpeta: " + folderPath);
         }
 
-        File[] files = folder.listFiles();
-        int numSprites = files.length;
+        List<ImageIcon> sprites = new ArrayList<>();
+        List<String> imagePaths = new ArrayList<>();
 
-        // Crear matriz monodimensional para almacenar ImageIcons
-        ImageIcon[] sprites = new ImageIcon[numSprites];
-
-        // Crear lista para almacenar los paths de las imágenes
-        ArrayList<String> imagePaths = new ArrayList<>();
-
-        // Recorrer archivos en la carpeta
-        for (int i = 0; i < numSprites; i++) {
+        for (File file : folder.listFiles()) {
             try {
-                BufferedImage image = ImageIO.read(files[i]);
-                sprites[i] = new ImageIcon(image);
-                imagePaths.add(files[i].getPath()); // Add path to list
+                BufferedImage image = ImageIO.read(file);
+                sprites.add(new ImageIcon(image));
+                imagePaths.add(file.getPath());
             } catch (IOException e) {
                 e.printStackTrace();
-                sprites[i] = null;
+                sprites.add(null);
             }
         }
 
-        // Escribir los datos en el archivo
-        for (int i = 0; i < numSprites; i++) {
-            if (sprites[i] != null) {
-                writeToFile(i, imagePaths.get(i));
-            } else {
-                writeToFile(i, null); // Write error to file
+        File file = new File("Assets/maps_correspondencia/c_assets.txt");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                for (int i = 0; i < sprites.size(); i++) {
+                    if (sprites.get(i) != null) {
+                        writeToFile(i, imagePaths.get(i));
+                    } else {
+                        writeToFile(i, null);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         return sprites;
     }
 
-    private static void writeToFile(int index, String path) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("Assets/maps_correspondencia/c_assets.txt", true))) {
+    private void writeToFile(int index, String path) {
+        File file = new File("Assets/maps_correspondencia/c_assets.txt");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
+            StringBuilder sb = new StringBuilder();
             if (path != null) {
-                writer.println(index + ": " + path);
+                sb.append(index).append(": ").append(path);
             } else {
-                writer.println(index + ": Error loading image");
+                sb.append(index).append(": Error loading image");
             }
+            writer.println(sb);
         } catch (IOException e) {
             e.printStackTrace();
         }
