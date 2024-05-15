@@ -5,6 +5,7 @@ import EDITOR.FX.SpriteLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,9 @@ public class GridPanel extends JPanel {
     private static List<Celda> celdas; // Lista de paneles cuadrados
     Celda celda;
     ImageIcon sprite;
-    public static ImageIcon[] sprites = SpriteLoader.loadSprites("Assets/player");
 
-    public GridPanel(int rows, int cols) throws IOException {
+
+    public GridPanel(int rows, int cols, ImageIcon[] sprites) throws IOException {
         celdas = new ArrayList<>();
 
         setBackground(Color.DARK_GRAY);

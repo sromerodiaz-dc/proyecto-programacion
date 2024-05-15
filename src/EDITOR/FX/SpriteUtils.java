@@ -12,9 +12,22 @@ import java.io.IOException;
  * */
 
 public class SpriteUtils {
-    public static void generateSpriteMap(ImageIcon[] sprites, ImageIcon[][] formato) throws IOException {
+    public void generateSpriteMap(ImageIcon[] sprites, ImageIcon[][] formato) throws IOException {
+        String userInput;
+        String mapName = null;
 
-        try (FileWriter fileWriter = new FileWriter("Assets/maps/sprite_map.txt")) {
+        do {
+            userInput = JOptionPane.showInputDialog(null, "Introduzca el nombre del mapa:");
+            if (userInput != null && !userInput.isEmpty()) {
+                mapName = userInput.trim();
+                // Quitar extensión .txt si existe
+                if (mapName.toLowerCase().endsWith(".txt")) {
+                    mapName = mapName.substring(0, mapName.length() - 4);
+                }
+            }
+        } while (mapName == null || mapName.isEmpty());
+
+        try (FileWriter fileWriter = new FileWriter("Assets/maps/"+mapName+".txt")) {
 
             for (ImageIcon[] imageIcons : formato) {
 
@@ -25,15 +38,11 @@ public class SpriteUtils {
 
                     if (imageIcon != null) {
 
-                        System.out.println("---");
-                        System.out.println(imageIcon);
-                        System.out.println("---");
-
                         for (ImageIcon sprite : sprites){
 
                             if (imageIcon == sprite) {
 
-                                fileWriter.write(spriteIndex+1 + " ");
+                                fileWriter.write(spriteIndex + " ");
                                 foundMatch = true;
                             }
 
@@ -41,7 +50,6 @@ public class SpriteUtils {
                             spriteIndex++;
 
                         }
-                        System.out.println("---");
                     }
 
                     if (!foundMatch) {

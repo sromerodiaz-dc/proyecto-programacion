@@ -11,8 +11,10 @@ import java.awt.event.MouseEvent;
 public class CeldaVacia extends JPanel {
     private JLabel imageLabel;
     public static ImageIcon imageIcon;
+    VacioPanel vacioPanel;
 
-    public CeldaVacia(int row, int col) {
+    public CeldaVacia(int row, int col,VacioPanel panel) {
+        this.vacioPanel = panel;
         setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         imageLabel = new JLabel();
@@ -27,6 +29,6 @@ public class CeldaVacia extends JPanel {
 
     public void setImageIcon(ImageIcon imageIcon, int row, int col) {
         imageLabel.setIcon(Celda.escaladoImage(imageIcon));
-        VacioPanel.getFormato()[row][col] = imageIcon;
+        vacioPanel.getFormato()[row][col] = imageIcon;
     }
 }
