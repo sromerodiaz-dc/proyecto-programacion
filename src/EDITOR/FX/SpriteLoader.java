@@ -11,13 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Clase que se encarga de cargar sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
+ *
  * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
- * Proyecto: Teis
- * -
- * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
- * */
+ */
 public class SpriteLoader {
+    /**
+     * Carga sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
+     *
+     * @param folderPath ruta de la carpeta que contiene los sprites
+     * @return lista de ImageIcon que representan los sprites cargados
+     * @throws IOException si ocurre un error al leer la carpeta o los archivos
+     */
     public List<ImageIcon> loadSprites(String folderPath) {
         File folder = new File(folderPath);
         if (!folder.isDirectory()) {
@@ -33,7 +38,6 @@ public class SpriteLoader {
                 sprites.add(new ImageIcon(image));
                 imagePaths.add(file.getPath());
             } catch (IOException e) {
-                e.printStackTrace();
                 sprites.add(null);
             }
         }
@@ -50,14 +54,21 @@ public class SpriteLoader {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+
             }
         }
 
         return sprites;
     }
 
-    private void writeToFile(int index, String path) {
+    /**
+     * Escribe la correspondencia entre el índice de un sprite y su ruta en un archivo de texto.
+     *
+     * @param index índice del sprite
+     * @param path ruta del sprite
+     * @throws IOException si ocurre un error al escribir el archivo
+     */
+    private void writeToFile(int index, String path) throws IOException {
         File file = new File("Assets/maps_correspondencia/c_assets.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
             StringBuilder sb = new StringBuilder();
@@ -67,8 +78,6 @@ public class SpriteLoader {
                 sb.append(index).append(": Error loading image");
             }
             writer.println(sb);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

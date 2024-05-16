@@ -7,12 +7,29 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Celda extends JPanel{
+/**
+ * Clase que representa una celda en un panel de cuadrícula.
+ * Cada celda puede contener una imagen y puede ser seleccionada o deseleccionada.
+ *
+ * @author Santiago Agustin Romero Diaz
+ */
+public class Celda extends JPanel {
+    /**
+     * Indica si la celda está seleccionada o no.
+     */
     public boolean seleccionada;
+
+    /**
+     * Imagen que se muestra en la celda.
+     */
     public ImageIcon imageIcon;
 
+    /**
+     * Crea una nueva celda con la imagen especificada.
+     *
+     * @param imageIcon imagen que se mostrará en la celda
+     */
     public Celda(ImageIcon imageIcon) {
-        seleccionada = false;
         this.imageIcon = imageIcon;
 
         setBackground(Color.DARK_GRAY);
@@ -30,36 +47,50 @@ public class Celda extends JPanel{
                     deseleccionar();
                 else {
                     CeldaVacia.imageIcon = seleccionar();
-                    deseleccionarTodas();
+                    deseleccionarTodas(Celda.this);
                 }
             }
         });
     }
 
+    /**
+     * Selecciona la celda y devuelve la imagen que contiene.
+     * * @return imagen que contiene la celda
+     */
     public ImageIcon seleccionar() {
-        setBorder(BorderFactory.createLineBorder(Color.YELLOW,2,true));
+        setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2, true));
         seleccionada = true;
         return imageIcon;
     }
 
-    public ImageIcon getImageIcon() {
-        return imageIcon;
-    }
-
+    /**
+     * Deselecciona la celda.
+     */
     public void deseleccionar() {
         setBackground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
+        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         seleccionada = false;
     }
 
-    public void deseleccionarTodas() {
-        for (Celda celda : GridPanel.getCeldas()) {
-            if (celda != this)
-                celda.deseleccionar();
+    /**
+     * Deselecciona todas las celdas excepto la especificada.
+     *
+     * @param celda celda que no se deseleccionará
+     */
+    public void deseleccionarTodas(Celda celda) {
+        for (Celda c : GridPanel.getCeldas()) {
+            if (c != celda)
+                c.deseleccionar();
         }
     }
 
-    public static ImageIcon escaladoImage (ImageIcon imageIcon) {
+    /**
+     * Redimensiona una imagen a un tamaño específico.
+     *
+     * @param imageIcon imagen a redimensionar
+     * @return imagen redimensionada
+     */
+    public static ImageIcon escaladoImage(ImageIcon imageIcon) {
         // Get Image from Icon
         Image originalImage = imageIcon.getImage();
 

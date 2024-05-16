@@ -17,94 +17,91 @@ import javax.swing.*;
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
 
 /**
+ * Clase que define la interacción del jugador con el entorno, así como su movimiento y uso de gráficos en 2D.
+ *
  * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
- * Proyecto: Teis
- * -
- * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
- * */
+ */
 public class GUI extends JFrame {
     // Propiedades de pantalla
-    private static final int WIDTH = 1920;
-    private static final int HEIGHT = 1080;
-    private static final int MENU_LEFT_X = 445;
-    private static final int MENU_LEFT_Y = 120;
-    private static final int MENU_LEFT_WIDTH = 864;
-    private static final int MENU_LEFT_HEIGHT = 563;
-    private static final int MENU_BOTTOM_X = 615;
-    private static final int MENU_BOTTOM_Y = 730;
-    private static final int MENU_BOTTOM_WIDTH = 534;
-    private static final int MENU_BOTTOM_HEIGHT = 180;
-    /*private static final int MENU_WORLD_X = 1020;
-    private static final int MENU_WORLD_Y = 60;
-    private static final int MENU_WORLD_WIDTH = 750;
-    private static final int MENU_WORLD_HEIGHT = 730;*/
+    private static final int ANCHO = 1920;
+    private static final int ALTO = 1080;
+    private static final int MENU_IZQUIERDA_X = 480;
+    private static final int MENU_IZQUIERDA_Y = 100;
+    private static final int MENU_IZQUIERDA_ANCHO = 800;
+    private static final int MENU_IZQUIERDA_ALTO = 600;
+    private static final int MENU_INFERIOR_X = 615;
+    private static final int MENU_INFERIOR_Y = 730;
+    private static final int MENU_INFERIOR_ANCHO = 534;
+    private static final int MENU_INFERIOR_ALTO = 180;
+    /*private static final int MENU_MUNDO_X = 1020;
+    private static final int MENU_MUNDO_Y = 60;
+    private static final int MENU_MUNDO_ANCHO = 750;
+    private static final int MENU_MUNDO_ALTO = 730;*/
 
-    SpriteLoader spriteLoader = new SpriteLoader();
-    SpriteUtils spriteUtils;
+    private final SpriteLoader spriteLoader = new SpriteLoader();
+    private final SpriteUtils spriteUtils = new SpriteUtils();
     public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
 
     public GUI() throws IOException {
         initGUI();
         setVisible(true);
-        System.out.println(Arrays.toString(sprites));
     }
 
     private void initGUI() throws IOException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("TileEditor");
-        setSize(WIDTH, HEIGHT);
+        setSize(ANCHO, ALTO);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        createMenuLeft();
-        createMenuBottom();
-        //createMenuWorld();
-        createSaveButton();
-        createFondo();
+        createMenuIzquierda();
+        createMenuInferior();
+        //createMenuMundo();
+        createBotonGuardar();
+        createBotonFondo();
 
         getContentPane().setBackground(Color.BLACK);
         setLayout(null);
-        add(menuLeft);
-        add(menuBottom);
-        //add(menuWorld);
-        add(saveButton);
-        add(createFondo);
+        add(menuIzquierda);
+        add(menuInferior);
+        //add(menuMundo);
+        add(botonGuardar);
+        add(botonFondo);
     }
 
-    private JPanel menuLeft;
-    private JPanel menuBottom;
-    //private JPanel menuWorld;
-    private JButton saveButton;
-    private JButton createFondo;
+    private JPanel menuIzquierda;
+    private JPanel menuInferior;
+    //private JPanel menuMundo;
+    private JButton botonGuardar;
+    private JButton botonFondo;
 
-    private void createMenuLeft() {
-
-        menuLeft = new VacioPanel();
-        menuLeft.setBackground(Color.BLACK);
-        menuLeft.setBounds(MENU_LEFT_X, MENU_LEFT_Y, MENU_LEFT_WIDTH, MENU_LEFT_HEIGHT);
+    private void createMenuIzquierda() {
+        int[] nums = spriteUtils.numRowsCols();
+        menuIzquierda = new VacioPanel(nums[0], nums[1]);
+        menuIzquierda.setBackground(Color.BLACK);
+        menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
 
-    private void createMenuBottom() throws IOException {
-        menuBottom = new GridPanel(4, 12,sprites);
-        menuBottom.setBackground(Color.BLACK);
-        menuBottom.setBounds(MENU_BOTTOM_X, MENU_BOTTOM_Y, MENU_BOTTOM_WIDTH, MENU_BOTTOM_HEIGHT);
+    private void createMenuInferior() {
+        menuInferior = new GridPanel(4, 12, sprites);
+        menuInferior.setBackground(Color.BLACK);
+        menuInferior.setBounds(MENU_INFERIOR_X, MENU_INFERIOR_Y, MENU_INFERIOR_ANCHO, MENU_INFERIOR_ALTO);
     }
 
-    /*private void createMenuWorld() {
-        menuWorld = new WorldMap();
-        menuWorld.setBackground(Color.BLACK);
-        menuWorld.setBounds(MENU_WORLD_X,MENU_WORLD_Y, MENU_WORLD_WIDTH,MENU_WORLD_HEIGHT);
+    /*private void createMenuMundo() {
+        menuMundo = new WorldMap();
+        menuMundo.setBackground(Color.BLACK);
+        menuMundo.setBounds(MENU_MUNDO_X, MENU_MUNDO_Y, MENU_MUNDO_ANCHO, MENU_MUNDO_ALTO);
     }*/
 
-    private void createSaveButton() {
-        saveButton = new JButton("Guardar");
-        saveButton.setBackground(Color.BLACK);
-        saveButton.setForeground(Color.WHITE);
-        saveButton.setBounds(WIDTH - 550, HEIGHT - 500, 100, 50);
-        saveButton.addActionListener(e -> {
+    private void createBotonGuardar() {
+        botonGuardar = new JButton("Guardar");
+        botonGuardar.setBackground(Color.BLACK);
+        botonGuardar.setForeground(Color.WHITE);
+        botonGuardar.setBounds(ANCHO - 620, ALTO - 500, 100, 50);
+        botonGuardar.addActionListener(e -> {
             try {
-                saveButtonClicked();
+                botonGuardarClickeado();
                 System.exit(0);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -112,17 +109,16 @@ public class GUI extends JFrame {
         });
     }
 
-    private void saveButtonClicked() throws IOException {
-        spriteUtils = new SpriteUtils();
-        spriteUtils.generateSpriteMap(sprites,VacioPanel.formato);
+    private void botonGuardarClickeado() throws IOException {
+        spriteUtils.generateSpriteMap(sprites, VacioPanel.formato);
     }
 
-    private void createFondo() {
-        createFondo = new JButton("Fondo");
-        createFondo.setBackground(Color.BLACK);
-        createFondo.setForeground(Color.WHITE);
-        createFondo.setBounds(WIDTH - 550, HEIGHT - 550, 100, 50);
-        createFondo.addActionListener(e -> {
+    private void createBotonFondo() {
+        botonFondo = new JButton("Fondo");
+        botonFondo.setBackground(Color.BLACK);
+        botonFondo.setForeground(Color.WHITE);
+        botonFondo.setBounds(ANCHO - 620, ALTO - 550, 100, 50);
+        botonFondo.addActionListener(e -> {
             try {
                 fondoSprite();
             } catch (IOException ex) {
