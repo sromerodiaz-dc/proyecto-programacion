@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
  * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
  * */
 public class CeldaVacia extends JPanel {
-    private JLabel imageLabel;
+    public JLabel imageLabel;
     public static ImageIcon imageIcon;
     VacioPanel vacioPanel;
 
@@ -36,5 +36,9 @@ public class CeldaVacia extends JPanel {
     public void setImageIcon(ImageIcon imageIcon, int row, int col) {
         imageLabel.setIcon(Celda.escaladoImage(imageIcon));
         vacioPanel.getFormato()[row][col] = imageIcon;
+    }
+
+    public void setImageIconLocal(ImageIcon imageIcon){
+        imageLabel.setIcon(Celda.escaladoImage(imageIcon));
     }
 }

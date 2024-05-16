@@ -1,14 +1,21 @@
 package EDITOR.GUI;
 
+import EDITOR.EMPTYMAP.CeldaVacia;
 import EDITOR.EMPTYMAP.VacioPanel;
 import EDITOR.FX.SpriteLoader;
 import EDITOR.FX.SpriteUtils;
+import EDITOR.SELECTPANEL.Celda;
 import EDITOR.SELECTPANEL.GridPanel;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import javax.swing.*;
+
+import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
+
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
@@ -23,7 +30,7 @@ public class GUI extends JFrame {
     private static final int MENU_LEFT_X = 445;
     private static final int MENU_LEFT_Y = 120;
     private static final int MENU_LEFT_WIDTH = 864;
-    private static final int MENU_LEFT_HEIGHT = 576;
+    private static final int MENU_LEFT_HEIGHT = 563;
     private static final int MENU_BOTTOM_X = 615;
     private static final int MENU_BOTTOM_Y = 730;
     private static final int MENU_BOTTOM_WIDTH = 534;
@@ -54,6 +61,7 @@ public class GUI extends JFrame {
         createMenuBottom();
         //createMenuWorld();
         createSaveButton();
+        createFondo();
 
         getContentPane().setBackground(Color.BLACK);
         setLayout(null);
@@ -61,12 +69,14 @@ public class GUI extends JFrame {
         add(menuBottom);
         //add(menuWorld);
         add(saveButton);
+        add(createFondo);
     }
 
     private JPanel menuLeft;
     private JPanel menuBottom;
     //private JPanel menuWorld;
     private JButton saveButton;
+    private JButton createFondo;
 
     private void createMenuLeft() {
 
@@ -105,5 +115,28 @@ public class GUI extends JFrame {
     private void saveButtonClicked() throws IOException {
         spriteUtils = new SpriteUtils();
         spriteUtils.generateSpriteMap(sprites,VacioPanel.formato);
+    }
+
+    private void createFondo() {
+        createFondo = new JButton("Fondo");
+        createFondo.setBackground(Color.BLACK);
+        createFondo.setForeground(Color.WHITE);
+        createFondo.setBounds(WIDTH - 550, HEIGHT - 550, 100, 50);
+        createFondo.addActionListener(e -> {
+            try {
+                fondoSprite();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    private void fondoSprite() throws IOException {
+        for (ImageIcon[] row : VacioPanel.formato) {
+            Arrays.fill(row, imageIcon);
+        }
+        for (CeldaVacia celda : VacioPanel.celdaVacias) {
+            celda.setImageIconLocal(imageIcon);
+        }
     }
 }
