@@ -1,12 +1,11 @@
-package GPHICS;
+package GAME.GPHICS;
 
-import FX.TeisPanel;
+import GAME.FX.TeisPanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Santiago Agustin Romero Diaz

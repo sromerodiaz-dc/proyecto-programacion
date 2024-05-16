@@ -36,7 +36,7 @@ public class Celda extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
         if (imageIcon.getImage() != null) {
-            JLabel imageLabel = new JLabel(escaladoImage(imageIcon));
+            JLabel imageLabel = new JLabel(escaladoImage(imageIcon,32,32));
             add(imageLabel);
         }
 
@@ -90,12 +90,12 @@ public class Celda extends JPanel {
      * @param imageIcon imagen a redimensionar
      * @return imagen redimensionada
      */
-    public static ImageIcon escaladoImage(ImageIcon imageIcon) {
+    public static ImageIcon escaladoImage(ImageIcon imageIcon,int width, int height) {
         // Get Image from Icon
         Image originalImage = imageIcon.getImage();
 
         // Resize the Image object
-        Image scaledImage = originalImage.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        Image scaledImage = originalImage.getScaledInstance(width,height, Image.SCALE_SMOOTH);
 
         // Create a new ImageIcon from the scaled Image
         return new ImageIcon(scaledImage);

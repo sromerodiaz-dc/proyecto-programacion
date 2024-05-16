@@ -35,12 +35,18 @@ public class CeldaVacia extends JPanel {
         this.vacioPanel = panel;
         setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+
         imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        imageLabel.setVerticalAlignment(JLabel.CENTER);
         add(imageLabel);
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setImageIcon(imageIcon, row, col);
+                imageLabel.setHorizontalAlignment(JLabel.CENTER);
+                imageLabel.setVerticalAlignment(JLabel.CENTER);
+                setImageIcon(imageIcon, row, col,imageLabel.getWidth(),imageLabel.getHeight());
             }
         });
     }
@@ -52,8 +58,8 @@ public class CeldaVacia extends JPanel {
      * @param row The row index of the cell to be updated.
      * @param col The column index of the cell to be updated.
      */
-    public void setImageIcon(ImageIcon imageIcon, int row, int col) {
-        imageLabel.setIcon(Celda.escaladoImage(imageIcon));
+    public void setImageIcon(ImageIcon imageIcon, int row, int col,int width, int height) {
+        imageLabel.setIcon(Celda.escaladoImage(imageIcon, width, height));
         vacioPanel.getFormato()[row][col] = imageIcon;
     }
 
@@ -62,7 +68,23 @@ public class CeldaVacia extends JPanel {
      *
      * @param imageIcon The ImageIcon to be displayed.
      */
-    public void setImageIconLocal(ImageIcon imageIcon) {
-        imageLabel.setIcon(Celda.escaladoImage(imageIcon));
+    public void setImageIconLocal(ImageIcon imageIcon,int width, int height) {
+        imageLabel.setIcon(Celda.escaladoImage(imageIcon,width,height));
+    }
+
+    public int getWidthLocal(){
+        for (CeldaVacia celda : VacioPanel.celdaVacias) {
+            if (celda == this)
+                return celda.getWidth();
+        }
+        return 1;
+    }
+
+    public int getHeightLocal(){
+        for (CeldaVacia celda : VacioPanel.celdaVacias) {
+            if (celda == this)
+                return celda.getHeight();
+        }
+        return 1;
     }
 }

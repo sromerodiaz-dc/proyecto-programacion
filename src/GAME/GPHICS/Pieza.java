@@ -1,4 +1,4 @@
-package GPHICS;
+package GAME.GPHICS;
 
 import java.awt.image.BufferedImage;
 /**

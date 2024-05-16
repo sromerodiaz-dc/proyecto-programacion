@@ -25,9 +25,9 @@ public class GUI extends JFrame {
     // Propiedades de pantalla
     private static final int ANCHO = 1920;
     private static final int ALTO = 1080;
-    private static final int MENU_IZQUIERDA_X = 480;
+    private static final int MENU_IZQUIERDA_X = 450;
     private static final int MENU_IZQUIERDA_Y = 100;
-    private static final int MENU_IZQUIERDA_ANCHO = 800;
+    private static final int MENU_IZQUIERDA_ANCHO = 830;
     private static final int MENU_IZQUIERDA_ALTO = 600;
     private static final int MENU_INFERIOR_X = 615;
     private static final int MENU_INFERIOR_Y = 730;
@@ -132,7 +132,7 @@ public class GUI extends JFrame {
             Arrays.fill(row, imageIcon);
         }
         for (CeldaVacia celda : VacioPanel.celdaVacias) {
-            celda.setImageIconLocal(imageIcon);
+            celda.setImageIconLocal(imageIcon,celda.getWidth()-10,celda.getHeight()-10);
         }
     }
 }

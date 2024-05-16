@@ -1,7 +1,7 @@
-package FX;
+package GAME.FX;
 
-import ENTITY.Player;
-import GPHICS.PiezaManager;
+import GAME.ENTITY.Player;
+import GAME.GPHICS.PiezaManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class TeisPanel extends JPanel implements Runnable{
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
 
-    // Implementación de la clase FX.KeyManager (Lectura de acciones de teclado)
+    // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
     KeyManager key = new KeyManager();
 
     // Instancia de la clase PLAYER

@@ -6,7 +6,11 @@
     - [Game Loop](#qué-es-un-game-loop)
     - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
     - [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
-    
+- - [Semana 2](#semana-del-13052024)
+- - [Semana 3](#semana-del-20052024)
+- - [Semana 4](#semana-del-27052024)
+
+
 
 # Notas de desarrollo
 
@@ -132,7 +136,7 @@ public void keyPressed(KeyEvent e) {
 }
 ```
 
-Al implementar este codigo en una clase llamada **FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
+Al implementar este codigo en una clase llamada **GAME.FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
 ````java
 private void move() {
         if (key.up) {
@@ -147,7 +151,7 @@ private void move() {
     }
 ````
 
-Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la GUI.ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
+Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la GAME.GUI.ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
 este cuadrado parece _"desaparecer"_.
 La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
@@ -203,7 +207,7 @@ _Este es el resultado de su **implementación**:_
 
 ### Animación mejorada
 
-Metodo move() de la clase ENTITY
+Metodo move() de la clase GAME.ENTITY
 Nueva implementación: 1 sprite cada 10 frames
 -Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
 -Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
@@ -214,4 +218,13 @@ He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo 
 y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imagenes interesantes logradas
 con un programa llamado Pixel Studio.
 
-Ahora estoy explorando el uso de una BBDD para guardar y emplear cosas como el mapeo de texturas entre otros.
+## Semana del 13/05/2024
+
+Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
+
+- *Crear un editor de mapas*
+- - *Que el editor pudiese guardar mapas*
+- - *Que te permitiese decidir el tamaño del mapa*
+- - *Que te permitiese cambiar el fondo por el sprite que quisieras*
+
+

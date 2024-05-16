@@ -1,7 +1,7 @@
-package ENTITY;
+package GAME.ENTITY;
 
-import FX.KeyManager;
-import FX.TeisPanel;
+import GAME.FX.KeyManager;
+import GAME.FX.TeisPanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
