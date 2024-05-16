@@ -21,7 +21,6 @@ public class SpriteLoader {
      *
      * @param folderPath ruta de la carpeta que contiene los sprites
      * @return lista de ImageIcon que representan los sprites cargados
-     * @throws IOException si ocurre un error al leer la carpeta o los archivos
      */
     public List<ImageIcon> loadSprites(String folderPath) {
         File folder = new File(folderPath);

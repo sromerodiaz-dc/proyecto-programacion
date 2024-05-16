@@ -10,8 +10,6 @@
 - - [Semana 3](#semana-del-20052024)
 - - [Semana 4](#semana-del-27052024)
 
-
-
 # Notas de desarrollo
 
 ### En este documento estaré escribiendo los avances y registrandolos en una linea de tiempo
@@ -55,7 +53,7 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
     }
 ```
 **Resultado:**
-![teis](./images/panelHecho.png)
+![teis](images/panelHecho.png)
 
 ### Por otra parte...
 
@@ -110,7 +108,7 @@ public void paintComponent(Graphics g){
 ```
 
 **Resultado:**
-![teis](./images/componente2DCreado.png)
+![teis](images/componente2DCreado.png)
 
 ### Desarrollo de `Key Inputs`
 
@@ -199,11 +197,11 @@ _El resultado de asociar movimiento con sprites (aún en fase temprana) es el si
 
 _Estos son los **sprites** creados:_
 
-![moveGif](./images/muestraSprites.gif)
+![moveGif](images/muestraSprites.gif)
 
 _Este es el resultado de su **implementación**:_
 
-![moveGif](./images/moveTemprano.gif)
+![moveGif](images/moveTemprano.gif)
 
 ### Animación mejorada
 
@@ -227,4 +225,33 @@ Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores
 - - *Que te permitiese decidir el tamaño del mapa*
 - - *Que te permitiese cambiar el fondo por el sprite que quisieras*
 
+### Editor de mapas con sprites
 
+El editor funciona de la siguiente manera:
+
+![moveGif](images/editorInicio.gif)
+
+Como se ve en este **gif** el editor pide al usuario que introduzca un número de ``filas y columnas``. 
+Luego, pasa a la *interfaz gráfica* como tal en la que hay 2 paneles y dos botones.
+- ``El panel grande:`` ***sirve como plantilla para el mapa y es completamente modificable.***
+- ``El panel de abajo:`` ***sirve como seleccionador de sprites.***
+- Y, por último, los *botones* sirven para guardar el mapa o para poner un fondo con el bloque que esté seleccionado.
+
+
+**Ejemplo de guardado:**
+
+![moveGif](images/editorGuardar.gif)
+
+
+Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen falta dos cosas:
+- _Que los sprites sean traducidos a un numero asignado._
+- _Generar el diccionario que dirá que numero corresponde a que cosa._
+
+**Ejemplo de diccionario:**
+
+![moveGif](images/editorCorresp.gif)
+
+
+### Mejoras en la animación del personaje
+
+### Interpretador de mapa

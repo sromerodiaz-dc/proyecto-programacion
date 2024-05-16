@@ -1,5 +1,6 @@
 package GAME.GPHICS;
 
+import GAME.FX.MapSelector;
 import GAME.FX.TeisPanel;
 
 import javax.imageio.ImageIO;
@@ -19,7 +20,8 @@ public class PiezaManager {
     Pieza[] pieza;
     int[][] mapaPiezaNum;
     String[] imagePaths = getImagePaths();
-    String mapName; // variable que usaré cuando haya más de un mapa
+    MapSelector mapSelector = new MapSelector();
+    String mapName = mapSelector.selectMap(); // variable que usaré cuando haya más de un mapa
 
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
@@ -38,7 +40,7 @@ public class PiezaManager {
         // Carga las imágenes de las piezas.
         getPiezaImage();
         // Carga el mapa.
-        loadMap("maps/prueba.txt");
+        loadMap(mapName);
     }
 
 
