@@ -252,6 +252,24 @@ Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen fa
 ![moveGif](images/editorCorresp.gif)
 
 
-### Mejoras en la animación del personaje
+### Mejoras generales
+
+Ahora al iniciar el juego podrás seleccionar el mapa que quieres cargar y, además, las animaciones se han mejorado.
+Ahora hay dos Sprites de movimiento, proximamente añadiré otros dos y el movimiento se verá mucho más fluido.
+
+**Ejemplo mapa de prueba:**
+
+![moveGif](images/iniciarGame.gif)
+
 
 ### Interpretador de mapa
+
+Para que el código pueda interpretar la matriz de números y traducirla a un mapa de Sprites hace uso del archivo generado
+anteriormente por el Editor de Mapas llamado ``c_assets``.
+El código realiza un leido de todas las filas y columnas del archivo y lo carga asignando a cada espacio su 
+correspondiente sprite de fondo.
+
+### Implementacion de colisiones y dialogos
+
+Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
+personaje mediante inventario o demás cosas.
