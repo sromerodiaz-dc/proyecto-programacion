@@ -273,3 +273,32 @@ correspondiente sprite de fondo.
 
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
+
+### IDEAS para los NPCs
+
+Meter personajes tanto ficticios como historicos de manera aleatoria.
+Ejemplo:
+-  ==> Hitler feliz con un cuadro
+- Dexter
+- Eric Cartman
+-  ==> La parca de Bill y Mandy
+-  ==> Finn y Jake
+- Shrek
+- The Beatles
+-  ==> Pedro Sánchez: entregandote una carta a la ciudadania
+- Shakira
+- Nietzsche
+-  ==> Jesus Gil
+
+Para los dialogos de los NPCs:
+Ejemplos:
+- "coña?"
+- "fumo?"
+- "no creo, no"
+- "Devoré"
+- "tiene' un segarro?"
+- "hermano, tienes hora?"
+- "Y yo, no me causa rubor decirlo, soy un hombre profundamente enamorado de mi mujer que vive con impotencia el fango que sobre ella esparcen día sí y día también"
+- "bonito movil, eso está roto eh"
+- "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
+  financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"

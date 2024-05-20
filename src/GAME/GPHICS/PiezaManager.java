@@ -1,12 +1,13 @@
 package GAME.GPHICS;
 
 import GAME.FX.MapSelector;
-import GAME.FX.TeisPanel;
+import GAME.GAME.TeisPanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -17,16 +18,18 @@ import java.util.ArrayList;
  * */
 public class PiezaManager {
     // Atributos
-    Pieza[] pieza;
-    int[][] mapaPiezaNum;
-    String[] imagePaths = getImagePaths();
+    TeisPanel t;
+    public Pieza[] pieza;
+    public int[][] mapaPiezaNum;
+    public String[] imagePaths = getImagePaths();
     MapSelector mapSelector = new MapSelector();
     String mapName = mapSelector.selectMap(); // variable que usaré cuando haya más de un mapa
 
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
      */
-    public PiezaManager() {
+    public PiezaManager(TeisPanel teis) {
+        this.t = teis;
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
         pieza = new Pieza[imagePaths.length];
@@ -34,7 +37,7 @@ public class PiezaManager {
 
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
         // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
-        mapaPiezaNum = new int[TeisPanel.maxScreenColumnas][TeisPanel.maxScreenFilas];
+        mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow ];
 
 
         // Carga las imágenes de las piezas.
@@ -93,11 +96,11 @@ public class PiezaManager {
                 int col = 0, fil = 0;
 
                 // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
-                while (col < TeisPanel.maxScreenColumnas && fil < TeisPanel.maxScreenFilas) {
+                while (col < t.maxScreenColumnas && fil < t.maxScreenFilas) {
 
                     String linea = br.readLine();
                     // Bucle por cada elemento (separado por espacios) en la línea actual.
-                    while (col < TeisPanel.maxScreenColumnas) {
+                    while (col < t.maxScreenColumnas) {
                         String[] mapID = linea.split(" ");
                         // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
                         int map = Integer.parseInt(mapID[col]);
@@ -107,7 +110,7 @@ public class PiezaManager {
                     }
 
                     // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
-                    if (col == TeisPanel.maxScreenColumnas) {
+                    if (col == t.maxScreenColumnas) {
                         col = 0;
                         fil++;
                     }
@@ -140,27 +143,27 @@ public class PiezaManager {
         int y = 0;
 
         // Bucle que recorre el mapa fila por fila, dibujando las piezas correspondientes.
-        while (col < TeisPanel.maxScreenColumnas && fil < TeisPanel.maxScreenFilas) {
+        while (col < t.maxScreenColumnas && fil < t.maxScreenFilas) {
             // Obtiene el ID del tipo de Pieza en la posición actual del mapa.
             int id = mapaPiezaNum[col][fil];
 
             // Dibuja la imagen de la Pieza correspondiente en la posición actual.
-            g2.drawImage(pieza[id].image, x, y, TeisPanel.sizeFinal, TeisPanel.sizeFinal, null);
+            g2.drawImage(pieza[id].image, x, y, t.sizeFinal, t.sizeFinal, null);
 
             // Incrementa la columna (col) para pasar a la siguiente posición horizontal.
             col++;
 
             // Actualiza la coordenada X para la siguiente posición horizontal.
-            x += TeisPanel.sizeFinal;
+            x += t.sizeFinal;
 
             // Si se llega al final de la fila actual (col == TeisPanel.maxScreenColumnas),
             // reinicia la columna (col) y la coordenada X, e incrementa la fila (fil)
             // para pasar a la siguiente fila.
-            if (col == TeisPanel.maxScreenColumnas) {
+            if (col == t.maxScreenColumnas) {
                 col = 0;
                 x = 0;
                 fil++;
-                y += TeisPanel.sizeFinal;
+                y += t.sizeFinal;
             }
         }
     }

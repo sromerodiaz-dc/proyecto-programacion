@@ -1,7 +1,7 @@
 package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
-import GAME.FX.TeisPanel;
+import GAME.GAME.TeisPanel;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -18,10 +18,17 @@ public class Player extends Entity{
     TeisPanel teisPanel;
     KeyManager keyManager;
 
+    public final int screenX;
+    public final int screenY;
+
     // Constructor
     public Player (TeisPanel t, KeyManager k) {
         this.teisPanel = t;
         this.keyManager = k;
+
+        screenX = teisPanel.screenWidth/2 - (teisPanel.sizeFinal/2);
+        screenY = teisPanel.screenHeight/2 - (teisPanel.sizeFinal/2);
+
         // Inicializa valores por defecto
         setValoresPorDefecto();
         getPlayerImage();
@@ -32,8 +39,8 @@ public class Player extends Entity{
      * Metodo que define el estado inicial del jugador
      * */
     public void setValoresPorDefecto() {
-        x = 100;
-        y = 100;
+        worldX = teisPanel.sizeFinal * 15;
+        worldY = teisPanel.sizeFinal * 15;
         speed = 5;
         sentido = '0';
     }

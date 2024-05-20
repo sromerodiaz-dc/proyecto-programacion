@@ -1,6 +1,7 @@
-package GAME.FX;
+package GAME.GAME;
 
 import GAME.ENTITY.Player;
+import GAME.FX.KeyManager;
 import GAME.GPHICS.PiezaManager;
 
 import javax.swing.*;
@@ -17,16 +18,24 @@ public class TeisPanel extends JPanel implements Runnable{
     //Resolucion
     private static final int ResolucionPorDefecto = 16; // 16x16 (el más común)
     private static final int EscaladoPorDefecto = 3; // 3x16 (el más comun)
-    public static final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
+    public final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
 
     //Propiedades pantalla
-    public static final int maxScreenColumnas = 18;
-    public static final int maxScreenFilas = 12;
+    public final int maxScreenColumnas = 18;
+    public final int maxScreenFilas = 12;
+
     //Ancho y alto (uso valores mínimos por facilidad)
-    public static final int screenWidth = sizeFinal * maxScreenColumnas;
-    public static final int screenHeight =  sizeFinal * maxScreenFilas;
+    public final int screenWidth = sizeFinal * maxScreenColumnas;
+    public final int screenHeight =  sizeFinal * maxScreenFilas;
+
     // FPS
     final int fps = 30;
+
+    // CONFIGURACIÓN DEL MAPA
+    public final int maxWorldCol = 50;
+    public final int maxWorldRow = 50;
+    public final int worldWidth = sizeFinal * maxWorldCol;
+    public final int worldHeight = sizeFinal * maxWorldRow;
 
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
@@ -34,11 +43,13 @@ public class TeisPanel extends JPanel implements Runnable{
     // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
     KeyManager key = new KeyManager();
 
-    // Instancia de la clase PLAYER
-    Player player = new Player(this, key);
-
     // Implementacion de backgrounds y mecanicas de colision
-    PiezaManager piezaM = new PiezaManager();
+    PiezaManager piezaM = new PiezaManager(this);
+
+    // GameModel y Game Controller
+    private GameModel model;
+    private GameController controller;
+
 
     // Constructor
     public TeisPanel() {
@@ -47,6 +58,10 @@ public class TeisPanel extends JPanel implements Runnable{
         setDoubleBuffered(true);
         addKeyListener(key);
         setFocusable(true);
+
+        // Inicializa el modelo y el controlador
+        this.model = new GameModel(this,key);
+        this.controller = new GameController(model,piezaM);
     }
 
     /** Metodo que inicializa un "Thread"
@@ -121,7 +136,11 @@ public class TeisPanel extends JPanel implements Runnable{
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void update() {
-        player.actualiza();
+        // Actualiza el estado del jugador
+        model.getPlayer().actualiza();
+
+        // Actualiza el estado del juego en el controlador
+        controller.update();
     }
     /**
      * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.
@@ -133,15 +152,15 @@ public class TeisPanel extends JPanel implements Runnable{
      * */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        // Como el juego es en 2D, instanciaré la clase Graphics2D (extension de Graphics) para tener un control más sofisticado sobre la geometría, coordenadas, colores y textos.
-        // Es como usar GridBagLayout en vez de BorderLayout.
-        Graphics2D g2 = (Graphics2D)g;
+
+        Graphics2D g2 = (Graphics2D) g;
 
         // Dibuja el fondo
-        piezaM.pinta(g2);
+        controller.getPiezaManager().pinta(g2);
 
-        // Ahora este metodo se encuentra directamente en la clase Entity.
-        player.pinta(g2);
+        // Dibuja el jugador
+        model.getPlayer().pinta(g2,this);
+
         g2.dispose();
     }
 }

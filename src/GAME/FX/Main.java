@@ -8,7 +8,7 @@ import GAME.GUI.ventana;
  * Clase GAME.FX.Main se encarga de lanzar el programa
  * */
 public class Main {
-    public static void main(String[] args) {
+    public static void main() {
         new ventana();
     }
 }

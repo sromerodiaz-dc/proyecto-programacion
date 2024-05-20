@@ -17,8 +17,6 @@ public class GridPanel extends JPanel {
      * Lista de paneles cuadrados en el panel de cuadrícula.
      */
     private static List<Celda> celdas;
-    Celda celda;
-    ImageIcon sprite;
     /**
      * Crea un nuevo panel de cuadrícula con el número de filas y columnas especificadas.
      *

@@ -71,20 +71,4 @@ public class CeldaVacia extends JPanel {
     public void setImageIconLocal(ImageIcon imageIcon,int width, int height) {
         imageLabel.setIcon(Celda.escaladoImage(imageIcon,width,height));
     }
-
-    public int getWidthLocal(){
-        for (CeldaVacia celda : VacioPanel.celdaVacias) {
-            if (celda == this)
-                return celda.getWidth();
-        }
-        return 1;
-    }
-
-    public int getHeightLocal(){
-        for (CeldaVacia celda : VacioPanel.celdaVacias) {
-            if (celda == this)
-                return celda.getHeight();
-        }
-        return 1;
-    }
 }

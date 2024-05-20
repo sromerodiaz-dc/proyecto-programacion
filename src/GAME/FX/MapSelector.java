@@ -60,7 +60,7 @@ public class MapSelector {
      *
      * @return un arreglo de archivos de mapas
      */
-    private File[] getFiles() {
+    public File[] getFiles() {
         // Crea un objeto File para la carpeta "Assets/maps"
         File mapsFolder = new File("Assets/maps");
 

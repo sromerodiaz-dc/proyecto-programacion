@@ -1,6 +1,6 @@
 package GAME.GUI;
 
-import GAME.FX.TeisPanel;
+import GAME.GAME.TeisPanel;
 import javax.swing.*;
 
 /**

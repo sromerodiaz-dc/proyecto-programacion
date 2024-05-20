@@ -1,7 +1,7 @@
 package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
-import GAME.FX.TeisPanel;
+import GAME.GAME.TeisPanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,8 +16,8 @@ import java.awt.image.BufferedImage;
  * */
 public class Entity {
     // Atributos
-
     public int x,y,speed;
+    public int worldX, worldY;
 
     /**
     * BufferedImage en Java es una clase que representa una imagen digital en memoria. Proporciona un búfer de píxeles
@@ -58,16 +58,16 @@ public class Entity {
         if (e.up || e.down || e.left || e.right) {
             stopNum = 0;
             if (e.up) {
-                y -= speed;
+                worldY -= speed;
                 sentido = 'w';
             } else if (e.down) {
-                y += speed;
+                worldY += speed;
                 sentido = 's';
             } else if (e.left) {
-                x -= speed;
+                worldX -= speed;
                 sentido = 'a';
             } else {
-                x += speed;
+                worldX += speed;
                 sentido = 'd';
             }
             /*
@@ -106,7 +106,7 @@ public class Entity {
      * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
      * cambia el sprite empleado por otro nuevo.
      */
-    public void pinta(Graphics2D g2){
+    public void pinta(Graphics2D g2, TeisPanel teis){
         // Este código asigna la imagen de sprite adecuada a la variable 'image'
         // en función de la dirección actual ('sentido') y el número de sprite activo ('spriteNum').
 
@@ -151,6 +151,6 @@ public class Entity {
         }
         // Dibuja la imagen con IMAGE en la posicion por defecto (100, 100) con los valores por defecto de
         // resolucion 16x16 y su respectivo escalado "sizeFinal")
-        g2.drawImage(image,x,y,TeisPanel.sizeFinal,TeisPanel.sizeFinal,null);
+        g2.drawImage(image,x,y,teis.sizeFinal,teis.sizeFinal,null);
     }
 }
