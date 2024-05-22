@@ -2,6 +2,8 @@ package GAME.GAME;
 
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
+import GAME.FX.MapSelector;
+import GAME.FX.MapSize;
 import GAME.GPHICS.PiezaManager;
 
 import javax.swing.*;
@@ -32,27 +34,36 @@ public class TeisPanel extends JPanel implements Runnable{
     final int fps = 30;
 
     // CONFIGURACIÓN DEL MAPA
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
-    public final int worldWidth = sizeFinal * maxWorldCol;
-    public final int worldHeight = sizeFinal * maxWorldRow;
+    public final int maxWorldCol;
+    public final int maxWorldRow;
+    public final int worldWidth;
+    public final int worldHeight;
 
     // Implementación tiempo (RUNNABLE)
     Thread teisThread;
 
-    // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
-    KeyManager key = new KeyManager();
-
-    // Implementacion de backgrounds y mecanicas de colision
-    PiezaManager piezaM = new PiezaManager(this);
-
     // GameModel y Game Controller
-    private GameModel model;
-    private GameController controller;
-
+    public final Player model;
+    private final GameController controller;
 
     // Constructor
     public TeisPanel() {
+        // Selector de mapa
+        MapSelector mapSelector = new MapSelector();
+        MapSize datos = mapSelector.getMapSize();
+
+        // Propiedades del mapa seleccionado
+        maxWorldRow = datos.maxRow;
+        maxWorldCol = datos.maxCol;
+        worldWidth = sizeFinal * maxWorldCol;
+        worldHeight = sizeFinal * maxWorldRow;
+
+        // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
+        KeyManager key = new KeyManager();
+
+        // Implementacion de backgrounds y mecanicas de colision
+        PiezaManager piezaM = new PiezaManager(this, datos.fileName);
+
         setPreferredSize(new Dimension(screenWidth,screenHeight));
         setBackground(Color.black);
         setDoubleBuffered(true);
@@ -60,7 +71,7 @@ public class TeisPanel extends JPanel implements Runnable{
         setFocusable(true);
 
         // Inicializa el modelo y el controlador
-        this.model = new GameModel(this,key);
+        this.model = new Player(this,key);
         this.controller = new GameController(model,piezaM);
     }
 
@@ -137,7 +148,7 @@ public class TeisPanel extends JPanel implements Runnable{
      * */
     public void update() {
         // Actualiza el estado del jugador
-        model.getPlayer().actualiza();
+        model.actualiza();
 
         // Actualiza el estado del juego en el controlador
         controller.update();
@@ -159,7 +170,7 @@ public class TeisPanel extends JPanel implements Runnable{
         controller.getPiezaManager().pinta(g2);
 
         // Dibuja el jugador
-        model.getPlayer().pinta(g2,this);
+        model.pinta(g2,this,model.screenX, model.screenY);
 
         g2.dispose();
     }
