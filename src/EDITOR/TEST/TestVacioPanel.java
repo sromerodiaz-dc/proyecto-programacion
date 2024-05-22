@@ -11,7 +11,7 @@ class TestVacioPanel {
     @Test
     public void testIniciarComponente() {
         // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10);
+        VacioPanel vacioPanel = new VacioPanel(10, 10, new JLabel());
 
         // Test the iniciarComponente method
         assertEquals(10, vacioPanel.getComponentCount());
@@ -28,7 +28,7 @@ class TestVacioPanel {
     @Test
     public void testGetFormato() {
         // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10);
+        VacioPanel vacioPanel = new VacioPanel(10, 10, new JLabel());
 
         // Test the getFormato method
         ImageIcon[][] format = vacioPanel.getFormato();
