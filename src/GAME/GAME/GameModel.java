@@ -4,7 +4,7 @@ import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 
 public class GameModel {
-    private Player player;
+    private final Player player;
 
     public GameModel(TeisPanel t, KeyManager k) {
         player = new Player(t, k);
