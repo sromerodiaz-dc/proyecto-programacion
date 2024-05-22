@@ -281,7 +281,12 @@ correspondiente sprite de fondo.
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
 
-### IDEAS para los NPCs
+### Implementación de Sprites hechos con Pixel Studio
+
+Falta por desarrollar esta parte...
+Se han ido anotando todo
+
+### IDEAS para los NPCs e Easter Eggs
 
 Meter personajes tanto ficticios como historicos de manera aleatoria.
 Ejemplo:
@@ -310,6 +315,3 @@ Ejemplos:
 - "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
   financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"
 
-### Implementación de Sprites hechos con Pixel Studio
-
-Falta por desarrollar esta parte...
