@@ -4,6 +4,8 @@ import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -39,9 +41,9 @@ public class Player extends Entity{
      * Metodo que define el estado inicial del jugador
      * */
     public void setValoresPorDefecto() {
-        worldX = teisPanel.sizeFinal * 15;
-        worldY = teisPanel.sizeFinal * 15;
-        speed = 5;
+        worldX = teisPanel.sizeFinal * 2;
+        worldY = teisPanel.sizeFinal * 2;
+        speed = 4;
         sentido = '0';
     }
 
@@ -73,4 +75,6 @@ public class Player extends Entity{
     public void actualiza(){
         move(keyManager);
     }
+
+
 }

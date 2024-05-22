@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  * */
 public class Entity {
     // Atributos
-    public int x,y,speed;
+    public int speed;
     public int worldX, worldY;
 
     /**
@@ -31,14 +31,13 @@ public class Entity {
      * El contador que controla que estés quieto es stopNum
      */
     public int spriteCounter = 0;
+    public int stopCounter = 0;
     public int spriteNum = 1;
-    public int stopNum;
 
     /**
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido;
-
 
     // METODOS
 
@@ -56,7 +55,7 @@ public class Entity {
          * Si no ha sido presionada ninguna tecla en el momento entonces stopNum incrementa.
         */
         if (e.up || e.down || e.left || e.right) {
-            stopNum = 0;
+            stopCounter = 0;
             if (e.up) {
                 worldY -= speed;
                 sentido = 'w';
@@ -77,7 +76,7 @@ public class Entity {
              * */
             spriteCounter++;
             // Cada 10 frames el spriteNum varía
-            if (spriteCounter > 8) {
+            if (spriteCounter > 10) {
                 if (spriteNum == 1){
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
@@ -89,15 +88,15 @@ public class Entity {
             }
         } else {
             sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
-            stopNum++;
+            stopCounter++;
         }
-        if (stopNum > 15) {
+        if (stopCounter > 15) {
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
                 spriteNum = 1;
             }
-            stopNum = 0;
+            stopCounter = 0;
         }
     }
 
@@ -106,10 +105,9 @@ public class Entity {
      * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
      * cambia el sprite empleado por otro nuevo.
      */
-    public void pinta(Graphics2D g2, TeisPanel teis){
+    public void pinta(Graphics2D g2, TeisPanel teis,int screenX, int screenY){
         // Este código asigna la imagen de sprite adecuada a la variable 'image'
         // en función de la dirección actual ('sentido') y el número de sprite activo ('spriteNum').
-
         BufferedImage image = null; // Inicializa la variable de imagen a null
 
         switch (sentido) {
@@ -151,6 +149,6 @@ public class Entity {
         }
         // Dibuja la imagen con IMAGE en la posicion por defecto (100, 100) con los valores por defecto de
         // resolucion 16x16 y su respectivo escalado "sizeFinal")
-        g2.drawImage(image,x,y,teis.sizeFinal,teis.sizeFinal,null);
+        g2.drawImage(image,screenX,screenY,teis.sizeFinal,teis.sizeFinal,null);
     }
 }
