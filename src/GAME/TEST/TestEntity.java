@@ -16,7 +16,7 @@ class TestEntity {
         Entity entity = new Entity();
         KeyManager keyManager = new KeyManager();
         keyManager.left = true;
-        entity.move(keyManager,new TeisPanel(), new Player(new TeisPanel(), new KeyManager()));
+        entity.move(keyManager);
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);
         Assertions.assertEquals(entity.sentido, 'a');
     }
@@ -26,6 +26,6 @@ class TestEntity {
         Player player = new Player(new TeisPanel(), new KeyManager());
         TeisPanel teis = new TeisPanel();
         Graphics2D g2 = null;
-        player.pinta(g2, teis,1,1);
+        player.pinta(g2, teis);
     }
 }
