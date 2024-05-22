@@ -309,18 +309,7 @@ Ejemplos:
 - "bonito movil, eso está roto eh"
 - "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
   financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"
-  =======
+
 ### Implementación de Sprites hechos con Pixel Studio
 
 Falta por desarrollar esta parte...
-
-
-_El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
-
-_Estos son los **sprites** creados:_
-
-![moveGif](./images/muestraSprites.gif)
-
-_Este es el resultado de su **implementación**:_
-
-![moveGif](./images/moveTemprano.gif)
