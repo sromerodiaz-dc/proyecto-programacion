@@ -2,13 +2,19 @@
 
 - [Introducción](#notas-de-desarrollo)
 - [Registro por semanas](#registro-semanal)
-- - [Semana 1](#semana-del-06052024)
-    - [Game Loop](#qué-es-un-game-loop)
-    - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
-    - [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
-- - [Semana 2](#semana-del-13052024)
-- - [Semana 3](#semana-del-20052024)
-- - [Semana 4](#semana-del-27052024)
+1. [Semana 1](#semana-del-06052024) 
+   1. [Game Loop](#qué-es-un-game-loop)
+   2. [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
+   3. [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
+2. [Semana 2](#semana-del-13052024)
+   1. [Editor de mapa](#editor-de-mapas-con-sprites)
+   2. [Mejoras generales](#mejoras-generales)
+   3. [Interpretador de mapa](#interpretador-de-mapa)
+3. [Semana 3](#semana-del-20052024)
+   1. [Desarrollo de centrado de cámara](#desarrollo-de-centrado-de-cámara)
+   2. [Implementación de nuevos sprites](#implementación-de-nuevos-sprites)
+   3. [Colisiones y diálogos](#implementacion-de-colisiones-y-dialogos)
+4. [Semana 4](#semana-del-27052024)
 
 # Notas de desarrollo
 
@@ -161,7 +167,7 @@ El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más r
 y luego hacer repaint, este valor se ve modificado todas las veces que el ordenador **es capaz de llamar a la función por segundo**.
 Lo que haré para solucionar esto es ``CAPEARLO`` a _60 frames por segundo o menos_
 
-### Definiendo el GameLoop a 24 fps...
+### Definiendo el GameLoop a 30 fps...
 El tiempo de ejecución es necesario capearlo para tener una sensación de fluidez y tener control sobre como se ejecutan los movimientos del juego.
 Al buscar información sobre esto encontré un método popular sobre el **Game Loop llamado Delta Iterator**:
 ````java
@@ -184,7 +190,7 @@ public void run() {
         lastTime = currentTime; // Actualiza el tiempo del frame anterior con el tiempo actual
 
         if (delta >= 1) { // Si el delta time es mayor o igual a 1 (un frame completo)
-            actualiza(); // Llama al método `actualiza()` para actualizar el estado del juego
+            update(); // Llama al método `actualiza()` para actualizar el estado del juego
             repaint(); // Solicita que el componente se repinte (actualice su visualización)
             delta--; // Resta 1 al delta time para que no se acumule en el siguiente frame
             espera ++; // Incrementa el contador de frames
@@ -198,11 +204,9 @@ public void run() {
     }
 }
 ````
-
-
 _El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
 
-_Estos son los **sprites** creados:_
+Estos son los **sprites** creados:
 
 ![moveGif](images/muestraSprites.gif)
 
@@ -213,18 +217,85 @@ _Este es el resultado de su **implementación**:_
 ### Animación mejorada
 
 Metodo move() de la clase GAME.ENTITY
-Nueva implementación: 1 sprite cada 10 frames
+Nueva implementación: 1 sprite cada 8 frames
 -Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
 -Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
+
+Dentro de TeisPanel:
+````java
+public void update() {
+        // Actualiza el estado del jugador
+        model.getPlayer().actualiza();
+
+        // Actualiza el estado del juego en el controlador
+        controller.update();
+    }
+````
+Dentro de Player *(es llamado por GameModel)*:
+````java
+public void move(KeyManager e) {
+    /*
+     * Este condicional comprueba que una tecla haya sido presionada para inicializar el stopNum a 0 o no.
+     * Si sí que es presionado, se inicializa en 0 y no suma ningun valor a stopNum,
+     * una vez hace eso pasa a comprobar que tecla ha sido presionada y actua en consecuencia.
+     * Si no ha sido presionada ninguna tecla en el momento entonces stopNum incrementa.
+    */
+    if (e.up || e.down || e.left || e.right) {
+        stopNum = 0;
+        if (e.up) {
+            worldY -= speed;
+            sentido = 'w';
+        } else if (e.down) {
+            worldY += speed;
+            sentido = 's';
+        } else if (e.left) {
+            worldX -= speed;
+            sentido = 'a';
+        } else {
+            worldX += speed;
+            sentido = 'd';
+        }
+        /*
+         * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
+         * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
+         * de movimiento.
+         * */
+        spriteCounter++;
+        // Cada 10 frames el spriteNum varía
+        if (spriteCounter > 8) {
+            if (spriteNum == 1){
+                spriteNum = 2;
+            } else if (spriteNum == 2) {
+                spriteNum = 1;
+            }
+            // Cada 10 frames los contadores son reseteados para que no incrementen al infinito y haya un control
+            // sobre las animaciones a lo largo del tiempo de juego.
+            spriteCounter = 0;
+        }
+    } else {
+        sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
+        stopNum++;
+    }
+    if (stopNum > 15) {
+        if (spriteNum == 1){
+            spriteNum = 2;
+        } else if (spriteNum == 2) {
+            spriteNum = 1;
+        }
+        stopNum = 0;
+    }
+}
+````
 
 ### Implementación de Sprites hechos con Pixel Studio
 
 He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
-y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imagenes interesantes logradas
+y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imágenes interesantes logradas
 con un programa llamado Pixel Studio.
+1. ![suelos](Assets/background/alcantarilla.png) 
+2. ![suelos](Assets/background/sueloEstandarPlaza.png)
 
 ## Semana del 13/05/2024
-
 Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
 
 - *Crear un editor de mapas*
@@ -235,6 +306,10 @@ Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores
 ### Editor de mapas con sprites
 
 El editor funciona de la siguiente manera:
+
+1. Un panel sobre el que pintar el mapa de cada nivel.
+2. Un panel de sprites seleccionables.
+3. Dos botones: uno de guardado y otro de generación de fondo.
 
 ![moveGif](images/editorInicio.gif)
 
@@ -258,7 +333,6 @@ Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen fa
 
 ![moveGif](images/editorCorresp.gif)
 
-
 ### Mejoras generales
 
 Ahora al iniciar el juego podrás seleccionar el mapa que quieres cargar y, además, las animaciones se han mejorado.
@@ -267,24 +341,73 @@ Ahora hay dos Sprites de movimiento, proximamente añadiré otros dos y el movim
 **Ejemplo mapa de prueba:**
 
 ![moveGif](images/iniciarGame.gif)
-
-
 ### Interpretador de mapa
-
 Para que el código pueda interpretar la matriz de números y traducirla a un mapa de Sprites hace uso del archivo generado
 anteriormente por el Editor de Mapas llamado ``c_assets``.
 El código realiza un leido de todas las filas y columnas del archivo y lo carga asignando a cada espacio su
 correspondiente sprite de fondo.
 
-### Implementacion de colisiones y dialogos
+**Está es la lógica detrás del leído de c_assets.txt y map.txt**
+````java
+public void loadMap(String mapName) {
+        InputStream is;
+        BufferedReader br;
+        try {
+            // Intenta obtener un InputStream para el archivo del mapa utilizando el classpath.
+            is = getClass().getClassLoader().getResourceAsStream(mapName);
+            if (is != null) {
+                // Encuentra el archivo del mapa, procede a leerlo.
+                br = new BufferedReader(new InputStreamReader(is));
+
+                // Variables para controlar la columna (col) y la fila (fil) en el mapa.
+                int col = 0, fil = 0;
+
+                // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
+                while (col < t.maxScreenColumnas && fil < t.maxScreenFilas) {
+
+                    String linea = br.readLine();
+                    // Bucle por cada elemento (separado por espacios) en la línea actual.
+                    while (col < t.maxScreenColumnas) {
+                        String[] mapID = linea.split(" ");
+                        // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
+                        int map = Integer.parseInt(mapID[col]);
+                        // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
+                        mapaPiezaNum[col][fil] = map;
+                        col++;
+                    }
+
+                    // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
+                    if (col == t.maxScreenColumnas) {
+                        col = 0;
+                        fil++;
+                    }
+                }
+                // Cierra el BufferedReader para liberar recursos.
+                br.close();
+            } else {
+                // No se encontró el archivo del mapa.
+                System.out.println("Error: ¡No se encontró el archivo del mapa '" + mapName + "'!");
+            }
+        } catch (IOException e) {
+            // Maneja cualquier IOException que pueda ocurrir durante la lectura del archivo.
+            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
+            e.printStackTrace(); // Opcional: Imprime la traza de pila para depuración.
+        }
+    }
+````
+## Semana del 20/05/2024
+
+### Desarrollo de centrado de cámara
+
+### Implementación de nuevos Sprites
+
+Falta por desarrollar esta parte...
+
+### Implementación de colisiones y diálogos
 
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
 
-### Implementación de Sprites hechos con Pixel Studio
-
-Falta por desarrollar esta parte...
-Se han ido anotando todo
 
 ### IDEAS para los NPCs e Easter Eggs
 
