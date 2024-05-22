@@ -1,6 +1,7 @@
 package GAME.TEST;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
 import org.junit.jupiter.api.Assertions;
@@ -22,9 +23,9 @@ class TestEntity {
 
     @Test
     void pinta() {
-        Entity entity = new Entity();
+        Player player = new Player(new TeisPanel(), new KeyManager());
         TeisPanel teis = new TeisPanel();
         Graphics2D g2 = null;
-        entity.pinta(g2, teis);
+        player.pinta(g2, teis);
     }
 }
