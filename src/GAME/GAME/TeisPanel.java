@@ -1,13 +1,10 @@
 package GAME.GAME;
 
-import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 import GAME.FX.MapSelector;
 import GAME.FX.MapSize;
 import GAME.GPHICS.PiezaManager;
-import GAME.OBJECT.ObjectGame;
-import GAME.OBJECT.ObjectPlacer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,13 +44,7 @@ public class TeisPanel extends JPanel implements Runnable{
 
     // GameModel y Game Controller
     public final Player model;
-    public final GameController controller;
-
-    // Controlador de colisiones
-    public CollisionCheck collisionCheck;
-    public ObjectPlacer placer = new ObjectPlacer(this);
-    // Manejo de objetos
-    public ObjectGame obj[] = new ObjectGame[10];
+    private final GameController controller;
 
     // Constructor
     public TeisPanel() {
@@ -80,14 +71,8 @@ public class TeisPanel extends JPanel implements Runnable{
         setFocusable(true);
 
         // Inicializa el modelo y el controlador
-        model = new Player(this,key);
-        controller = new GameController(model,piezaM);
-        // Inicializa el controlador de colisiones
-        collisionCheck = new CollisionCheck(this);
-    }
-
-    public void setUpItems() {
-        placer.setObject();
+        this.model = new Player(this,key);
+        this.controller = new GameController(model,piezaM);
     }
 
     /** Metodo que inicializa un "Thread"
@@ -183,12 +168,6 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Dibuja el fondo
         controller.getPiezaManager().pinta(g2);
-
-        // Objetos / Items
-        for (int i = 0;i < obj.length;i++) {
-            if (obj[i] != null)
-                obj[i].draw(g2,this);
-        }
 
         // Dibuja el jugador
         model.pinta(g2,this,model.screenX, model.screenY);

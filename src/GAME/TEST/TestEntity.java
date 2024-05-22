@@ -26,6 +26,6 @@ class TestEntity {
         Player player = new Player(new TeisPanel(), new KeyManager());
         TeisPanel teis = new TeisPanel();
         Graphics2D g2 = null;
-        player.pinta(g2, teis);
+        player.pinta(g2, teis,1,1);
     }
 }
