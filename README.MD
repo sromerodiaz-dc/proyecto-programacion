@@ -377,7 +377,7 @@ public void loadMap(String mapName) {
                     }
 
                     // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
-                    if (col == t.maxScreenColumnas) {
+                    if (col == t.maxWorldCol) {
                         col = 0;
                         fil++;
                     }
@@ -398,6 +398,77 @@ public void loadMap(String mapName) {
 ## Semana del 20/05/2024
 
 ### Desarrollo de centrado de cámara
+
+Para desarrollar el centrado de cámara es necesario desarrollar **2 tipos de coordenadas**:
+1. Coordenadas relativas al jugador
+2. Coordenadas absolutas del mapa
+
+En la anterior versión del código las columnas y las filas del mundo eran predeterminadas a 50 por lo que si un mundo
+tenía menos o más entonces esta no sería renderizable por lo que he implementado una nueva clase:
+````java
+public class MapSize {
+    public int maxCol;
+    public int maxRow;
+    public String fileName;
+
+    public MapSize(int maxCol, int maxRow, String fileName) {
+        this.maxCol = maxCol;
+        this.maxRow = maxRow;
+        this.fileName = fileName;
+    }
+}
+````
+Esta clase es empleado por un metodo de la clase **MapSelector** que devuelve una clase de tipo MapSize:
+````java
+public MapSize getMapSize() {
+        String fileName = selectMap(); // Recoge el nombre del mapa llamando a otro metodo de la clase MapSelector
+        InputStream is;
+        BufferedReader br;
+        int maxCol = 0, maxRow = 0;
+        try {
+            is = getClass().getClassLoader().getResourceAsStream(fileName);
+            if (is != null) {
+                br = new BufferedReader(new InputStreamReader(is));
+
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    String[] mapID = linea.split(" ");
+                    if (mapID.length > maxCol) {
+                        maxCol = mapID.length;
+                    }
+                    maxRow++;
+                }
+
+                br.close();
+            }
+        } catch (IOException e) {
+            //
+        }
+
+        return new MapSize(maxCol, maxRow, fileName);
+    }
+````
+Este método es empleado en TeisPanel para determinar de primeras las dimensiones del mapa y pasar esos datos
+a las subclases que emplean estos datos de ``largo y ancho``:
+````java
+// Constructor
+    public TeisPanel() {
+        // Selector de mapa
+        MapSelector mapSelector = new MapSelector();
+        MapSize datos = mapSelector.getMapSize();
+        
+        // Propiedades del mapa seleccionado
+        maxWorldRow = datos.maxRow;
+        maxWorldCol = datos.maxCol;
+        worldWidth = sizeFinal * maxWorldCol;
+        worldHeight = sizeFinal * maxWorldRow;
+        // ...
+        // Implementacion de backgrounds y mecanicas de colision
+        PiezaManager piezaM = new PiezaManager(this, datos.fileName);
+        //...
+        this.controller = new GameController(model,piezaM);
+    }
+````
 
 ### Implementación de nuevos Sprites
 
