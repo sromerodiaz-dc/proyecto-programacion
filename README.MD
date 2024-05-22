@@ -6,6 +6,9 @@
     - [Game Loop](#qué-es-un-game-loop)
     - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
     - [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
+- - [Semana 2](#semana-del-13052024)
+- - [Semana 3](#semana-del-20052024)
+- - [Semana 4](#semana-del-27052024)
 
 # Notas de desarrollo
 
@@ -28,7 +31,7 @@ Para esto emplearé ***assets ya creados*** y, de ser necesario, modificaré los
 
 Mi idea es intentar desarrollar un juego en el que se pueda interactuar con varios objetos y personajes de un mismo mapa, dependiendo de como vaya el desarrollo,
 implementaré otro mapa más allá del básico de inicio.
-Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gallegos y de Vigo. 
+Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gallegos y de Vigo.
 
 # Registro semanal
 ## Semana del 06/05/2024
@@ -49,7 +52,11 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
         setDoubleBuffered(true);
     }
 ```
+
 **Resultado:**
+![teis](images/panelHecho.png)
+
+
 ### Por otra parte...
 
 1. Se crea un ***Issue*** y se relaciona al `PROJECT` creado en GitHub.
@@ -61,7 +68,7 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
 En desarrollo de `videojuegos` se conoce al "bucle principal del juego" o "Game Loop" como algo **increiblemente** fundamental:
 Imagina que estás jugando a tu videojuego favorito. `Corres, saltas, esquivas enemigos y completas misiones.` Bien, pues *todo* esto está siendo posible gracias al _**Game Loop**_.
 
-Pues volviendo a la pregunta principal, **qué es un Game Loop?** 
+Pues volviendo a la pregunta principal, **qué es un Game Loop?**
 Es la _base_ de la jugabilidad de un videojuego. Se trata de un ciclo que se repite constantemente mientras el juego está en funcionamiento, ``controlando el desarrollo de la partida y la experiencia del jugador``.
 
 ### ¿Cómo funciona el bucle de juego?
@@ -103,6 +110,8 @@ public void paintComponent(Graphics g){
 ```
 
 **Resultado:**
+![teis](images/componente2DCreado.png)
+
 
 ### Desarrollo de `Key Inputs`
 
@@ -129,6 +138,7 @@ public void keyPressed(KeyEvent e) {
 ```
 
 
+Al implementar este codigo en una clase llamada **GAME.FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
 ````java
 private void move() {
         if (key.up) {
@@ -143,7 +153,9 @@ private void move() {
     }
 ````
 
+Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la GUI.ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
 este cuadrado parece _"desaparecer"_.
+
 La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
 y luego hacer repaint, este valor se ve modificado todas las veces que el ordenador **es capaz de llamar a la función por segundo**.
@@ -186,3 +198,129 @@ public void run() {
     }
 }
 ````
+
+
+_El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
+
+_Estos son los **sprites** creados:_
+
+![moveGif](images/muestraSprites.gif)
+
+_Este es el resultado de su **implementación**:_
+
+![moveGif](images/moveTemprano.gif)
+
+### Animación mejorada
+
+Metodo move() de la clase GAME.ENTITY
+Nueva implementación: 1 sprite cada 10 frames
+-Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
+-Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
+
+### Implementación de Sprites hechos con Pixel Studio
+
+He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
+y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imagenes interesantes logradas
+con un programa llamado Pixel Studio.
+
+## Semana del 13/05/2024
+
+Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
+
+- *Crear un editor de mapas*
+- - *Que el editor pudiese guardar mapas*
+- - *Que te permitiese decidir el tamaño del mapa*
+- - *Que te permitiese cambiar el fondo por el sprite que quisieras*
+
+### Editor de mapas con sprites
+
+El editor funciona de la siguiente manera:
+
+![moveGif](images/editorInicio.gif)
+
+Como se ve en este **gif** el editor pide al usuario que introduzca un número de ``filas y columnas``.
+Luego, pasa a la *interfaz gráfica* como tal en la que hay 2 paneles y dos botones.
+- ``El panel grande:`` ***sirve como plantilla para el mapa y es completamente modificable.***
+- ``El panel de abajo:`` ***sirve como seleccionador de sprites.***
+- Y, por último, los *botones* sirven para guardar el mapa o para poner un fondo con el bloque que esté seleccionado.
+
+
+**Ejemplo de guardado:**
+
+![moveGif](images/editorGuardar.gif)
+
+
+Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen falta dos cosas:
+- _Que los sprites sean traducidos a un numero asignado._
+- _Generar el diccionario que dirá que numero corresponde a que cosa._
+
+**Ejemplo de diccionario:**
+
+![moveGif](images/editorCorresp.gif)
+
+
+### Mejoras generales
+
+Ahora al iniciar el juego podrás seleccionar el mapa que quieres cargar y, además, las animaciones se han mejorado.
+Ahora hay dos Sprites de movimiento, proximamente añadiré otros dos y el movimiento se verá mucho más fluido.
+
+**Ejemplo mapa de prueba:**
+
+![moveGif](images/iniciarGame.gif)
+
+
+### Interpretador de mapa
+
+Para que el código pueda interpretar la matriz de números y traducirla a un mapa de Sprites hace uso del archivo generado
+anteriormente por el Editor de Mapas llamado ``c_assets``.
+El código realiza un leido de todas las filas y columnas del archivo y lo carga asignando a cada espacio su
+correspondiente sprite de fondo.
+
+### Implementacion de colisiones y dialogos
+
+Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
+personaje mediante inventario o demás cosas.
+
+### IDEAS para los NPCs
+
+Meter personajes tanto ficticios como historicos de manera aleatoria.
+Ejemplo:
+-  ==> Hitler feliz con un cuadro
+- Dexter
+- Eric Cartman
+-  ==> La parca de Bill y Mandy
+-  ==> Finn y Jake
+- Shrek
+- The Beatles
+-  ==> Pedro Sánchez: entregandote una carta a la ciudadania
+- Shakira
+- Nietzsche
+-  ==> Jesus Gil
+
+Para los dialogos de los NPCs:
+Ejemplos:
+- "coña?"
+- "fumo?"
+- "no creo, no"
+- "Devoré"
+- "tiene' un segarro?"
+- "hermano, tienes hora?"
+- "Y yo, no me causa rubor decirlo, soy un hombre profundamente enamorado de mi mujer que vive con impotencia el fango que sobre ella esparcen día sí y día también"
+- "bonito movil, eso está roto eh"
+- "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
+  financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"
+  =======
+### Implementación de Sprites hechos con Pixel Studio
+
+Falta por desarrollar esta parte...
+
+
+_El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
+
+_Estos son los **sprites** creados:_
+
+![moveGif](./images/muestraSprites.gif)
+
+_Este es el resultado de su **implementación**:_
+
+![moveGif](./images/moveTemprano.gif)
