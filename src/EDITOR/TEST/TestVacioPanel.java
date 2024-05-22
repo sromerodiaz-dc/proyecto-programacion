@@ -1,8 +1,6 @@
-/*
 package EDITOR.TEST;
 
 import EDITOR.EMPTYMAP.VacioPanel;
-import EDITOR.GUI.GUI;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
@@ -13,7 +11,7 @@ class TestVacioPanel {
     @Test
     public void testIniciarComponente() {
         // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10, new GUI());
+        VacioPanel vacioPanel = new VacioPanel(10, 10);
 
         // Test the iniciarComponente method
         assertEquals(10, vacioPanel.getComponentCount());
@@ -30,7 +28,7 @@ class TestVacioPanel {
     @Test
     public void testGetFormato() {
         // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10, new GUI());
+        VacioPanel vacioPanel = new VacioPanel(10, 10);
 
         // Test the getFormato method
         ImageIcon[][] format = vacioPanel.getFormato();
@@ -42,4 +40,4 @@ class TestVacioPanel {
             }
         }
     }
-}*/
+}

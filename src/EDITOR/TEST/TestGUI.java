@@ -1,11 +1,8 @@
-/*
 package EDITOR.TEST;
 
-import EDITOR.EMPTYMAP.VacioPanel;
 import EDITOR.GUI.GUI;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -44,7 +41,7 @@ class TestGUI {
         GUI gui = new GUI();
 
         // Llama al método createBotonGuardar()
-        gui.createBotonGuardar(new VacioPanel(1,1,new GUI()));
+        gui.createBotonGuardar();
 
         // Simula el clic en el botón guardar
         gui.botonGuardar.doClick();
@@ -61,9 +58,9 @@ class TestGUI {
         GUI gui = new GUI();
 
         // Llama al método createBotonFondo()
-        gui.createBotonFondo(new VacioPanel(1,1, new GUI()));
+        gui.createBotonFondo();
 
         // Comprueba que el botón fondo se haya creado correctamente
         assertNotNull(gui.getBotonFondo());
     }
-}*/
+}

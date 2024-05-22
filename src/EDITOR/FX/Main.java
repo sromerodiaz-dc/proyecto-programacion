@@ -2,6 +2,8 @@ package EDITOR.FX;
 
 import EDITOR.GUI.GUI;
 
+import java.io.IOException;
+
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
@@ -10,7 +12,7 @@ import EDITOR.GUI.GUI;
  * Esta clase define la ejecucion del programa
  * */
 public class Main {
-    public static void main() {
+    public static void main() throws IOException {
         new  GUI();
     }
 }
