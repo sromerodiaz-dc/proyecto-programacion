@@ -10,7 +10,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class KeyManagerTest {
+public class TestKeyManager {
 
     private KeyManager keyManager;
 

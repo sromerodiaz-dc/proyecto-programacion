@@ -39,7 +39,7 @@ public class GUI extends JFrame {
     private static final int MENU_MUNDO_ALTO = 730;*/
 
     private final SpriteLoader spriteLoader = new SpriteLoader();
-    private final SpriteUtils spriteUtils = new SpriteUtils();
+    public final SpriteUtils spriteUtils = new SpriteUtils();
     public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
 
     public GUI() throws IOException {
@@ -72,17 +72,17 @@ public class GUI extends JFrame {
     private JPanel menuIzquierda;
     private JPanel menuInferior;
     //private JPanel menuMundo;
-    private JButton botonGuardar;
+    public JButton botonGuardar;
     private JButton botonFondo;
 
-    private void createMenuIzquierda() {
+    public void createMenuIzquierda() {
         int[] nums = spriteUtils.numRowsCols();
         menuIzquierda = new VacioPanel(nums[0], nums[1]);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
 
-    private void createMenuInferior() {
+    public void createMenuInferior() {
         menuInferior = new GridPanel(4, 12, sprites);
         menuInferior.setBackground(Color.BLACK);
         menuInferior.setBounds(MENU_INFERIOR_X, MENU_INFERIOR_Y, MENU_INFERIOR_ANCHO, MENU_INFERIOR_ALTO);
@@ -94,7 +94,7 @@ public class GUI extends JFrame {
         menuMundo.setBounds(MENU_MUNDO_X, MENU_MUNDO_Y, MENU_MUNDO_ANCHO, MENU_MUNDO_ALTO);
     }*/
 
-    private void createBotonGuardar() {
+    public void createBotonGuardar() {
         botonGuardar = new JButton("Guardar");
         botonGuardar.setBackground(Color.BLACK);
         botonGuardar.setForeground(Color.WHITE);
@@ -113,7 +113,7 @@ public class GUI extends JFrame {
         spriteUtils.generateSpriteMap(sprites, VacioPanel.formato);
     }
 
-    private void createBotonFondo() {
+    public void createBotonFondo() {
         botonFondo = new JButton("Fondo");
         botonFondo.setBackground(Color.BLACK);
         botonFondo.setForeground(Color.WHITE);
@@ -127,12 +127,25 @@ public class GUI extends JFrame {
         });
     }
 
-    private void fondoSprite() throws IOException {
+    public void fondoSprite() throws IOException {
         for (ImageIcon[] row : VacioPanel.formato) {
             Arrays.fill(row, imageIcon);
         }
         for (CeldaVacia celda : VacioPanel.celdaVacias) {
             celda.setImageIconLocal(imageIcon,celda.getWidth()-10,celda.getHeight()-10);
         }
+    }
+
+    // TEST
+    public Object getMenuIzquierda() {
+        return menuIzquierda;
+    }
+
+    public Object getMenuInferior() {
+        return menuInferior;
+    }
+
+    public Object getBotonFondo() {
+        return botonFondo;
     }
 }

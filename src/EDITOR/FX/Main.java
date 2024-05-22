@@ -12,7 +12,7 @@ import java.io.IOException;
  * Esta clase define la ejecucion del programa
  * */
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main() throws IOException {
         new  GUI();
     }
 }

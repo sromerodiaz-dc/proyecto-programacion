@@ -10,7 +10,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PiezaManagerTest {
+public class TestPiezaManager {
 
     private PiezaManager piezaManager;
     TeisPanel teisPanel;

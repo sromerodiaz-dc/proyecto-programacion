@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 
-class EntityTest {
+class TestEntity {
 
     @Test
     void testMoveLeft() {
