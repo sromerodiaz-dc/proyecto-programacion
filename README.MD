@@ -6,7 +6,6 @@
     - [Game Loop](#qué-es-un-game-loop)
     - [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
     - [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
-    
 
 # Notas de desarrollo
 
@@ -51,8 +50,6 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
     }
 ```
 **Resultado:**
-![teis](./images/panelHecho.png)
-
 ### Por otra parte...
 
 1. Se crea un ***Issue*** y se relaciona al `PROJECT` creado en GitHub.
@@ -106,7 +103,6 @@ public void paintComponent(Graphics g){
 ```
 
 **Resultado:**
-![teis](./images/componente2DCreado.png)
 
 ### Desarrollo de `Key Inputs`
 
@@ -132,7 +128,7 @@ public void keyPressed(KeyEvent e) {
 }
 ```
 
-Al implementar este codigo en una clase llamada **FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
+
 ````java
 private void move() {
         if (key.up) {
@@ -147,7 +143,6 @@ private void move() {
     }
 ````
 
-Lo que sucede es algo interesante y es que al iniciar la _app_ aparece la GUI.ventana en negro con el cuadrado blanco como se espera, ``PERO`` al presionar **WASD**,
 este cuadrado parece _"desaparecer"_.
 La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
@@ -191,17 +186,3 @@ public void run() {
     }
 }
 ````
-### Implementación de Sprites hechos con Pixel Studio
-
-Falta por desarrollar esta parte...
-
-
-_El resultado de asociar movimiento con sprites (aún en fase temprana) es el siguiente..._
-
-_Estos son los **sprites** creados:_
-
-![moveGif](./images/muestraSprites.gif)
-
-_Este es el resultado de su **implementación**:_
-
-![moveGif](./images/moveTemprano.gif)
