@@ -160,8 +160,10 @@ public class PiezaManager {
             int screenX = worldX - playerWorldX + playerScreenX;
             int screenY = worldY - playerWorldY + playerScreenY;
 
-            if (worldX > playerWorldX - playerScreenX && worldX < playerWorldX + playerScreenX &&
-                worldY > playerWorldY - playerScreenY && worldY < playerWorldY + playerScreenY) {
+            // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
+            // empleando las coordenadas absolutas y las relativas al jugador.
+            if (worldX + t.sizeFinal > playerWorldX - playerScreenX && worldX - t.sizeFinal < playerWorldX + playerScreenX &&
+                worldY + t.sizeFinal > playerWorldY - playerScreenY && worldY - t.sizeFinal < playerWorldY + playerScreenY) {
                 // Dibuja la imagen de la Pieza correspondiente en la posición actual.
                 g2.drawImage(pieza[id].image, screenX, screenY, t.sizeFinal, t.sizeFinal, null);
             }
