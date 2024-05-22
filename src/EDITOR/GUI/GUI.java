@@ -47,7 +47,7 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
-    private void initGUI() throws IOException {
+    private void initGUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("TileEditor");
         setSize(ANCHO, ALTO);
