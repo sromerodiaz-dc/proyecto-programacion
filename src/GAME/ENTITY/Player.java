@@ -89,4 +89,6 @@ public class Player extends Entity{
     public void actualiza(){
         move(keyManager,teisPanel,this);
     }
+
+
 }
