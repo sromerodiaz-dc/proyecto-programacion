@@ -14,14 +14,14 @@ import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
  * Proyecto: Teis
  * */
 public class VacioPanel extends JPanel {
-    public static ImageIcon[][] formato;
-    public static ArrayList<CeldaVacia> celdaVacias;
+    public ImageIcon[][] formato;
+    public ArrayList<CeldaVacia> celdaVacias;
 
-    public VacioPanel(int rows, int cols) {
-        iniciarComponente(rows, cols);
+    public VacioPanel(int rows, int cols, JLabel pincel) {
+        iniciarComponente(rows, cols, pincel);
     }
 
-    public void iniciarComponente(int rows, int cols) {
+    public void iniciarComponente(int rows, int cols, JLabel pincel) {
         formato = new ImageIcon[rows][cols];
         celdaVacias = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class VacioPanel extends JPanel {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                CeldaVacia celda = new CeldaVacia(row, col,this);
+                CeldaVacia celda = new CeldaVacia(row, col,this, pincel);
                 formato[row][col] = (imageIcon == null) ? null : imageIcon;
                 celdaVacias.add(celda);
                 constraints.gridx = col;

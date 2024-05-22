@@ -17,14 +17,14 @@ class TestCeldaVacia {
     @Test
     public void testSetImageIcon() throws IOException {
         // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10);
+        VacioPanel vacioPanel = new VacioPanel(10, 10, new JLabel());
 
         // Create an ImageIcon instance
         BufferedImage image = ImageIO.read(new File("background/alcantarilla.png"));
         ImageIcon imageIcon = new ImageIcon(image);
 
         // Create a CeldaVacia instance
-        CeldaVacia celdaVacia = new CeldaVacia(0, 0, vacioPanel);
+        CeldaVacia celdaVacia = new CeldaVacia(0, 0, vacioPanel,new JLabel());
 
         // Test the setImageIcon method
         celdaVacia.setImageIcon(imageIcon, 0, 0, 50, 50);
@@ -41,7 +41,7 @@ class TestCeldaVacia {
         ImageIcon imageIcon = new ImageIcon(image);
 
         // Create a CeldaVacia instance
-        CeldaVacia celdaVacia = new CeldaVacia(0, 0, new VacioPanel(10, 10));
+        CeldaVacia celdaVacia = new CeldaVacia(0, 0, new VacioPanel(10, 10, new JLabel()),new JLabel());
 
         // Test the setImageIconLocal method
         celdaVacia.setImageIconLocal(imageIcon, 50, 50);

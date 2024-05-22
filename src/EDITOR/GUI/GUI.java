@@ -2,16 +2,17 @@ package EDITOR.GUI;
 
 import EDITOR.EMPTYMAP.CeldaVacia;
 import EDITOR.EMPTYMAP.VacioPanel;
+import EDITOR.FX.KeyboardListener;
 import EDITOR.FX.SpriteLoader;
 import EDITOR.FX.SpriteUtils;
 import EDITOR.SELECTPANEL.Celda;
 import EDITOR.SELECTPANEL.GridPanel;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import javax.swing.*;
 
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
@@ -42,7 +43,7 @@ public class GUI extends JFrame {
     public final SpriteUtils spriteUtils = new SpriteUtils();
     public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
 
-    public GUI() throws IOException {
+    public GUI() {
         initGUI();
         setVisible(true);
     }
@@ -57,27 +58,32 @@ public class GUI extends JFrame {
         createMenuIzquierda();
         createMenuInferior();
         //createMenuMundo();
-        createBotonGuardar();
-        createBotonFondo();
+        createBotonGuardar(menuIzquierda);
+        createBotonFondo(menuIzquierda);
+        createLabelPincel();
 
         getContentPane().setBackground(Color.BLACK);
         setLayout(null);
         add(menuIzquierda);
         add(menuInferior);
-        //add(menuMundo);
+        add(labelPanel);
         add(botonGuardar);
         add(botonFondo);
     }
 
-    private JPanel menuIzquierda;
+    private VacioPanel menuIzquierda;
     private JPanel menuInferior;
+    private JPanel labelPanel;
     //private JPanel menuMundo;
+    public JLabel labelPincel;
+    public JLabel isPressed;
     public JButton botonGuardar;
     private JButton botonFondo;
 
+
     public void createMenuIzquierda() {
         int[] nums = spriteUtils.numRowsCols();
-        menuIzquierda = new VacioPanel(nums[0], nums[1]);
+        menuIzquierda = new VacioPanel(nums[0], nums[1], labelPincel);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
@@ -88,20 +94,34 @@ public class GUI extends JFrame {
         menuInferior.setBounds(MENU_INFERIOR_X, MENU_INFERIOR_Y, MENU_INFERIOR_ANCHO, MENU_INFERIOR_ALTO);
     }
 
-    /*private void createMenuMundo() {
-        menuMundo = new WorldMap();
-        menuMundo.setBackground(Color.BLACK);
-        menuMundo.setBounds(MENU_MUNDO_X, MENU_MUNDO_Y, MENU_MUNDO_ANCHO, MENU_MUNDO_ALTO);
-    }*/
+    public void createLabelPincel() {
+        labelPanel = new JPanel();
+        labelPanel.setBackground(Color.BLACK);
 
-    public void createBotonGuardar() {
+        labelPincel = new JLabel();
+        labelPincel.setHorizontalAlignment(JLabel.CENTER);
+        labelPincel.setVerticalAlignment(JLabel.CENTER);
+        labelPincel.setIcon(Celda.escaladoImage(new ImageIcon("images/pincelBoton.png"),64,64));
+        createFText();
+        labelPanel.setBounds(ANCHO - 520, ALTO - 950, 300, 150);
+
+        labelPanel.add(isPressed);
+        labelPanel.add(labelPincel);
+    }
+
+    public void createFText() {
+        isPressed = new JLabel();
+        isPressed.setText("Presiona \"F\" para activar el modo pincel");
+    }
+
+    public void createBotonGuardar(VacioPanel panel) {
         botonGuardar = new JButton("Guardar");
         botonGuardar.setBackground(Color.BLACK);
         botonGuardar.setForeground(Color.WHITE);
         botonGuardar.setBounds(ANCHO - 620, ALTO - 500, 100, 50);
-        botonGuardar.addActionListener(e -> {
+        botonGuardar.addActionListener((ActionEvent _) -> {
             try {
-                botonGuardarClickeado();
+                botonGuardarClickeado(panel);
                 System.exit(0);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -109,30 +129,30 @@ public class GUI extends JFrame {
         });
     }
 
-    private void botonGuardarClickeado() throws IOException {
-        spriteUtils.generateSpriteMap(sprites, VacioPanel.formato);
+    private void botonGuardarClickeado(VacioPanel panel) throws IOException {
+        spriteUtils.generateSpriteMap(sprites, panel.formato);
     }
 
-    public void createBotonFondo() {
+    public void createBotonFondo(VacioPanel panel) {
         botonFondo = new JButton("Fondo");
         botonFondo.setBackground(Color.BLACK);
         botonFondo.setForeground(Color.WHITE);
         botonFondo.setBounds(ANCHO - 620, ALTO - 550, 100, 50);
         botonFondo.addActionListener(e -> {
             try {
-                fondoSprite();
+                fondoSprite(panel);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
     }
 
-    public void fondoSprite() throws IOException {
-        for (ImageIcon[] row : VacioPanel.formato) {
+    public void fondoSprite(VacioPanel panel) throws IOException {
+        for (ImageIcon[] row : panel.formato) {
             Arrays.fill(row, imageIcon);
         }
-        for (CeldaVacia celda : VacioPanel.celdaVacias) {
-            celda.setImageIconLocal(imageIcon,celda.getWidth()-10,celda.getHeight()-10);
+        for (CeldaVacia celda : panel.celdaVacias) {
+            celda.setImageIconLocal(imageIcon,celda.getWidth()-15,celda.getHeight()-15);
         }
     }
 
