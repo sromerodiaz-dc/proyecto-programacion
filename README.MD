@@ -15,7 +15,7 @@
    2. [Implementación de nuevos sprites](#implementación-de-nuevos-sprites)
    3. [Colisiones y diálogos](#implementacion-de-colisiones-y-dialogos)
 4. [Semana 4](#semana-del-27052024)
-
+___
 # Notas de desarrollo
 
 ### En este documento estaré escribiendo los avances y registrandolos en una linea de tiempo
@@ -32,13 +32,13 @@ Dicho esto, los objetivos de estas primeras semanas de desarrollo será investig
 7. Implementar una base de datos
 ```
 Para esto emplearé ***assets ya creados*** y, de ser necesario, modificaré los assets para adaptarlos a mi juego.
-
+___
 ### ¿De qué va el juego (Teis)?
 
 Mi idea es intentar desarrollar un juego en el que se pueda interactuar con varios objetos y personajes de un mismo mapa, dependiendo de como vaya el desarrollo,
 implementaré otro mapa más allá del básico de inicio.
 Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gallegos y de Vigo.
-
+___
 # Registro semanal
 ## Semana del 06/05/2024
 
@@ -62,13 +62,13 @@ Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gal
 **Resultado:**
 ![teis](images/panelHecho.png)
 
-
+___
 ### Por otra parte...
 
 1. Se crea un ***Issue*** y se relaciona al `PROJECT` creado en GitHub.
 2. Se crea un *WebHook* con *Discord* para automatizar las actualizaciones del codigo como Logs a un canal de discord.
 3. Se comienza a implementar el **Game Loop** en la rama *``ISSUE-1``*.
-
+___
 ### ¿Qué es un Game Loop?
 
 En desarrollo de `videojuegos` se conoce al "bucle principal del juego" o "Game Loop" como algo **increiblemente** fundamental:
@@ -76,7 +76,7 @@ Imagina que estás jugando a tu videojuego favorito. `Corres, saltas, esquivas e
 
 Pues volviendo a la pregunta principal, **qué es un Game Loop?**
 Es la _base_ de la jugabilidad de un videojuego. Se trata de un ciclo que se repite constantemente mientras el juego está en funcionamiento, ``controlando el desarrollo de la partida y la experiencia del jugador``.
-
+___
 ### ¿Cómo funciona el bucle de juego?
 | Fases del bucle | Descripción                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                        
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -85,7 +85,7 @@ Es la _base_ de la jugabilidad de un videojuego. Se trata de un ciclo que se rep
 | ACTUALIZACIÓN   | Con base en las entradas procesadas, *el bucle actualiza el estado del juego*, incluyendo la posición de los objetos, la física del entorno y las variables del jugador ``(salud, munición, etc.)``.                                                                                 |
 | RENDERIZADO     | Finalizando el ciclo, el bucle genera la `imagen` que se muestra en la pantalla, reflejando los cambios realizados en la etapa de actualización.                                                                                                                                     |
 | REPETICIÓN      | El ciclo *vuelve* a comenzar, ``capturando nuevas entradas del jugador, procesándolas y actualizando el juego en consecuencia``. Este proceso se repite **incesantemente** mientras el juego esté en ejecución lo que consigue una experiencia fluida e interactiva para el jugador. |
-
+___
 ### ¿Por qué es importante el bucle de juego?
 
 Es fundamental por varias razones:
@@ -99,7 +99,7 @@ Es fundamental por varias razones:
 *Optimización**: El bucle permite optimizar el rendimiento del juego, ejecutando solo las tareas necesarias en cada ciclo y evitando procesos innecesarios.
 
 En resumen, ``el bucle de juego`` es el corazón de un *videojuego, controlando la jugabilidad, la fluidez y la experiencia general del jugador*. Es un concepto fundamental para el diseño y desarrollo de videojuegos exitosos.
-
+___
 #### Definición de Game Loop:
 Este metodo es llamado por el _GameLoop_ despues de otro llamado *"Actualiza"* (aun por definir).
 **Instancia** un objeto para uso de gráficos de dos dimensiones y luego, a modo de prueba, ***defino un espacio en blanco situado
@@ -118,7 +118,7 @@ public void paintComponent(Graphics g){
 **Resultado:**
 ![teis](images/componente2DCreado.png)
 
-
+___
 ### Desarrollo de `Key Inputs`
 
 Para desarrollar un _videojuego_ es **necesario** una serie de ``controles``. Esto es lo que estaré desarrollando en este apartado.
@@ -142,8 +142,6 @@ public void keyPressed(KeyEvent e) {
     }
 }
 ```
-
-
 Al implementar este codigo en una clase llamada **GAME.FX.KeyManager** y luego programar que pasa al presionar cada tecla en el metodo **MOVE()**
 ````java
 private void move() {
@@ -166,7 +164,7 @@ La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
 y luego hacer repaint, este valor se ve modificado todas las veces que el ordenador **es capaz de llamar a la función por segundo**.
 Lo que haré para solucionar esto es ``CAPEARLO`` a _60 frames por segundo o menos_
-
+___
 ### Definiendo el GameLoop a 30 fps...
 El tiempo de ejecución es necesario capearlo para tener una sensación de fluidez y tener control sobre como se ejecutan los movimientos del juego.
 Al buscar información sobre esto encontré un método popular sobre el **Game Loop llamado Delta Iterator**:
@@ -213,9 +211,8 @@ Estos son los **sprites** creados:
 _Este es el resultado de su **implementación**:_
 
 ![moveGif](images/moveTemprano.gif)
-
+___
 ### Animación mejorada
-
 Metodo move() de la clase GAME.ENTITY
 Nueva implementación: 1 sprite cada 8 frames
 -Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
@@ -286,25 +283,23 @@ public void move(KeyManager e) {
     }
 }
 ````
-
+___
 ### Implementación de Sprites hechos con Pixel Studio
-
 He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
 y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imágenes interesantes logradas
 con un programa llamado Pixel Studio.
 1. ![suelos](Assets/background/alcantarilla.png) 
 2. ![suelos](Assets/background/sueloEstandarPlaza.png)
-
+___
 ## Semana del 13/05/2024
 Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
 
 - *Crear un editor de mapas*
-- - *Que el editor pudiese guardar mapas*
-- - *Que te permitiese decidir el tamaño del mapa*
-- - *Que te permitiese cambiar el fondo por el sprite que quisieras*
-
+  - *Que el editor pudiese guardar mapas*
+  - *Que te permitiese decidir el tamaño del mapa*
+  - *Que te permitiese cambiar el fondo por el sprite que quisieras*
+___
 ### Editor de mapas con sprites
-
 El editor funciona de la siguiente manera:
 
 1. Un panel sobre el que pintar el mapa de cada nivel.
@@ -332,15 +327,15 @@ Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen fa
 **Ejemplo de diccionario:**
 
 ![moveGif](images/editorCorresp.gif)
-
+___
 ### Mejoras generales
-
 Ahora al iniciar el juego podrás seleccionar el mapa que quieres cargar y, además, las animaciones se han mejorado.
 Ahora hay dos Sprites de movimiento, proximamente añadiré otros dos y el movimiento se verá mucho más fluido.
 
 **Ejemplo mapa de prueba:**
 
 ![moveGif](images/iniciarGame.gif)
+___
 ### Interpretador de mapa
 Para que el código pueda interpretar la matriz de números y traducirla a un mapa de Sprites hace uso del archivo generado
 anteriormente por el Editor de Mapas llamado ``c_assets``.
@@ -395,10 +390,9 @@ public void loadMap(String mapName) {
         }
     }
 ````
+___
 ## Semana del 20/05/2024
-
 ### Desarrollo de centrado de cámara
-
 Para desarrollar el centrado de cámara es necesario desarrollar **2 tipos de coordenadas**:
 1. Coordenadas relativas al jugador
 2. Coordenadas absolutas del mapa
@@ -469,27 +463,125 @@ a las subclases que emplean estos datos de ``largo y ancho``:
         this.controller = new GameController(model,piezaM);
     }
 ````
-
+___
 ### Varios arreglos realizados:
-
 - Posicionamiento de los paneles de editor de mapa
 - Nueva implementación: modo pincel
 - JavaDoc y comentarios desarrollados
 - Más securización y encapsulación del código
 - Realizado código más limpio
 - Arreglado bug de botones con el modo pincel
-
+___
 ### Implementación de nuevos Sprites
-
 Falta por desarrollar esta parte...
-
+___
 ### Implementación de colisiones y diálogos
-
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
 
-### IDEAS para los NPCs e Easter Eggs
+El parametro que define si es colisionable o no una ``pieza`` será ``colision``. Para saber si se puede colisionar o no
+un asset se distinguirá de la siguiente manera:
 
+1. El diccionario **"c_assets.txt"** contendrá un asterisco al comienzo de aquellos sprites colisionables.
+Ejemplo:
+````text
+19: Assets\background\sueloEstandarPlaza.png
+*20: Assets\background\table01.png
+````
+
+Para realizar esto he decidido *cambiar* 2 cosas:
+1. Ahora se generarán ***2 archivos*** de correspondencia de Sprites en vez de uno...
+   1. ``c_assets.txt``
+   2. ``c_assets_user.txt`` => Creado para mayor legibilidad de las correspondencias para el programador.
+2. El filtrado de los Strings ya *no* se realizará desde ***PiezaManager*** sino desde el propio Editor de Mapas.
+
+Esta es la clase SpriteLoader de EditorMap:
+````java
+public List<ImageIcon> loadSprites(String folderPath) {
+   //...
+   
+   // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
+   File file = new File("Assets/maps_correspondencia/c_assets_user.txt");
+   if (!file.exists()) {
+      try {
+         file.createNewFile();
+         // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
+         writeToFile(sprites, imagePaths, file);
+      } catch (IOException e) {
+         // Ignorar la excepción
+      }
+   }
+   
+   file = new File("Assets/maps_correspondencia/c_assets.txt");
+   if (!file.exists()) {
+      try {
+         file.createNewFile();
+         // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
+         writeToFileReal(sprites, imagePaths, file);
+      } catch (IOException e) {
+         // Ignorar la excepción
+      }
+   }
+   
+   //...
+   return sprites;
+}
+````
+
+Por otro lado, ``PiezaManager`` ya no realiza ningún filtrado de String:
+````java
+public String[] getImagePaths() {
+   ArrayList<String> imagePaths = new ArrayList<>();
+   
+   try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+          imagePaths.add(line.trim());
+      }
+   } catch (Exception e) {
+      System.out.println(e.getMessage());
+   }
+   return imagePaths.toArray(new String[0]);
+}
+````
+Además, ``PiezaManager`` distingue entre ``Piezas`` colisionables y no colisionables gracias a una nueva implementación
+en el método ***getPiezaImage()***:
+````java
+public void getPiezaImage() {
+   try {
+      for (int i = 0; i < pieza.length; i++) {
+          System.out.println(imagePaths[i]);
+          if (imagePaths[i].startsWith("*")) {
+              imagePaths[i] = imagePaths[i].substring(1);
+              pieza[i] = new Pieza(true);
+          } else {
+              pieza[i] = new Pieza();
+          }
+          pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+      }
+   } catch (Exception e) {
+      System.out.println(e.getMessage());
+   }
+}
+````
+Cabe mencionar que estos asteriscos *DE MOMENTO* se ponen a mano al ``COMIENZO`` de aquellos sprites que tengan que 
+ser colisionables en el diccionario de correspondencia "c_assets.txt". 
+El método ``getPiezaImage()`` realiza una instanciación de Piezas colisionables pasando un boolean por parametro al
+constructor parametrizado de ``Pieza``:
+````java
+public class Pieza {
+   // Atributos
+   public BufferedImage image;
+   public boolean colision = false;
+   
+   public Pieza(boolean b) {
+     colision = b;
+   }
+   public Pieza(){}
+}
+````
+___
+### IDEAS para los NPCs e Easter Eggs
 Meter personajes tanto ficticios como historicos de manera aleatoria.
 Ejemplo:
 -  ==> Hitler feliz con un cuadro
