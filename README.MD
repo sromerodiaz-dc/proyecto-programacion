@@ -470,6 +470,15 @@ a las subclases que emplean estos datos de ``largo y ancho``:
     }
 ````
 
+### Varios arreglos realizados:
+
+- Posicionamiento de los paneles de editor de mapa
+- Nueva implementación: modo pincel
+- JavaDoc y comentarios desarrollados
+- Más securización y encapsulación del código
+- Realizado código más limpio
+- Arreglado bug de botones con el modo pincel
+
 ### Implementación de nuevos Sprites
 
 Falta por desarrollar esta parte...
@@ -478,7 +487,6 @@ Falta por desarrollar esta parte...
 
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
-
 
 ### IDEAS para los NPCs e Easter Eggs
 
