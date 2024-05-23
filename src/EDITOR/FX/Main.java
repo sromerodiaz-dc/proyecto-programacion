@@ -2,8 +2,6 @@ package EDITOR.FX;
 
 import EDITOR.GUI.GUI;
 
-import java.io.IOException;
-
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
