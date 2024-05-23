@@ -1,5 +1,7 @@
 package EDITOR.FX;
 
+import EDITOR.GUI.GUI;
+
 import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +14,8 @@ import java.io.IOException;
  * Proyecto: Teis
  */
 public class SpriteUtils {
+    public SpriteUtils(GUI gui){}
+    public SpriteUtils(){}
     /**
      * Genera un mapa de sprites escrito en un archivo de texto a modo de matriz de números.
      * Cada número corresponde a un sprite!
@@ -88,7 +92,7 @@ public class SpriteUtils {
      *
      * @return Un array de enteros con el número de filas y columnas.
      */
-    public int[] numRowsCols() {
+    public int[] numRowsCols(GUI gui) {
         int[] rowscols = new int[2];
 
         // Solicitar al usuario que introduzca el número de filas hasta que se introduzca un valor válido
@@ -107,6 +111,14 @@ public class SpriteUtils {
             }
         } while (rowscols[1] < 1 || rowscols[1] > 50);
 
+        if (rowscols[0]>30 && rowscols[1]>30){
+            gui.MENU_IZQUIERDA_X = 100;
+            gui.MENU_IZQUIERDA_ALTO = 800;
+            gui.MENU_IZQUIERDA_ANCHO = 1050;
+
+            gui.MENU_INFERIOR_X = 1150;
+            gui.MENU_INFERIOR_Y = 670;
+        }
         return rowscols;
     }
 }

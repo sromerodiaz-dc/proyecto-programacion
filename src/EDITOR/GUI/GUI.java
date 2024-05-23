@@ -27,12 +27,12 @@ public class GUI extends JFrame {
     // Propiedades de pantalla
     private static final int ANCHO = 1920;
     private static final int ALTO = 1080;
-    private static final int MENU_IZQUIERDA_X = 450;
-    private static final int MENU_IZQUIERDA_Y = 100;
-    private static final int MENU_IZQUIERDA_ANCHO = 830;
-    private static final int MENU_IZQUIERDA_ALTO = 600;
-    private static final int MENU_INFERIOR_X = 615;
-    private static final int MENU_INFERIOR_Y = 730;
+    public int MENU_IZQUIERDA_X = 450;
+    public int MENU_IZQUIERDA_Y = 100;
+    public int MENU_IZQUIERDA_ANCHO = 830;
+    public int MENU_IZQUIERDA_ALTO = 600;
+    public int MENU_INFERIOR_X = 615;
+    public int MENU_INFERIOR_Y = 730;
     private static final int MENU_INFERIOR_ANCHO = 534;
     private static final int MENU_INFERIOR_ALTO = 180;
 
@@ -69,7 +69,7 @@ public class GUI extends JFrame {
         sprites = loadSprites();
 
         // Crea ambos menús
-        createMenuIzquierda();
+        createMenuIzquierda(this);
         createMenuInferior();
         // Crea ambos botones
         createBotonGuardar(menuIzquierda);
@@ -98,8 +98,8 @@ public class GUI extends JFrame {
      * El número de filas y columnas es determinado por el usuario a través de un método llamado
      * desde 'spriteUtils.numRowsCols()'
      * */
-    public void createMenuIzquierda() {
-        int[] nums = spriteUtils.numRowsCols();
+    public void createMenuIzquierda(GUI gui) {
+        int[] nums = spriteUtils.numRowsCols(gui);
         menuIzquierda = new VacioPanel(nums[0], nums[1]);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
@@ -122,7 +122,7 @@ public class GUI extends JFrame {
         botonGuardar = new JButton("Guardar");
         botonGuardar.setBackground(Color.BLACK);
         botonGuardar.setForeground(Color.WHITE);
-        botonGuardar.setBounds(ANCHO - 620, ALTO - 500, 100, 50);
+        botonGuardar.setBounds(ANCHO - 455, ALTO - 770, 100, 50);
         botonGuardar.addActionListener((ActionEvent _) -> {
             try {
                 botonGuardarClickeado(panel); // LLamado al método de guardado
@@ -141,8 +141,8 @@ public class GUI extends JFrame {
         botonFondo = new JButton("Fondo");
         botonFondo.setBackground(Color.BLACK);
         botonFondo.setForeground(Color.WHITE);
-        botonFondo.setBounds(ANCHO - 620, ALTO - 550, 100, 50);
-        botonFondo.addActionListener(e -> {
+        botonFondo.setBounds(ANCHO - 585, ALTO - 770, 100, 50);
+        botonFondo.addActionListener(_ -> {
             try {
                 fondoSprite(panel);
             } catch (IOException ex) {
@@ -162,7 +162,7 @@ public class GUI extends JFrame {
         // Crea el panel
         labelPanel = new JPanel();
         labelPanel.setBackground(Color.BLACK);
-        labelPanel.setBounds(ANCHO - 520, ALTO - 950, 300, 150);
+        labelPanel.setBounds(ANCHO - 620, ALTO - 950, 300, 150);
 
         // Crea el JLabel que contendra el icono del pincel
         JLabel labelPincel = new JLabel();
@@ -210,6 +210,8 @@ public class GUI extends JFrame {
      * @throws IOException Lanza una excepción de tipo INPUT / OUTPUT
      * */
     public void fondoSprite(VacioPanel panel) throws IOException {
+        // Vuelve a darle el FOCUSABLE al panel contenedor #BugFixed
+        requestFocus();
         for (ImageIcon[] row : panel.formato) {
             Arrays.fill(row, imageIcon);
         }
