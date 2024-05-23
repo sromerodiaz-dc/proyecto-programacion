@@ -1,6 +1,5 @@
 package EDITOR.EMPTYMAP;
 
-import EDITOR.FX.KeyboardListener;
 import EDITOR.SELECTPANEL.Celda;
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,6 @@ public class CeldaVacia extends JPanel {
     public VacioPanel vacioPanel;
     /** El boton será modificado desde la GUI. */
     public boolean buttonSelected = false;
-    KeyboardListener keyboardListener = new KeyboardListener();
     /**
      * Constructs a new CeldaVacia with the given row and column indices.
      *
@@ -32,12 +30,8 @@ public class CeldaVacia extends JPanel {
      * @param col The column index of the CeldaVacia.
      * @param panel The VacioPanel that contains this CeldaVacia.
      */
-    public CeldaVacia(int row, int col, VacioPanel panel,  JLabel pincel) {
+    public CeldaVacia(int row, int col, VacioPanel panel) {
         this.vacioPanel = panel;
-
-        this.addKeyListener(keyboardListener);
-        setFocusable(true);
-        requestFocus();
 
         setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
@@ -49,18 +43,16 @@ public class CeldaVacia extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setImageIcon(imageIcon, row, col, getWidthLocal() - 15, getHeightLocal() - 15);
-                modoPincel(pincel);
             }
         });
 
-        if (buttonSelected){
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (buttonSelected)
                     setImageIcon(imageIcon, row, col, getWidthLocal() - 15, getHeightLocal() - 15);
-                }
-            });
-        }
+            }
+        });
     }
 
     public void setImageIcon(ImageIcon imageIcon, int row, int col,int width, int height) {
@@ -88,10 +80,4 @@ public class CeldaVacia extends JPanel {
     return 1;
     }
 
-    public void modoPincel(JLabel label) {
-        if (keyboardListener.isFPressed) {
-            label.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2,true));
-
-        } else label.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1,false));
-    }
 }
