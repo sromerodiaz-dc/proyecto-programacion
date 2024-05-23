@@ -1,5 +1,7 @@
 package EDITOR.EMPTYMAP;
 
+import EDITOR.GUI.GUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,11 +19,11 @@ public class VacioPanel extends JPanel {
     public ImageIcon[][] formato;
     public ArrayList<CeldaVacia> celdaVacias;
 
-    public VacioPanel(int rows, int cols, JLabel pincel) {
-        iniciarComponente(rows, cols, pincel);
+    public VacioPanel(int rows, int cols) {
+        iniciarComponente(rows, cols);
     }
 
-    public void iniciarComponente(int rows, int cols, JLabel pincel) {
+    public void iniciarComponente(int rows, int cols) {
         formato = new ImageIcon[rows][cols];
         celdaVacias = new ArrayList<>();
 
@@ -31,7 +33,7 @@ public class VacioPanel extends JPanel {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                CeldaVacia celda = new CeldaVacia(row, col,this, pincel);
+                CeldaVacia celda = new CeldaVacia(row, col,this);
                 formato[row][col] = (imageIcon == null) ? null : imageIcon;
                 celdaVacias.add(celda);
                 constraints.gridx = col;

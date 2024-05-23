@@ -1,23 +1,49 @@
 package EDITOR.FX;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import EDITOR.GUI.GUI;
 
-public class KeyboardListener extends KeyAdapter {
-    public boolean isFPressed = false;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class KeyboardListener implements KeyListener {
+    public boolean isFPressed = true;
+    public GUI gui;
+
+    public KeyboardListener (GUI gui) {
+        this.gui=gui;
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_F) {
             isFPressed = !isFPressed;
         }
+        if (isFPressed)
+            setLabelOff();
+        else setLabelOn();
     }
 
-    public boolean isFPressed() {
-        return isFPressed;
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 
-    public void setFPressed(boolean isFPressed) {
-        this.isFPressed = isFPressed;
+    public void setLabelOff(){
+        gui.setLabelOff();
+    }
+
+    public void setLabelOn(){
+        gui.setLabelOn();
     }
 }

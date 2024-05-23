@@ -10,7 +10,6 @@ import EDITOR.SELECTPANEL.GridPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import javax.swing.*;
@@ -42,6 +41,7 @@ public class GUI extends JFrame {
     private final SpriteLoader spriteLoader = new SpriteLoader();
     public final SpriteUtils spriteUtils = new SpriteUtils();
     public ImageIcon[] sprites = spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
+    KeyboardListener keyboardListener = new KeyboardListener(this);
 
     public GUI() {
         initGUI();
@@ -69,11 +69,15 @@ public class GUI extends JFrame {
         add(labelPanel);
         add(botonGuardar);
         add(botonFondo);
+
+        addKeyListener(keyboardListener);
+        setFocusable(true);
+        requestFocus();
     }
 
     private VacioPanel menuIzquierda;
     private JPanel menuInferior;
-    private JPanel labelPanel;
+    public JPanel labelPanel;
     //private JPanel menuMundo;
     public JLabel labelPincel;
     public JLabel isPressed;
@@ -83,7 +87,7 @@ public class GUI extends JFrame {
 
     public void createMenuIzquierda() {
         int[] nums = spriteUtils.numRowsCols();
-        menuIzquierda = new VacioPanel(nums[0], nums[1], labelPincel);
+        menuIzquierda = new VacioPanel(nums[0], nums[1]);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
@@ -102,11 +106,14 @@ public class GUI extends JFrame {
         labelPincel.setHorizontalAlignment(JLabel.CENTER);
         labelPincel.setVerticalAlignment(JLabel.CENTER);
         labelPincel.setIcon(Celda.escaladoImage(new ImageIcon("images/pincelBoton.png"),64,64));
+
         createFText();
         labelPanel.setBounds(ANCHO - 520, ALTO - 950, 300, 150);
 
         labelPanel.add(isPressed);
         labelPanel.add(labelPincel);
+
+        labelPanel.setBorder(BorderFactory.createLineBorder(Color.white, 1,false));
     }
 
     public void createFText() {
@@ -153,6 +160,20 @@ public class GUI extends JFrame {
         }
         for (CeldaVacia celda : panel.celdaVacias) {
             celda.setImageIconLocal(imageIcon,celda.getWidth()-15,celda.getHeight()-15);
+        }
+    }
+
+    public void setLabelOff(){
+        labelPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1,false));
+        for (CeldaVacia celdaVacia : menuIzquierda.celdaVacias) {
+            celdaVacia.buttonSelected = false;
+        }
+    }
+
+    public void setLabelOn(){
+        labelPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2,true));
+        for (CeldaVacia celdaVacia : menuIzquierda.celdaVacias) {
+            celdaVacia.buttonSelected = true;
         }
     }
 
