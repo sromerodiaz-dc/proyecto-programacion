@@ -1,13 +1,11 @@
 package GAME.GPHICS;
 
-import GAME.FX.MapSelector;
-import GAME.GAME.TeisPanel;
 
+import GAME.GAME.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -45,14 +43,20 @@ public class PiezaManager {
         loadMap();
     }
 
-
     /**
-     * Carga las imágenes de las Piezas predefinidas (pasto, muro, agua).
+     * Instancia un nuevo objeto Pieza que puede ser colisionable o no.
+     * Para saber si lo es o no lo es difirere entre los String que comienzan por asterisco y los que no.
      */
     public void getPiezaImage() {
         try {
-            for (int i = 0; i < pieza.length && i < imagePaths.length; i++) {
-                pieza[i] = new Pieza();
+            for (int i = 0; i < pieza.length; i++) {
+                System.out.println(imagePaths[i]);
+                if (imagePaths[i].startsWith("*")) {
+                    imagePaths[i] = imagePaths[i].substring(1);
+                    pieza[i] = new Pieza(true);
+                } else {
+                    pieza[i] = new Pieza();
+                }
                 pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
             }
         } catch (Exception e) {
@@ -66,8 +70,6 @@ public class PiezaManager {
         try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                line = line.replaceAll("^\\d+:\\s*Assets\\\\", "");
-                line = line.replaceAll("\\\\", "/");
                 imagePaths.add(line.trim());
             }
         } catch (Exception e) {
