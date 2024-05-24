@@ -20,6 +20,7 @@ public class ventana extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        teisPanel.setUpItems();
         teisPanel.startTeisThread();
     }
 }
