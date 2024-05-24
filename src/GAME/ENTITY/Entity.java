@@ -35,6 +35,12 @@ public class Entity {
     public int spriteNum = 1;
 
     /**
+     * Rectangulo que define el área de colisión del PJ
+     * */
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
+
+    /**
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido;
@@ -47,7 +53,7 @@ public class Entity {
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además controla los sprites por movimiento usados.
      */
-    public void move(KeyManager e) {
+    public void move(KeyManager e, TeisPanel teisPanel, Player player) {
         /*
          * Este condicional comprueba que una tecla haya sido presionada para inicializar el stopNum a 0 o no.
          * Si sí que es presionado, se inicializa en 0 y no suma ningun valor a stopNum,
@@ -57,18 +63,29 @@ public class Entity {
         if (e.up || e.down || e.left || e.right) {
             stopCounter = 0;
             if (e.up) {
-                worldY -= speed;
                 sentido = 'w';
             } else if (e.down) {
-                worldY += speed;
                 sentido = 's';
             } else if (e.left) {
-                worldX -= speed;
                 sentido = 'a';
             } else {
-                worldX += speed;
                 sentido = 'd';
             }
+
+            // Comprueba la colisión de la Pieza
+            collisionOn = false;
+            teisPanel.collisionCheck.checkPieza(player);
+
+            // !COLLISION == PLAYERMOVE
+            if (!collisionOn) {
+                switch (sentido) {
+                    case 'w': worldY -= speed; break;
+                    case 's': worldY += speed; break;
+                    case 'a': worldX -= speed; break;
+                    case 'd': worldX += speed; break;
+                }
+            }
+
             /*
              * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
              * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
@@ -76,7 +93,7 @@ public class Entity {
              * */
             spriteCounter++;
             // Cada 10 frames el spriteNum varía
-            if (spriteCounter > 10) {
+            if (spriteCounter > 15) {
                 if (spriteNum == 1){
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
@@ -90,7 +107,7 @@ public class Entity {
             sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
             stopCounter++;
         }
-        if (stopCounter > 15) {
+        if (stopCounter >30) {
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
