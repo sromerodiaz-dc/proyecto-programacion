@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  * */
 public class Entity {
     // Atributos
-    public int x,y,speed;
+    public int speed;
     public int worldX, worldY;
 
     /**
@@ -31,14 +31,20 @@ public class Entity {
      * El contador que controla que estés quieto es stopNum
      */
     public int spriteCounter = 0;
+    public int stopCounter = 0;
     public int spriteNum = 1;
-    public int stopNum;
+
+    /**
+     * Rectangulo que define el área de colisión del PJ
+     * */
+    public Rectangle solidArea;
+    public int defaultSolidAreaX, defaultSolidAreaY;
+    public boolean collisionOn = false;
 
     /**
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido;
-
 
     // METODOS
 
@@ -48,7 +54,7 @@ public class Entity {
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además controla los sprites por movimiento usados.
      */
-    public void move(KeyManager e) {
+    public void move(KeyManager e, TeisPanel teisPanel, Player player) {
         /*
          * Este condicional comprueba que una tecla haya sido presionada para inicializar el stopNum a 0 o no.
          * Si sí que es presionado, se inicializa en 0 y no suma ningun valor a stopNum,
@@ -56,20 +62,31 @@ public class Entity {
          * Si no ha sido presionada ninguna tecla en el momento entonces stopNum incrementa.
         */
         if (e.up || e.down || e.left || e.right) {
-            stopNum = 0;
+            stopCounter = 0;
             if (e.up) {
-                worldY -= speed;
                 sentido = 'w';
             } else if (e.down) {
-                worldY += speed;
                 sentido = 's';
             } else if (e.left) {
-                worldX -= speed;
                 sentido = 'a';
             } else {
-                worldX += speed;
                 sentido = 'd';
             }
+
+            // Comprueba la colisión de la Pieza
+            collisionOn = false;
+            teisPanel.collisionCheck.checkPieza(player);
+
+            // !COLLISION == PLAYERMOVE
+            if (!collisionOn) {
+                switch (sentido) {
+                    case 'w': worldY -= speed; break;
+                    case 's': worldY += speed; break;
+                    case 'a': worldX -= speed; break;
+                    case 'd': worldX += speed; break;
+                }
+            }
+
             /*
              * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
              * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
@@ -77,7 +94,7 @@ public class Entity {
              * */
             spriteCounter++;
             // Cada 10 frames el spriteNum varía
-            if (spriteCounter > 8) {
+            if (spriteCounter > 15) {
                 if (spriteNum == 1){
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
@@ -89,15 +106,15 @@ public class Entity {
             }
         } else {
             sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
-            stopNum++;
+            stopCounter++;
         }
-        if (stopNum > 15) {
+        if (stopCounter >30) {
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
                 spriteNum = 1;
             }
-            stopNum = 0;
+            stopCounter = 0;
         }
     }
 
@@ -106,10 +123,9 @@ public class Entity {
      * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
      * cambia el sprite empleado por otro nuevo.
      */
-    public void pinta(Graphics2D g2, TeisPanel teis){
+    public void pinta(Graphics2D g2, TeisPanel teis,int screenX, int screenY){
         // Este código asigna la imagen de sprite adecuada a la variable 'image'
         // en función de la dirección actual ('sentido') y el número de sprite activo ('spriteNum').
-
         BufferedImage image = null; // Inicializa la variable de imagen a null
 
         switch (sentido) {
@@ -151,6 +167,6 @@ public class Entity {
         }
         // Dibuja la imagen con IMAGE en la posicion por defecto (100, 100) con los valores por defecto de
         // resolucion 16x16 y su respectivo escalado "sizeFinal")
-        g2.drawImage(image,x,y,teis.sizeFinal,teis.sizeFinal,null);
+        g2.drawImage(image,screenX,screenY,teis.sizeFinal,teis.sizeFinal,null);
     }
 }

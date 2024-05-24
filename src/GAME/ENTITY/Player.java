@@ -4,6 +4,8 @@ import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -29,6 +31,20 @@ public class Player extends Entity{
         screenX = teisPanel.screenWidth/2 - (teisPanel.sizeFinal/2);
         screenY = teisPanel.screenHeight/2 - (teisPanel.sizeFinal/2);
 
+        // teisPanel.sizeFinal = 48
+        // Como quiero que el área de colision sea MENOR al del tamaño del PJ, reduzco los pixeles de alto y ancho
+        // además de la posición del propio Rectangle en (8,16), recordemos que en Java (0,0) es topLeftCorner.
+        // Así que poner unas coordenadas (8,16) quiere decir que el área colisionable comienza cerca del centro del PJ.
+
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
+        defaultSolidAreaX = solidArea.x;
+        defaultSolidAreaY = solidArea.y;
+
         // Inicializa valores por defecto
         setValoresPorDefecto();
         getPlayerImage();
@@ -39,9 +55,9 @@ public class Player extends Entity{
      * Metodo que define el estado inicial del jugador
      * */
     public void setValoresPorDefecto() {
-        worldX = teisPanel.sizeFinal * 15;
-        worldY = teisPanel.sizeFinal * 15;
-        speed = 5;
+        worldX = teisPanel.sizeFinal * 2;
+        worldY = teisPanel.sizeFinal * 2;
+        speed = 4;
         sentido = '0';
     }
 
@@ -71,6 +87,6 @@ public class Player extends Entity{
      * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
      * */
     public void actualiza(){
-        move(keyManager);
+        move(keyManager,teisPanel,this);
     }
 }

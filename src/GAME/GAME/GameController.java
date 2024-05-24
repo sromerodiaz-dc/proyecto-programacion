@@ -1,12 +1,13 @@
 package GAME.GAME;
 
+import GAME.ENTITY.Player;
 import GAME.GPHICS.PiezaManager;
 
 public class GameController {
-    private GameModel model;
+    private Player model;
     private PiezaManager piezaManager;
 
-    public GameController(GameModel model, PiezaManager piezaManager) {
+    public GameController(Player model, PiezaManager piezaManager) {
         this.model = model;
         this.piezaManager = piezaManager;
     }
@@ -17,6 +18,6 @@ public class GameController {
 
     public void update() {
         // Actualiza el estado del jugador
-        model.getPlayer().actualiza();
+        model.actualiza();
     }
 }

@@ -1,37 +1,37 @@
-0: Assets\background\alcantarilla.png
-1: Assets\background\earth.png
-2: Assets\background\floor01.png
-3: Assets\background\grass00.png
-4: Assets\background\grass01.png
-5: Assets\background\hut.png
-6: Assets\background\road00.png
-7: Assets\background\road01.png
-8: Assets\background\road02.png
-9: Assets\background\road03.png
-10: Assets\background\road04.png
-11: Assets\background\road05.png
-12: Assets\background\road06.png
-13: Assets\background\road07.png
-14: Assets\background\road08.png
-15: Assets\background\road09.png
-16: Assets\background\road10.png
-17: Assets\background\road11.png
-18: Assets\background\road12.png
-19: Assets\background\sueloEstandarPlaza.png
-20: Assets\background\table01.png
-21: Assets\background\tree.png
-22: Assets\background\wall.png
-23: Assets\background\water00.png
-24: Assets\background\water01.png
-25: Assets\background\water02.png
-26: Assets\background\water03.png
-27: Assets\background\water04.png
-28: Assets\background\water05.png
-29: Assets\background\water06.png
-30: Assets\background\water07.png
-31: Assets\background\water08.png
-32: Assets\background\water09.png
-33: Assets\background\water10.png
-34: Assets\background\water11.png
-35: Assets\background\water12.png
-36: Assets\background\water13.png
+background/alcantarilla.png
+background/earth.png
+background/floor01.png
+background/grass00.png
+background/grass01.png
+background/hut.png
+background/road00.png
+background/road01.png
+background/road02.png
+background/road03.png
+background/road04.png
+background/road05.png
+background/road06.png
+background/road07.png
+background/road08.png
+background/road09.png
+background/road10.png
+background/road11.png
+background/road12.png
+background/sueloEstandarPlaza.png
+*background/table01.png
+*background/tree.png
+*background/wall.png
+background/water00.png
+background/water01.png
+background/water02.png
+background/water03.png
+background/water04.png
+background/water05.png
+background/water06.png
+background/water07.png
+background/water08.png
+background/water09.png
+background/water10.png
+background/water11.png
+background/water12.png
+background/water13.png

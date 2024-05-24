@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
  * Cada celda puede contener una imagen y puede ser seleccionada o deseleccionada.
  *
  * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
  */
 public class Celda extends JPanel {
     /**
@@ -32,22 +34,26 @@ public class Celda extends JPanel {
     public Celda(ImageIcon imageIcon) {
         this.imageIcon = imageIcon;
 
+        // Establece el fondo de la celda en gris oscuro
         setBackground(Color.DARK_GRAY);
+        // Establece el borde de la celda en gris claro
         setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
+        // Si la imagen no es nula, crea un label con la imagen escalada
         if (imageIcon.getImage() != null) {
-            JLabel imageLabel = new JLabel(escaladoImage(imageIcon,32,32));
+            JLabel imageLabel = new JLabel(escaladoImage(imageIcon, 32, 32));
             add(imageLabel);
         }
 
+        // Agrega un listener de ratón a la celda
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (seleccionada)
-                    deseleccionar();
+                    deseleccionar(); // Deselecciona la celda si está seleccionada
                 else {
-                    CeldaVacia.imageIcon = seleccionar();
-                    deseleccionarTodas(Celda.this);
+                    CeldaVacia.imageIcon = seleccionar(); // Selecciona la celda y devuelve la imagen anterior
+                    deseleccionarTodas(Celda.this); // Deselecciona todas las demás celdas
                 }
             }
         });

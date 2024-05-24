@@ -10,7 +10,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PiezaManagerTest {
+public class TestPiezaManager {
 
     private PiezaManager piezaManager;
     TeisPanel teisPanel;
@@ -18,7 +18,7 @@ public class PiezaManagerTest {
     @BeforeEach
     public void setUp() {
         // Create a new PiezaManager instance
-        piezaManager = new PiezaManager(null);
+        piezaManager = new PiezaManager(null,"prueba.txt");
     }
 
     @Test

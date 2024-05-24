@@ -12,4 +12,9 @@ public class Pieza {
     // Atributos
     public BufferedImage image;
     public boolean colision = false;
+
+    public Pieza(boolean b) {
+        colision = b;
+    }
+    public Pieza(){}
 }

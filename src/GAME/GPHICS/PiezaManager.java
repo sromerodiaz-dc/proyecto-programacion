@@ -1,13 +1,11 @@
 package GAME.GPHICS;
 
-import GAME.FX.MapSelector;
-import GAME.GAME.TeisPanel;
 
+import GAME.GAME.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -22,38 +20,43 @@ public class PiezaManager {
     public Pieza[] pieza;
     public int[][] mapaPiezaNum;
     public String[] imagePaths = getImagePaths();
-    MapSelector mapSelector = new MapSelector();
-    String mapName = mapSelector.selectMap(); // variable que usaré cuando haya más de un mapa
+    public String mapName;
 
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
      */
-    public PiezaManager(TeisPanel teis) {
+    public PiezaManager(TeisPanel teis, String mapName) {
         this.t = teis;
+        this.mapName = mapName;
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
         pieza = new Pieza[imagePaths.length];
 
-
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
         // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
-        mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow ];
-
+        mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow];
 
         // Carga las imágenes de las piezas.
         getPiezaImage();
+
         // Carga el mapa.
-        loadMap(mapName);
+        loadMap();
     }
 
-
     /**
-     * Carga las imágenes de las Piezas predefinidas (pasto, muro, agua).
+     * Instancia un nuevo objeto Pieza que puede ser colisionable o no.
+     * Para saber si lo es o no lo es difirere entre los String que comienzan por asterisco y los que no.
      */
     public void getPiezaImage() {
         try {
-            for (int i = 0; i < pieza.length && i < imagePaths.length; i++) {
-                pieza[i] = new Pieza();
+            for (int i = 0; i < pieza.length; i++) {
+                System.out.println(imagePaths[i]);
+                if (imagePaths[i].startsWith("*")) {
+                    imagePaths[i] = imagePaths[i].substring(1);
+                    pieza[i] = new Pieza(true);
+                } else {
+                    pieza[i] = new Pieza();
+                }
                 pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
             }
         } catch (Exception e) {
@@ -67,8 +70,6 @@ public class PiezaManager {
         try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                line = line.replaceAll("^\\d+:\\s*Assets\\\\", "");
-                line = line.replaceAll("\\\\", "/");
                 imagePaths.add(line.trim());
             }
         } catch (Exception e) {
@@ -79,10 +80,8 @@ public class PiezaManager {
 
     /**
      * Carga el diseño del mapa desde un archivo ubicado en el classpath con el nombre especificado en `mapName`.
-     *
-     * @param mapName El nombre del archivo del mapa (por ejemplo, "maps/default.txt").
      */
-    public void loadMap(String mapName) {
+    public void loadMap() {
         InputStream is;
         BufferedReader br;
         try {
@@ -96,21 +95,22 @@ public class PiezaManager {
                 int col = 0, fil = 0;
 
                 // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
-                while (col < t.maxScreenColumnas && fil < t.maxScreenFilas) {
-
+                while (col < t.maxWorldCol && fil < t.maxWorldRow) {
                     String linea = br.readLine();
+
                     // Bucle por cada elemento (separado por espacios) en la línea actual.
-                    while (col < t.maxScreenColumnas) {
+                    while (col < t.maxWorldCol) {
                         String[] mapID = linea.split(" ");
+
                         // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
                         int map = Integer.parseInt(mapID[col]);
+
                         // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
                         mapaPiezaNum[col][fil] = map;
                         col++;
                     }
-
                     // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
-                    if (col == t.maxScreenColumnas) {
+                    if (col == t.maxWorldCol) {
                         col = 0;
                         fil++;
                     }
@@ -135,35 +135,50 @@ public class PiezaManager {
      */
     public void pinta(Graphics2D g2) {
         // Variables para controlar las columnas (col) y las filas (fil) del mapa.
-        int col = 0;
-        int fil = 0;
-
-        // Variables coordenadas X e Y.
-        int x = 0;
-        int y = 0;
+        int worldCol = 0;
+        int worldFil = 0;
 
         // Bucle que recorre el mapa fila por fila, dibujando las piezas correspondientes.
-        while (col < t.maxScreenColumnas && fil < t.maxScreenFilas) {
+        while (worldCol < t.maxWorldCol && worldFil < t.maxWorldRow) {
             // Obtiene el ID del tipo de Pieza en la posición actual del mapa.
-            int id = mapaPiezaNum[col][fil];
+            int id = mapaPiezaNum[worldCol][worldFil];
 
-            // Dibuja la imagen de la Pieza correspondiente en la posición actual.
-            g2.drawImage(pieza[id].image, x, y, t.sizeFinal, t.sizeFinal, null);
+            /*
+             Para tener una cámara estática encima de nuestro PJ se necesita conocer la posición
+             del PJ en siempre y por ello se necesitan 2 tipos de coordenadas:
+
+             Coordenadas de pantalla y del mapa entero y coordenadas relativas al jugador
+            */
+
+            // Coordenadas relativas al jugador
+            int playerWorldX = t.model.worldX;
+            int playerWorldY = t.model.worldY;
+            int playerScreenX = t.model.screenX;
+            int playerScreenY = t.model.screenY;
+
+            // Coordenadas de pantalla relativas al jugador
+            int worldX = worldCol * t.sizeFinal;
+            int worldY = worldFil * t.sizeFinal;
+            int screenX = worldX - playerWorldX + playerScreenX;
+            int screenY = worldY - playerWorldY + playerScreenY;
+
+            // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
+            // empleando las coordenadas absolutas y las relativas al jugador.
+            if (worldX + t.sizeFinal > playerWorldX - playerScreenX && worldX - t.sizeFinal < playerWorldX + playerScreenX &&
+                worldY + t.sizeFinal > playerWorldY - playerScreenY && worldY - t.sizeFinal < playerWorldY + playerScreenY) {
+                // Dibuja la imagen de la Pieza correspondiente en la posición actual.
+                g2.drawImage(pieza[id].image, screenX, screenY, t.sizeFinal, t.sizeFinal, null);
+            }
 
             // Incrementa la columna (col) para pasar a la siguiente posición horizontal.
-            col++;
-
-            // Actualiza la coordenada X para la siguiente posición horizontal.
-            x += t.sizeFinal;
+            worldCol++;
 
             // Si se llega al final de la fila actual (col == TeisPanel.maxScreenColumnas),
             // reinicia la columna (col) y la coordenada X, e incrementa la fila (fil)
             // para pasar a la siguiente fila.
-            if (col == t.maxScreenColumnas) {
-                col = 0;
-                x = 0;
-                fil++;
-                y += t.sizeFinal;
+            if (worldCol == t.maxWorldCol) {
+                worldCol = 0;
+                worldFil++;
             }
         }
     }

@@ -3,34 +3,43 @@ package EDITOR.FX;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Clase que se encarga de cargar sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
  *
  * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
  */
 public class SpriteLoader {
+
     /**
      * Carga sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
      *
-     * @param folderPath ruta de la carpeta que contiene los sprites
-     * @return lista de ImageIcon que representan los sprites cargados
+     * @param folderPath La ruta de la carpeta que contiene los sprites.
+     * @return La lista de ImageIcon que representan los sprites cargados.
+     * @throws IllegalArgumentException Si la ruta no es una carpeta.
      */
     public List<ImageIcon> loadSprites(String folderPath) {
+        // Crea un File a partir de un path para comprobar si existe
         File folder = new File(folderPath);
         if (!folder.isDirectory()) {
             throw new IllegalArgumentException("No es una carpeta: " + folderPath);
         }
 
+        // Lista de sprites
         List<ImageIcon> sprites = new ArrayList<>();
+
+        // Lista de path de los Assets
         List<String> imagePaths = new ArrayList<>();
 
+        // Recorrer los archivos en la carpeta y cargar las imágenes
         for (File file : folder.listFiles()) {
             try {
                 BufferedImage image = ImageIO.read(file);
@@ -41,19 +50,26 @@ public class SpriteLoader {
             }
         }
 
-        File file = new File("Assets/maps_correspondencia/c_assets.txt");
+        // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
+        File file = new File("Assets/maps_correspondencia/c_assets_user.txt");
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                for (int i = 0; i < sprites.size(); i++) {
-                    if (sprites.get(i) != null) {
-                        writeToFile(i, imagePaths.get(i));
-                    } else {
-                        writeToFile(i, null);
-                    }
-                }
+                // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
+                writeToFile(sprites, imagePaths, file);
             } catch (IOException e) {
+                // Ignorar la excepción
+            }
+        }
 
+        file = new File("Assets/maps_correspondencia/c_assets.txt");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
+                writeToFileReal(sprites, imagePaths, file);
+            } catch (IOException e) {
+                // Ignorar la excepción
             }
         }
 
@@ -63,20 +79,56 @@ public class SpriteLoader {
     /**
      * Escribe la correspondencia entre el índice de un sprite y su ruta en un archivo de texto.
      *
-     * @param index índice del sprite
-     * @param path ruta del sprite
-     * @throws IOException si ocurre un error al escribir el archivo
+     * @param sprites La lista de ImageIcon que representan los sprites cargados.
+     * @param imagePaths La lista de path de los Assets.
+     * @param file El archivo donde se escribirá la correspondencia entre el índice y la ruta de los sprites.
+     * @throws IOException Si ocurre un error al escribir el archivo.
      */
-    private void writeToFile(int index, String path) throws IOException {
-        File file = new File("Assets/maps_correspondencia/c_assets.txt");
+    private void writeToFile(List<ImageIcon> sprites, List<String> imagePaths, File file) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
-            StringBuilder sb = new StringBuilder();
-            if (path != null) {
-                sb.append(index).append(": ").append(path);
-            } else {
-                sb.append(index).append(": Error loading image");
+            for (int i = 0; i < sprites.size(); i++) {
+                if (sprites.get(i) != null) {
+                    // Construir la línea a escribir en el archivo de texto
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(i).append(": ").append(replace(imagePaths.get(i)));
+                    writer.println(sb);
+                } else {
+                    writer.println(i + ": Error loading image");
+                }
             }
-            writer.println(sb);
         }
+    }
+
+    /**
+     * Escribe los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
+     *
+     * @param sprites La lista de ImageIcon que representan los sprites cargados.
+     * @param imagePaths La lista de path de los Assets.
+     * @param file El archivo donde se escribirán los sprites filtrados.
+     * @throws IOException Si ocurre un error al escribir el archivo.
+     */
+    private void writeToFileReal(List<ImageIcon> sprites, List<String> imagePaths, File file) throws IOException {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
+            for (int i = 0; i < sprites.size(); i++) {
+                if (sprites.get(i) != null) {
+                    // Escribir en el archivo de texto el sprite filtrado
+                    writer.println(replace(imagePaths.get(i)));
+                } else {
+                    writer.println(i + ": Error loading image");
+                }
+            }
+        }
+    }
+
+    /**
+     * Reemplaza las barras invertidas por barras normales y elimina los espacios en blanco al inicio y al final
+     * de la ruta de un archivo.
+     *
+     * @param path La ruta del archivo.
+     * @return La ruta del archivo con las barras invertidas reemplazadas por barras normales y sin espacios en blanco
+     * al inicio y al final.
+     */
+    private String replace(String path){
+        return path.replaceFirst("^Assets\\\\", "").replaceAll("\\\\", "/").trim();
     }
 }
