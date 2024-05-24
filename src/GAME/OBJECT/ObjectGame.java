@@ -12,11 +12,6 @@ public class ObjectGame {
     public boolean collision = false;
     public int worldX, worldY;
 
-    // El objeto entero será el área de colisión
-    public Rectangle solidArea = new Rectangle(0,0,48,48);
-    public int defaultObjectSolidAreaX = 0;
-    public int defaultObjectSolidAreaY = 0;
-
     public void draw(Graphics2D g2, TeisPanel teisPanel) {
         int screenX = worldX - teisPanel.model.worldX + teisPanel.model.screenX;
         int screenY = worldY - teisPanel.model.worldY + teisPanel.model.screenY;
