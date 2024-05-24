@@ -31,6 +31,12 @@ public class Player extends Entity{
         screenX = teisPanel.screenWidth/2 - (teisPanel.sizeFinal/2);
         screenY = teisPanel.screenHeight/2 - (teisPanel.sizeFinal/2);
 
+        // teisPanel.sizeFinal = 48
+        // Como quiero que el área de colision sea MENOR al del tamaño del PJ, reduzco los pixeles de alto y ancho
+        // además de la posición del propio Rectangle en (10,10), recordemos que en Java (0,0) es topLeftCorner.
+        // Así que poner unas coordenadas (10,10) quiere decir que el área colisionable comienza cerca del centro del PJ.
+        solidArea = new Rectangle(10,10,32,32);
+
         // Inicializa valores por defecto
         setValoresPorDefecto();
         getPlayerImage();
@@ -73,8 +79,6 @@ public class Player extends Entity{
      * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
      * */
     public void actualiza(){
-        move(keyManager);
+        move(keyManager,teisPanel,this);
     }
-
-
 }
