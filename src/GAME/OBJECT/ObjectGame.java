@@ -5,6 +5,12 @@ import GAME.GAME.TeisPanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * Representa la generación de objetos en el mapa y su área de colisión mediante un Rectangle
+ */
 public class ObjectGame {
     // Atributos
     public BufferedImage image;
