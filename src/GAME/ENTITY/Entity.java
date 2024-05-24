@@ -38,6 +38,7 @@ public class Entity {
      * Rectangulo que define el área de colisión del PJ
      * */
     public Rectangle solidArea;
+    public int defaultSolidAreaX, defaultSolidAreaY;
     public boolean collisionOn = false;
 
     /**

@@ -33,9 +33,17 @@ public class Player extends Entity{
 
         // teisPanel.sizeFinal = 48
         // Como quiero que el área de colision sea MENOR al del tamaño del PJ, reduzco los pixeles de alto y ancho
-        // además de la posición del propio Rectangle en (10,10), recordemos que en Java (0,0) es topLeftCorner.
-        // Así que poner unas coordenadas (10,10) quiere decir que el área colisionable comienza cerca del centro del PJ.
-        solidArea = new Rectangle(10,10,32,32);
+        // además de la posición del propio Rectangle en (8,16), recordemos que en Java (0,0) es topLeftCorner.
+        // Así que poner unas coordenadas (8,16) quiere decir que el área colisionable comienza cerca del centro del PJ.
+
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
+        defaultSolidAreaX = solidArea.x;
+        defaultSolidAreaY = solidArea.y;
 
         // Inicializa valores por defecto
         setValoresPorDefecto();
