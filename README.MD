@@ -602,6 +602,11 @@ Resultado de la implementación en un mapa de prueba:
 
 ![colisionajusta](images/ejemploColision.gif)
 ___
+### Creación de Objetos (Sprites) y posicionamiento
+
+(Package OBJECT: ID(representa item individual) y es subclase de: ObjectGame(Dibujado de los objetos), ObjectPlacer(Coordenadas de aparición),
+TeisPanel (Implementa ObjectGame y almacena los ID de los items en obj[]), ventana(llama al metodo setUpItems antes de comenzar el juego))
+
 ### IDEAS para los NPCs e Easter Eggs
 Meter personajes tanto ficticios como historicos de manera aleatoria.
 Ejemplo:
