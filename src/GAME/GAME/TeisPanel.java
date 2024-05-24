@@ -1,5 +1,6 @@
 package GAME.GAME;
 
+import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 import GAME.FX.MapSelector;
@@ -44,7 +45,10 @@ public class TeisPanel extends JPanel implements Runnable{
 
     // GameModel y Game Controller
     public final Player model;
-    private final GameController controller;
+    public final GameController controller;
+
+    // Controlador de colisiones
+    public CollisionCheck collisionCheck;
 
     // Constructor
     public TeisPanel() {
@@ -71,8 +75,10 @@ public class TeisPanel extends JPanel implements Runnable{
         setFocusable(true);
 
         // Inicializa el modelo y el controlador
-        this.model = new Player(this,key);
-        this.controller = new GameController(model,piezaM);
+        model = new Player(this,key);
+        controller = new GameController(model,piezaM);
+        // Inicializa el controlador de colisiones
+        collisionCheck = new CollisionCheck(this);
     }
 
     /** Metodo que inicializa un "Thread"
