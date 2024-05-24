@@ -476,7 +476,7 @@ ___
 ### Implementación de nuevos Sprites
 Falta por desarrollar esta parte...
 ___
-### Implementación de colisiones y diálogos
+### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
 personaje mediante inventario o demás cosas.
 
