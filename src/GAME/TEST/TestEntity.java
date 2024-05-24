@@ -16,7 +16,7 @@ class TestEntity {
         Entity entity = new Entity();
         KeyManager keyManager = new KeyManager();
         keyManager.left = true;
-        entity.move(keyManager);
+        entity.move(keyManager,new TeisPanel(), new Player(new TeisPanel(), new KeyManager()));
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);
         Assertions.assertEquals(entity.sentido, 'a');
     }
