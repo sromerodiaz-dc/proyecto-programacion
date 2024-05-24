@@ -580,6 +580,27 @@ public class Pieza {
    public Pieza(){}
 }
 ````
+
+#### Explicación de la colisión del PJ:
+Lo fácil sería delimitar todo el sprite del PJ colisionable de tal manera que el cuadrado completo que ocupa el sprite del
+PJ sería colisionable.
+Bien, esto produce un *problema de jugabilidad* muy grave que es el hecho de que para no colisionar, el área de colisión
+el cual es un cuadrado, ``no puede tocar en ninguno de sus bordes`` al área de colisión del PJ que también es un cuadrado de mismo tamaño.
+
+Véase este ejemplo con un sprite de Dexter:
+*Cuando Dexter intenta entrar de manera orgánica por el pasillo siempre le cuesta dado a que uno de sus bordes
+``casi siempre`` toca con el área colisionable de la pared, que es su totalidad*.
+
+![colision](images/exp_colision.gif)
+
+Cuando por fin logra entrar es cuando ninguno de sus bordes toca nada:
+
+![colision](images/exp_colision2.gif)
+
+### falta por explicar codigo de la colision (entity,player,controller,collisionCheck)...
+Resultado de la implementación en un mapa de prueba:
+
+![colisionajusta](images/ejemploColision.gif)
 ___
 ### IDEAS para los NPCs e Easter Eggs
 Meter personajes tanto ficticios como historicos de manera aleatoria.
