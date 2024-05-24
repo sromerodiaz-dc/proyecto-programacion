@@ -1,10 +1,11 @@
 package GAME.ENTITY;
 
-import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -46,127 +47,28 @@ public class Entity {
      */
     public char sentido;
 
-    // METODOS
-
-    /**Metodo MOVE
-     * El juego al ser en 2D solo tiene dos dimensiones espaciales: X, Y
-     * Moverse hacia arriba o hacia la derecha es equivalente a SUMAR en la posición
-     * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
-     * Además controla los sprites por movimiento usados.
-     */
-    public void move(KeyManager e, TeisPanel teisPanel, Player player) {
-        /*
-         * Este condicional comprueba que una tecla haya sido presionada para inicializar el stopNum a 0 o no.
-         * Si sí que es presionado, se inicializa en 0 y no suma ningun valor a stopNum,
-         * una vez hace eso pasa a comprobar que tecla ha sido presionada y actua en consecuencia.
-         * Si no ha sido presionada ninguna tecla en el momento entonces stopNum incrementa.
-        */
-        if (e.up || e.down || e.left || e.right) {
-            stopCounter = 0;
-            if (e.up) {
-                sentido = 'w';
-            } else if (e.down) {
-                sentido = 's';
-            } else if (e.left) {
-                sentido = 'a';
-            } else {
-                sentido = 'd';
-            }
-
-            // Comprueba la colisión de la Pieza
-            collisionOn = false;
-            teisPanel.collisionCheck.checkPieza(player);
-
-            // !COLLISION == PLAYERMOVE
-            if (!collisionOn) {
-                switch (sentido) {
-                    case 'w': worldY -= speed; break;
-                    case 's': worldY += speed; break;
-                    case 'a': worldX -= speed; break;
-                    case 'd': worldX += speed; break;
-                }
-            }
-
-            /*
-             * Si stopNum es mayor a 1, el metodo pinta() de la clase player cambiara la imagen a la default (imagen stop).
-             * El contador de Sprites ha de incrementar siempre para controlar el movimiento fluido para cualquier tipo
-             * de movimiento.
-             * */
-            spriteCounter++;
-            // Cada 10 frames el spriteNum varía
-            if (spriteCounter > 15) {
-                if (spriteNum == 1){
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 1;
-                }
-                // Cada 10 frames los contadores son reseteados para que no incrementen al infinito y haya un control
-                // sobre las animaciones a lo largo del tiempo de juego.
-                spriteCounter = 0;
-            }
-        } else {
-            sentido = '0'; // Valor elegido arbitrariamente por mi para que en el switch case llegue al case default.
-            stopCounter++;
-        }
-        if (stopCounter >30) {
-            if (spriteNum == 1){
-                spriteNum = 2;
-            } else if (spriteNum == 2) {
-                spriteNum = 1;
-            }
-            stopCounter = 0;
-        }
-    }
-
     /**Metodo PINTA
      * Metodo empleado para mostrar por pantalla al jugador.
      * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
      * cambia el sprite empleado por otro nuevo.
      */
-    public void pinta(Graphics2D g2, TeisPanel teis,int screenX, int screenY){
-        // Este código asigna la imagen de sprite adecuada a la variable 'image'
-        // en función de la dirección actual ('sentido') y el número de sprite activo ('spriteNum').
-        BufferedImage image = null; // Inicializa la variable de imagen a null
+    public void pinta(Graphics2D g2, TeisPanel teis, int screenX, int screenY) {
+        // Crea un mapa que asocia cada dirección con un array de imágenes de sprite
+        Map<Character, BufferedImage[]> sprites = new HashMap<>();
+        sprites.put('w', new BufferedImage[]{up1, up2});
+        sprites.put('a', new BufferedImage[]{left1, left2});
+        sprites.put('s', new BufferedImage[]{down1, down2});
+        sprites.put('d', new BufferedImage[]{right1, right2});
+        sprites.put('0', new BufferedImage[]{stop, stop2});
 
-        switch (sentido) {
-            case 'w': // El personaje se mueve hacia arriba
-                if (spriteNum == 1) {
-                    image = up1; // Asigna la primera imagen de sprite hacia arriba
-                } else if (spriteNum == 2) {
-                    image = up2; // Asigna la segunda imagen de sprite hacia arriba
-                }
-                break;
-            case 'a': // El personaje se mueve hacia la izquierda
-                if (spriteNum == 1) {
-                    image = left1; // Asigna la primera imagen de sprite hacia la izquierda
-                } else if (spriteNum == 2) {
-                    image = left2; // Asigna la segunda imagen de sprite hacia la izquierda
-                }
-                break;
-            case 's': // El personaje se mueve hacia abajo
-                if (spriteNum == 1) {
-                    image = down1; // Asigna la primera imagen de sprite hacia abajo
-                } else if (spriteNum == 2) {
-                    image = down2; // Asigna la segunda imagen de sprite hacia abajo
-                }
-                break;
-            case 'd': // El personaje se mueve hacia la derecha
-                if (spriteNum == 1) {
-                    image = right1; // Asigna la primera imagen de sprite hacia la derecha
-                } else if (spriteNum == 2) {
-                    image = right2; // Asigna la segunda imagen de sprite hacia la derecha
-                }
-                break;
-            default: // El personaje no se mueve (caso por defecto)
-                if (spriteNum == 1) {
-                    image = stop; // Asigna la primera imagen de sprite en reposo
-                } else if (spriteNum == 2) {
-                    image = stop2; // Asigna la segunda imagen de sprite en reposo
-                }
-                break;
-        }
-        // Dibuja la imagen con IMAGE en la posicion por defecto (100, 100) con los valores por defecto de
-        // resolucion 16x16 y su respectivo escalado "sizeFinal")
-        g2.drawImage(image,screenX,screenY,teis.sizeFinal,teis.sizeFinal,null);
+        // Obtiene el array de imágenes de sprite correspondiente a la dirección actual
+        BufferedImage[] images = sprites.get(sentido);
+
+        // Obtiene la imagen de sprite correspondiente al número de sprite activo
+        BufferedImage image = images[spriteNum - 1];
+
+        // Dibuja la imagen con IMAGE en la posición por defecto (100, 100) con los valores por defecto de
+        // resolución 16x16 y su respectivo escalado "sizeFinal"
+        g2.drawImage(image, screenX, screenY, teis.sizeFinal, teis.sizeFinal, null);
     }
 }
