@@ -213,10 +213,11 @@ _Este es el resultado de su **implementación**:_
 ![moveGif](images/moveTemprano.gif)
 ___
 ### Animación mejorada
-Metodo move() de la clase GAME.ENTITY
-Nueva implementación: 1 sprite cada 8 frames
--Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
--Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
+_Metodo move() de la clase GAME.ENTITY_
+
+Nueva implementación: 1 sprite cada 8 frames:
+- Ahora el metodo además de controlar la posición, tambien controla los sprites por movimiento.
+- Este metodo está estructurado alrededor de la idea de ser ejecutado 30 veces POR CADA segundo.
 
 Dentro de TeisPanel:
 ````java
