@@ -185,6 +185,7 @@ public class TeisPanel extends JPanel implements Runnable{
         controller.getPiezaManager().pinta(g2);
 
         // Objetos / Items
+        // Solo dibuja items existentes (Controla el NullPointer)
         for (int i = 0;i < obj.length;i++) {
             if (obj[i] != null)
                 obj[i].draw(g2,this);
