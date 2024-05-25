@@ -607,6 +607,12 @@ ___
 
 (Package OBJECT: ID(representa item individual) y es subclase de: ObjectGame(Dibujado de los objetos), ObjectPlacer(Coordenadas de aparición),
 TeisPanel (Implementa ObjectGame y almacena los ID de los items en obj[]), ventana(llama al metodo setUpItems antes de comenzar el juego))
+___
+### Implementación de efectos de sonido
+
+Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController
+Falta por añadir algún tipo de menu que controle el nivel de volumen del juego.
+Es decir, un menú. 
 
 ### IDEAS para los NPCs e Easter Eggs
 Meter personajes tanto ficticios como historicos de manera aleatoria.
