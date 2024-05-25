@@ -19,9 +19,7 @@ public class Sound {
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundPath[i]);
             clip = AudioSystem.getClip();
             clip.open(ais);
-        } catch (UnsupportedAudioFileException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (UnsupportedAudioFileException | IOException e) {
             throw new RuntimeException(e);
         }
     }
