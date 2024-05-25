@@ -1,6 +1,7 @@
 package GAME.GAME;
 
 import GAME.EFFECT.Sound;
+import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.Player;
 import GAME.GPHICS.PiezaManager;
 
@@ -22,6 +23,10 @@ public class GameController {
 
     // Efectos de sonido
     Sound sound = new Sound();
+    Sound se = new Sound(); // SoundEffect
+
+    // Interfaz de Usuario
+    public UserInterface ui;
 
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
@@ -29,9 +34,10 @@ public class GameController {
      * @param model El jugador del juego.
      * @param piezaManager El gestor de piezas del juego.
      */
-    public GameController(Player model, PiezaManager piezaManager) {
+    public GameController(Player model, PiezaManager piezaManager,TeisPanel teisPanel) {
         this.model = model;
         this.piezaManager = piezaManager;
+        ui = new UserInterface(teisPanel);
     }
 
     /**
@@ -67,7 +73,7 @@ public class GameController {
     }
 
     public void playSelection(int i) throws LineUnavailableException {
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 }

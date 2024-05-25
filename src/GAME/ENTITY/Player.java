@@ -26,6 +26,7 @@ public class Player extends Entity {
 
     // Checkea si tienes una VigoPass
     public boolean tenPass = false;
+    public String tenPassVigo = "manin, no tienes la VigoPass...";
 
     // Constructor
     public Player(TeisPanel t, KeyManager k) {
@@ -211,6 +212,7 @@ public class Player extends Entity {
                     teisPanel.controller.playSelection(1);
                     teisPanel.obj[id] = null; // Elimina el objeto del mapa
                     tenPass = true; // True si tienes las PassVigo
+                    tenPassVigo = "tes a PassVigo, poderás entrar ó Vitrasa...";
                     break;
                 case "Puerta":
                     // Verifica si el jugador tiene PassVigo
