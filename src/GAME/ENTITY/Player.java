@@ -4,6 +4,7 @@ import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class Player extends Entity {
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además controla los sprites por movimiento usados.
      */
-    public void move(KeyManager e, TeisPanel teisPanel) {
+    public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
         // Verifica si se ha presionado alguna tecla
         if (e.up || e.down || e.left || e.right) {
             // Inicializa el contador de parada
@@ -193,7 +194,7 @@ public class Player extends Entity {
     /**
      * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
      */
-    public void actualiza() {
+    public void actualiza() throws LineUnavailableException {
         move(keyManager, teisPanel);
     }
 
@@ -202,11 +203,12 @@ public class Player extends Entity {
      *
      * @param id el índice del objeto que se va a recoger
      */
-    public void pickUpItem(int id) {
+    public void pickUpItem(int id) throws LineUnavailableException {
         if (id != 999) { // Verifica si el objeto existe
             // Verifica el tipo de objeto y realiza la acción correspondiente
             switch (teisPanel.obj[id].id) {
                 case "Passvigo":
+                    teisPanel.controller.playSelection(1);
                     teisPanel.obj[id] = null; // Elimina el objeto del mapa
                     tenPass = true; // True si tienes las PassVigo
                     break;

@@ -1,7 +1,10 @@
 package GAME.GAME;
 
+import GAME.EFFECT.Sound;
 import GAME.ENTITY.Player;
 import GAME.GPHICS.PiezaManager;
+
+import javax.sound.sampled.LineUnavailableException;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -11,15 +14,14 @@ import GAME.GPHICS.PiezaManager;
  * Mantiene una referencia al jugador y al gestor de piezas del juego.
  * */
 public class GameController {
-    /**
-     * El jugador del juego.
-     */
+    // Jugador
     private Player model;
 
-    /**
-     * El gestor de piezas del juego.
-     */
+    // Gestor de piezas
     private PiezaManager piezaManager;
+
+    // Efectos de sonido
+    Sound sound = new Sound();
 
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
@@ -41,12 +43,31 @@ public class GameController {
         return piezaManager;
     }
 
+    public Sound getSound() {
+        return sound;
+    }
+
     /**
      * Actualiza el estado del juego.
      * Actualiza el estado del jugador y de las piezas del juego.
      */
-    public void update() {
+    public void update() throws LineUnavailableException {
         // Actualiza el estado del jugador
         model.actualiza();
+    }
+
+    public void playMusic(int i) throws LineUnavailableException {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSelection(int i) throws LineUnavailableException {
+        sound.setFile(i);
+        sound.play();
     }
 }
