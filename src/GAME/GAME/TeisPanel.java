@@ -80,14 +80,14 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Inicializa el modelo y el controlador
         model = new Player(this,key);
-        controller = new GameController(model,piezaM);
+        controller = new GameController(model,piezaM,this);
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(this);
     }
 
     public void setUpItems() throws LineUnavailableException {
         placer.setObject();
-        controller.playMusic(0);
+        /*controller.playMusic(0);*/
     }
 
     /** Metodo que inicializa un "Thread"
@@ -198,6 +198,10 @@ public class TeisPanel extends JPanel implements Runnable{
         // Dibuja el jugador
         model.pinta(g2,this,model.screenX, model.screenY);
 
+        // Interfaz de Usuario
+        controller.ui.draw(g2);
+
+        // Piezas / Mapa
         g2.dispose();
     }
 }
