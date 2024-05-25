@@ -614,7 +614,33 @@ Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameCon
 Falta por añadir algún tipo de menu que controle el nivel de volumen del juego.
 Es decir, un menú. 
 
+___
 ### IDEAS para los NPCs e Easter Eggs
+#### Idea de uso de la passVigo y las passVigoPLUS:
+Molaría poner que la PassVigo tiene X saldo dando resultado a que...
+* puedes abrir X numero de puertas dependiendo del saldo que tengas.
+* Con las PassVigoPLUS puedes acceder a un easter egg, donde luchas contra el dinoseto, estaría guapísimo.
+* Por casa uso de la PassVigo, notificación en la pantalla sobre cuanto saldo queda.
+
+#### Ideas para más NPCs
+Abres un contenedor que pone VIGO CIUDAD MÁS LIMPIA DE EUROPA y:
+* lo único que encuentras es "outra botella de mayerlin baleira, outra vez será..."
+* encuentras una botella de mayerlin llena "Deus está a sorrirche, hoxe touca Churru sí ou non sí...(?)"
+
+Encuentras un Item que parece una cajetilla en el suelo tirado... "haberá biruta?":
+* está vacío "Deus da ós seus mellores guerreiros as peores das batallas (touca ir ó estanco, manin)"
+* tiene algún que otro cigarro "Sorride, que hoxe non se o pides a tua nai!"
+
+Encuentras un periodico en el suelo:
+* lo recoges y el titular pone "O Celta volveu a perder...", "ai... a combinada, qué mala sorte que ten sempre este equipo!".
+* lo recoger y el titular pone "O Celta gañou!", "*Simplemente non cho cres e segues coa tua vida*".
+
+#### IDEOTE PARA UN NPC
+Que sea un viejo con arapos que si te acercas y le das al botón "E" de interactuar,
+te suelte diálogos (que se pueden grabar y soltar a la vez que el texto) como 
+* "chorvo, sabes que din dos pimentitos de padrón??????"
+* "uns pican... e outros non *risa jodidamente incontenible*"
+
 Meter personajes tanto ficticios como historicos de manera aleatoria.
 Ejemplo:
 -  ==> Hitler feliz con un cuadro
