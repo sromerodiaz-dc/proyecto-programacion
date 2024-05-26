@@ -73,17 +73,17 @@ public class UserInterface {
 
             // Tiempo de Juego
             speedRun += (double) 1 /60;
-            g2.drawString("Tiempo de juego: "+ decimalFormat.format(speedRun), teisPanel.sizeFinal * 15, 65);
+            g2.drawString("Tiempo de juego: "+ decimalFormat.format(speedRun), teisPanel.sizeFinal * 13, 65);
 
             if (messageOn) {
-                g2.setFont(g2.getFont().deriveFont(10f));
+                g2.setFont(g2.getFont().deriveFont(20f));
                 g2.drawString(message, teisPanel.sizeFinal/2,teisPanel.sizeFinal*2);
 
                 messageTime++;
 
                 // El juego corre a 30 Frames por Segundo y como este método se llama 30 veces por segundo
-                // esto quiere decir que si el counter llega a 90 han pasado 3 segundos.
-                if (messageTime > 90) {
+                // esto quiere decir que si el counter llega a 120 han pasado  segundos.
+                if (messageTime > 120) {
                     messageTime = 0;
                     messageOn = false;
                 }
@@ -98,7 +98,7 @@ public class UserInterface {
 
             int x ,y;
             text = "Tiempo de juego: "+decimalFormat.format(speedRun);
-            x = teisPanel.screenWidth - 200;
+            x = teisPanel.sizeFinal * 13;
             y = 65;
             g2.drawString(text, x, y);
 

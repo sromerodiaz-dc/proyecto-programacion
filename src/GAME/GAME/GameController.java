@@ -76,4 +76,9 @@ public class GameController {
         se.setFile(i);
         se.play();
     }
+
+    public void stopSelection(int i) throws LineUnavailableException {
+        se.setFile(i);
+        se.stop();
+    }
 }

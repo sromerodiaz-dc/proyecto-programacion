@@ -84,7 +84,7 @@ public class TeisPanel extends JPanel implements Runnable{
         collisionCheck = new CollisionCheck(this);
     }
 
-    public void setUpItems() throws LineUnavailableException {
+    public void setUpItems() {
         placer.setObject();
         /*controller.playMusic(0);*/
     }

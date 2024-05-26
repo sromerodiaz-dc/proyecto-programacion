@@ -211,20 +211,19 @@ public class Player extends Entity {
                     teisPanel.controller.playSelection(1);
                     teisPanel.obj[id] = null; // Elimina el objeto del mapa
                     tenPass = true; // True si tienes las PassVigo
-                    teisPanel.controller.ui.showMessage("tes a PassVigo, poderás entrar ó Vitrasa...");
+                    teisPanel.controller.ui.showMessage("tes a PassVigo, poderás entrar ó Vitrasa... qué merda");
                     break;
                 case "Puerta":
                     // Verifica si el jugador tiene PassVigo
                     if (tenPass) {
                         teisPanel.obj[id] = null;
                         /*tenPass = false;*/
-                        teisPanel.controller.ui.showMessage("porta aberta, manin");
                         /*
-                        * Molaría poner que la PassVigo tiene X saldo y solo
-                        * puedes abrir X numero de puertas dependiendo del saldo que tengas.
-                        * Con las PassVigoPLUS puedes acceder a un easter egg, donde
-                        * luchas contra el dinoseto, estaría guapísimo
-                        * */
+                         * Molaría poner que la PassVigo tiene X saldo y solo
+                         * puedes abrir X numero de puertas dependiendo del saldo que tengas.
+                         * Con las PassVigoPLUS puedes acceder a un easter egg, donde
+                         * luchas contra el dinoseto, estaría guapísimo
+                         * */
                     }
                     break;
                 case "Container":

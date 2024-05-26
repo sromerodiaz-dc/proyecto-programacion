@@ -21,7 +21,7 @@ public class ventana extends JFrame {
     /**
      * Constructor que inicializa la ventana principal de la aplicación.
      */
-    public ventana() throws LineUnavailableException {
+    public ventana() {
         teisPanel = new TeisPanel(); // Crea un nuevo panel principal
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
         setResizable(false); // Impide que la ventana sea redimensionable

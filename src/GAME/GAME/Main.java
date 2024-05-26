@@ -1,8 +1,6 @@
 package GAME.GAME;
 import GAME.GUI.ventana;
 
-import javax.sound.sampled.LineUnavailableException;
-
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
@@ -11,7 +9,7 @@ import javax.sound.sampled.LineUnavailableException;
  * Clase GAME.GAME.Main se encarga de lanzar el programa
  * */
 public class Main {
-    public static void main() throws LineUnavailableException {
+    public static void main() {
         new ventana();
     }
 }
