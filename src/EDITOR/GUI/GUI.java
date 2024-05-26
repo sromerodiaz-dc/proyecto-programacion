@@ -10,8 +10,12 @@ import EDITOR.SELECTPANEL.GridPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.*;
 
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
@@ -27,14 +31,18 @@ public class GUI extends JFrame {
     // Propiedades de pantalla
     private static final int ANCHO = 1920;
     private static final int ALTO = 1080;
-    public int MENU_IZQUIERDA_X = 450;
-    public int MENU_IZQUIERDA_Y = 100;
-    public int MENU_IZQUIERDA_ANCHO = 830;
-    public int MENU_IZQUIERDA_ALTO = 600;
-    public int MENU_INFERIOR_X = 615;
-    public int MENU_INFERIOR_Y = 730;
-    private static final int MENU_INFERIOR_ANCHO = 534;
-    private static final int MENU_INFERIOR_ALTO = 180;
+
+    public int MENU_IZQUIERDA_ANCHO = (int) (ANCHO / 1.7);
+    public int MENU_IZQUIERDA_ALTO = ALTO - 150 ;
+
+    public int MENU_IZQUIERDA_X = 50;
+    public int MENU_IZQUIERDA_Y = 50;
+
+    private static final int MENU_INFERIOR_ANCHO = ANCHO / 4;
+    private static final int MENU_INFERIOR_ALTO = ALTO / 5;
+
+    public int MENU_INFERIOR_X = ANCHO - 720;
+    public int MENU_INFERIOR_Y = ALTO - 400;
 
     // Instancias de clases cuyos métodos son necesarios
     private final SpriteLoader spriteLoader = new SpriteLoader(); // Carga los assets
@@ -68,9 +76,21 @@ public class GUI extends JFrame {
         // Guardado de los sprites mediante el método loadSprites() de GUI
         sprites = loadSprites();
 
-        // Crea ambos menús
-        createMenuIzquierda(this);
-        createMenuInferior();
+        /*
+        * Para hacer que en el editor de mapas se pueda cargar un mapa hay que añadir un metodo
+        * que retorne un array con la lectura de un mapa (ya hecho, SpriteUtils > loadmap que retorna map[][].
+        * Ahora hay que emplearlo.
+        *
+        * Para esto:
+        * Primero se le da al usuario una de dos opciones, cargar mapa o crear nuevo mapa,
+        * Si clica sobre crear nuevo mapa, el programa sigue como hasta ahora pero si le da a la otra opción:
+        * - Se llama al metodo loadmap y de ahí se saca el numero máximo de columnas y filas para generar el
+        *   mapa cargado. Además, también se saca la correspondencia por lo que a VacioPanel se le ha de pasar
+        *   este array por parametro para que lo use dandole a cada CeldaVacia su Imagen correspondiente.
+        * */
+
+        setSegunOpcion();
+
         // Crea ambos botones
         createBotonGuardar(menuIzquierda);
         createBotonFondo(menuIzquierda);
@@ -93,14 +113,40 @@ public class GUI extends JFrame {
         requestFocus();
     }
 
+    public void setSegunOpcion(){
+        if (create_load_map()) {
+            String mapName = JOptionPane.showInputDialog(null,"Nombre del mapa (sin extension):");
+            int[][] contenido = spriteUtils.loadMap("maps/"+mapName+".txt");
+            cargarMenuIzquierda(contenido, sprites);
+        } else {
+            int[] nums = spriteUtils.numRowsCols();
+            createMenuIzquierda(nums[0], nums[1]);
+        }
+        createMenuInferior();
+    }
+
+    public boolean create_load_map() {
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea cargar un mapa existente?", "Cargar Mapa", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) return true;
+        else if (opcion == JOptionPane.NO_OPTION) return false;
+        else System.exit(0);
+        return false;
+    }
+
     /**
      * Genera un panel de paneles a partir de la clase VacioPanel.
      * El número de filas y columnas es determinado por el usuario a través de un método llamado
      * desde 'spriteUtils.numRowsCols()'
      * */
-    public void createMenuIzquierda(GUI gui) {
-        int[] nums = spriteUtils.numRowsCols(gui);
-        menuIzquierda = new VacioPanel(nums[0], nums[1]);
+    public void createMenuIzquierda(int row,int col) {
+        menuIzquierda = new VacioPanel(row,col);
+        menuIzquierda.setBackground(Color.BLACK);
+        menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
+    }
+
+    public void cargarMenuIzquierda(int[][] contenido, ImageIcon[] sprites) {
+        menuIzquierda = new VacioPanel(contenido,sprites);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
@@ -109,7 +155,7 @@ public class GUI extends JFrame {
      * Genera un panel de paneles clicables para la selección de texturas aplicables sobre "menuIzquierda"
      * */
     public void createMenuInferior() {
-        menuInferior = new GridPanel(4, 12, sprites);
+        menuInferior = new GridPanel(5, 12, sprites);
         menuInferior.setBackground(Color.BLACK);
         menuInferior.setBounds(MENU_INFERIOR_X, MENU_INFERIOR_Y, MENU_INFERIOR_ANCHO, MENU_INFERIOR_ALTO);
     }
@@ -194,6 +240,8 @@ public class GUI extends JFrame {
     private ImageIcon[] loadSprites() {
         return spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
     }
+
+    public void cargarMapa() {}
 
     /**
      * LLama al método de generación de mapa de 'spriteUtils'

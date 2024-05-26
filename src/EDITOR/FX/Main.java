@@ -10,7 +10,7 @@ import EDITOR.GUI.GUI;
  * Esta clase define la ejecucion del programa
  * */
 public class Main {
-    public static void main() {
+    public static void main(String[] args) {
         new  GUI();
     }
 }

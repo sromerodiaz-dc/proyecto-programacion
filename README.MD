@@ -13,8 +13,12 @@
 3. [Semana 3](#semana-del-20052024)
    1. [Desarrollo de centrado de cámara](#desarrollo-de-centrado-de-cámara)
    2. [Implementación de nuevos sprites](#implementación-de-nuevos-sprites)
-   3. [Colisiones y diálogos](#implementacion-de-colisiones-y-dialogos)
+   3. [Colisiones, sonidos y objetos](#implementación-de-colisiones)
+   4. [Creación de objetos y posicionamiento](#creación-de-objetos-sprites-y-posicionamiento)
 4. [Semana 4](#semana-del-27052024)
+   1. [Optimización del código](#optimización-del-código)
+   2. [Pantalla de Carga: GameStates](#pantalla-de-carga)
+   3. [Reestructuración del código](#reestructuración-del-código)
 ___
 # Notas de desarrollo
 
@@ -465,7 +469,7 @@ a las subclases que emplean estos datos de ``largo y ancho``:
     }
 ````
 ___
-### Varios arreglos realizados:
+#### Varios arreglos realizados:
 - Posicionamiento de los paneles de editor de mapa
 - Nueva implementación: modo pincel
 - JavaDoc y comentarios desarrollados
@@ -473,8 +477,12 @@ ___
 - Realizado código más limpio
 - Arreglado bug de botones con el modo pincel
 ___
-### Implementación de nuevos Sprites
-Falta por desarrollar esta parte...
+#### Implementación de nuevos Sprites
+Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo todos de 16x16:
+* ![bus](Assets/objects/busVitrasa.png) ![bus](Assets/objects/busVitrasa2.png) ![bus](Assets/objects/contenedorVigo.png)
+* ![passvigo](Assets/objects/passvigo.png) ![passvigo](Assets/objects/passvigoPlus.png)
+
+Próximamente, estaré creando assets para el suelo y demás cosas... 
 ___
 ### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
@@ -598,41 +606,572 @@ Cuando por fin logra entrar es cuando ninguno de sus bordes toca nada:
 
 ![colision](images/exp_colision2.gif)
 
-### falta por explicar codigo de la colision (entity,player,controller,collisionCheck)...
+#### El código desarrollado para las colisiones es el siguiente:
+Para solucionar estos problemas, ahora tanto la clase padre Entity como su clase hija ``Player`` cuentan 
+con los siguientes atributos:
+````java
+public Rectangle solidArea;
+public int defaultSolidAreaX, defaultSolidAreaY;
+public boolean collisionOn = false;
+````
+Estos atributos definen el área de colisión de las entidades. Para comprobar las colisiones entre objetos, piezas y 
+demás cosas colisionables se crea una clase llamada ``CollisionCheck`` cuyo método más importante es el siguiente:
+````java
+public void checkPieza(Entity entity) {
+    //...
+
+    // Verifica la dirección de la entidad y calcula las piezas correspondientes
+    switch (entity.sentido) {
+        case 'w': // Arriba
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 's': // Abajo
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 'a': // Izquierda
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 'd': // Derecha
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+    }
+}
+````
+En términos simples, comprueba si los siguientes **2 bloques** que pisará la entidad son colisionables o no, de ser el caso,
+entonces evitará que pueda caminar a esa dirección. Dicho de otra manera, se predice a donde irá la entidad
+en base a su dirección y desplazamiento.
+
+La variable ``entity.collisionOn`` se usa de la siguiente manera en ``Player``:
+````java
+public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
+    //...
+
+    // Si no hay colisión, mueve al jugador
+    if (!collisionOn) {
+        movePlayer(sentido);
+    }
+    
+    //...
+}
+````
+Si no hay colisión, el jugador se puede mover en ese *sentido*.
+
 Resultado de la implementación en un mapa de prueba:
 
 ![colisionajusta](images/ejemploColision.gif)
 ___
 ### Creación de Objetos (Sprites) y posicionamiento
+Ahora existen 3 tipos de clases: ``ObjectGame, ObjectPlacer y Objects`` como tal:
 
-(Package OBJECT: ID(representa item individual) y es subclase de: ObjectGame(Dibujado de los objetos), ObjectPlacer(Coordenadas de aparición),
-TeisPanel (Implementa ObjectGame y almacena los ID de los items en obj[]), ventana(llama al metodo setUpItems antes de comenzar el juego))
+**Object Game** cuenta con los siguientes atributos...
+````java
+public BufferedImage image;
+public String id;
+public boolean collision = false;
+public int worldX, worldY;
+public int height = 48;
+public int width = 48;
 
+// El objeto entero será el área de colisión
+public Rectangle solidArea = new Rectangle(0,0, width, height);
+````
+Estos atributos sirven para la representación gráfica del objeto como para la identificación del mismo cuando el jugador
+hace contacto con estos. De esta manera, también se instancia ``Rectangle`` que determina una área colisionable.
+
+**Object Placer** cumple con la función de instanciar y posicionar objetos en el mapa.
+````java
+public void setObject() {
+        // Crea un objeto Passvigo y lo coloca en la posición (23, 23)
+        teisPanel.obj[0] = new Passvigo();
+        teisPanel.obj[0].worldX = 20 * teisPanel.sizeFinal;
+        teisPanel.obj[0].worldY = 15 * teisPanel.sizeFinal;
+
+        // Crea un objeto Puerta y lo coloca en la posición (20, 21)
+        teisPanel.obj[1] = new Puerta();
+        teisPanel.obj[1].worldX = 10 * teisPanel.sizeFinal;
+        teisPanel.obj[1].worldY = 15 * teisPanel.sizeFinal;
+
+        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
+        teisPanel.obj[2] = new Container();
+        teisPanel.obj[2].worldX = 15 * teisPanel.sizeFinal;
+        teisPanel.obj[2].worldY = 15 * teisPanel.sizeFinal;
+    
+        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
+        teisPanel.obj[3] = new BusVitrasa();
+        teisPanel.obj[3].worldX = 20 * teisPanel.sizeFinal;
+        teisPanel.obj[3].worldY = 10 * teisPanel.sizeFinal;
+}
+````
+Como se ve en el ejemplo, cada objeto se instancia sobre una lista de TeisPanel de tipo ObjectGame.
+Esto es gracias a que cada objeto (BusVitrasa, Container, etc) se extienden de una clase padre
+siendo esta ``ObjectGame``.
+
+Cada objeto sigue un tipo de clase similar:
+````java
+public class BusVitrasa extends ObjectGame {
+
+    public BusVitrasa() {
+        // Establece el identificador del Passvigo
+        id = "Bus";
+        // Carga la imagen del Passvigo desde un archivo de recursos
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
+            height = image.getHeight() * 7;
+            width = image.getWidth() * 7;
+            solidArea.width = width;
+            solidArea.height = height;
+        } catch (IOException e) {
+            // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
+            throw new RuntimeException(e);
+        }
+    }
+}
+````
+En este caso, la clase Bus se identifica de las demas por tener un id llamado "Bus" y también modifica su tamaño.
+Los objetos son creados en el juego de la siguiente manera:
+````java
+public ventana() {
+    teisPanel = new TeisPanel(); // Crea un nuevo panel principal
+    setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
+    setResizable(false); // Impide que la ventana sea redimensionable
+    setTitle("Teis"); // Establece el título de la ventana
+    add(teisPanel); // Agrega el panel principal a la ventana
+    pack(); // Ajusta el tamaño de la ventana para que quepa el panel principal
+    setLocationRelativeTo(null); // Centra la ventana en la pantalla
+    setVisible(true); // Hace visible la ventana
+
+    // Inicializa los items del mapa
+    teisPanel.setUpItems();
+
+    // Inicializa el hilo principal del juego
+    teisPanel.startTeisThread();
+}
+````
+Se llama a un método que llama a setUpItems() el cual se encarga de inicializar la Lista de Objetos.
+___
+### Implementación de efectos de sonido
+
+Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController.
+
+Falta por añadir algún tipo de menu que controle el nivel de volumen del juego. Es decir, un menú. 
+
+Se crea la clase Sound cuya función se basa en recoger archivos de audio **wav 16bit** y reproducirlos:
+````java
+public class Sound {
+    Clip clip;
+    URL[] soundPath = new URL[10];
+    
+    public Sound() {
+        // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
+        soundPath[0] = getClass().getClassLoader().getResource("effects/chillbeat.wav");
+        soundPath[1] = getClass().getClassLoader().getResource("effects/recogeobjetos.wav");
+        soundPath[2] = getClass().getClassLoader().getResource("effects/normalito.wav");
+    }
+    
+    public void setFile(int i) throws LineUnavailableException {
+        try {
+            // Se crea un AudioInputStream a partir del archivo de sonido seleccionado.
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundPath[i]);
+            // Se crea un Clip de audio y se abre con el AudioInputStream.
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            // Se lanza una excepción RuntimeException si ocurre un error al abrir el archivo de sonido.
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Setters y getters...
+}
+````
+Esta clase luego se emplea en el ``GameController`` que instancia 2 clases Sound, una para controlar la música de fondo
+y otra para controlar efectos de sonido especificos como por ejemplo el de recoger objetos o abrir puertas:
+````java
+public class GameController {
+    //...
+    // Efectos de sonido
+    Sound sound = new Sound();
+    Sound se = new Sound(); // SoundEffect
+    //...
+    public Sound getSound() {
+        return sound;
+    }
+    public void update() throws LineUnavailableException {
+        // Actualiza el estado del jugador
+        model.actualiza();
+    }
+    public void playMusic(int i) throws LineUnavailableException {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+    public void stopMusic() {
+        sound.stop();
+    }
+    public void playSelection(int i) throws LineUnavailableException {
+        se.setFile(i);
+        se.play();
+    }
+    public void stopSelection(int i) throws LineUnavailableException {
+        se.setFile(i);
+        se.stop();
+    }
+}
+````
+La implementación de este método con las interacciones del jugador con los objetos se ven en el método de Player
+en el que dependiendo de que objeto toque el jugador, una acción será ejecutada:
+````java
+public void pickUpItem(int id) throws LineUnavailableException {
+    if (id != 999) { // Verifica si el objeto existe
+        // Verifica el tipo de objeto y realiza la acción correspondiente
+        switch (teisPanel.obj[id].id) {
+            case "Passvigo":
+                teisPanel.controller.playSelection(1);
+                teisPanel.obj[id] = null; // Elimina el objeto del mapa
+                tenPass = true; // True si tienes las PassVigo
+                teisPanel.controller.ui.showMessage("tes a PassVigo, poderás entrar ó Vitrasa... qué merda");
+                break;
+            case "Puerta":
+                // Verifica si el jugador tiene PassVigo
+                if (tenPass) {
+                    teisPanel.obj[id] = null;
+                    /*tenPass = false;*/
+                }
+                break;
+            case "Container":
+                teisPanel.controller.ui.isFinished = true;
+                if (teisPanel.controller.getSound().getClip() != null)
+                    teisPanel.controller.stopMusic();
+                teisPanel.controller.playSelection(2);
+                break;
+        }
+    }
+}
+````
+___
+## Semana del 27/05/2024
+### Optimización del código
+Gracias al método `System.nanoTime()` se pueden conocer instantes de tiempo con precisión de nanosegundos, sabiendo esto
+y viendo como está el código hecho me doy cuenta de que en el loop de pintado hay instancias que se pueden evitar.
+Con el código original, *mi ordenador* tarda unos ~650000 nanosegundos en pintar las piezas.
+
+Esto se puede saber aplicando ``System.nanoTime()`` de la siguiente manera:
+````java
+public void paintComponent(Graphics g){
+    //...
+    // Tiempo que tarda en dibujar:
+    long tDraw = 0;
+    if (model.keyManager.Time)
+        tDraw = System.nanoTime();
+    //...
+    if (model.keyManager.Time) {
+        long tDrawEnd = System.nanoTime();
+        long tiempoRestante = tDrawEnd - tDraw;
+        System.out.println("Tiempo de pintado" + tiempoRestante); // Printea por pantalla el tiempo transcurrido
+    }
+    //...
+}
+````
+Creo una ``nueva clase: PiezaUtils`` con la idea de re-escalar las imágenes antes de dibujarlas por pantalla,
+de esta manera, el loop de juego no tendrá que re-escalar la imágen cada vez que llama a la variable **imágen**:
+````java
+public class PiezaUtils {
+    public BufferedImage escalado(BufferedImage origin, int width, int height) {
+        // Crea una nueva BufferedImage con las dimensiones deseadas y el mismo tipo que la imagen original
+        BufferedImage escalado = new BufferedImage(width, height, origin.getType());
+
+        // Crea un objeto Graphics2D para dibujar la imagen
+        Graphics2D g2 = escalado.createGraphics();
+
+        // Dibuja la imagen original en la nueva BufferedImage, escalándola a las dimensiones deseadas
+        g2.drawImage(origin, 0, 0, width, height, null);
+
+        // Libera los recursos del objeto Graphics2D
+        g2.dispose();
+
+        // Devuelve la imagen escalada
+        return escalado;
+    }
+}
+````
+Otro cambio realizado ha sido el de como se generan las Piezas. Antes, estas eran instanciadas y luego escaladas,
+ahora todo se hace desde un metodo llamado ``setEscaled()``. Este método se encarga de la generación de Piezas
+y del reescalado de las imágenes para adaptarlas a la resolución por defecto de los sprites que es de **48x48px**.
+````java
+public void getPiezaImage() {
+    for (int i = 0; i < pieza.length; i++)
+        setEscaled(i);
+}
+public void setEscaled(int i) {
+    // Crea un nuevo objeto PiezaUtils
+    PiezaUtils piezaUtils = new PiezaUtils();
+    try {
+        // Verifica si la ruta de la imagen comienza con un asterisco
+        if (imagePaths[i].startsWith("*")) {
+            // Elimina el asterisco de la ruta de la imagen
+            imagePaths[i] = imagePaths[i].substring(1);
+            // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
+            pieza[i] = new Pieza(true);
+        } else {
+            // Crea un nuevo objeto Pieza con el constructor predeterminado
+            pieza[i] = new Pieza();
+        }
+
+        // Lee la imagen desde el recurso especificado por la ruta de la imagen
+        pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+
+        // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+        pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+    } catch (IOException e) {
+        // Imprime el mensaje de error si ocurre una excepción al leer la imagen
+        System.out.println(e.getMessage());
+    }
+}
+````
+#### Por otro lado...
+Las clases ``Entity y Player`` están más diferenciadas que antes, ya que el método encargado del dibujado de los sprites
+del jugador ahora están en ``Player`` como debería haber estado desde un principio.
+````java
+public void getPlayerImage() {
+    up1 = setPlayerSprite("player/upWalkingBehind1.png");
+    up2 = setPlayerSprite("player/upWalkingBehind2.png");
+    down1 = setPlayerSprite("player/downWalking1.png");
+    down2 = setPlayerSprite("player/downWalking2.png");
+    left1 = setPlayerSprite("player/leftWalking1.png");
+    left2 = setPlayerSprite("player/leftWalking2.png");
+    right1 = setPlayerSprite("player/rightWalking1.png");
+    right2 = setPlayerSprite("player/rightWalking2.png");
+    stop = setPlayerSprite("player/frontStanding.png");
+    stop2 = setPlayerSprite("player/stop2.png");
+}
+public BufferedImage setPlayerSprite(String path) {
+
+    PiezaUtils piezaUtils = new PiezaUtils();
+    BufferedImage image;
+    try {
+        image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
+        image = piezaUtils.escalado(image,48,48);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    return image;
+}
+````
+#### Además...
+La clase que maneja los objetos (`ObjectGame`) ahora instancia también la clase de `PiezaUtils` para que las clases
+heredadas como `Container` y las demás hereden esta misma. De esta manera, la imágen de cada objeto es escalada antes 
+de ser pintada mediante un paintComponent.
+
+**Después de todas estas modificaciones el tiempo de carga ha bajado a: ~200000 nanosegundos**.
+___
+### Diálogos
+Para la implementación de mensajes de texto en el juego se agregan varias cosas en forma de atributos y métodos al juego:
+``String message`` y ``boolean messageOn``.
+Por otra parte, se implementan nuevas funcionalidades en la clase de KeyManager y en Entity donde se guardan todos los
+diálogos en un array de tipo *String*. 
+
+En general, **Entity, KeyManager, Player, UserInterface y Viello** emplean estos atributos para displayear mensajes en
+varias situaciones como:
+- Interacción con NPC mediante ``isPressed`` que se activa al presionar `Espacio`.
+- Interacción con eventos del juego mediante la *colisión* del player con el *área sólida* del evento.
+- Mensajes propios del juego a modo en el _título_.
+````java
+public void drawDialogo() {
+   // Calcula la posición y tamaño de la ventana de diálogo
+   int x = teisPanel.sizeFinal * 2; // Posición horizontal X
+   int y = teisPanel.sizeFinal / 2; // Posición vertical Y
+   int width = teisPanel.screenWidth - teisPanel.sizeFinal * 4; // Ancho de la ventana
+   int height = teisPanel.sizeFinal * 5; // Alto de la ventana
+   
+   // Dibuja la ventana de diálogo
+   drawVentana(x, y, width, height);
+   
+   // Establece la fuente para el texto del diálogo
+   g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22));
+   
+   // Calcula la posición inicial del texto del diálogo
+   x += teisPanel.sizeFinal;
+   y += teisPanel.sizeFinal;
+   
+   // Dibuja cada línea del diálogo
+   for (String line : dialogo.split("\n")) {
+      g2.drawString(line, x, y);
+      y += 40; // La siguiente línea se dibuja 40 píxeles por debajo
+   }
+}
+````
+#### Dependencia de fuente de texto
+El problema principal con las fuentes de texto es que **no todos los usuarios** tienen
+las mismas en el ordenador por lo que ``si un usuario no tiene la fuente de texto empleada``
+por el videojuego en su sistema operativo, los dialogos no se podrán mostrar.
+
+La solución es la siguiente: ***instalar una fuente de texto e implementarla para el juego***.
+Esta fuente de texto se encuentra en la carpeta ``Assets/font/`` donde luego se instancia como
+Font en las clases que empleen display de texto.
+___
+### Pantalla de carga
+En el código de mi juego hay una variable que **hace que haya un display u otro de lo que el jugador ve por pantalla**.
+Esto se consigue implementando ``GameStates`` que en mi caso pueden ser `0, 1, 2 y 3`:
+- 0: pauseState
+- 1: dialogoState 
+- 2: playState
+- 3: cargaState
+
+El estado de juego *por defecto* es cargaState y funciona de la siguiente manera su implementación:
+````java
+public void draw(Graphics2D g2) {
+        this.g2 = g2;
+        // Establece la fuente y el color del texto
+        g2.setFont(pixeledFont); 
+        g2.setColor(Color.WHITE);
+        // Dibuja diferentes elementos en la pantalla según el estado del juego
+        if (teisPanel.controller.estado == teisPanel.controller.cargaState) {
+            drawPantallaCarga();
+        }
+        if (teisPanel.controller.estado == teisPanel.controller.playState) {
+            drawPlayerVida();
+        }
+        if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
+            drawPlayerVida();
+            drawPauseState();
+        }
+        if (teisPanel.controller.estado == teisPanel.controller.dialogoState) {
+            drawPlayerVida();
+            drawDialogo();
+        }
+    }
+````
+___
+### Eventos complejos y Cooldowns de los mismos
+Se crean dos nuevas clases: ``EventManager`` y `EventRectangle`:
+- EventManager: maneja el funcionamiento y posicionamiento de cada evento.
+- EventRectangle: maneja los datos de cada evento.
+
+La clase Manager contiene métodos como ``heal()``, ``damage()`` o ``hit`` con una funcionalidad diferente cada uno. 
+El método ``hit`` se encarga de detectar si ha habido colisión entre el evento y alguna entidad y si es así entonces
+lanza otro método que activa el evento. Hay eventos que quitan vida, otros que curan y otros meramente informativos.
+___
+### Reestructuración del código
+ObjectGame ya no existe, ahora todos los objetos son clases heredadas de Entity.
+
+TeisPanel tiene otra forma de dibujar la pantalla ya que el método paintComponent ha sido mejorado considerablemente:
+1. Reducir la cantidad de iteraciones: En lugar de iterar sobre los arrays controller.npc y controller.obj para agregar elementos a controller.entities, puedes utilizar Arrays.stream() para agregar todos los elementos no nulos en una sola línea.
+2. Utilizar métodos para agrupar lógica: El método paintComponent está haciendo demasiadas cosas. Puedes crear métodos separados para dibujar el fondo, dibujar las entidades, dibujar la interfaz de usuario, etc. Esto hará que el código sea más fácil de leer y mantener.
+3. Evitar crear objetos innecesarios: En lugar de crear un nuevo Graphics2D objeto cada vez que se llama a paintComponent, puedes reutilizar el objeto Graphics pasado como parámetro.
+4. Reducir la cantidad de llamadas a métodos: En lugar de llamar a controller.entities.get(i).draw(g2) en cada iteración, puedes crear una variable local para almacenar la entidad actual y llamar a su método draw solo una vez.
+
+````java
+public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      Graphics2D g2 = (Graphics2D) g;
+      //...
+      if (controller.estado == controller.cargaState) {
+         // Dibuja la pantalla de carga.
+         controller.ui.draw(g2);
+      } else {
+         // Dibuja el fondo.
+         drawBackground(g2);
+      
+         // Dibuja las entidades.
+         drawEntities(g2);
+      
+         // Dibuja la interfaz de usuario.
+         controller.ui.draw(g2);
+      }//...
+      // Libera los recursos gráficos.
+      g2.dispose();
+}
+````
+
+Los métodos drawBackground y drawEntities:
+````java
+private void drawBackground(Graphics2D g2) {
+   // Dibuja el fondo utilizando el objeto PiezaManager.
+   controller.getPiezaManager().pinta(g2);
+}
+private void drawEntities(Graphics2D g2) {
+   // Limpia la lista de entidades.
+   controller.entities.clear();
+   
+   // Agrega las entidades no nulas a la lista de entidades.
+   controller.entities.addAll(Arrays.stream(controller.npc).filter(Objects::nonNull).toList());
+   controller.entities.addAll(Arrays.stream(controller.obj).filter(Objects::nonNull).toList());
+   controller.entities.add(model);
+   
+   // Ordena las entidades por su posición en Y.
+   controller.entities.sort(Comparator.comparingInt(e -> e.worldY));
+   
+   // Dibuja cada entidad en la lista.
+   for (Entity entity : controller.entities) {
+      entity.draw(g2);
+   }
+   
+   // Limpia la lista de entidades.
+   controller.entities.clear();
+}
+````
+
+Explicación:
+1. Arrays.stream(controller.npc) crea un flujo de datos a partir del array controller.npc.
+2. filter(Objects::nonNull) filtra el flujo de datos y solo permite pasar los elementos no nulos.
+3. toList() convierte el flujo de datos en una lista y se agrega a la lista controller.entities utilizando el método addAll().
+4. Se repite el proceso para el array controller.obj.
+5. Finalmente, se agrega la entidad model a la lista controller.entities utilizando el método add().
+___
+### Implementación de PostgreSQL
+Se crea la clase `Propierties` que se encarga de interactuar con una base de datos PostgreSQL. 
+Esta clase proporciona métodos para establecer ***la conexión a la base de datos***, crear una tabla llamada ```"entidad"```, 
+obtener los datos de la tabla "entidad" y cerrar la conexión a la base de datos.
+
+El constructor de la clase Propierties recibe tres parámetros: url, usuario y password para establecer la conexión a la base de datos PostgreSQL.
+Por otro lado, el _constructor_ carga el driver de PostgreSQL, establece la conexión a la base de datos y almacena la conexión en una variable de instancia llamada conexion.
+
+- El método crearTablaEntidad() crea la tabla "entidad" en la base de datos. Primero, borra la tabla anterior si existe. Luego, crea la tabla con las columnas especificadas y inserta tres registros iniciales.
+- El método obtenerDatosEntidad() devuelve un arreglo de objetos que contiene los datos de la tabla "entidad". El método utiliza un objeto Statement para ejecutar una consulta SQL que selecciona todos los registros de la tabla "entidad". Luego, itera sobre los resultados y almacena los datos en un arreglo de objetos.
+- El método cerrarConexion() cierra la conexión a la base de datos. Este método es importante para liberar recursos y evitar problemas de concurrencia.
+___
 ### IDEAS para los NPCs e Easter Eggs
-Meter personajes tanto ficticios como historicos de manera aleatoria.
+#### Idea de uso de la passVigo y las passVigoPLUS:
+Molaría poner que la PassVigo tiene X saldo dando resultado a que...
+* puedes abrir X número de puertas dependiendo del saldo que tengas.
+* Con las PassVigoPLUS puedes acceder a un easter egg, donde luchas contra el dinoseto, estaría guapísimo.
+* Por casa uso de la PassVigo, notificación en la pantalla sobre cuanto saldo queda.
+
+#### Ideas para más NPCs
+Abres un contenedor que pone VIGO CIUDAD MÁS LIMPIA DE EUROPA y:
+* lo único que encuentras es "outra botella de mayerlin baleira, outra vez será..."
+* encuentras una botella de mayerlin llena "Deus está a sorrirche, hoxe touca Churru sí ou non sí...(?)"
+
+Encuentras un Item que parece una cajetilla en el suelo tirado... "haberá biruta?":
+* está vacío "Deus da ós seus mellores guerreiros as peores das batallas (touca ir ó estanco, manin)"
+* tiene algún que otro cigarro "Sorride, que hoxe non se o pides a tua nai!"
+
+Encuentras un periodico en el suelo:
+* lo recoges y el titular pone "O Celta volveu a perder...", "ai... a combinada, qué mala sorte que ten sempre este equipo!".
+* lo recoger y el titular pone "O Celta gañou!", "*Simplemente non cho cres e segues coa tua vida*".
+
+Bebes de una botella que te da un NPC:
+* "bebiches da botella dun bo home do naútico, agora ves sonidas e escoitas cores"
+
+Un vieixo de dubidosa procedencia non deixate pasar pola porta:
+* "Un viello de dubidosa procedencia non deixate pasar ainda despois de pedirlle amablemente que faga o favor de moverse, terás que tomar a xustiza pola tua man"
+
+Un fulano de Ourense pregunta que donde está la máquina de tabaco más cercana:
+* "O acabas de mandar pra o Vialia (encóntraste en Teis), eres o mal en persoa"
+
 Ejemplo:
--  ==> Hitler feliz con un cuadro
-- Dexter
-- Eric Cartman
 -  ==> La parca de Bill y Mandy
 -  ==> Finn y Jake
-- Shrek
-- The Beatles
 -  ==> Pedro Sánchez: entregandote una carta a la ciudadania
-- Shakira
-- Nietzsche
--  ==> Jesus Gil
-
-Para los dialogos de los NPCs:
-Ejemplos:
-- "coña?"
-- "fumo?"
-- "no creo, no"
-- "Devoré"
-- "tiene' un segarro?"
-- "hermano, tienes hora?"
-- "Y yo, no me causa rubor decirlo, soy un hombre profundamente enamorado de mi mujer que vive con impotencia el fango que sobre ella esparcen día sí y día también"
-- "bonito movil, eso está roto eh"
-- "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
-  financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"
-

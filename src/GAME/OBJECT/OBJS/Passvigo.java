@@ -1,17 +1,32 @@
+/*
 package GAME.OBJECT.OBJS;
 
-import GAME.OBJECT.ObjectGame;
+import GAME.ENTITY.Entity;
+import GAME.GAME.TeisPanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
+*/
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Clase que representa un Passvigo en el juego.
+ * Extiende de la clase ObjectGame, que probablemente contiene atributos y métodos comunes a todos los objetos del juego.
+ * *//*
 
-public class Passvigo extends ObjectGame {
-    public Passvigo() {
+public class Passvigo extends Entity {
+    */
+/**
+     * Constructor que inicializa el Passvigo con sus propiedades específicas.
+     *//*
+
+    public Passvigo(TeisPanel teisPanel) {
+        super(teisPanel);
+
+        // Establece el identificador del Passvigo
         id = "Passvigo";
-        try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/passvigo.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        stop = setEntitySprite("objects/passvigo.png", 24, 24);
     }
 }
+*/

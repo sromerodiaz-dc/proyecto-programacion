@@ -1,10 +1,10 @@
 package EDITOR.FX;
 
-import EDITOR.GUI.GUI;
+import GAME.FX.MapSelector;
+import GAME.FX.MapSize;
 
 import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Clase que proporciona métodos para generar un mapa de sprites y obtener el nombre del mapa y las dimensiones.
@@ -14,7 +14,9 @@ import java.io.IOException;
  * Proyecto: Teis
  */
 public class SpriteUtils {
-    public SpriteUtils(GUI gui){}
+    // Selector de mapa
+    MapSelector mapSelector = new MapSelector();
+
     public SpriteUtils(){}
     /**
      * Genera un mapa de sprites escrito en un archivo de texto a modo de matriz de números.
@@ -27,34 +29,35 @@ public class SpriteUtils {
     public void generateSpriteMap(ImageIcon[] sprites, ImageIcon[][] formato) throws IOException {
         // Recoge el nombre del mapa a través de otro método de la misma clase
         String mapName = mapName();
+        if (mapName != null) {
+            // Escribir el mapa de sprites en un archivo de texto
+            try (FileWriter fileWriter = new FileWriter("Assets/maps/" + mapName + ".txt")) {
 
-        // Escribir el mapa de sprites en un archivo de texto
-        try (FileWriter fileWriter = new FileWriter("Assets/maps/" + mapName + ".txt")) {
+                // Recorrer las filas y columnas del formato y buscar la correspondencia con los sprites
+                for (ImageIcon[] imageIcons : formato) {
+                    for (ImageIcon imageIcon : imageIcons) {
+                        boolean foundMatch = false;
+                        int spriteIndex = 0;
 
-            // Recorrer las filas y columnas del formato y buscar la correspondencia con los sprites
-            for (ImageIcon[] imageIcons : formato) {
-                for (ImageIcon imageIcon : imageIcons) {
-                    boolean foundMatch = false;
-                    int spriteIndex = 0;
-
-                    if (imageIcon != null) {
-                        // Recorrer los sprites y comparar con el ImageIcon actual
-                        for (ImageIcon sprite : sprites) {
-                            if (imageIcon.equals(sprite)) {
-                                // Si hay una correspondencia, escribir el índice del sprite en el archivo de texto
-                                fileWriter.write(spriteIndex + " ");
-                                foundMatch = true;
+                        if (imageIcon != null) {
+                            // Recorrer los sprites y comparar con el ImageIcon actual
+                            for (ImageIcon sprite : sprites) {
+                                if (imageIcon.equals(sprite)) {
+                                    // Si hay una correspondencia, escribir el índice del sprite en el archivo de texto
+                                    fileWriter.write(spriteIndex + " ");
+                                    foundMatch = true;
+                                }
+                                spriteIndex++;
                             }
-                            spriteIndex++;
+                        }
+
+                        // Si no se encontró una correspondencia, escribir un cero en el archivo de texto
+                        if (!foundMatch) {
+                            fileWriter.write("0 ");
                         }
                     }
-
-                    // Si no se encontró una correspondencia, escribir un cero en el archivo de texto
-                    if (!foundMatch) {
-                        fileWriter.write("0 ");
-                    }
+                    fileWriter.write(System.lineSeparator());
                 }
-                fileWriter.write(System.lineSeparator());
             }
         }
     }
@@ -69,16 +72,20 @@ public class SpriteUtils {
         String mapName = null;
 
         // Solicitar al usuario que introduzca el nombre del mapa hasta que se introduzca un nombre válido
-        do {
+        while (true) {
             userInput = JOptionPane.showInputDialog(null, "Introduzca el nombre del mapa:");
-            if (userInput != null && !userInput.isEmpty()) {
+            if (userInput == null) {
+                // El usuario canceló la operación, salir del método
+                break; // o lanzar una excepción, según sea necesario
+            } else if (!userInput.isEmpty()) {
                 mapName = userInput.trim();
                 // Quitar extensión .txt si existe
                 if (mapName.toLowerCase().endsWith(".txt")) {
                     mapName = mapName.substring(0, mapName.length() - 4);
                 }
+                break; // salir del bucle si se introdujo un nombre válido
             }
-        } while (mapName == null || mapName.isEmpty());
+        }
 
         return mapName;
     }
@@ -92,22 +99,12 @@ public class SpriteUtils {
      *
      * @return Un array de enteros con el número de filas y columnas.
      */
-    public int[] numRowsCols(GUI gui) {
+    public int[] numRowsCols() {
         int[] rowscols = new int[2];
 
-        JOptionPane.showMessageDialog(null,"Introduce el número de filas!");
-        rowscols[0] = solicitarEntero();
-        JOptionPane.showMessageDialog(null,"Introduce el número de columnas!");
-        rowscols[1] = solicitarEntero();
+        rowscols[0] = solicitarEntero('f');
+        rowscols[1] = solicitarEntero('c');
 
-        if (rowscols[0]>30 && rowscols[1]>30){
-            gui.MENU_IZQUIERDA_X = 100;
-            gui.MENU_IZQUIERDA_ALTO = 800;
-            gui.MENU_IZQUIERDA_ANCHO = 1050;
-
-            gui.MENU_INFERIOR_X = 1150;
-            gui.MENU_INFERIOR_Y = 670;
-        }
         return rowscols;
     }
 
@@ -116,13 +113,17 @@ public class SpriteUtils {
      *
      * @return el entero introducido por el usuario
      */
-    private int solicitarEntero() {
+    private int solicitarEntero(char c) {
         int valor = 0;
         String entrada;
         boolean entradaValida = false;
 
+        String string = "Introduce el número de filas";
+        if (c != 'f')
+            string = "Introduce el número de columnas";
+
         do {
-            entrada = JOptionPane.showInputDialog(null, "Introduzca un valor entre " + 1 + " y " + 50 + ":");
+            entrada = JOptionPane.showInputDialog(null, string);
 
             if (entrada == null) {
                 // Si la entrada es nula, se vuelve a solicitar un valor
@@ -144,5 +145,58 @@ public class SpriteUtils {
         } while (!entradaValida);
 
         return valor;
+    }
+
+    public int[][] loadMap(String mapName) {
+        MapSize datos = mapSelector.getMapSize();
+        int maxWorldCol = datos.maxCol;
+        int maxWorldRow = datos.maxRow;
+
+        int[][] mapaPiezaNum = new int[maxWorldCol][maxWorldRow];
+
+        InputStream is;
+        BufferedReader br;
+        try {
+            // Intenta obtener un InputStream para el archivo del mapa utilizando el classpath.
+            is = getClass().getClassLoader().getResourceAsStream(mapName);
+            if (is != null) {
+                // Encuentra el archivo del mapa, procede a leerlo.
+                br = new BufferedReader(new InputStreamReader(is));
+
+                // Variables para controlar la columna (col) y la fila (fil) en el mapa.
+                int col = 0, fil = 0;
+
+                // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
+                while (col < maxWorldCol && fil < maxWorldRow) {
+                    String linea = br.readLine();
+
+                    // Bucle por cada elemento (separado por espacios) en la línea actual.
+                    while (col < maxWorldCol) {
+                        String[] mapID = linea.split(" ");
+                        // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
+                        int map = Integer.parseInt(mapID[col]);
+                        // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
+                        mapaPiezaNum[col][fil] = map;
+                        col++;
+                    }
+                    // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
+                    if (col == maxWorldCol) {
+                        col = 0;
+                        fil++;
+                    }
+                }
+                // Cierra el BufferedReader para liberar recursos.
+                br.close();
+            } else {
+                // No se encontró el archivo del mapa.
+                System.out.println("Error: ¡No se encontró el archivo del mapa '" + mapName + "'!");
+            }
+        } catch (IOException e) {
+            // Maneja cualquier IOException que pueda ocurrir durante la lectura del archivo.
+            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
+            e.printStackTrace(); // Opcional: Imprime la traza de pila para depuración.
+        }
+
+        return mapaPiezaNum;
     }
 }

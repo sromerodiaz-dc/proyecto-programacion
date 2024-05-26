@@ -18,7 +18,6 @@ import java.io.PrintWriter;
  * Proyecto: Teis
  */
 public class SpriteLoader {
-
     /**
      * Carga sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
      *
@@ -50,30 +49,34 @@ public class SpriteLoader {
             }
         }
 
+        correspondencias(sprites,imagePaths);
+        return sprites;
+    }
+
+    public void correspondencias(List<ImageIcon> sprites, List<String> imagePaths) {
         // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
         File file = new File("Assets/maps_correspondencia/c_assets_user.txt");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
-                writeToFile(sprites, imagePaths, file);
-            } catch (IOException e) {
-                // Ignorar la excepción
-            }
+        if (file.exists())
+            file.delete();
+        try {
+            file.createNewFile();
+            // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
+            writeToFile(sprites, imagePaths, file);
+        } catch (IOException e) {
+            // Ignorar la excepción
         }
+
 
         file = new File("Assets/maps_correspondencia/c_assets.txt");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
-                writeToFileReal(sprites, imagePaths, file);
-            } catch (IOException e) {
-                // Ignorar la excepción
-            }
+        if (file.exists())
+            file.delete();
+        try {
+            file.createNewFile();
+            // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
+            writeToFileReal(sprites, imagePaths, file);
+        } catch (IOException e) {
+            // Ignorar la excepción
         }
-
-        return sprites;
     }
 
     /**
@@ -111,8 +114,14 @@ public class SpriteLoader {
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
             for (int i = 0; i < sprites.size(); i++) {
                 if (sprites.get(i) != null) {
+                    String replaced = replace(imagePaths.get(i));
+                    // Check if the imagePath starts with "background/pared"
+                    if (replaced.startsWith("background/pared") || replaced.startsWith("background/bloque") || replaced.startsWith("background/oscuro")) {
+                        // Prefix the imagePath with an asterisk
+                        replaced = "*" + replaced;
+                    }
                     // Escribir en el archivo de texto el sprite filtrado
-                    writer.println(replace(imagePaths.get(i)));
+                    writer.println(replaced);
                 } else {
                     writer.println(i + ": Error loading image");
                 }
