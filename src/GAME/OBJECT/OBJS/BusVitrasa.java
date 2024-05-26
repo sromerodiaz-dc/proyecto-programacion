@@ -19,8 +19,8 @@ public class BusVitrasa extends ObjectGame {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
             height = image.getHeight() * 7;
             width = image.getWidth() * 7;
-            solidArea.width = width;
-            solidArea.height = height;
+            solidArea.width = width - 15;
+            solidArea.height = height - 40;
         } catch (IOException e) {
             // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
             throw new RuntimeException(e);
