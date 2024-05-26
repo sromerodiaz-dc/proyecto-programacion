@@ -27,14 +27,18 @@ public class GUI extends JFrame {
     // Propiedades de pantalla
     private static final int ANCHO = 1920;
     private static final int ALTO = 1080;
-    public int MENU_IZQUIERDA_X = 450;
-    public int MENU_IZQUIERDA_Y = 100;
-    public int MENU_IZQUIERDA_ANCHO = 830;
-    public int MENU_IZQUIERDA_ALTO = 600;
-    public int MENU_INFERIOR_X = 615;
-    public int MENU_INFERIOR_Y = 730;
-    private static final int MENU_INFERIOR_ANCHO = 534;
-    private static final int MENU_INFERIOR_ALTO = 180;
+
+    public int MENU_IZQUIERDA_ANCHO = (int) (ANCHO / 1.7);
+    public int MENU_IZQUIERDA_ALTO = ALTO - 150 ;
+
+    public int MENU_IZQUIERDA_X = 50;
+    public int MENU_IZQUIERDA_Y = 50;
+
+    private static final int MENU_INFERIOR_ANCHO = ANCHO / 4;
+    private static final int MENU_INFERIOR_ALTO = ALTO / 6;
+
+    public int MENU_INFERIOR_X = ANCHO - 720;
+    public int MENU_INFERIOR_Y = ALTO - 400;
 
     // Instancias de clases cuyos métodos son necesarios
     private final SpriteLoader spriteLoader = new SpriteLoader(); // Carga los assets
@@ -69,7 +73,7 @@ public class GUI extends JFrame {
         sprites = loadSprites();
 
         // Crea ambos menús
-        createMenuIzquierda(this);
+        createMenuIzquierda();
         createMenuInferior();
         // Crea ambos botones
         createBotonGuardar(menuIzquierda);
@@ -98,8 +102,8 @@ public class GUI extends JFrame {
      * El número de filas y columnas es determinado por el usuario a través de un método llamado
      * desde 'spriteUtils.numRowsCols()'
      * */
-    public void createMenuIzquierda(GUI gui) {
-        int[] nums = spriteUtils.numRowsCols(gui);
+    public void createMenuIzquierda() {
+        int[] nums = spriteUtils.numRowsCols();
         menuIzquierda = new VacioPanel(nums[0], nums[1]);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
