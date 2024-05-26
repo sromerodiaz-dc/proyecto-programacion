@@ -13,6 +13,8 @@ public class Container extends ObjectGame {
         // Establece el identificador del Passvigo
         id = "Container";
 
+        // Establece que la puerta tiene colisiones activadas
+        collision = true;
         // Carga la imagen del Passvigo desde un archivo de recursos
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/contenedorVigo.png"));

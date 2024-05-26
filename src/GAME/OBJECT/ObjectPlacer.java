@@ -13,7 +13,7 @@ public class ObjectPlacer {
     /**
      * Referencia al panel de juego donde se colocarán los objetos.
      */
-    private TeisPanel teisPanel;
+    private final TeisPanel teisPanel;
 
     /**
      * Constructor que inicializa la referencia al panel de juego.
