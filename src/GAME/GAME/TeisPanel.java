@@ -1,6 +1,5 @@
 package GAME.GAME;
 
-import GAME.EFFECT.Sound;
 import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
@@ -43,7 +42,7 @@ public class TeisPanel extends JPanel implements Runnable{
     public final int maxWorldRow;
 
     // Implementación tiempo (RUNNABLE)
-    Thread teisThread;
+    public Thread teisThread;
 
     // GameModel y Game Controller
     public final Player model;

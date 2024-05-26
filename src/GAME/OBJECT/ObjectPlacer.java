@@ -1,6 +1,7 @@
 package GAME.OBJECT;
 
 import GAME.GAME.TeisPanel;
+import GAME.OBJECT.OBJS.Container;
 import GAME.OBJECT.OBJS.Passvigo;
 import GAME.OBJECT.OBJS.Puerta;
 
@@ -35,5 +36,10 @@ public class ObjectPlacer {
         teisPanel.obj[1] = new Puerta();
         teisPanel.obj[1].worldX = 20 * teisPanel.sizeFinal;
         teisPanel.obj[1].worldY = 21 * teisPanel.sizeFinal;
+
+        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
+        teisPanel.obj[2] = new Container();
+        teisPanel.obj[2].worldX = 5 * teisPanel.sizeFinal;
+        teisPanel.obj[2].worldY = 5 * teisPanel.sizeFinal;
     }
 }

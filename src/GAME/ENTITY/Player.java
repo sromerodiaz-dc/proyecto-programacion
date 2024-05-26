@@ -58,8 +58,8 @@ public class Player extends Entity {
      * Metodo que define el estado inicial del jugador
      */
     public void setValoresPorDefecto() {
-        worldX = teisPanel.sizeFinal * 2;
-        worldY = teisPanel.sizeFinal * 2;
+        worldX = teisPanel.sizeFinal * 10;
+        worldY = teisPanel.sizeFinal * 10;
         speed = 4;
         sentido = '0';
     }
@@ -217,7 +217,7 @@ public class Player extends Entity {
                     // Verifica si el jugador tiene PassVigo
                     if (tenPass) {
                         teisPanel.obj[id] = null;
-                        tenPass = false;
+                        /*tenPass = false;*/
                         teisPanel.controller.ui.showMessage("porta aberta, manin");
                         /*
                         * Molaría poner que la PassVigo tiene X saldo y solo
@@ -226,6 +226,12 @@ public class Player extends Entity {
                         * luchas contra el dinoseto, estaría guapísimo
                         * */
                     }
+                    break;
+                case "Container":
+                    teisPanel.controller.ui.isFinished = true;
+                    if (teisPanel.controller.getSound().getClip() != null)
+                        teisPanel.controller.stopMusic();
+                    teisPanel.controller.playSelection(2);
                     break;
             }
         }
