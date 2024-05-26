@@ -72,5 +72,9 @@ public class Sound {
         // Se detiene la reproducción del sonido.
         clip.stop();
     }
+
+    public Clip getClip() {
+        return clip;
+    }
 }
 
