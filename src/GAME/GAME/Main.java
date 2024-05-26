@@ -1,4 +1,4 @@
-package GAME.FX;
+package GAME.GAME;
 import GAME.GUI.ventana;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -8,7 +8,7 @@ import javax.sound.sampled.LineUnavailableException;
  * CFP Daniel Castelao
  * Proyecto: Teis
  * -
- * Clase GAME.FX.Main se encarga de lanzar el programa
+ * Clase GAME.GAME.Main se encarga de lanzar el programa
  * */
 public class Main {
     public static void main() throws LineUnavailableException {
