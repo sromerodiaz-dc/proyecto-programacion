@@ -13,8 +13,8 @@ public class BusVitrasa extends ObjectGame {
         // Carga la imagen del Passvigo desde un archivo de recursos
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
-            height = image.getHeight() * 5;
-            width = image.getWidth() * 5;
+            height = image.getHeight() * 7;
+            width = image.getWidth() * 7;
             solidArea.width = width;
             solidArea.height = height;
         } catch (IOException e) {
