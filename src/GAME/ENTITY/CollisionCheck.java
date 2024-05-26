@@ -123,10 +123,10 @@ public class CollisionCheck {
                         entity.solidArea.y += entity.speed;
                         break;
                     case 'd': // Izquierda
-                        entity.solidArea.x -= entity.speed;
+                        entity.solidArea.x += entity.speed;
                         break;
                     case 'a': // Derecha
-                        entity.solidArea.x += entity.speed;
+                        entity.solidArea.x -= entity.speed;
                         break;
                 }
 
