@@ -18,14 +18,15 @@ public class UserInterface {
     TeisPanel teisPanel; // Referencia al panel donde se dibujará la interfaz de usuario.
     Font font, arial_endBold; // Fuente de texto utilizada para dibujar texto en la interfaz de usuario.
     BufferedImage imagePass; // Implementación de imágen para la UI y acompañar al texto
-    public boolean messageOn = false;
-    public String message = "";
-    int messageTime = 0;
 
-    public boolean isFinished = false;
+    public boolean messageOn = false; // Dependiendo de las interacciones del player
+    public String message = ""; // Mensaje mostrado dependiendo del objeto
+    int messageTime = 0; // Tiempo que se muestra el mensaje
 
-    double speedRun;
-    DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+    public boolean isFinished = false; // Termina el juego
+
+    double speedRun; // Tiempo de juego
+    DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // Formato del tiempo
 
     /**
      * Constructor de la clase UserInterface.
@@ -96,6 +97,7 @@ public class UserInterface {
             String text;
             /*int textLenght; textLenght = (int) g2.getFontMetrics().getStringBounds(text,g2).getWidth();*/
 
+            // Cuando se llega al final del juego, estos String se muestran por pantalla
             int x ,y;
             text = "Tiempo de juego: "+decimalFormat.format(speedRun);
             x = teisPanel.sizeFinal * 13;

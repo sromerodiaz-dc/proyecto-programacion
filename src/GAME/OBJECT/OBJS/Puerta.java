@@ -20,6 +20,8 @@ public class Puerta extends ObjectGame {
         // Establece el identificador de la puerta
         id = "Puerta";
 
+        // Establece que la puerta tiene colisiones activadas
+        collision = true;
         // Carga la imagen de la puerta desde un archivo de recursos
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/portal.png"));
@@ -27,8 +29,5 @@ public class Puerta extends ObjectGame {
             // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
             throw new RuntimeException(e);
         }
-
-        // Establece que la puerta tiene colisiones activadas
-        collision = true;
     }
 }

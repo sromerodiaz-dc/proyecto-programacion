@@ -17,7 +17,7 @@ public class Sound {
      */
     Clip clip;
     /**
-     * Arreglo de URLs que contienen los paths de los archivos de sonido.
+     * Arreglo de URL que contienen los paths de los archivos de sonido.
      */
     URL[] soundPath = new URL[10];
 
@@ -73,6 +73,9 @@ public class Sound {
         clip.stop();
     }
 
+    /**
+     * @return Clip Object
+     * */
     public Clip getClip() {
         return clip;
     }

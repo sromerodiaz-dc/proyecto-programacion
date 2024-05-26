@@ -599,21 +599,259 @@ Cuando por fin logra entrar es cuando ninguno de sus bordes toca nada:
 ![colision](images/exp_colision2.gif)
 
 ### falta por explicar codigo de la colision (entity,player,controller,collisionCheck)...
+Para solucionar estos problemas, ahora tanto la clase padre Entity como su clase hija ``Player`` cuentan 
+con los siguientes atributos:
+````java
+public Rectangle solidArea;
+public int defaultSolidAreaX, defaultSolidAreaY;
+public boolean collisionOn = false;
+````
+Estos atributos definen el área de colisión de las entidades. Para comprobar las colisiones entre objetos, piezas y 
+demás cosas colisionables se crea una clase llamada ``CollisionCheck`` cuyo método más importante es el siguiente:
+````java
+public void checkPieza(Entity entity) {
+    //...
+
+    // Verifica la dirección de la entidad y calcula las piezas correspondientes
+    switch (entity.sentido) {
+        case 'w': // Arriba
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 's': // Abajo
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 'a': // Izquierda
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+        case 'd': // Derecha
+            //...
+            if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
+                entity.collisionOn = true;
+            }
+            break;
+    }
+}
+````
+En términos simples, comprueba si los siguientes **2 bloques** que pisará la entidad son colisionables o no, de ser el caso,
+entonces evitará que pueda caminar a esa dirección. Dicho de otra manera, se predice a donde irá la entidad
+en base a su dirección y desplazamiento.
+
+La variable ``entity.collisionOn`` se usa de la siguiente manera en ``Player``:
+````java
+public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
+    //...
+
+    // Si no hay colisión, mueve al jugador
+    if (!collisionOn) {
+        movePlayer(sentido);
+    }
+    
+    //...
+}
+````
+Si no hay colisión, el jugador se puede mover en ese *sentido*.
+
 Resultado de la implementación en un mapa de prueba:
 
 ![colisionajusta](images/ejemploColision.gif)
 ___
 ### Creación de Objetos (Sprites) y posicionamiento
+Ahora existen 3 tipos de clases: ``ObjectGame, ObjectPlacer y Objects`` como tal:
 
-(Package OBJECT: ID(representa item individual) y es subclase de: ObjectGame(Dibujado de los objetos), ObjectPlacer(Coordenadas de aparición),
-TeisPanel (Implementa ObjectGame y almacena los ID de los items en obj[]), ventana(llama al metodo setUpItems antes de comenzar el juego))
+**Object Game** cuenta con los siguientes atributos...
+````java
+public BufferedImage image;
+public String id;
+public boolean collision = false;
+public int worldX, worldY;
+public int height = 48;
+public int width = 48;
+
+// El objeto entero será el área de colisión
+public Rectangle solidArea = new Rectangle(0,0, width, height);
+````
+Estos atributos sirven para la representación gráfica del objeto como para la identificación del mismo cuando el jugador
+hace contacto con estos. De esta manera, también se instancia ``Rectangle`` que determina una área colisionable.
+
+**Object Placer** cumple con la función de instanciar y posicionar objetos en el mapa.
+````java
+public void setObject() {
+        // Crea un objeto Passvigo y lo coloca en la posición (23, 23)
+        teisPanel.obj[0] = new Passvigo();
+        teisPanel.obj[0].worldX = 20 * teisPanel.sizeFinal;
+        teisPanel.obj[0].worldY = 15 * teisPanel.sizeFinal;
+
+        // Crea un objeto Puerta y lo coloca en la posición (20, 21)
+        teisPanel.obj[1] = new Puerta();
+        teisPanel.obj[1].worldX = 10 * teisPanel.sizeFinal;
+        teisPanel.obj[1].worldY = 15 * teisPanel.sizeFinal;
+
+        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
+        teisPanel.obj[2] = new Container();
+        teisPanel.obj[2].worldX = 15 * teisPanel.sizeFinal;
+        teisPanel.obj[2].worldY = 15 * teisPanel.sizeFinal;
+    
+        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
+        teisPanel.obj[3] = new BusVitrasa();
+        teisPanel.obj[3].worldX = 20 * teisPanel.sizeFinal;
+        teisPanel.obj[3].worldY = 10 * teisPanel.sizeFinal;
+}
+````
+Como se ve en el ejemplo, cada objeto se instancia sobre una lista de TeisPanel de tipo ObjectGame.
+Esto es gracias a que cada objeto (BusVitrasa, Container, etc) se extienden de una clase padre
+siendo esta ``ObjectGame``.
+
+Cada objeto sigue un tipo de clase similar:
+````java
+public class BusVitrasa extends ObjectGame {
+
+    public BusVitrasa() {
+        // Establece el identificador del Passvigo
+        id = "Bus";
+        // Carga la imagen del Passvigo desde un archivo de recursos
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
+            height = image.getHeight() * 7;
+            width = image.getWidth() * 7;
+            solidArea.width = width;
+            solidArea.height = height;
+        } catch (IOException e) {
+            // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
+            throw new RuntimeException(e);
+        }
+    }
+}
+````
+En este caso, la clase Bus se identifica de las demas por tener un id llamado "Bus" y también modifica su tamaño.
+Los objetos son creados en el juego de la siguiente manera:
+````java
+public ventana() {
+    teisPanel = new TeisPanel(); // Crea un nuevo panel principal
+    setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
+    setResizable(false); // Impide que la ventana sea redimensionable
+    setTitle("Teis"); // Establece el título de la ventana
+    add(teisPanel); // Agrega el panel principal a la ventana
+    pack(); // Ajusta el tamaño de la ventana para que quepa el panel principal
+    setLocationRelativeTo(null); // Centra la ventana en la pantalla
+    setVisible(true); // Hace visible la ventana
+
+    // Inicializa los items del mapa
+    teisPanel.setUpItems();
+
+    // Inicializa el hilo principal del juego
+    teisPanel.startTeisThread();
+}
+````
+Se llama a un método que llama a setUpItems() el cual se encarga de inicializar la Lista de Objetos.
 ___
 ### Implementación de efectos de sonido
 
-Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController
-Falta por añadir algún tipo de menu que controle el nivel de volumen del juego.
-Es decir, un menú. 
+Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController.
 
+Falta por añadir algún tipo de menu que controle el nivel de volumen del juego. Es decir, un menú. 
+
+Se crea la clase Sound cuya función se basa en recoger archivos de audio **wav 16bit** y reproducirlos:
+````java
+public class Sound {
+    Clip clip;
+    URL[] soundPath = new URL[10];
+    
+    public Sound() {
+        // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
+        soundPath[0] = getClass().getClassLoader().getResource("effects/chillbeat.wav");
+        soundPath[1] = getClass().getClassLoader().getResource("effects/recogeobjetos.wav");
+        soundPath[2] = getClass().getClassLoader().getResource("effects/normalito.wav");
+    }
+    
+    public void setFile(int i) throws LineUnavailableException {
+        try {
+            // Se crea un AudioInputStream a partir del archivo de sonido seleccionado.
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundPath[i]);
+            // Se crea un Clip de audio y se abre con el AudioInputStream.
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            // Se lanza una excepción RuntimeException si ocurre un error al abrir el archivo de sonido.
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Setters y getters...
+}
+````
+Esta clase luego se emplea en el ``GameController`` que instancia 2 clases Sound, una para controlar la música de fondo
+y otra para controlar efectos de sonido especificos como por ejemplo el de recoger objetos o abrir puertas:
+````java
+public class GameController {
+    //...
+    // Efectos de sonido
+    Sound sound = new Sound();
+    Sound se = new Sound(); // SoundEffect
+    //...
+    public Sound getSound() {
+        return sound;
+    }
+    public void update() throws LineUnavailableException {
+        // Actualiza el estado del jugador
+        model.actualiza();
+    }
+    public void playMusic(int i) throws LineUnavailableException {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+    public void stopMusic() {
+        sound.stop();
+    }
+    public void playSelection(int i) throws LineUnavailableException {
+        se.setFile(i);
+        se.play();
+    }
+    public void stopSelection(int i) throws LineUnavailableException {
+        se.setFile(i);
+        se.stop();
+    }
+}
+````
+La implementación de este método con las interacciones del jugador con los objetos se ven en el método de Player
+en el que dependiendo de que objeto toque el jugador, una acción será ejecutada:
+````java
+public void pickUpItem(int id) throws LineUnavailableException {
+    if (id != 999) { // Verifica si el objeto existe
+        // Verifica el tipo de objeto y realiza la acción correspondiente
+        switch (teisPanel.obj[id].id) {
+            case "Passvigo":
+                teisPanel.controller.playSelection(1);
+                teisPanel.obj[id] = null; // Elimina el objeto del mapa
+                tenPass = true; // True si tienes las PassVigo
+                teisPanel.controller.ui.showMessage("tes a PassVigo, poderás entrar ó Vitrasa... qué merda");
+                break;
+            case "Puerta":
+                // Verifica si el jugador tiene PassVigo
+                if (tenPass) {
+                    teisPanel.obj[id] = null;
+                    /*tenPass = false;*/
+                }
+                break;
+            case "Container":
+                teisPanel.controller.ui.isFinished = true;
+                if (teisPanel.controller.getSound().getClip() != null)
+                    teisPanel.controller.stopMusic();
+                teisPanel.controller.playSelection(2);
+                break;
+        }
+    }
+}
+````
 ___
 ### IDEAS para los NPCs e Easter Eggs
 #### Idea de uso de la passVigo y las passVigoPLUS:

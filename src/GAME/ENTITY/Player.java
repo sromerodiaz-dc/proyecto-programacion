@@ -91,7 +91,7 @@ public class Player extends Entity {
      * El juego al ser en 2D solo tiene dos dimensiones espaciales: X, Y
      * Moverse hacia arriba o hacia la derecha es equivalente a SUMAR en la posición
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
-     * Además controla los sprites por movimiento usados.
+     * Además, controla los sprites por movimiento usados.
      */
     public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
         // Verifica si se ha presionado alguna tecla
@@ -207,6 +207,9 @@ public class Player extends Entity {
         if (id != 999) { // Verifica si el objeto existe
             // Verifica el tipo de objeto y realiza la acción correspondiente
             switch (teisPanel.obj[id].id) {
+                case "Bus":
+                    teisPanel.controller.ui.showMessage("vitrasa");
+                    break;
                 case "Passvigo":
                     teisPanel.controller.playSelection(1);
                     teisPanel.obj[id] = null; // Elimina el objeto del mapa
@@ -234,6 +237,5 @@ public class Player extends Entity {
                     break;
             }
         }
-
     }
 }
