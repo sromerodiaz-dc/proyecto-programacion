@@ -635,6 +635,14 @@ Encuentras un periodico en el suelo:
 * lo recoges y el titular pone "O Celta volveu a perder...", "ai... a combinada, qué mala sorte que ten sempre este equipo!".
 * lo recoger y el titular pone "O Celta gañou!", "*Simplemente non cho cres e segues coa tua vida*".
 
+Bebes de una botella que te da un NPC:
+* "bebiches da botella dun bo home do naútico, agora ves sonidas e escoitas cores"
+
+Un vieixo de dubidosa procedencia non deixate pasar pola porta:
+* "Un viello de dubidosa procedencia non deixate pasar ainda despois de pedirlle amablemente que faga o favor de moverse, terás que tomar a xustiza pola tua man"
+
+Un fulano de Ourense pregunta que donde está la máquina de tabaco más cercana:
+* "O acabas de mandar pra o Vialia (encóntraste en Teis), eres o mal en persoa"
 #### IDEOTE PARA UN NPC
 Que sea un viejo con arapos que si te acercas y le das al botón "E" de interactuar,
 te suelte diálogos (que se pueden grabar y soltar a la vez que el texto) como 
