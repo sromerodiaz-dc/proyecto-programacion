@@ -2,59 +2,90 @@ package GAME.ENTITY;
 
 import GAME.GAME.TeisPanel;
 
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Clase que se encarga de verificar las colisiones entre entidades y objetos en el mapa.
+ */
 public class CollisionCheck {
-    TeisPanel teisPanel;
+    /**
+     * Referencia al panel de juego que contiene los objetos y entidades.
+     */
+    private TeisPanel teisPanel;
 
-    public CollisionCheck(TeisPanel teisPanel){
+    /**
+     * Constructor que inicializa la referencia al panel de juego.
+     *
+     * @param teisPanel el panel de juego que contiene los objetos y entidades.
+     */
+    public CollisionCheck(TeisPanel teisPanel) {
         this.teisPanel = teisPanel;
     }
 
     /**
-     * Comprobará colisiones entre bloques y entidades, no solo de players.
-     * @param entity Instancia de entidad para comprobar colisiones.
-     * */
+     * Verifica si la entidad colisiona con una pieza en la dirección especificada.
+     *
+     * @param entity la entidad que se va a verificar.
+     */
     public void checkPieza(Entity entity) {
+        // Calcula las coordenadas de la entidad en el mapa
         int entityLeft = entity.worldX + entity.solidArea.x;
         int entityRight = entity.worldX + entity.solidArea.x + entity.solidArea.width;
         int entityTop = entity.worldY + entity.solidArea.y;
         int entityBottom = entity.worldY + entity.solidArea.y + entity.solidArea.height;
 
-        int entityLeftCol = entityLeft/teisPanel.sizeFinal;
-        int entityRightCol = entityRight/teisPanel.sizeFinal;
-        int entityTopRow = entityTop/teisPanel.sizeFinal;
-        int entityBottomRow = entityBottom/teisPanel.sizeFinal;
+        // Calcula las columnas y filas de la entidad en el mapa
+        int entityLeftCol = entityLeft / teisPanel.sizeFinal;
+        int entityRightCol = entityRight / teisPanel.sizeFinal;
+        int entityTopRow = entityTop / teisPanel.sizeFinal;
+        int entityBottomRow = entityBottom / teisPanel.sizeFinal;
 
-        int pieza1,pieza2;
+        int pieza1, pieza2;
 
+        // Verifica la dirección de la entidad y calcula las piezas correspondientes
         switch (entity.sentido) {
-            case 'w':
-                entityTopRow = (entityTop - entity.speed)/teisPanel.sizeFinal;
+            case 'w': // Arriba
+                // Calcula la fila superior de la entidad después de moverse
+                entityTopRow = (entityTop - entity.speed) / teisPanel.sizeFinal;
+                // Calcula las piezas correspondientes a la fila superior
                 pieza1 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityLeftCol][entityTopRow];
                 pieza2 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityRightCol][entityTopRow];
+                // Verifica si hay colisión con alguna de las piezas
                 if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
                     entity.collisionOn = true;
                 }
                 break;
-            case 's':
-                entityBottomRow = (entityBottom + entity.speed)/teisPanel.sizeFinal;
+            case 's': // Abajo
+                // Calcula la fila inferior de la entidad después de moverse
+                entityBottomRow = (entityBottom + entity.speed) / teisPanel.sizeFinal;
+                // Calcula las piezas correspondientes a la fila inferior
                 pieza1 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityLeftCol][entityBottomRow];
                 pieza2 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityRightCol][entityBottomRow];
+                // Verifica si hay colisión con alguna de las piezas
                 if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
                     entity.collisionOn = true;
                 }
                 break;
-            case 'a':
-                entityLeftCol = (entityLeft - entity.speed)/teisPanel.sizeFinal;
+            case 'a': // Izquierda
+                // Calcula la columna izquierda de la entidad después de moverse
+                entityLeftCol = (entityLeft - entity.speed) / teisPanel.sizeFinal;
+                // Calcula las piezas correspondientes a la columna izquierda
                 pieza1 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityLeftCol][entityTopRow];
                 pieza2 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityLeftCol][entityBottomRow];
+                // Verifica si hay colisión con alguna de las piezas
                 if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
                     entity.collisionOn = true;
                 }
                 break;
-            case 'd':
-                entityRightCol = (entityRight + entity.speed)/teisPanel.sizeFinal;
+            case 'd': // Derecha
+                // Calcula la columna derecha de la entidad después de moverse
+                entityRightCol = (entityRight + entity.speed) / teisPanel.sizeFinal;
+                // Calcula las piezas correspondientes a la columna derecha
                 pieza1 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityRightCol][entityTopRow];
                 pieza2 = teisPanel.controller.getPiezaManager().mapaPiezaNum[entityRightCol][entityBottomRow];
+                // Verifica si hay colisión con alguna de las piezas
                 if (teisPanel.controller.getPiezaManager().pieza[pieza1].colision || teisPanel.controller.getPiezaManager().pieza[pieza2].colision) {
                     entity.collisionOn = true;
                 }
@@ -62,50 +93,64 @@ public class CollisionCheck {
         }
     }
 
+    /**
+     * Verifica si la entidad colisiona con algún objeto en el mapa y devuelve el índice del objeto si es el caso.
+     *
+     * @param entity la entidad que se va a verificar
+     * @param player indica si la entidad es el jugador
+     * @return el índice del objeto con el que colisiona la entidad, o 999 si no hay colisión
+     */
     public int checkObject(Entity entity, boolean player) {
+        // Indice por defecto, si se mantiene intacto indica que no hay colision
         int i = 999;
-        for (int x = 0;i < teisPanel.obj.length; x++) {
+
+        // Recorre todos los objetos del mapa
+        for (int x = 0; x < teisPanel.obj.length; x++) {
+            // Verifica si el objeto no es nulo
             if (teisPanel.obj[x] != null) {
-                // Area de la entidad
+                // Calcula las coordenadas de la entidad y el objeto en el mapa
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
-
-                // Area del objeto
                 teisPanel.obj[x].solidArea.x = teisPanel.obj[x].worldX + teisPanel.obj[x].solidArea.x;
                 teisPanel.obj[x].solidArea.y = teisPanel.obj[x].worldY + teisPanel.obj[x].solidArea.y;
 
+                // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
                 switch (entity.sentido) {
-                    case 'w':
+                    case 'w': // Arriba
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
-                            System.out.println("colision");
-                        }
                         break;
-                    case 's':
+                    case 's': // Abajo
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
-                            System.out.println("colision");
-                        }
                         break;
-                    case 'd':
+                    case 'd': // Izquierda
+                        entity.solidArea.x += entity.speed;
+                        break;
+                    case 'a': // Derecha
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
-                            System.out.println("colision");
-                        }
-                        break;
-                    case 'a':
-                        entity.solidArea.x += entity.speed;if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
-                        System.out.println("colision");
-                    }
                         break;
                 }
 
+                // Verifica si la entidad colisiona con el objeto
+                if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
+                    // Verifica si el objeto tiene colisión
+                    if (teisPanel.obj[x].collision) {
+                        entity.collisionOn = true;
+                    }
+                    // Si la entidad es el jugador, guarda el índice del objeto con el que colisiona
+                    if (player) {
+                        i = x;
+                    }
+                }
+
+                // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
                 entity.solidArea.x = entity.defaultSolidAreaX;
                 entity.solidArea.y = entity.defaultSolidAreaY;
                 teisPanel.obj[x].solidArea.x = teisPanel.obj[x].defaultObjectSolidAreaX;
                 teisPanel.obj[x].solidArea.y = teisPanel.obj[x].defaultObjectSolidAreaY;
             }
         }
+
+        // Devuelve el índice del objeto con el que colisiona la entidad, o 999 si no hay colisión
         return i;
     }
 }

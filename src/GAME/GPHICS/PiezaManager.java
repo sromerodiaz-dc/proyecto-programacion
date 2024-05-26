@@ -147,7 +147,7 @@ public class PiezaManager {
              Para tener una cámara estática encima de nuestro PJ se necesita conocer la posición
              del PJ en siempre y por ello se necesitan 2 tipos de coordenadas:
 
-             Coordenadas de pantalla y del mapa entero y coordenadas relativas al jugador
+             Coordenadas del mapa entero y coordenadas relativas al jugador
             */
 
             // Coordenadas relativas al jugador

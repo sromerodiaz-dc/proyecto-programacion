@@ -7,16 +7,16 @@ import GAME.GAME.TeisPanel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 
 class TestEntity {
 
     @Test
-    void testMoveLeft() {
+    void testMoveLeft() throws LineUnavailableException {
         Entity entity = new Entity();
-        KeyManager keyManager = new KeyManager();
-        keyManager.left = true;
-        entity.move(keyManager,new TeisPanel(), new Player(new TeisPanel(), new KeyManager()));
+        Player player = new Player(new TeisPanel(), new KeyManager());
+        player.actualiza();
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);
         Assertions.assertEquals(entity.sentido, 'a');
     }

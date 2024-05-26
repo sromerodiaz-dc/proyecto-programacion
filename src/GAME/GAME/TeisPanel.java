@@ -9,6 +9,7 @@ import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.ObjectGame;
 import GAME.OBJECT.ObjectPlacer;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import java.awt.*;
 
@@ -39,11 +40,9 @@ public class TeisPanel extends JPanel implements Runnable{
     // CONFIGURACIÓN DEL MAPA
     public final int maxWorldCol;
     public final int maxWorldRow;
-    public final int worldWidth;
-    public final int worldHeight;
 
     // Implementación tiempo (RUNNABLE)
-    Thread teisThread;
+    public Thread teisThread;
 
     // GameModel y Game Controller
     public final Player model;
@@ -52,8 +51,9 @@ public class TeisPanel extends JPanel implements Runnable{
     // Controlador de colisiones
     public CollisionCheck collisionCheck;
     public ObjectPlacer placer = new ObjectPlacer(this);
+
     // Manejo de objetos
-    public ObjectGame obj[] = new ObjectGame[10];
+    public ObjectGame[] obj = new ObjectGame[10];
 
     // Constructor
     public TeisPanel() {
@@ -64,8 +64,6 @@ public class TeisPanel extends JPanel implements Runnable{
         // Propiedades del mapa seleccionado
         maxWorldRow = datos.maxRow;
         maxWorldCol = datos.maxCol;
-        worldWidth = sizeFinal * maxWorldCol;
-        worldHeight = sizeFinal * maxWorldRow;
 
         // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
         KeyManager key = new KeyManager();
@@ -81,13 +79,14 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Inicializa el modelo y el controlador
         model = new Player(this,key);
-        controller = new GameController(model,piezaM);
+        controller = new GameController(model,piezaM,this);
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(this);
     }
 
     public void setUpItems() {
         placer.setObject();
+        /*controller.playMusic(0);*/
     }
 
     /** Metodo que inicializa un "Thread"
@@ -141,7 +140,11 @@ public class TeisPanel extends JPanel implements Runnable{
             lastTime = currentTime; // Actualiza el tiempo del frame anterior con el tiempo actual
 
             if (delta >= 1) { // Si el delta time es mayor o igual a 1 (un frame completo)
-                update(); // Llama al método `actualiza()` para actualizar el estado del juego
+                try {
+                    update(); // Llama al método `actualiza()` para actualizar el estado del juego
+                } catch (LineUnavailableException e) {
+                    throw new RuntimeException(e);
+                }
                 repaint(); // Solicita que el componente se repinte (actualice su visualización)
                 delta--; // Resta 1 al delta time para que no se acumule en el siguiente frame
                 espera ++; // Incrementa el contador de frames
@@ -161,7 +164,7 @@ public class TeisPanel extends JPanel implements Runnable{
      * Funcionalidades:
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
-    public void update() {
+    public void update() throws LineUnavailableException {
         // Actualiza el estado del jugador
         model.actualiza();
 
@@ -185,6 +188,7 @@ public class TeisPanel extends JPanel implements Runnable{
         controller.getPiezaManager().pinta(g2);
 
         // Objetos / Items
+        // Solo dibuja items existentes (Controla el NullPointer)
         for (int i = 0;i < obj.length;i++) {
             if (obj[i] != null)
                 obj[i].draw(g2,this);
@@ -193,6 +197,10 @@ public class TeisPanel extends JPanel implements Runnable{
         // Dibuja el jugador
         model.pinta(g2,this,model.screenX, model.screenY);
 
+        // Interfaz de Usuario
+        controller.ui.draw(g2);
+
+        // Piezas / Mapa
         g2.dispose();
     }
 }
