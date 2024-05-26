@@ -13,7 +13,8 @@
 3. [Semana 3](#semana-del-20052024)
    1. [Desarrollo de centrado de cámara](#desarrollo-de-centrado-de-cámara)
    2. [Implementación de nuevos sprites](#implementación-de-nuevos-sprites)
-   3. [Colisiones y diálogos](#implementacion-de-colisiones-y-dialogos)
+   3. [Colisiones, sonidos y objetos](#implementación-de-colisiones)
+      1. [Creación de objetos y posicionamiento](#creación-de-objetos-sprites-y-posicionamiento)
 4. [Semana 4](#semana-del-27052024)
 ___
 # Notas de desarrollo
@@ -465,7 +466,7 @@ a las subclases que emplean estos datos de ``largo y ancho``:
     }
 ````
 ___
-### Varios arreglos realizados:
+#### Varios arreglos realizados:
 - Posicionamiento de los paneles de editor de mapa
 - Nueva implementación: modo pincel
 - JavaDoc y comentarios desarrollados
@@ -473,8 +474,12 @@ ___
 - Realizado código más limpio
 - Arreglado bug de botones con el modo pincel
 ___
-### Implementación de nuevos Sprites
-Falta por desarrollar esta parte...
+#### Implementación de nuevos Sprites
+Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo todos de 16x16:
+* ![bus](Assets/objects/busVitrasa.png) ![bus](Assets/objects/busVitrasa2.png) ![bus](Assets/objects/contenedorVigo.png)
+* ![passvigo](Assets/objects/passvigo.png) ![passvigo](Assets/objects/passvigoPlus.png)
+
+Próximamente estaré creando assets para el suelo y demás cosas... 
 ___
 ### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
@@ -598,7 +603,7 @@ Cuando por fin logra entrar es cuando ninguno de sus bordes toca nada:
 
 ![colision](images/exp_colision2.gif)
 
-### falta por explicar codigo de la colision (entity,player,controller,collisionCheck)...
+#### El código desarrollado para las colisiones es el siguiente:
 Para solucionar estos problemas, ahora tanto la clase padre Entity como su clase hija ``Player`` cuentan 
 con los siguientes atributos:
 ````java
