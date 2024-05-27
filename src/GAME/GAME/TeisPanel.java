@@ -55,6 +55,9 @@ public class TeisPanel extends JPanel implements Runnable{
     // Manejo de objetos
     public ObjectGame[] obj = new ObjectGame[10];
 
+    // ESTADO DEL JUEGO
+    public boolean pauseState = false;
+
     // Constructor
     public TeisPanel() {
         // Selector de mapa
@@ -66,7 +69,7 @@ public class TeisPanel extends JPanel implements Runnable{
         maxWorldCol = datos.maxCol;
 
         // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
-        KeyManager key = new KeyManager();
+        KeyManager key = new KeyManager(this);
 
         // Implementacion de backgrounds y mecanicas de colision
         PiezaManager piezaM = new PiezaManager(this, datos.fileName);
@@ -165,11 +168,8 @@ public class TeisPanel extends JPanel implements Runnable{
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void update() throws LineUnavailableException {
-        // Actualiza el estado del jugador
-        model.actualiza();
-
-        // Actualiza el estado del juego en el controlador
-        controller.update();
+        if (!pauseState)
+            model.actualiza(); // Actualiza el estado del jugador
     }
     /**
      * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.
