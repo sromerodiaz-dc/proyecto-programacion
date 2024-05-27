@@ -14,8 +14,9 @@
    1. [Desarrollo de centrado de cámara](#desarrollo-de-centrado-de-cámara)
    2. [Implementación de nuevos sprites](#implementación-de-nuevos-sprites)
    3. [Colisiones, sonidos y objetos](#implementación-de-colisiones)
-      1. [Creación de objetos y posicionamiento](#creación-de-objetos-sprites-y-posicionamiento)
+   4. [Creación de objetos y posicionamiento](#creación-de-objetos-sprites-y-posicionamiento)
 4. [Semana 4](#semana-del-27052024)
+   1. [Optimización del código](#optimización-del-código)
 ___
 # Notas de desarrollo
 
@@ -479,7 +480,7 @@ Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo
 * ![bus](Assets/objects/busVitrasa.png) ![bus](Assets/objects/busVitrasa2.png) ![bus](Assets/objects/contenedorVigo.png)
 * ![passvigo](Assets/objects/passvigo.png) ![passvigo](Assets/objects/passvigoPlus.png)
 
-Próximamente estaré creando assets para el suelo y demás cosas... 
+Próximamente, estaré creando assets para el suelo y demás cosas... 
 ___
 ### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
@@ -858,10 +859,125 @@ public void pickUpItem(int id) throws LineUnavailableException {
 }
 ````
 ___
+## Semana del 27/05/2024
+### Optimización del código
+Gracias al método `System.nanoTime()` se pueden conocer instantes de tiempo con precisión de nanosegundos, sabiendo esto
+y viendo como está el código hecho me doy cuenta de que en el loop de pintado hay instancias que se pueden evitar.
+Con el código original, *mi ordenador* tarda unos ~650000 nanosegundos en pintar las piezas.
+
+Esto se puede saber aplicando ``System.nanoTime()`` de la siguiente manera:
+````java
+public void paintComponent(Graphics g){
+    //...
+    // Tiempo que tarda en dibujar:
+    long tDraw = 0;
+    if (model.keyManager.Time)
+        tDraw = System.nanoTime();
+    //...
+    if (model.keyManager.Time) {
+        long tDrawEnd = System.nanoTime();
+        long tiempoRestante = tDrawEnd - tDraw;
+        System.out.println("Tiempo de pintado" + tiempoRestante); // Printea por pantalla el tiempo transcurrido
+    }
+    //...
+}
+````
+Creo una ``nueva clase: PiezaUtils`` con la idea de re-escalar las imágenes antes de dibujarlas por pantalla,
+de esta manera, el loop de juego no tendrá que re-escalar la imágen cada vez que llama a la variable **imágen**:
+````java
+public class PiezaUtils {
+    public BufferedImage escalado(BufferedImage origin, int width, int height) {
+        // Crea una nueva BufferedImage con las dimensiones deseadas y el mismo tipo que la imagen original
+        BufferedImage escalado = new BufferedImage(width, height, origin.getType());
+
+        // Crea un objeto Graphics2D para dibujar la imagen
+        Graphics2D g2 = escalado.createGraphics();
+
+        // Dibuja la imagen original en la nueva BufferedImage, escalándola a las dimensiones deseadas
+        g2.drawImage(origin, 0, 0, width, height, null);
+
+        // Libera los recursos del objeto Graphics2D
+        g2.dispose();
+
+        // Devuelve la imagen escalada
+        return escalado;
+    }
+}
+````
+Otro cambio realizado ha sido el de como se generan las Piezas. Antes, estas eran instanciadas y luego escaladas,
+ahora todo se hace desde un metodo llamado ``setEscaled()``. Este método se encarga de la generación de Piezas
+y del reescalado de las imágenes para adaptarlas a la resolución por defecto de los sprites que es de **48x48px**.
+````java
+public void getPiezaImage() {
+    for (int i = 0; i < pieza.length; i++)
+        setEscaled(i);
+}
+public void setEscaled(int i) {
+    // Crea un nuevo objeto PiezaUtils
+    PiezaUtils piezaUtils = new PiezaUtils();
+    try {
+        // Verifica si la ruta de la imagen comienza con un asterisco
+        if (imagePaths[i].startsWith("*")) {
+            // Elimina el asterisco de la ruta de la imagen
+            imagePaths[i] = imagePaths[i].substring(1);
+            // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
+            pieza[i] = new Pieza(true);
+        } else {
+            // Crea un nuevo objeto Pieza con el constructor predeterminado
+            pieza[i] = new Pieza();
+        }
+
+        // Lee la imagen desde el recurso especificado por la ruta de la imagen
+        pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+
+        // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+        pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+    } catch (IOException e) {
+        // Imprime el mensaje de error si ocurre una excepción al leer la imagen
+        System.out.println(e.getMessage());
+    }
+}
+````
+#### Por otro lado...
+Las clases ``Entity y Player`` están más diferenciadas que antes, ya que el método encargado del dibujado de los sprites
+del jugador ahora están en ``Player`` como debería haber estado desde un principio.
+````java
+public void getPlayerImage() {
+    up1 = setPlayerSprite("player/upWalkingBehind1.png");
+    up2 = setPlayerSprite("player/upWalkingBehind2.png");
+    down1 = setPlayerSprite("player/downWalking1.png");
+    down2 = setPlayerSprite("player/downWalking2.png");
+    left1 = setPlayerSprite("player/leftWalking1.png");
+    left2 = setPlayerSprite("player/leftWalking2.png");
+    right1 = setPlayerSprite("player/rightWalking1.png");
+    right2 = setPlayerSprite("player/rightWalking2.png");
+    stop = setPlayerSprite("player/frontStanding.png");
+    stop2 = setPlayerSprite("player/stop2.png");
+}
+public BufferedImage setPlayerSprite(String path) {
+
+    PiezaUtils piezaUtils = new PiezaUtils();
+    BufferedImage image;
+    try {
+        image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
+        image = piezaUtils.escalado(image,48,48);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    return image;
+}
+````
+#### Además...
+La clase que maneja los objetos (`ObjectGame`) ahora instancia también la clase de `PiezaUtils` para que las clases
+heredadas como `Container` y las demás hereden esta misma. De esta manera, la imágen de cada objeto es escalada antes 
+de ser pintada mediante un paintComponent.
+
+**Después de todas estas modificaciones el tiempo de carga ha bajado a: ~200000 nanosegundos**.
+___
 ### IDEAS para los NPCs e Easter Eggs
 #### Idea de uso de la passVigo y las passVigoPLUS:
 Molaría poner que la PassVigo tiene X saldo dando resultado a que...
-* puedes abrir X numero de puertas dependiendo del saldo que tengas.
+* puedes abrir X número de puertas dependiendo del saldo que tengas.
 * Con las PassVigoPLUS puedes acceder a un easter egg, donde luchas contra el dinoseto, estaría guapísimo.
 * Por casa uso de la PassVigo, notificación en la pantalla sobre cuanto saldo queda.
 
@@ -886,36 +1002,14 @@ Un vieixo de dubidosa procedencia non deixate pasar pola porta:
 
 Un fulano de Ourense pregunta que donde está la máquina de tabaco más cercana:
 * "O acabas de mandar pra o Vialia (encóntraste en Teis), eres o mal en persoa"
+
 #### IDEOTE PARA UN NPC
 Que sea un viejo con arapos que si te acercas y le das al botón "E" de interactuar,
 te suelte diálogos (que se pueden grabar y soltar a la vez que el texto) como 
 * "chorvo, sabes que din dos pimentitos de padrón??????"
 * "uns pican... e outros non *risa jodidamente incontenible*"
 
-Meter personajes tanto ficticios como historicos de manera aleatoria.
 Ejemplo:
--  ==> Hitler feliz con un cuadro
-- Dexter
-- Eric Cartman
 -  ==> La parca de Bill y Mandy
 -  ==> Finn y Jake
-- Shrek
-- The Beatles
 -  ==> Pedro Sánchez: entregandote una carta a la ciudadania
-- Shakira
-- Nietzsche
--  ==> Jesus Gil
-
-Para los dialogos de los NPCs:
-Ejemplos:
-- "coña?"
-- "fumo?"
-- "no creo, no"
-- "Devoré"
-- "tiene' un segarro?"
-- "hermano, tienes hora?"
-- "Y yo, no me causa rubor decirlo, soy un hombre profundamente enamorado de mi mujer que vive con impotencia el fango que sobre ella esparcen día sí y día también"
-- "bonito movil, eso está roto eh"
-- "Los reptilianos son los que son originarios de aquí, los masones nos quieren bien controlados, la NASA oculta la antartida y el concursillo está
-  financiado por el PSOE" "Tal cual, hermano, tal cual" "EL PLANETA TIERRA QUE POR CIERTO NO SE LLAMA TIERRA, SE LLAMA XION!!!"
-
