@@ -181,8 +181,12 @@ public class TeisPanel extends JPanel implements Runnable{
      * */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-
         Graphics2D g2 = (Graphics2D) g;
+
+        // Tiempo que tarda en dibujar:
+        long tDraw = 0;
+        if (model.keyManager.Time)
+            tDraw = System.nanoTime();
 
         // Dibuja el fondo
         controller.getPiezaManager().pinta(g2);
@@ -200,7 +204,13 @@ public class TeisPanel extends JPanel implements Runnable{
         // Interfaz de Usuario
         controller.ui.draw(g2);
 
-        // Piezas / Mapa
+        if (model.keyManager.Time) {
+            long tDrawEnd = System.nanoTime();
+            long tiempoRestante = tDrawEnd - tDraw;
+            System.out.println("Tiempo de pintado" + tiempoRestante);
+        }
+
+        // Libera espacio
         g2.dispose();
     }
 }

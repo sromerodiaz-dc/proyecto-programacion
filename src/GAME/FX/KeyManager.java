@@ -18,6 +18,8 @@ public class KeyManager implements KeyListener {
     /**Indica que direccion toma el personaje*/
     public boolean up,down,left,right;
 
+    public boolean Time = false;
+
     /**
      * Método que se ejecuta cuando se teclea una tecla.
      *
@@ -51,6 +53,9 @@ public class KeyManager implements KeyListener {
                 break;
             case KeyEvent.VK_D:
                 right = true;
+                break;
+            case KeyEvent.VK_T:
+                Time = !Time;
                 break;
         }
     }
