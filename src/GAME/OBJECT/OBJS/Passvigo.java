@@ -23,6 +23,8 @@ public class Passvigo extends ObjectGame {
         // Carga la imagen del Passvigo desde un archivo de recursos
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/passvigo.png"));
+            piezaUtils.escalado(image,48,48);
+
             height = image.getHeight();
             width = image.getWidth();
             solidArea.width = width;

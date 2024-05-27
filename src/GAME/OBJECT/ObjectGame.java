@@ -1,6 +1,7 @@
 package GAME.OBJECT;
 
 import GAME.GAME.TeisPanel;
+import GAME.GPHICS.PiezaUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,6 +26,9 @@ public class ObjectGame {
     public Rectangle solidArea = new Rectangle(0,0, width, height);
     public int defaultObjectSolidAreaX = 0;
     public int defaultObjectSolidAreaY = 0;
+
+    // Optimización
+    public PiezaUtils piezaUtils = new PiezaUtils();
 
     public void draw(Graphics2D g2, TeisPanel teisPanel) {
         int screenX = worldX - teisPanel.model.worldX + teisPanel.model.screenX;
