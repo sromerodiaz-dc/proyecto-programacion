@@ -48,33 +48,63 @@ public class PiezaManager {
      * Para saber si lo es o no lo es difirere entre los String que comienzan por asterisco y los que no.
      */
     public void getPiezaImage() {
+        for (int i = 0; i < pieza.length; i++)
+            setEscaled(i);
+    }
+
+    /**
+     * Establece la imagen escalada para el objeto Pieza en el índice dado.
+     *
+     * @param i el índice del objeto Pieza para establecer la imagen escalada
+     */
+    public void setEscaled(int i) {
+        // Crea un nuevo objeto PiezaUtils
+        PiezaUtils piezaUtils = new PiezaUtils();
+
         try {
-            for (int i = 0; i < pieza.length; i++) {
-                System.out.println(imagePaths[i]);
-                if (imagePaths[i].startsWith("*")) {
-                    imagePaths[i] = imagePaths[i].substring(1);
-                    pieza[i] = new Pieza(true);
-                } else {
-                    pieza[i] = new Pieza();
-                }
-                pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+            // Verifica si la ruta de la imagen comienza con un asterisco
+            if (imagePaths[i].startsWith("*")) {
+                // Elimina el asterisco de la ruta de la imagen
+                imagePaths[i] = imagePaths[i].substring(1);
+                // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
+                pieza[i] = new Pieza(true);
+            } else {
+                // Crea un nuevo objeto Pieza con el constructor predeterminado
+                pieza[i] = new Pieza();
             }
-        } catch (Exception e) {
+
+            // Lee la imagen desde el recurso especificado por la ruta de la imagen
+            pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+
+            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+            pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+        } catch (IOException e) {
+            // Imprime el mensaje de error si ocurre una excepción al leer la imagen
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Obtiene las rutas de las imágenes desde el archivo "c_assets.txt".
+     *
+     * @return un arreglo de cadenas con las rutas de las imágenes
+     */
     public String[] getImagePaths() {
+        // Crea una nueva lista de cadenas para almacenar las rutas de las imágenes
         ArrayList<String> imagePaths = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
+            // Lee las líneas del archivo "c_assets.txt" y las agrega a la lista de rutas de imágenes
             String line;
             while ((line = reader.readLine()) != null) {
                 imagePaths.add(line.trim());
             }
         } catch (Exception e) {
+            // Imprime el mensaje de error si ocurre una excepción al leer el archivo
             System.out.println(e.getMessage());
         }
+
+        // Convierte la lista de rutas de imágenes a un arreglo de cadenas y lo devuelve
         return imagePaths.toArray(new String[0]);
     }
 
@@ -167,7 +197,7 @@ public class PiezaManager {
             if (worldX + t.sizeFinal > playerWorldX - playerScreenX && worldX - t.sizeFinal < playerWorldX + playerScreenX &&
                 worldY + t.sizeFinal > playerWorldY - playerScreenY && worldY - t.sizeFinal < playerWorldY + playerScreenY) {
                 // Dibuja la imagen de la Pieza correspondiente en la posición actual.
-                g2.drawImage(pieza[id].image, screenX, screenY, t.sizeFinal, t.sizeFinal, null);
+                g2.drawImage(pieza[id].image, screenX, screenY, null);
             }
 
             // Incrementa la columna (col) para pasar a la siguiente posición horizontal.
