@@ -1,5 +1,7 @@
 package GAME.FX;
 
+import GAME.GAME.TeisPanel;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -19,6 +21,12 @@ public class KeyManager implements KeyListener {
     public boolean up,down,left,right;
 
     public boolean Time = false;
+
+    TeisPanel teisPanel;
+
+    public KeyManager (TeisPanel teisPanel) {
+        this.teisPanel = teisPanel;
+    }
 
     /**
      * Método que se ejecuta cuando se teclea una tecla.
@@ -54,7 +62,11 @@ public class KeyManager implements KeyListener {
             case KeyEvent.VK_D:
                 right = true;
                 break;
-            case KeyEvent.VK_T:
+            case KeyEvent.VK_ESCAPE:
+                if (!teisPanel.pauseState)
+                    teisPanel.pauseState = true;
+                break;
+            case KeyEvent.VK_T: // DEBUGGING
                 Time = !Time;
                 break;
         }
