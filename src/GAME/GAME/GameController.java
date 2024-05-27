@@ -53,15 +53,6 @@ public class GameController {
         return sound;
     }
 
-    /**
-     * Actualiza el estado del juego.
-     * Actualiza el estado del jugador y de las piezas del juego.
-     */
-    public void update() throws LineUnavailableException {
-        // Actualiza el estado del jugador
-        model.actualiza();
-    }
-
     public void playMusic(int i) throws LineUnavailableException {
         sound.setFile(i);
         sound.play();
