@@ -15,7 +15,7 @@ class TestEntity {
     @Test
     void testMoveLeft() throws LineUnavailableException {
         Entity entity = new Entity();
-        Player player = new Player(new TeisPanel(), new KeyManager());
+        Player player = new Player(new TeisPanel(), new KeyManager(new TeisPanel()));
         player.actualiza();
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);
         Assertions.assertEquals(entity.sentido, 'a');
@@ -23,7 +23,7 @@ class TestEntity {
 
     @Test
     void pinta() {
-        Player player = new Player(new TeisPanel(), new KeyManager());
+        Player player = new Player(new TeisPanel(), new KeyManager(new TeisPanel()));
         TeisPanel teis = new TeisPanel();
         Graphics2D g2 = null;
         player.pinta(g2, teis,1,1);

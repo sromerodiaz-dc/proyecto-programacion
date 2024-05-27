@@ -1,6 +1,7 @@
 package GAME.TEST;
 
 import GAME.FX.KeyManager;
+import GAME.GAME.TeisPanel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public class TestKeyManager {
 
     @BeforeEach
     public void setUp() {
-        keyManager = new KeyManager();
+        keyManager = new KeyManager(new TeisPanel());
     }
 
     @Test
