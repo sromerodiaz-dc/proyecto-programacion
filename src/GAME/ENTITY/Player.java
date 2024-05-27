@@ -61,7 +61,7 @@ public class Player extends Entity {
      * Metodo que define el estado inicial del jugador
      */
     public void setValoresPorDefecto() {
-        worldX = teisPanel.sizeFinal * 10;
+        worldX = teisPanel.sizeFinal * 18;
         worldY = teisPanel.sizeFinal * 10;
         speed = 4;
         sentido = '0';

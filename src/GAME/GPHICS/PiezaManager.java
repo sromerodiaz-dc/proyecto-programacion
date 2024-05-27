@@ -22,6 +22,9 @@ public class PiezaManager {
     public String[] imagePaths = getImagePaths();
     public String mapName;
 
+    // Crea un nuevo objeto PiezaUtils
+    public PiezaUtils piezaUtils = new PiezaUtils();
+
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
      */
@@ -58,29 +61,39 @@ public class PiezaManager {
      * @param i el índice del objeto Pieza para establecer la imagen escalada
      */
     public void setEscaled(int i) {
-        // Crea un nuevo objeto PiezaUtils
-        PiezaUtils piezaUtils = new PiezaUtils();
-
-        try {
-            // Verifica si la ruta de la imagen comienza con un asterisco
-            if (imagePaths[i].startsWith("*")) {
-                // Elimina el asterisco de la ruta de la imagen
-                imagePaths[i] = imagePaths[i].substring(1);
+        if (i == 0) {
+            try {
                 // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
                 pieza[i] = new Pieza(true);
-            } else {
-                // Crea un nuevo objeto Pieza con el constructor predeterminado
-                pieza[i] = new Pieza();
+                // Lee la imagen desde el recurso especificado por la ruta de la imagen
+                pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("background/bloqueNegro.png"));
+                // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+                pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+            } catch (IOException e) {
+                // Imprime el mensaje de error si ocurre una excepción al leer la imagen
+                System.out.println(e.getMessage());
             }
+        } else {
+            try {
+                // Verifica si la ruta de la imagen comienza con un asterisco
+                if (imagePaths[i].startsWith("*")) {
+                    // Elimina el asterisco de la ruta de la imagen
+                    imagePaths[i] = imagePaths[i].substring(1);
+                    // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
+                    pieza[i] = new Pieza(true);
+                } else {
+                    // Crea un nuevo objeto Pieza con el constructor predeterminado
+                    pieza[i] = new Pieza();
+                }
+                // Lee la imagen desde el recurso especificado por la ruta de la imagen
+                pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
 
-            // Lee la imagen desde el recurso especificado por la ruta de la imagen
-            pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
-
-            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
-            pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
-        } catch (IOException e) {
-            // Imprime el mensaje de error si ocurre una excepción al leer la imagen
-            System.out.println(e.getMessage());
+                // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+                pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+            } catch (IOException e) {
+                // Imprime el mensaje de error si ocurre una excepción al leer la imagen
+                System.out.println(e.getMessage());
+            }
         }
     }
 

@@ -35,7 +35,7 @@ public class GUI extends JFrame {
     public int MENU_IZQUIERDA_Y = 50;
 
     private static final int MENU_INFERIOR_ANCHO = ANCHO / 4;
-    private static final int MENU_INFERIOR_ALTO = ALTO / 6;
+    private static final int MENU_INFERIOR_ALTO = ALTO / 5;
 
     public int MENU_INFERIOR_X = ANCHO - 720;
     public int MENU_INFERIOR_Y = ALTO - 400;
@@ -113,7 +113,7 @@ public class GUI extends JFrame {
      * Genera un panel de paneles clicables para la selección de texturas aplicables sobre "menuIzquierda"
      * */
     public void createMenuInferior() {
-        menuInferior = new GridPanel(4, 12, sprites);
+        menuInferior = new GridPanel(5, 12, sprites);
         menuInferior.setBackground(Color.BLACK);
         menuInferior.setBounds(MENU_INFERIOR_X, MENU_INFERIOR_Y, MENU_INFERIOR_ANCHO, MENU_INFERIOR_ALTO);
     }
