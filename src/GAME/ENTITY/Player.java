@@ -2,12 +2,15 @@ package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
+import GAME.GPHICS.PiezaUtils;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -19,7 +22,7 @@ import java.io.IOException;
 public class Player extends Entity {
     // Atributos
     TeisPanel teisPanel;
-    KeyManager keyManager;
+    public KeyManager keyManager;
 
     public final int screenX;
     public final int screenY;
@@ -65,25 +68,56 @@ public class Player extends Entity {
     }
 
     /**
-     * Este metodo recibe una ruta por parametro en getResourceAsStream para luego acceder a dicho recurso
-     * y pasarlo por un Loader para poder leerlo como archivo decodificando el stream de datos de la imagen.
-     * Esta imagen rehecha por ImageIO.read() es almacenada en cada uno de los posibles movimientos del jugador.
+     * Carga las imágenes del jugador y las establece en las variables correspondientes.
      */
     public void getPlayerImage() {
+        // Carga las imágenes del jugador caminando hacia arriba y las establece en las variables correspondientes
+        up1 = setPlayerSprite("player/upWalkingBehind1.png");
+        up2 = setPlayerSprite("player/upWalkingBehind2.png");
+
+        // Carga las imágenes del jugador caminando hacia abajo y las establece en las variables correspondientes
+        down1 = setPlayerSprite("player/downWalking1.png");
+        down2 = setPlayerSprite("player/downWalking2.png");
+
+        // Carga las imágenes del jugador caminando hacia la izquierda y las establece en las variables correspondientes
+        left1 = setPlayerSprite("player/leftWalking1.png");
+        left2 = setPlayerSprite("player/leftWalking2.png");
+
+        // Carga las imágenes del jugador caminando hacia la derecha y las establece en las variables correspondientes
+        right1 = setPlayerSprite("player/rightWalking1.png");
+        right2 = setPlayerSprite("player/rightWalking2.png");
+
+        // Carga las imágenes del jugador detenido y las establece en las variables correspondientes
+        stop = setPlayerSprite("player/frontStanding.png");
+        stop2 = setPlayerSprite("player/stop2.png");
+    }
+
+    /**
+     * Carga la imagen del sprite del jugador desde el camino dado y la escala al tamaño deseado.
+     *
+     * @param path el camino a la imagen del sprite del jugador
+     * @return la imagen BufferedImage escalada del sprite del jugador
+     */
+    public BufferedImage setPlayerSprite(String path) {
+        // Crea un nuevo objeto PiezaUtils
+        PiezaUtils piezaUtils = new PiezaUtils();
+
+        // Inicializa la variable BufferedImage
+        BufferedImage image;
+
         try {
-            up1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/upWalkingBehind1.png"));
-            up2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/upWalkingBehind2.png"));
-            down1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/downWalking1.png"));
-            down2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/downWalking2.png"));
-            left1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/leftWalking1.png"));
-            left2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/leftWalking2.png"));
-            right1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/rightWalking1.png"));
-            right2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/rightWalking2.png"));
-            stop = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/frontStanding.png"));
-            stop2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/stop2.png"));
+            // Carga la imagen del sprite del jugador desde el camino dado
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
+
+            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+            image = piezaUtils.escalado(image, 48, 48);
         } catch (IOException e) {
+            // Lanza una RuntimeException si ocurre una IOException al cargar la imagen
             throw new RuntimeException(e);
         }
+
+        // Devuelve la imagen BufferedImage escalada del sprite del jugador
+        return image;
     }
 
     /**
@@ -237,5 +271,30 @@ public class Player extends Entity {
                     break;
             }
         }
+    }
+
+    /**Metodo PINTA
+     * Metodo empleado para mostrar por pantalla al jugador.
+     * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
+     * cambia el sprite empleado por otro nuevo.
+     */
+    public void pinta(Graphics2D g2, TeisPanel teis, int screenX, int screenY) {
+        // Crea un mapa que asocia cada dirección con un array de imágenes de sprite
+        Map<Character, BufferedImage[]> sprites = new HashMap<>();
+        sprites.put('w', new BufferedImage[]{up1, up2});
+        sprites.put('a', new BufferedImage[]{left1, left2});
+        sprites.put('s', new BufferedImage[]{down1, down2});
+        sprites.put('d', new BufferedImage[]{right1, right2});
+        sprites.put('0', new BufferedImage[]{stop, stop2});
+
+        // Obtiene el array de imágenes de sprite correspondiente a la dirección actual
+        BufferedImage[] images = sprites.get(sentido);
+
+        // Obtiene la imagen de sprite correspondiente al número de sprite activo
+        BufferedImage image = images[spriteNum - 1];
+
+        // Dibuja la imagen con IMAGE en la posición por defecto (100, 100) con los valores por defecto de
+        // resolución 16x16 y su respectivo escalado "sizeFinal"
+        g2.drawImage(image, screenX, screenY, null);
     }
 }
