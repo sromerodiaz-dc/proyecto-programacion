@@ -3,10 +3,11 @@ package GAME.GAME;
 import GAME.EFFECT.Sound;
 import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.CollisionCheck;
-import GAME.ENTITY.Player;
+import GAME.ENTITY.Entity;
+import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.ObjectGame;
-import GAME.OBJECT.ObjectPlacer;
+import GAME.OBJECT.Placer;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -30,13 +31,19 @@ public class GameController {
 
     // Controlador de colisiones
     public CollisionCheck collisionCheck;
-    public ObjectPlacer placer;
+    public Placer placer;
 
     // Manejo de objetos
     public ObjectGame[] obj = new ObjectGame[10];
 
     // ESTADO DEL JUEGO
     public boolean pauseState = false;
+
+    // Entidades
+    public Entity[] npc = new Entity[10];
+
+    // DrawUtils
+    public DrawUtils drawUtils = new DrawUtils();
 
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
@@ -47,7 +54,7 @@ public class GameController {
         this.piezaManager = piezaManager;
 
         ui = new UserInterface(teisPanel);
-        placer = new ObjectPlacer(teisPanel);
+        placer = new Placer(teisPanel);
 
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(teisPanel);
