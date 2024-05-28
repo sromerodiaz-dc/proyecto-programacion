@@ -2,8 +2,11 @@ package GAME.GAME;
 
 import GAME.EFFECT.Sound;
 import GAME.EFFECT.UserInterface;
+import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Player;
 import GAME.GPHICS.PiezaManager;
+import GAME.OBJECT.ObjectGame;
+import GAME.OBJECT.ObjectPlacer;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -15,9 +18,6 @@ import javax.sound.sampled.LineUnavailableException;
  * Mantiene una referencia al jugador y al gestor de piezas del juego.
  * */
 public class GameController {
-    // Jugador
-    private Player model;
-
     // Gestor de piezas
     private PiezaManager piezaManager;
 
@@ -28,16 +28,29 @@ public class GameController {
     // Interfaz de Usuario
     public UserInterface ui;
 
+    // Controlador de colisiones
+    public CollisionCheck collisionCheck;
+    public ObjectPlacer placer;
+
+    // Manejo de objetos
+    public ObjectGame[] obj = new ObjectGame[10];
+
+    // ESTADO DEL JUEGO
+    public boolean pauseState = false;
+
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
      *
-     * @param model El jugador del juego.
      * @param piezaManager El gestor de piezas del juego.
      */
-    public GameController(Player model, PiezaManager piezaManager,TeisPanel teisPanel) {
-        this.model = model;
+    public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
+
         ui = new UserInterface(teisPanel);
+        placer = new ObjectPlacer(teisPanel);
+
+        // Inicializa el controlador de colisiones
+        collisionCheck = new CollisionCheck(teisPanel);
     }
 
     /**

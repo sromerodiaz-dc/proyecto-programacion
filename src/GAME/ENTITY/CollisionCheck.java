@@ -105,14 +105,14 @@ public class CollisionCheck {
         int i = 999;
 
         // Recorre todos los objetos del mapa
-        for (int x = 0; x < teisPanel.obj.length; x++) {
+        for (int x = 0; x < teisPanel.controller.obj.length; x++) {
             // Verifica si el objeto no es nulo
-            if (teisPanel.obj[x] != null) {
+            if (teisPanel.controller.obj[x] != null) {
                 // Calcula las coordenadas de la entidad y el objeto en el mapa
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
-                teisPanel.obj[x].solidArea.x = teisPanel.obj[x].worldX + teisPanel.obj[x].solidArea.x;
-                teisPanel.obj[x].solidArea.y = teisPanel.obj[x].worldY + teisPanel.obj[x].solidArea.y;
+                teisPanel.controller.obj[x].solidArea.x = teisPanel.controller.obj[x].worldX + teisPanel.controller.obj[x].solidArea.x;
+                teisPanel.controller.obj[x].solidArea.y = teisPanel.controller.obj[x].worldY + teisPanel.controller.obj[x].solidArea.y;
 
                 // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
                 switch (entity.sentido) {
@@ -131,9 +131,9 @@ public class CollisionCheck {
                 }
 
                 // Verifica si la entidad colisiona con el objeto
-                if (entity.solidArea.intersects(teisPanel.obj[x].solidArea)) {
+                if (entity.solidArea.intersects(teisPanel.controller.obj[x].solidArea)) {
                     // Verifica si el objeto tiene colisión
-                    if (teisPanel.obj[x].collision) {
+                    if (teisPanel.controller.obj[x].collision) {
                         entity.collisionOn = true;
                     }
                     // Si la entidad es el jugador, guarda el índice del objeto con el que colisiona
@@ -145,8 +145,8 @@ public class CollisionCheck {
                 // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
                 entity.solidArea.x = entity.defaultSolidAreaX;
                 entity.solidArea.y = entity.defaultSolidAreaY;
-                teisPanel.obj[x].solidArea.x = teisPanel.obj[x].defaultObjectSolidAreaX;
-                teisPanel.obj[x].solidArea.y = teisPanel.obj[x].defaultObjectSolidAreaY;
+                teisPanel.controller.obj[x].solidArea.x = teisPanel.controller.obj[x].defaultObjectSolidAreaX;
+                teisPanel.controller.obj[x].solidArea.y = teisPanel.controller.obj[x].defaultObjectSolidAreaY;
             }
         }
 

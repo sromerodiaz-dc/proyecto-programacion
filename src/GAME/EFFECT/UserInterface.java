@@ -58,7 +58,7 @@ public class UserInterface {
         g2.setFont(font);
         g2.setColor(Color.WHITE);
 
-        if (!teisPanel.pauseState){
+        if (!teisPanel.controller.pauseState){
             //
         } else {
             drawPauseState();

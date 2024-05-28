@@ -48,16 +48,6 @@ public class TeisPanel extends JPanel implements Runnable{
     public final Player model;
     public final GameController controller;
 
-    // Controlador de colisiones
-    public CollisionCheck collisionCheck;
-    public ObjectPlacer placer = new ObjectPlacer(this);
-
-    // Manejo de objetos
-    public ObjectGame[] obj = new ObjectGame[10];
-
-    // ESTADO DEL JUEGO
-    public boolean pauseState = false;
-
     // Constructor
     public TeisPanel() {
         // Selector de mapa
@@ -82,13 +72,12 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Inicializa el modelo y el controlador
         model = new Player(this,key);
-        controller = new GameController(model,piezaM,this);
-        // Inicializa el controlador de colisiones
-        collisionCheck = new CollisionCheck(this);
+        controller = new GameController(piezaM,this);
+
     }
 
     public void setUpItems() {
-        placer.setObject();
+        controller.placer.setObject();
         /*controller.playMusic(0);*/
     }
 
@@ -168,7 +157,7 @@ public class TeisPanel extends JPanel implements Runnable{
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void update() throws LineUnavailableException {
-        if (!pauseState)
+        if (!controller.pauseState)
             model.actualiza(); // Actualiza el estado del jugador
     }
     /**
@@ -193,9 +182,9 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Objetos / Items
         // Solo dibuja items existentes (Controla el NullPointer)
-        for (int i = 0;i < obj.length;i++) {
-            if (obj[i] != null)
-                obj[i].draw(g2,this);
+        for (int i = 0;i < controller.obj.length;i++) {
+            if (controller.obj[i] != null)
+                controller.obj[i].draw(g2,this);
         }
 
         // Dibuja el jugador
