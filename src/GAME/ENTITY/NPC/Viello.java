@@ -3,17 +3,42 @@ package GAME.ENTITY.NPC;
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
 
+/**
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ * -
+ * Define al NPC: Viello
+ * "Se dice que cuando pierde el Celta,
+ * Viello, algo se entristece y, sin embargo,
+ * no se sorprende"
+ * */
 public class Viello extends Entity {
-    public Viello (TeisPanel teisPanel) {
+    /**
+     * Constructor de la clase Viello, que representa un anciano en el juego.
+     *
+     * @param teisPanel panel donde se dibujará el anciano
+     */
+    public Viello(TeisPanel teisPanel) {
+        // Llama al constructor de la clase padre (suponiendo que es una entidad en el juego)
         super(teisPanel);
 
+        // Inicializa la dirección del anciano en '0', que significa que no se está moviendo
         sentido = '0';
-        speed = 2; // Se supone que es un anciando así que se mueve lento
 
+        // Establece la velocidad del anciano en 2, lo que significa que se mueve lentamente
+        speed = 2;
+
+        // Establece el ancho y alto de la imagen del anciano
+        width = 54;
+        height = 72;
+
+        // Inicializa el área sólida del anciano con el mismo ancho y alto que la imagen
+        solidArea.width = width;
+        solidArea.height = height;
+
+        // Carga las imágenes del anciano
         getVielloImage();
-        /*solidArea = new Rectangle();
-        solidArea.width = 32;
-        solidArea.height = 32;*/
     }
 
     public void getVielloImage() {
