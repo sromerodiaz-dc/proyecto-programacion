@@ -72,52 +72,24 @@ public class Player extends Entity {
      */
     public void getPlayerImage() {
         // Carga las imágenes del jugador caminando hacia arriba y las establece en las variables correspondientes
-        up1 = setPlayerSprite("player/upWalkingBehind1.png");
-        up2 = setPlayerSprite("player/upWalkingBehind2.png");
+        up1 = setEntitySprite("player/upWalkingBehind1.png");
+        up2 = setEntitySprite("player/upWalkingBehind2.png");
 
         // Carga las imágenes del jugador caminando hacia abajo y las establece en las variables correspondientes
-        down1 = setPlayerSprite("player/downWalking1.png");
-        down2 = setPlayerSprite("player/downWalking2.png");
+        down1 = setEntitySprite("player/downWalking1.png");
+        down2 = setEntitySprite("player/downWalking2.png");
 
         // Carga las imágenes del jugador caminando hacia la izquierda y las establece en las variables correspondientes
-        left1 = setPlayerSprite("player/leftWalking1.png");
-        left2 = setPlayerSprite("player/leftWalking2.png");
+        left1 = setEntitySprite("player/leftWalking1.png");
+        left2 = setEntitySprite("player/leftWalking2.png");
 
         // Carga las imágenes del jugador caminando hacia la derecha y las establece en las variables correspondientes
-        right1 = setPlayerSprite("player/rightWalking1.png");
-        right2 = setPlayerSprite("player/rightWalking2.png");
+        right1 = setEntitySprite("player/rightWalking1.png");
+        right2 = setEntitySprite("player/rightWalking2.png");
 
         // Carga las imágenes del jugador detenido y las establece en las variables correspondientes
-        stop = setPlayerSprite("player/frontStanding.png");
-        stop2 = setPlayerSprite("player/stop2.png");
-    }
-
-    /**
-     * Carga la imagen del sprite del jugador desde el camino dado y la escala al tamaño deseado.
-     *
-     * @param path el camino a la imagen del sprite del jugador
-     * @return la imagen BufferedImage escalada del sprite del jugador
-     */
-    public BufferedImage setPlayerSprite(String path) {
-        // Crea un nuevo objeto PiezaUtils
-        PiezaUtils piezaUtils = new PiezaUtils();
-
-        // Inicializa la variable BufferedImage
-        BufferedImage image;
-
-        try {
-            // Carga la imagen del sprite del jugador desde el camino dado
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
-
-            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
-            image = piezaUtils.escalado(image, 48, 48);
-        } catch (IOException e) {
-            // Lanza una RuntimeException si ocurre una IOException al cargar la imagen
-            throw new RuntimeException(e);
-        }
-
-        // Devuelve la imagen BufferedImage escalada del sprite del jugador
-        return image;
+        stop = setEntitySprite("player/frontStanding.png");
+        stop2 = setEntitySprite("player/stop2.png");
     }
 
     /**
@@ -138,10 +110,10 @@ public class Player extends Entity {
 
             // Comprueba la colisión de la Pieza
             collisionOn = false;
-            teisPanel.collisionCheck.checkPieza(this);
+            teisPanel.controller.collisionCheck.checkPieza(this);
 
             // Colisión de objetos
-            int obj = teisPanel.collisionCheck.checkObject(this, true);
+            int obj = teisPanel.controller.collisionCheck.checkObject(this, true);
             // Llama al método pickUpItem para recoger el objeto si es posible
             pickUpItem(obj);
 

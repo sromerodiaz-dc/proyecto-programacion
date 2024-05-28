@@ -1,9 +1,12 @@
 package GAME.ENTITY;
 
 import GAME.GAME.TeisPanel;
+import GAME.GPHICS.PiezaUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -49,5 +52,33 @@ public class Entity {
 
     public Entity (TeisPanel teisPanel) {
         this.teisPanel = teisPanel;
+    }
+
+    /**
+     * Carga la imagen del sprite de la entidad desde el camino dado y la escala al tamaño deseado.
+     *
+     * @param path el camino a la imagen del sprite de la entidad
+     * @return la imagen BufferedImage escalada del sprite de la entidad
+     */
+    public BufferedImage setEntitySprite(String path) {
+        // Crea un nuevo objeto PiezaUtils
+        PiezaUtils piezaUtils = new PiezaUtils();
+
+        // Inicializa la variable BufferedImage
+        BufferedImage image;
+
+        try {
+            // Carga la imagen del sprite del jugador desde el camino dado
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
+
+            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+            image = piezaUtils.escalado(image, 48, 48);
+        } catch (IOException e) {
+            // Lanza una RuntimeException si ocurre una IOException al cargar la imagen
+            throw new RuntimeException(e);
+        }
+
+        // Devuelve la imagen BufferedImage escalada del sprite del jugador
+        return image;
     }
 }
