@@ -114,13 +114,11 @@ public class DrawUtils {
         int i = random.nextInt(100)+1; // Genera un número aleatorio entre 1 y 100
 
         // Asigna una dirección aleatoria según el rango del número generado
-        if (i < 25)
-            return 'w'; // 25% de probabilidad de moverse hacia arriba
-        else if (i < 50){
-            return 's'; // 25% de probabilidad de moverse hacia abajo
-        } else if (i < 75) {
-            return 'a'; // 25% de probabilidad de moverse hacia la izquierda
-        } else return 'd'; // 25% de probabilidad de moverse hacia la derecha
+        if (i < 23) return 'w'; // 23% de probabilidad de moverse hacia arriba
+        else if (i < 46) return 's'; // 23% de probabilidad de moverse hacia abajo
+        else if (i < 69) return 'a'; // 23% de probabilidad de moverse hacia abajo
+        else if (i < 92) return 'd'; // 23% de probabilidad de moverse hacia la derecha
+        else return '0'; // 8% de probabilidad de quedarse quiero
     }
 
     /**
