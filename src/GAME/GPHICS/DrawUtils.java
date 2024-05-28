@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -73,5 +74,77 @@ public class DrawUtils {
             // Dibuja la imagen en la posición correspondiente
             g2.drawImage(image, screenX, screenY, width, height, null);
         }
+    }
+
+    /**
+     * Mueve a la entidad según la dirección del movimiento.
+     *
+     * @param sentido la dirección del movimiento como un carácter ('w', 's', 'a', 'd')
+     */
+    public int[] moveEntity(char sentido, int worldX, int worldY, int speed) {
+        int[] coordenadas = new int[2];
+        // Mueve al jugador según la dirección del movimiento
+        switch (sentido) {
+            case 'w':
+                worldY -= speed;
+                break;
+            case 's':
+                worldY += speed;
+                break;
+            case 'a':
+                worldX -= speed;
+                break;
+            case 'd':
+                worldX += speed;
+                break;
+        }
+        coordenadas[0] = worldX;
+        coordenadas[1] = worldY;
+        return coordenadas;
+    }
+
+    /**
+     * Método que devuelve una dirección aleatoria para mover una entidad.
+     * La dirección se elige aleatoriamente entre 'w', '', 'a' y 'd'.
+     *
+     * @return una dirección aleatoria como carácter ('w', '', 'a' o 'd')
+     */
+    public char moveRandomEntity(){
+        Random random = new Random();
+        int i = random.nextInt(100)+1; // Genera un número aleatorio entre 1 y 100
+
+        // Asigna una dirección aleatoria según el rango del número generado
+        if (i < 25)
+            return 'w'; // 25% de probabilidad de moverse hacia arriba
+        else if (i < 50){
+            return 's'; // 25% de probabilidad de moverse hacia abajo
+        } else if (i < 75) {
+            return 'a'; // 25% de probabilidad de moverse hacia la izquierda
+        } else return 'd'; // 25% de probabilidad de moverse hacia la derecha
+    }
+
+    /**
+     * Método que actualiza el contador de sprites y cambia el spriteNum si es necesario.
+     *
+     * @param spriteNum número actual del sprite
+     * @param spriteCounter contador actual de sprites
+     * @param intervalo intervalo de cambio de sprite
+     * @return un array con el nuevo spriteNum y el nuevo contador de sprites
+     */
+    public int[] updateSpriteCounter(int spriteNum, int spriteCounter, int intervalo) {
+        int[] counters = new int[2];
+
+        // Incrementa el contador de sprites
+        spriteCounter++;
+
+        // Si el contador de sprites es mayor a 15, cambia el spriteNum y resetea el contador
+        if (spriteCounter > intervalo) {
+            spriteNum = (spriteNum == 1)? 2 : 1; // Cambia el spriteNum entre 1 y 2
+            spriteCounter = 0; // Resetea el contador de sprites
+        }
+
+        counters[0] = spriteNum;
+        counters[1] = spriteCounter;
+        return counters;
     }
 }
