@@ -120,6 +120,9 @@ public class Player extends Entity {
             // Llama al método pickUpItem para recoger el objeto si es posible
             pickUpItem(obj);
 
+            // Colision entre entidades
+            int npc = teisPanel.controller.collisionCheck.checkEntity(this, teisPanel.controller.npc);
+            interactuarNPC(npc);
 
             movement();
         } else {
@@ -174,6 +177,12 @@ public class Player extends Entity {
     public void pickUpItem(int id) throws LineUnavailableException {
         if (id != 999) { // Verifica si el objeto existe
 
+        }
+    }
+
+    public void interactuarNPC(int i) {
+        if (i != 999) {
+            teisPanel.controller.estado = teisPanel.controller.dialogo;
         }
     }
 

@@ -13,7 +13,7 @@ public class CollisionCheck {
     /**
      * Referencia al panel de juego que contiene los objetos y entidades.
      */
-    private TeisPanel teisPanel;
+    private final TeisPanel teisPanel;
 
     /**
      * Constructor que inicializa la referencia al panel de juego.
@@ -151,6 +151,55 @@ public class CollisionCheck {
         }
 
         // Devuelve el índice del objeto con el que colisiona la entidad, o 999 si no hay colisión
+        return i;
+    }
+
+    // Checkea colisiones con NPC
+    public int checkEntity(Entity entity, Entity[] target) {
+        // Indice por defecto, si se mantiene intacto indica que no hay colision
+        int i = 999;
+
+        // Recorre todos los objetos del mapa
+        for (int x = 0; x < target.length; x++) {
+            // Verifica si el objeto no es nulo
+            if (target[x] != null) {
+                // Calcula las coordenadas de la entidad y el objeto en el mapa
+                entity.solidArea.x = entity.worldX + entity.solidArea.x;
+                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                target[x].solidArea.x = target[x].worldX + target[x].solidArea.x;
+                target[x].solidArea.y = target[x].worldY + target[x].solidArea.y;
+
+                // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
+                switch (entity.sentido) {
+                    case 'w': // Arriba
+                        entity.solidArea.y -= entity.speed;
+                        break;
+                    case 's': // Abajo
+                        entity.solidArea.y += entity.speed;
+                        break;
+                    case 'd': // Izquierda
+                        entity.solidArea.x += entity.speed;
+                        break;
+                    case 'a': // Derecha
+                        entity.solidArea.x -= entity.speed;
+                        break;
+                }
+
+                // Verifica si la entidad colisiona con el objeto
+                if (entity.solidArea.intersects(target[x].solidArea)) {
+                    // Verifica si el objeto tiene colisión
+                    entity.collisionOn = true;
+                    i = x;
+                }
+
+                // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
+                entity.solidArea.x = entity.defaultSolidAreaX;
+                entity.solidArea.y = entity.defaultSolidAreaY;
+                target[x].solidArea.x = target[x].defaultSolidAreaX;
+                target[x].solidArea.y = target[x].defaultSolidAreaY;
+            }
+        }
+
         return i;
     }
 }
