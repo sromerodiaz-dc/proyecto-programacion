@@ -154,8 +154,15 @@ public class TeisPanel extends JPanel implements Runnable{
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void update() throws LineUnavailableException {
-        if (!controller.pauseState)
+        if (!controller.pauseState){
             model.actualiza(); // Actualiza el estado del jugador
+            // NPCs
+            for (int i = 0; i < controller.npc.length; i++) {
+                if (controller.npc[i] != null) {
+                    controller.npc[i].update();
+                }
+            }
+        }
     }
     /**
      * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.

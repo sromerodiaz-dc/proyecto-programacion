@@ -66,7 +66,7 @@ public class Player extends Entity {
     public void setValoresPorDefecto() {
         worldX = teisPanel.sizeFinal * 18;
         worldY = teisPanel.sizeFinal * 10;
-        speed = 7;
+        speed = 6;
         sentido = '0';
     }
 
@@ -120,13 +120,8 @@ public class Player extends Entity {
             // Llama al método pickUpItem para recoger el objeto si es posible
             pickUpItem(obj);
 
-            // Si no hay colisión, mueve al jugador
-            if (!collisionOn) {
-                movePlayer(sentido);
-            }
 
-            // Actualiza el contador de sprites y cambia el spriteNum si es necesario
-            updateSpriteCounter();
+            movement();
         } else {
             // Si no se ha presionado ninguna tecla, incrementa el contador de parada
             sentido = '0';
@@ -161,42 +156,6 @@ public class Player extends Entity {
         // Si la tecla 'right' está presionada, devuelve 'd'
         else {
             return 'd';
-        }
-    }
-
-    /**
-     * Mueve al jugador según la dirección del movimiento.
-     *
-     * @param sentido la dirección del movimiento como un carácter ('w', 's', 'a', 'd')
-     */
-    private void movePlayer(char sentido) {
-        // Mueve al jugador según la dirección del movimiento
-        switch (sentido) {
-            case 'w':
-                worldY -= speed;
-                break;
-            case 's':
-                worldY += speed;
-                break;
-            case 'a':
-                worldX -= speed;
-                break;
-            case 'd':
-                worldX += speed;
-                break;
-        }
-    }
-
-    /**
-     * Actualiza el contador de sprites y cambia el spriteNum si es necesario.
-     */
-    private void updateSpriteCounter() {
-        // Incrementa el contador de sprites
-        spriteCounter++;
-        // Si el contador de sprites es mayor a 15, cambia el spriteNum y resetea el contador
-        if (spriteCounter > 7) {
-            spriteNum = (spriteNum == 1) ? 2 : 1;
-            spriteCounter = 0;
         }
     }
 
