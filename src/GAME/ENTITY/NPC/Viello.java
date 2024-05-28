@@ -29,6 +29,9 @@ public class Viello extends Entity {
         // Establece la velocidad del anciano en 2, lo que significa que se mueve lentamente
         speed = 1;
 
+        // Se ralentiza el intervalo de cambio de sprites (animación) cuanto más alto el valor, menos animación habrá
+        intervalo = 15;
+
         // Establece el ancho y alto de la imagen del anciano
         width = 54;
         height = 72;
@@ -51,8 +54,8 @@ public class Viello extends Entity {
         down2 = setEntitySprite("npc/viello_down2.png");
 
         // Carga las imágenes del jugador caminando hacia la izquierda y las establece en las variables correspondientes
-        left1 = setEntitySprite("npc/viello_down1.png");
-        left2 = setEntitySprite("npc/viello_down2.png");
+        left1 = setEntitySprite("npc/viello_left1.png");
+        left2 = setEntitySprite("npc/viello_left2.png");
 
         // Carga las imágenes del jugador caminando hacia la derecha y las establece en las variables correspondientes
         right1 = setEntitySprite("npc/viello_right1.png");
