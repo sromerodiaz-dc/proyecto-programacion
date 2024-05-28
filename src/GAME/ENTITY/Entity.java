@@ -19,12 +19,16 @@ import java.io.IOException;
  * */
 public class Entity {
     TeisPanel teisPanel;
-    DrawUtils drawUtils = new DrawUtils();
+    public DrawUtils drawUtils = new DrawUtils(); // Clase auxiliar de métodos generales
 
     // Atributos
     public int speed;
     public int worldX, worldY;
 
+    // Cap NPC Event
+    public int capEvent = 0;
+    public int capMove = 0;
+    public int intervalo = 7;
     /**
     * BufferedImage en Java es una clase que representa una imagen digital en memoria. Proporciona un búfer de píxeles
     * manipulable para trabajar con imágenes de forma rasterizada (compuestas por una cuadrícula de píxeles individuales).
@@ -54,6 +58,10 @@ public class Entity {
      */
     public char sentido;
 
+    /**
+     * Constructor parametrizado
+     * @param teisPanel gráfico del juego
+     * */
     public Entity (TeisPanel teisPanel) {
         this.teisPanel = teisPanel;
     }
@@ -97,5 +105,52 @@ public class Entity {
 
         // Dibuja la imagen en la posición relativa al jugador en el panel
         drawUtils.drawRelativeToPlayer(worldX,worldY,teisPanel,g2,image, width, height);
+    }
+
+    /**
+     * Método que se encarga de establecer eventos específicos para cada entidad.
+     * Debe ser sobreescrito en las clases hijas para implementar la lógica de eventos específica.
+     */
+    public void setEvent() {
+        // Este método debe ser implementado en las clases hijas
+    }
+
+    /**
+     * Método que se encarga de actualizar el estado de la entidad.
+     */
+    public void update() {
+        // Llama al método setEvent() para establecer eventos específicos
+        setEvent();
+
+        // Reinicia la bandera de colisión
+        collisionOn = false;
+
+        // Verifica si hay colisión con alguna pieza en el mapa
+        teisPanel.controller.collisionCheck.checkPieza(this);
+
+        // Actualiza el movimiento de la entidad
+        movement();
+    }
+
+    /**
+     * Método que se encarga de actualizar el movimiento de la entidad.
+     */
+    public void movement() {
+        // Si no hay colisión, mueve al jugador
+        if (!collisionOn) {
+            // Calcula la nueva posición del jugador según la dirección y velocidad
+            int[] moveEnt = drawUtils.moveEntity(sentido, worldX, worldY, speed);
+
+            // Actualiza la posición del jugador
+            worldX = moveEnt[0];
+            worldY = moveEnt[1];
+        }
+
+        // Actualiza el contador de sprites y cambia el spriteNum si es necesario
+        int[] spritesCount = drawUtils.updateSpriteCounter(spriteNum, spriteCounter, intervalo);
+
+        // Actualiza el contador de sprites y el spriteNum
+        spriteNum = spritesCount[0];
+        spriteCounter = spritesCount[1];
     }
 }

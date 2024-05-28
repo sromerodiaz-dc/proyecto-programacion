@@ -27,7 +27,7 @@ public class Viello extends Entity {
         sentido = '0';
 
         // Establece la velocidad del anciano en 2, lo que significa que se mueve lentamente
-        speed = 2;
+        speed = 1;
 
         // Establece el ancho y alto de la imagen del anciano
         width = 54;
@@ -61,5 +61,18 @@ public class Viello extends Entity {
         // Carga las imágenes del jugador detenido y las establece en las variables correspondientes
         stop = setEntitySprite("npc/viello_stop1.png");
         stop2 = setEntitySprite("npc/viello_stop2.png");
+    }
+
+    public void setEvent() {
+        capEvent++;
+        if (capEvent == 120) {
+            sentido = drawUtils.moveRandomEntity();
+            capEvent = 0;
+            capMove++;
+            if (capMove == 2) {
+                sentido = '0';
+                capMove = 0;
+            }
+        }
     }
 }
