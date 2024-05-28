@@ -1,6 +1,7 @@
 package GAME.ENTITY;
 
 import GAME.GAME.TeisPanel;
+import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaUtils;
 
 import javax.imageio.ImageIO;
@@ -18,6 +19,7 @@ import java.io.IOException;
  * */
 public class Entity {
     TeisPanel teisPanel;
+    DrawUtils drawUtils = new DrawUtils();
 
     // Atributos
     public int speed;
@@ -39,9 +41,11 @@ public class Entity {
     public int spriteNum = 1;
 
     /**
-     * Rectangulo que define el área de colisión del PJ
+     * Rectangulo que define el área de colisión de la Entidad
      * */
-    public Rectangle solidArea = new Rectangle(0,0,48,48); // Parametros por defecto
+    public int width = 48;
+    public int height = 48;
+    public Rectangle solidArea = new Rectangle(0,0,width,height); // Parametros por defecto
     public int defaultSolidAreaX, defaultSolidAreaY;
     public boolean collisionOn = false;
 
@@ -80,5 +84,18 @@ public class Entity {
 
         // Devuelve la imagen BufferedImage escalada del sprite del jugador
         return image;
+    }
+
+    /**
+     * Dibuja la entidad en el panel utilizando los métodos de dibujo proporcionados.
+     *
+     * @param g2 objeto Graphics2D para dibujar la entidad
+     */
+    public void draw (Graphics2D g2) {
+        // Obtiene la imagen de sprite correspondiente al número de sprite activo y la dirección actual
+        BufferedImage image = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
+
+        // Dibuja la imagen en la posición relativa al jugador en el panel
+        drawUtils.drawRelativeToPlayer(worldX,worldY,teisPanel,g2,image, width, height);
     }
 }
