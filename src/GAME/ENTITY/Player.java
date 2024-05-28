@@ -2,15 +2,10 @@ package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
-import GAME.GPHICS.PiezaUtils;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -30,30 +25,38 @@ public class Player extends Entity {
     public boolean tenPass = false;
 
     // Constructor
+    /**
+     * Constructor de la clase Player, que representa al jugador en el juego.
+     *
+     * @param t instancia de TeisPanel, que es el panel donde se dibujará el jugador
+     * @param k instancia de KeyManager, que maneja las entradas del teclado
+     */
     public Player(TeisPanel t, KeyManager k) {
-        super(t); // Pasa al constructor de Entity la instancia de TeisPanel
+        // Llama al constructor de la clase padre (Entity) y pasa la instancia de TeisPanel
+        super(t);
 
+        // Asigna la instancia de KeyManager para manejar las entradas del teclado
         this.keyManager = k;
 
-        screenX = teisPanel.screenWidth / 2 - (teisPanel.sizeFinal / 2);
-        screenY = teisPanel.screenHeight / 2 - (teisPanel.sizeFinal / 2);
+        // Inicializa la posición del jugador en la pantalla
+        screenX = t.screenWidth / 2 - (t.sizeFinal / 2);
+        screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
 
-        // teisPanel.sizeFinal = 48
-        // Como quiero que el área de colision sea MENOR al del tamaño del PJ, reduzco los pixeles de alto y ancho
-        // además de la posición del propio Rectangle en (10,16), recordemos que en Java (0,0) es topLeftCorner.
-        // Así que poner unas coordenadas (10,16) quiere decir que el área colisionable comienza cerca del centro del PJ.
-
-        solidArea = new Rectangle();
+        // Inicializa el área sólida del jugador
+        // Es menor que el sprite del jugador (48x48px) porque de esta manera no hay colisiones excesivas con el entorno.
         solidArea.x = 10;
         solidArea.y = 16;
         solidArea.width = 32;
         solidArea.height = 32;
 
+        // Guarda los valores por defecto del área sólida
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
-        // Inicializa valores por defecto
+        // Inicializa los valores por defecto del jugador
         setValoresPorDefecto();
+
+        // Carga las imágenes del jugador
         getPlayerImage();
     }
 
@@ -220,23 +223,8 @@ public class Player extends Entity {
      * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
      * cambia el sprite empleado por otro nuevo.
      */
-    public void pinta(Graphics2D g2, TeisPanel teis, int screenX, int screenY) {
-        // Crea un mapa que asocia cada dirección con un array de imágenes de sprite
-        Map<Character, BufferedImage[]> sprites = new HashMap<>();
-        sprites.put('w', new BufferedImage[]{up1, up2});
-        sprites.put('a', new BufferedImage[]{left1, left2});
-        sprites.put('s', new BufferedImage[]{down1, down2});
-        sprites.put('d', new BufferedImage[]{right1, right2});
-        sprites.put('0', new BufferedImage[]{stop, stop2});
-
-        // Obtiene el array de imágenes de sprite correspondiente a la dirección actual
-        BufferedImage[] images = sprites.get(sentido);
-
-        // Obtiene la imagen de sprite correspondiente al número de sprite activo
-        BufferedImage image = images[spriteNum - 1];
-
-        // Dibuja la imagen con IMAGE en la posición por defecto (100, 100) con los valores por defecto de
-        // resolución 16x16 y su respectivo escalado "sizeFinal"
+    public void pinta(Graphics2D g2, int screenX, int screenY) {
+        BufferedImage image = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
         g2.drawImage(image, screenX, screenY, null);
     }
 }

@@ -1,13 +1,10 @@
 package GAME.GAME;
 
-import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 import GAME.FX.MapSelector;
 import GAME.FX.MapSize;
 import GAME.GPHICS.PiezaManager;
-import GAME.OBJECT.ObjectGame;
-import GAME.OBJECT.ObjectPlacer;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
@@ -77,7 +74,7 @@ public class TeisPanel extends JPanel implements Runnable{
     }
 
     public void setUpItems() {
-        controller.placer.setObject();
+        controller.placer.setRecursos();
         /*controller.playMusic(0);*/
     }
 
@@ -187,8 +184,15 @@ public class TeisPanel extends JPanel implements Runnable{
                 controller.obj[i].draw(g2,this);
         }
 
+        // NPCs
+        for (int i = 0; i < controller.npc.length; i++) {
+            if (controller.npc[i] != null) {
+                controller.npc[i].draw(g2);
+            }
+        }
+
         // Dibuja el jugador
-        model.pinta(g2,this,model.screenX, model.screenY);
+        model.pinta(g2, model.screenX, model.screenY);
 
         // Interfaz de Usuario
         controller.ui.draw(g2);
