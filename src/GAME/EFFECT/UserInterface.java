@@ -61,11 +61,22 @@ public class UserInterface {
         if (!teisPanel.pauseState){
             //
         } else {
-            //
+            drawPauseState();
         }
     }
 
     public void drawPauseState() {
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,80));
 
+        String text = "PAUSA";
+        int y = teisPanel.screenHeight/2;
+
+        g2.drawString(text,centrado(text),y);
+    }
+
+    public int centrado(String text) {
+        int lenght = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
+
+        return teisPanel.screenWidth/2 - lenght/2;
     }
 }

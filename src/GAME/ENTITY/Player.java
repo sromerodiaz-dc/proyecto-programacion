@@ -63,7 +63,7 @@ public class Player extends Entity {
     public void setValoresPorDefecto() {
         worldX = teisPanel.sizeFinal * 18;
         worldY = teisPanel.sizeFinal * 10;
-        speed = 4;
+        speed = 7;
         sentido = '0';
     }
 
@@ -158,7 +158,7 @@ public class Player extends Entity {
             stopCounter++;
         }
         // Cambia el spriteNum si el contador de parada es mayor a 30
-        if (stopCounter > 30) {
+        if (stopCounter > 15) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             stopCounter = 0;
         }
@@ -219,7 +219,7 @@ public class Player extends Entity {
         // Incrementa el contador de sprites
         spriteCounter++;
         // Si el contador de sprites es mayor a 15, cambia el spriteNum y resetea el contador
-        if (spriteCounter > 15) {
+        if (spriteCounter > 7) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCounter = 0;
         }
@@ -239,37 +239,7 @@ public class Player extends Entity {
      */
     public void pickUpItem(int id) throws LineUnavailableException {
         if (id != 999) { // Verifica si el objeto existe
-            // Verifica el tipo de objeto y realiza la acción correspondiente
-            switch (teisPanel.obj[id].id) {
-                case "Bus":
-                    teisPanel.controller.ui.showMessage("vitrasa");
-                    break;
-                case "Passvigo":
-                    teisPanel.controller.playSelection(1);
-                    teisPanel.obj[id] = null; // Elimina el objeto del mapa
-                    tenPass = true; // True si tienes las PassVigo
-                    teisPanel.controller.ui.showMessage("tes a PassVigo, poderás entrar ó Vitrasa... qué merda");
-                    break;
-                case "Puerta":
-                    // Verifica si el jugador tiene PassVigo
-                    if (tenPass) {
-                        teisPanel.obj[id] = null;
-                        /*tenPass = false;*/
-                        /*
-                         * Molaría poner que la PassVigo tiene X saldo y solo
-                         * puedes abrir X numero de puertas dependiendo del saldo que tengas.
-                         * Con las PassVigoPLUS puedes acceder a un easter egg, donde
-                         * luchas contra el dinoseto, estaría guapísimo
-                         * */
-                    }
-                    break;
-                case "Container":
-                    teisPanel.controller.ui.isFinished = true;
-                    if (teisPanel.controller.getSound().getClip() != null)
-                        teisPanel.controller.stopMusic();
-                    teisPanel.controller.playSelection(2);
-                    break;
-            }
+
         }
     }
 

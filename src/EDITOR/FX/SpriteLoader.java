@@ -43,8 +43,10 @@ public class SpriteLoader {
         for (File file : folder.listFiles()) {
             try {
                 BufferedImage image = ImageIO.read(file);
+                System.out.println(new ImageIcon(image));
                 sprites.add(new ImageIcon(image));
                 imagePaths.add(file.getPath());
+                System.out.println(file.getPath());
             } catch (IOException e) {
                 sprites.add(null);
             }
@@ -117,7 +119,7 @@ public class SpriteLoader {
                 if (sprites.get(i) != null) {
                     String replaced = replace(imagePaths.get(i));
                     // Check if the imagePath starts with "background/pared"
-                    if (replaced.startsWith("background/pared")) {
+                    if (replaced.startsWith("background/pared") || replaced.startsWith("background/bloque") || replaced.startsWith("background/oscuro")) {
                         // Prefix the imagePath with an asterisk
                         replaced = "*" + replaced;
                     }

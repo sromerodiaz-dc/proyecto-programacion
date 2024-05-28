@@ -28,24 +28,5 @@ public class ObjectPlacer {
      * Coloca objetos en el panel de juego.
      */
     public void setObject() {
-        // Crea un objeto Passvigo y lo coloca en la posición (23, 23)
-        teisPanel.obj[0] = new Passvigo();
-        teisPanel.obj[0].worldX = 20 * teisPanel.sizeFinal;
-        teisPanel.obj[0].worldY = 15 * teisPanel.sizeFinal;
-
-        // Crea un objeto Puerta y lo coloca en la posición (20, 21)
-        teisPanel.obj[1] = new Puerta();
-        teisPanel.obj[1].worldX = 10 * teisPanel.sizeFinal;
-        teisPanel.obj[1].worldY = 15 * teisPanel.sizeFinal;
-
-        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
-        teisPanel.obj[2] = new Container();
-        teisPanel.obj[2].worldX = 15 * teisPanel.sizeFinal;
-        teisPanel.obj[2].worldY = 15 * teisPanel.sizeFinal;
-
-        // Crea un objeto Cofre y lo coloca en la posición (20, 21)
-        teisPanel.obj[3] = new BusVitrasa();
-        teisPanel.obj[3].worldX = 20 * teisPanel.sizeFinal;
-        teisPanel.obj[3].worldY = 10 * teisPanel.sizeFinal;
     }
 }
