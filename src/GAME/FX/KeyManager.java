@@ -63,7 +63,11 @@ public class KeyManager implements KeyListener {
                 right = true;
                 break;
             case KeyEvent.VK_ESCAPE:
-                teisPanel.controller.pauseState = !teisPanel.controller.pauseState;
+                if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
+                    teisPanel.controller.estado = teisPanel.controller.playState;
+                } else if (teisPanel.controller.estado == teisPanel.controller.playState) {
+                    teisPanel.controller.estado = teisPanel.controller.pauseState;
+                }
                 break;
             case KeyEvent.VK_T: // DEBUGGING
                 Time = !Time;

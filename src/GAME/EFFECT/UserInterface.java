@@ -1,12 +1,8 @@
 package GAME.EFFECT;
 
 import GAME.GAME.TeisPanel;
-import GAME.OBJECT.OBJS.Passvigo;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
-
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
@@ -20,15 +16,19 @@ public class UserInterface {
     TeisPanel teisPanel; // Referencia al panel donde se dibujará la interfaz de usuario.
     Font font, arial_endBold; // Fuente de texto utilizada para dibujar texto en la interfaz de usuario.
 
+    //DrawUtils drawUtils = new DrawUtils();
+
     public boolean messageOn = false; // Dependiendo de las interacciones del player
     public String message = ""; // Mensaje mostrado dependiendo del objeto
     int messageTime = 0; // Tiempo que se muestra el mensaje
 
     public boolean isFinished = false; // Termina el juego
 
-    double speedRun; // Tiempo de juego
-    DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // Formato del tiempo
-
+    /*
+    * De momento no se usa:
+    * double speedRun; // Tiempo de juego
+    * DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // Formato del tiempo
+    */
     /**
      * Constructor de la clase UserInterface.
      * @param teisPanel Panel donde se dibujará la interfaz de usuario.
@@ -58,10 +58,17 @@ public class UserInterface {
         g2.setFont(font);
         g2.setColor(Color.WHITE);
 
-        if (!teisPanel.controller.pauseState){
+        // Estado de juego
+        if (teisPanel.controller.estado == teisPanel.controller.playState){
             //
-        } else {
+        }
+
+        if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
             drawPauseState();
+        }
+
+        if (teisPanel.controller.estado == teisPanel.controller.dialogo) {
+           drawDialogo();
         }
     }
 
@@ -72,6 +79,23 @@ public class UserInterface {
         int y = teisPanel.screenHeight/2;
 
         g2.drawString(text,centrado(text),y);
+    }
+
+    public void drawDialogo () {
+        // Propiedades de la ventana de diálogo
+        int x = teisPanel.sizeFinal * 2;
+        int y = teisPanel.sizeFinal / 2;
+        int width = teisPanel.screenWidth - teisPanel.sizeFinal*4;
+        int height = teisPanel.sizeFinal * 5;
+
+        drawVentana(x,y,width,height);
+    }
+
+    public void drawVentana (int x, int y, int width, int height) {
+        Color color = new Color(0,0,0);
+
+        g2.setColor(color);
+        g2.fillRoundRect(x,y,width,height,35,35);
     }
 
     public int centrado(String text) {

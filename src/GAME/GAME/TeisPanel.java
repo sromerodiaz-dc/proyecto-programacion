@@ -154,7 +154,7 @@ public class TeisPanel extends JPanel implements Runnable{
      * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
      * */
     public void update() throws LineUnavailableException {
-        if (!controller.pauseState){
+        if (controller.estado == controller.playState){
             model.actualiza(); // Actualiza el estado del jugador
             // NPCs
             for (int i = 0; i < controller.npc.length; i++) {
