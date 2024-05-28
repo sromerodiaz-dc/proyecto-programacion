@@ -10,7 +10,7 @@ class TestPlayer {
 
     @Test
     void testSetValoresPorDefecto() {
-        Entity entity = new Entity();
+        Entity entity = new Entity(new TeisPanel());
         TeisPanel teisPanel = null;
         assertEquals(entity.worldX, 15 * teisPanel.sizeFinal);
         assertEquals(entity.worldY, 15 * teisPanel.sizeFinal);
@@ -20,7 +20,7 @@ class TestPlayer {
 
     @Test
     void testGetPlayerImage() {
-        Entity entity = new Entity();
+        Entity entity = new Entity(new TeisPanel());
 
         try {
             assertNotNull(entity.up1);
@@ -41,6 +41,6 @@ class TestPlayer {
 
     @Test
     void testActualiza() {
-        Entity entity = new Entity();
+        Entity entity = new Entity(new TeisPanel());
     }
 }

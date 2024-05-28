@@ -20,8 +20,7 @@ import java.util.Map;
  * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
  * */
 public class Player extends Entity {
-    // Atributos
-    TeisPanel teisPanel;
+
     public KeyManager keyManager;
 
     public final int screenX;
@@ -32,7 +31,8 @@ public class Player extends Entity {
 
     // Constructor
     public Player(TeisPanel t, KeyManager k) {
-        this.teisPanel = t;
+        super(t); // Pasa al constructor de Entity la instancia de TeisPanel
+
         this.keyManager = k;
 
         screenX = teisPanel.screenWidth / 2 - (teisPanel.sizeFinal / 2);

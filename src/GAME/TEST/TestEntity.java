@@ -14,7 +14,7 @@ class TestEntity {
 
     @Test
     void testMoveLeft() throws LineUnavailableException {
-        Entity entity = new Entity();
+        Entity entity = new Entity(new TeisPanel());
         Player player = new Player(new TeisPanel(), new KeyManager(new TeisPanel()));
         player.actualiza();
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);

@@ -4,8 +4,6 @@ import GAME.GAME.TeisPanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -16,6 +14,8 @@ import java.util.Map;
  * como la posicion, velocidad, vida y demás utilidades que puedan surgir.
  * */
 public class Entity {
+    TeisPanel teisPanel;
+
     // Atributos
     public int speed;
     public int worldX, worldY;
@@ -38,7 +38,7 @@ public class Entity {
     /**
      * Rectangulo que define el área de colisión del PJ
      * */
-    public Rectangle solidArea;
+    public Rectangle solidArea = new Rectangle(0,0,48,48); // Parametros por defecto
     public int defaultSolidAreaX, defaultSolidAreaY;
     public boolean collisionOn = false;
 
@@ -46,4 +46,8 @@ public class Entity {
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido;
+
+    public Entity (TeisPanel teisPanel) {
+        this.teisPanel = teisPanel;
+    }
 }
