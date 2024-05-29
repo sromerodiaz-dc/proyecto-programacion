@@ -3,9 +3,6 @@ package GAME.OBJECT.OBJS;
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
-
 public class Vida extends Entity {
     public Vida(TeisPanel teisPanel) {
         super(teisPanel);
