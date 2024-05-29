@@ -28,9 +28,10 @@ public class PiezaManager {
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
      */
-    public PiezaManager(TeisPanel teis, String mapName) {
+    public PiezaManager(TeisPanel teis) {
         this.t = teis;
-        this.mapName = mapName;
+        //mapName = teis.controller.datos.fileName;
+        mapName = "maps/prueba4.txt";
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
         pieza = new Pieza[imagePaths.length];

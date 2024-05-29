@@ -35,8 +35,8 @@ public class TeisPanel extends JPanel implements Runnable{
     final int fps = 30;
 
     // CONFIGURACIÓN DEL MAPA
-    public final int maxWorldCol;
-    public final int maxWorldRow;
+    public int maxWorldCol;
+    public int maxWorldRow;
 
     // Implementación tiempo (RUNNABLE)
     public Thread teisThread;
@@ -47,19 +47,11 @@ public class TeisPanel extends JPanel implements Runnable{
 
     // Constructor
     public TeisPanel() {
-        // Selector de mapa
-        MapSelector mapSelector = new MapSelector();
-        MapSize datos = mapSelector.getMapSize();
-
-        // Propiedades del mapa seleccionado
-        maxWorldRow = datos.maxRow;
-        maxWorldCol = datos.maxCol;
-
         // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
         KeyManager key = new KeyManager(this);
 
         // Implementacion de backgrounds y mecanicas de colision
-        PiezaManager piezaM = new PiezaManager(this, datos.fileName);
+        PiezaManager piezaM = new PiezaManager(this);
 
         setPreferredSize(new Dimension(screenWidth,screenHeight));
         setBackground(Color.black);
@@ -182,7 +174,7 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Pantalla de Carga
         if (controller.estado == controller.carga) {
-
+            controller.ui.draw(g2);
         } else {
             // Dibuja el fondo
             controller.getPiezaManager().pinta(g2);
