@@ -45,10 +45,17 @@ public class TeisPanel extends JPanel implements Runnable{
     public final Player model;
     public final GameController controller;
 
+    // Selector de mapa
+    MapSelector mapSelector = new MapSelector();
+    public MapSize datos = mapSelector.getMapSize();
+
     // Constructor
     public TeisPanel() {
         // Implementación de la clase GAME.FX.KeyManager (Lectura de acciones de teclado)
         KeyManager key = new KeyManager(this);
+
+        maxWorldCol = datos.maxCol;
+        maxWorldRow = datos.maxRow;
 
         // Implementacion de backgrounds y mecanicas de colision
         PiezaManager piezaM = new PiezaManager(this);
@@ -198,15 +205,15 @@ public class TeisPanel extends JPanel implements Runnable{
 
             // Interfaz de Usuario
             controller.ui.draw(g2);
-
-            if (model.keyManager.Time) {
-                long tDrawEnd = System.nanoTime();
-                long tiempoRestante = tDrawEnd - tDraw;
-                System.out.println("Tiempo de pintado" + tiempoRestante);
-            }
-
-            // Libera espacio
-            g2.dispose();
         }
+
+        if (model.keyManager.Time) {
+            long tDrawEnd = System.nanoTime();
+            long tiempoRestante = tDrawEnd - tDraw;
+            System.out.println("Tiempo de pintado" + tiempoRestante);
+        }
+
+        // Libera espacio
+        g2.dispose();
     }
 }

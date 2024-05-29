@@ -30,8 +30,6 @@ public class PiezaManager {
      */
     public PiezaManager(TeisPanel teis) {
         this.t = teis;
-        //mapName = teis.controller.datos.fileName;
-        mapName = "maps/prueba4.txt";
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
         pieza = new Pieza[imagePaths.length];
@@ -39,6 +37,8 @@ public class PiezaManager {
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
         // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
         mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow];
+
+        mapName = t.datos.fileName;
 
         // Carga las imágenes de las piezas.
         getPiezaImage();
@@ -132,10 +132,8 @@ public class PiezaManager {
                     // Bucle por cada elemento (separado por espacios) en la línea actual.
                     while (col < t.maxWorldCol) {
                         String[] mapID = linea.split(" ");
-
                         // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
                         int map = Integer.parseInt(mapID[col]);
-
                         // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
                         mapaPiezaNum[col][fil] = map;
                         col++;
@@ -173,13 +171,6 @@ public class PiezaManager {
         while (worldCol < t.maxWorldCol && worldFil < t.maxWorldRow) {
             // Obtiene el ID del tipo de Pieza en la posición actual del mapa.
             int id = mapaPiezaNum[worldCol][worldFil];
-
-            /*
-             Para tener una cámara estática encima de nuestro PJ se necesita conocer la posición
-             del PJ en siempre y por ello se necesitan 2 tipos de coordenadas:
-
-             Coordenadas del mapa entero y coordenadas relativas al jugador
-            */
 
             // Coordenadas relativas al jugador
             int playerWorldX = t.model.worldX;

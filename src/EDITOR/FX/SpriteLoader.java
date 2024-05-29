@@ -43,10 +43,8 @@ public class SpriteLoader {
         for (File file : folder.listFiles()) {
             try {
                 BufferedImage image = ImageIO.read(file);
-                System.out.println(new ImageIcon(image));
                 sprites.add(new ImageIcon(image));
                 imagePaths.add(file.getPath());
-                System.out.println(file.getPath());
             } catch (IOException e) {
                 sprites.add(null);
             }
