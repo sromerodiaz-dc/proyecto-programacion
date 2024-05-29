@@ -18,7 +18,7 @@ public class TestPiezaManager {
     @BeforeEach
     public void setUp() {
         // Create a new PiezaManager instance
-        piezaManager = new PiezaManager(null,"prueba.txt");
+        piezaManager = new PiezaManager(null);
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -30,6 +31,7 @@ public class UserInterface {
     public String dialogo;
 
     ArrayList<String> titulos = new ArrayList<>();
+    String title;
 
     /*
     * De momento no se usa:
@@ -50,6 +52,9 @@ public class UserInterface {
         } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }
+
+        setPosiblesTitulos();
+        title = getPosibleTitulo();
     }
 
     public void showMessage (String message) {
@@ -58,10 +63,18 @@ public class UserInterface {
     }
 
     public void setPosiblesTitulos() {
-        titulos.add("Teis non é Chapela.");
-        titulos.add("\"É Vigo máis ca un dinoseto?\"");
-        titulos.add("Concello de Teis: O XOGO");
-        titulos.add("\nSamil prime das praias\n");
+        titulos.add("Teis non\né Chapela.");
+        titulos.add("\"É Vigo\nmáis ca\nun dinoseto?\"");
+        titulos.add("Concello de\nTeis:\nO XOGO");
+        titulos.add("\"eres de Cangas\"");
+        titulos.add("Bombardeen a\nUVigo");
+        titulos.add("Bombardeen o\nVialia");
+    }
+
+    public String getPosibleTitulo() {
+        Random random = new Random();
+        int i = random.nextInt(titulos.size());
+        return titulos.get(i);
     }
 
     /**
@@ -133,22 +146,26 @@ public class UserInterface {
 
     public void drawPantallaCarga() {
         // Título del juego
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,96F));
-        String title = "";
-        int x = centrado(title);
-        int y = teisPanel.sizeFinal * 3;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,75F));
 
-        g2.setColor(Color.WHITE);
-        g2.drawString(title,x,y);
+        int y = teisPanel.screenHeight / 3;
+
+        for (String line : title.split("\n")){
+            int x = centrado(line);
+            // Sombreado
+            g2.setColor(Color.GRAY);
+            g2.drawString(line,x+5,y+5);
+
+            // Titulo
+            g2.setColor(Color.WHITE);
+            g2.drawString(line,x,y);
+            y+=120; // La siguiente linea se dibuja 120px por debajo
+        }
     }
 
     public int centrado(String text) {
         int lenght = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
 
         return teisPanel.screenWidth/2 - lenght/2;
-    }
-
-    public String getTitulo() {
-
     }
 }
