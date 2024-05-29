@@ -169,7 +169,7 @@ public class UserInterface {
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
         g2.setColor(Color.YELLOW);
 
-        String text = "DALLE";
+        String text = "SAÍR";
         x = (int) (teisPanel.screenWidth * 0.87) - ((int)g2.getFontMetrics().getStringBounds(text,g2).getWidth());
         y = teisPanel.screenHeight - 100;
         g2.drawString(text,x,y);
@@ -177,10 +177,18 @@ public class UserInterface {
             g2.drawString(">>", x - teisPanel.sizeFinal, y);
         }
 
-        text = "SAÍR";
+        text = "DALLE";
         x = (int) (teisPanel.screenWidth * 0.15);
         g2.drawString(text,x,y);
         if (contadorTitulo == 1) {
+            g2.drawString(">>", x - teisPanel.sizeFinal, y);
+        }
+
+        text = "CARGAR PARTIDA";
+        x = centrado(text);
+        y += 50;
+        g2.drawString(text,x,y);
+        if (contadorTitulo == 2) {
             g2.drawString(">>", x - teisPanel.sizeFinal, y);
         }
     }
