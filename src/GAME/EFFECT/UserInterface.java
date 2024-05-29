@@ -1,8 +1,8 @@
 package GAME.EFFECT;
 
+import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
 import GAME.OBJECT.OBJS.Vida;
-import GAME.OBJECT.ObjectGame;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -63,7 +63,7 @@ public class UserInterface {
         getPosibleTitulo();
 
         // Recibe datos de la vida y sprite de vida del player
-        ObjectGame vida = new Vida();
+        Entity vida = new Vida(teisPanel);
         vida_entera = vida.image;
         vida_mitad = vida.image2;
         vida_vacia = vida.image3;

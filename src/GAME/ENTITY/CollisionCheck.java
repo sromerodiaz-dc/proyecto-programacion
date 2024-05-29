@@ -145,8 +145,8 @@ public class CollisionCheck {
                 // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
                 entity.solidArea.x = entity.defaultSolidAreaX;
                 entity.solidArea.y = entity.defaultSolidAreaY;
-                teisPanel.controller.obj[x].solidArea.x = teisPanel.controller.obj[x].defaultObjectSolidAreaX;
-                teisPanel.controller.obj[x].solidArea.y = teisPanel.controller.obj[x].defaultObjectSolidAreaY;
+                teisPanel.controller.obj[x].solidArea.x = teisPanel.controller.obj[x].defaultSolidAreaX;
+                teisPanel.controller.obj[x].solidArea.y = teisPanel.controller.obj[x].defaultSolidAreaY;
             }
         }
 

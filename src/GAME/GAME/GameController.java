@@ -7,10 +7,10 @@ import GAME.ENTITY.Entity;
 import GAME.FX.EventManager;
 import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaManager;
-import GAME.OBJECT.ObjectGame;
 import GAME.OBJECT.Placer;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.util.ArrayList;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -35,7 +35,7 @@ public class GameController {
     public Placer placer;
 
     // Manejo de objetos
-    public ObjectGame[] obj = new ObjectGame[10];
+    public Entity[] obj = new Entity[10];
 
     // ESTADO DEL JUEGO
     public int estado = 3;
@@ -43,6 +43,9 @@ public class GameController {
 
     // Entidades
     public Entity[] npc = new Entity[10];
+
+    // Orden de renderizado
+    ArrayList<Entity> entities = new ArrayList<>();
 
     // DrawUtils
     public DrawUtils drawUtils = new DrawUtils();
