@@ -12,42 +12,52 @@ import java.awt.*;
  * */
 public class EventManager {
     TeisPanel teisPanel;
-    Rectangle eventAct;
-    int defaultRectX,defaultRectY, cooldownD=0, cooldownH=0;
-    boolean doneDamage = false, doneHeal = false;
+    EventRectangle[][] eventRectangle;
 
     public EventManager (TeisPanel teisPanel) {
         this.teisPanel = teisPanel;
 
-        // Define un área de colision en el centro de un sprite de 2x2 píxeles.
-        eventAct = new Rectangle();
-        eventAct.x = 23;
-        eventAct.y = 23;
-        eventAct.width = 2;
-        eventAct.height = 2;
+        eventRectangle = new EventRectangle[teisPanel.maxWorldCol][teisPanel.maxWorldRow];
 
-        defaultRectX = eventAct.x;
-        defaultRectY = eventAct.y;
+        int col = 0;
+        int row = 0;
+        while (col < teisPanel.maxWorldCol && row < teisPanel.maxWorldRow){
+            // Define un área de colision en el centro de un sprite de 2x2 píxeles.
+            eventRectangle[col][row] = new EventRectangle();
+            eventRectangle[col][row].x = 23;
+            eventRectangle[col][row].y = 23;
+            eventRectangle[col][row].width = 2;
+            eventRectangle[col][row].height = 2;
+
+            eventRectangle[col][row].defaultX = eventRectangle[col][row].x;
+            eventRectangle[col][row].defaultY = eventRectangle[col][row].y;
+
+            col++;
+            if (col == teisPanel.maxWorldCol) {
+                col = 0;
+                row++;
+            }
+        }
     }
 
     public void checkEvent(){
-        if (!doneDamage) if (hit(10, 12, 'a')) damage(teisPanel.controller.dialogoState);
+        if (hit(10, 12, 'a')) damage(10,12, teisPanel.controller.dialogoState);
 
-        if (!doneHeal) if (hit(14,13,'s')) heal(teisPanel.controller.dialogoState);
+        if (hit(14,13,'s')) heal(14,13,teisPanel.controller.dialogoState);
 
-        resetCooldowns();
+        eventRectangle[10][12].resetCooldowns(30);
     }
 
-    public boolean hit (int eventCol,int eventRow,char sentido){
+    public boolean hit (int col,int row,char sentido){
         boolean doesHit = false;
 
         teisPanel.model.solidArea.x = teisPanel.model.worldX + teisPanel.model.solidArea.x;
         teisPanel.model.solidArea.y = teisPanel.model.worldY + teisPanel.model.solidArea.y;
 
-        eventAct.x = eventCol*teisPanel.sizeFinal + eventAct.x;
-        eventAct.y = eventRow*teisPanel.sizeFinal + eventAct.y;
+        eventRectangle[col][row].x = col*teisPanel.sizeFinal + eventRectangle[col][row].x;
+        eventRectangle[col][row].y = row*teisPanel.sizeFinal + eventRectangle[col][row].y;
 
-        if (teisPanel.model.solidArea.intersects(eventAct)){
+        if (teisPanel.model.solidArea.intersects(eventRectangle[col][row]) && !eventRectangle[col][row].done){
             if (teisPanel.model.sentido == sentido || sentido != '0') {
                 doesHit = true;
             }
@@ -55,38 +65,26 @@ public class EventManager {
 
         teisPanel.model.solidArea.x = teisPanel.model.defaultSolidAreaX;
         teisPanel.model.solidArea.y = teisPanel.model.defaultSolidAreaY;
-        eventAct.x = defaultRectX;
-        eventAct.y = defaultRectY;
+        eventRectangle[col][row].x = eventRectangle[col][row].defaultX;
+        eventRectangle[col][row].y = eventRectangle[col][row].defaultY;
 
         return doesHit;
     }
 
-    public void damage(int estado) {
-        doneDamage = true;
+    public void damage(int col, int row, int estado) {
         teisPanel.controller.estado = estado;
         teisPanel.controller.ui.dialogo = "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende\nsó entrischécete\"";
         teisPanel.model.life -= 5;
+
+        eventRectangle[col][row].done = true;
     }
 
-    public void heal(int estado) {
+    public void heal(int col, int row, int estado) {
         if (teisPanel.model.keyManager.isPressed) {
-            doneHeal = true;
             teisPanel.controller.estado = estado;
             teisPanel.controller.ui.dialogo = "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"";
             teisPanel.model.life += 3;
+            eventRectangle[col][row].done = true;
         }
-    }
-
-    public void resetCooldowns() {
-        if (cooldownD > 300) {
-            doneDamage = false;
-            cooldownD = 0;
-        }
-        if (cooldownH > 300) {
-            doneHeal = false;
-            cooldownH = 0;
-        }
-        cooldownD++;
-        cooldownH++;
     }
 }
