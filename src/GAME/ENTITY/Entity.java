@@ -44,6 +44,9 @@ public class Entity {
     public int stopCounter = 0;
     public int spriteNum = 1;
 
+    public String[] dialogos = new String[25]; // Dialogos
+    public int dialogoIndex = 0;
+
     /**
      * Rectangulo que define el área de colisión de la Entidad
      * */
@@ -113,6 +116,31 @@ public class Entity {
      */
     public void setEvent() {
         // Este método debe ser implementado en las clases hijas
+    }
+
+    /**
+     * Habla el NPC
+     * */
+    public void fala() {
+        if (dialogos[dialogoIndex] == null)
+            dialogoIndex = 0;
+        teisPanel.controller.ui.dialogo = dialogos[dialogoIndex];
+        dialogoIndex++;
+
+        switch (teisPanel.model.sentido){
+            case 'w':
+                sentido = 's';
+                break;
+            case 's':
+                sentido = 'w';
+                break;
+            case 'a':
+                sentido = 'd';
+                break;
+            case 'd':
+                sentido = 'a';
+                break;
+        }
     }
 
     /**
