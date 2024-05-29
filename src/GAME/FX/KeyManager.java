@@ -22,6 +22,8 @@ public class KeyManager implements KeyListener {
 
     public boolean Time = false;
 
+    public boolean isTalking = false;
+
     TeisPanel teisPanel;
 
     public KeyManager (TeisPanel teisPanel) {
@@ -49,29 +51,45 @@ public class KeyManager implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                up = true;
-                break;
-            case KeyEvent.VK_S:
-                down = true;
-                break;
-            case KeyEvent.VK_A:
-                left = true;
-                break;
-            case KeyEvent.VK_D:
-                right = true;
-                break;
-            case KeyEvent.VK_ESCAPE:
-                if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
-                    teisPanel.controller.estado = teisPanel.controller.playState;
-                } else if (teisPanel.controller.estado == teisPanel.controller.playState) {
+
+        // PLAY
+        if (teisPanel.controller.estado == teisPanel.controller.playState) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    up = true;
+                    break;
+                case KeyEvent.VK_S:
+                    down = true;
+                    break;
+                case KeyEvent.VK_A:
+                    left = true;
+                    break;
+                case KeyEvent.VK_D:
+                    right = true;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    isTalking = true;
+                    break;
+                case KeyEvent.VK_ESCAPE:
                     teisPanel.controller.estado = teisPanel.controller.pauseState;
-                }
-                break;
-            case KeyEvent.VK_T: // DEBUGGING
-                Time = !Time;
-                break;
+                    break;
+                case KeyEvent.VK_T: // DEBUGGING
+                    Time = !Time;
+                    break;
+            }
+        }
+
+        // PAUSA
+        else if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                teisPanel.controller.estado = teisPanel.controller.playState;
+            }
+        }
+
+        // DIÁLOGO
+        else if (teisPanel.controller.estado == teisPanel.controller.dialogo) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE)
+                teisPanel.controller.estado = teisPanel.controller.playState;
         }
     }
 

@@ -37,8 +37,8 @@ public class GameController {
     public ObjectGame[] obj = new ObjectGame[10];
 
     // ESTADO DEL JUEGO
-    public int estado = 2;
-    public int pauseState = 0, dialogo = 1, playState = 2;
+    public int estado = 3;
+    public int pauseState = 0, dialogo = 1, playState = 2, carga = 3;
 
     // Entidades
     public Entity[] npc = new Entity[10];
