@@ -27,7 +27,6 @@ public class Entity {
 
     // Cap NPC Event
     public int capEvent = 0;
-    public int capMove = 0;
     public int intervalo = 7;
 
     // Vida de la entidad

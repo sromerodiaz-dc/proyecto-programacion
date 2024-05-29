@@ -30,7 +30,7 @@ public class Placer {
      */
     public void setRecursos() {
         teisPanel.controller.npc[0] = new Viello(teisPanel);
-        teisPanel.controller.npc[0].worldX = teisPanel.sizeFinal * 18;
-        teisPanel.controller.npc[0].worldY = teisPanel.sizeFinal * 11;
+        teisPanel.controller.npc[0].worldX = teisPanel.sizeFinal * 19;
+        teisPanel.controller.npc[0].worldY = teisPanel.sizeFinal * 12;
     }
 }
