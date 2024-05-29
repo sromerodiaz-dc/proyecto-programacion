@@ -4,6 +4,7 @@ import GAME.EFFECT.Sound;
 import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Entity;
+import GAME.FX.EventManager;
 import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.ObjectGame;
@@ -20,7 +21,7 @@ import javax.sound.sampled.LineUnavailableException;
  * */
 public class GameController {
     // Gestor de piezas
-    private PiezaManager piezaManager;
+    private final PiezaManager piezaManager;
 
     // Efectos de sonido
     Sound sound = new Sound();
@@ -38,13 +39,16 @@ public class GameController {
 
     // ESTADO DEL JUEGO
     public int estado = 3;
-    public int pauseState = 0, dialogo = 1, playState = 2, carga = 3;
+    public int pauseState = 0, dialogoState = 1, playState = 2, cargaState = 3;
 
     // Entidades
     public Entity[] npc = new Entity[10];
 
     // DrawUtils
     public DrawUtils drawUtils = new DrawUtils();
+
+    // Manejo de eventos del juego
+    public EventManager eventManager;
 
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
@@ -59,6 +63,9 @@ public class GameController {
 
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(teisPanel);
+
+        // Inicializa el manejo de eventos
+        eventManager = new EventManager(teisPanel);
     }
 
 

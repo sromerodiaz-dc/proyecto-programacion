@@ -180,7 +180,7 @@ public class TeisPanel extends JPanel implements Runnable{
             tDraw = System.nanoTime();
 
         // Pantalla de Carga
-        if (controller.estado == controller.carga) {
+        if (controller.estado == controller.cargaState) {
             controller.ui.draw(g2);
         } else {
             // Dibuja el fondo

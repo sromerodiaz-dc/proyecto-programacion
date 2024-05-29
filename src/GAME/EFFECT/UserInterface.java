@@ -37,7 +37,7 @@ public class UserInterface {
 
     ArrayList<String> titulos = new ArrayList<>();
     String title;
-    public int contadorTitulo = 0;
+    public int contadorTitulo = 1;
 
     /*
     * De momento no se usa:
@@ -101,7 +101,7 @@ public class UserInterface {
         g2.setColor(Color.WHITE);
 
         // Estado de juego
-        if (teisPanel.controller.estado == teisPanel.controller.carga){
+        if (teisPanel.controller.estado == teisPanel.controller.cargaState){
             drawPantallaCarga();
         }
 
@@ -114,7 +114,7 @@ public class UserInterface {
             drawPauseState();
         }
 
-        if (teisPanel.controller.estado == teisPanel.controller.dialogo) {
+        if (teisPanel.controller.estado == teisPanel.controller.dialogoState) {
             drawPlayerVida();
            drawDialogo();
         }
