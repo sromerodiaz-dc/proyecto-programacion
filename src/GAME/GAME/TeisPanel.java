@@ -70,7 +70,6 @@ public class TeisPanel extends JPanel implements Runnable{
         // Inicializa el modelo y el controlador
         model = new Player(this,key);
         controller = new GameController(piezaM,this);
-
     }
 
     public void setUpItems() {
@@ -181,36 +180,41 @@ public class TeisPanel extends JPanel implements Runnable{
         if (model.keyManager.Time)
             tDraw = System.nanoTime();
 
-        // Dibuja el fondo
-        controller.getPiezaManager().pinta(g2);
+        // Pantalla de Carga
+        if (controller.estado == controller.carga) {
 
-        // Objetos / Items
-        // Solo dibuja items existentes (Controla el NullPointer)
-        for (int i = 0;i < controller.obj.length;i++) {
-            if (controller.obj[i] != null)
-                controller.obj[i].draw(g2,this);
-        }
+        } else {
+            // Dibuja el fondo
+            controller.getPiezaManager().pinta(g2);
 
-        // NPCs
-        for (int i = 0; i < controller.npc.length; i++) {
-            if (controller.npc[i] != null) {
-                controller.npc[i].draw(g2);
+            // Objetos / Items
+            // Solo dibuja items existentes (Controla el NullPointer)
+            for (int i = 0; i < controller.obj.length; i++) {
+                if (controller.obj[i] != null)
+                    controller.obj[i].draw(g2, this);
             }
+
+            // NPCs
+            for (int i = 0; i < controller.npc.length; i++) {
+                if (controller.npc[i] != null) {
+                    controller.npc[i].draw(g2);
+                }
+            }
+
+            // Dibuja el jugador
+            model.pinta(g2, model.screenX, model.screenY);
+
+            // Interfaz de Usuario
+            controller.ui.draw(g2);
+
+            if (model.keyManager.Time) {
+                long tDrawEnd = System.nanoTime();
+                long tiempoRestante = tDrawEnd - tDraw;
+                System.out.println("Tiempo de pintado" + tiempoRestante);
+            }
+
+            // Libera espacio
+            g2.dispose();
         }
-
-        // Dibuja el jugador
-        model.pinta(g2, model.screenX, model.screenY);
-
-        // Interfaz de Usuario
-        controller.ui.draw(g2);
-
-        if (model.keyManager.Time) {
-            long tDrawEnd = System.nanoTime();
-            long tiempoRestante = tDrawEnd - tDraw;
-            System.out.println("Tiempo de pintado" + tiempoRestante);
-        }
-
-        // Libera espacio
-        g2.dispose();
     }
 }
