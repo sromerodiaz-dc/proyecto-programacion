@@ -4,6 +4,7 @@ import GAME.GAME.TeisPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.security.Key;
 
 /**
  * Clase que gestiona las entradas de teclado del usuario.
@@ -51,6 +52,26 @@ public class KeyManager implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
+
+        // PANTALLA DE CARGA
+        if (teisPanel.controller.estado == teisPanel.controller.carga) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_D:
+                    teisPanel.controller.ui.contadorTitulo--;
+                    if (teisPanel.controller.ui.contadorTitulo < 0) {
+                        teisPanel.controller.ui.contadorTitulo = 1;
+                    }
+                    break;
+                case KeyEvent.VK_A:
+                    teisPanel.controller.ui.contadorTitulo++;
+                    if (teisPanel.controller.ui.contadorTitulo > 1) {
+                        teisPanel.controller.ui.contadorTitulo = 0;
+                    }
+                    break;
+                default:
+                    teisPanel.controller.ui.getPosibleTitulo(); // pequeño secretito
+            }
+        }
 
         // PLAY
         if (teisPanel.controller.estado == teisPanel.controller.playState) {

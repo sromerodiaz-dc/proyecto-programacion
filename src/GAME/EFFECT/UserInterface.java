@@ -32,6 +32,7 @@ public class UserInterface {
 
     ArrayList<String> titulos = new ArrayList<>();
     String title;
+    public int contadorTitulo = 0;
 
     /*
     * De momento no se usa:
@@ -54,7 +55,7 @@ public class UserInterface {
         }
 
         setPosiblesTitulos();
-        title = getPosibleTitulo();
+        getPosibleTitulo();
     }
 
     public void showMessage (String message) {
@@ -69,12 +70,13 @@ public class UserInterface {
         titulos.add("\"eres de Cangas\"");
         titulos.add("Bombardeen a\nUVigo");
         titulos.add("Bombardeen o\nVialia");
+        titulos.add("\"Porriño pertence\na Mos\"");
     }
 
-    public String getPosibleTitulo() {
+    public void getPosibleTitulo() {
         Random random = new Random();
         int i = random.nextInt(titulos.size());
-        return titulos.get(i);
+        title = titulos.get(i);
     }
 
     /**
@@ -148,10 +150,12 @@ public class UserInterface {
         // Título del juego
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,75F));
 
+        int x;
         int y = teisPanel.screenHeight / 3;
 
         for (String line : title.split("\n")){
-            int x = centrado(line);
+            x = centrado(line);
+
             // Sombreado
             g2.setColor(Color.GRAY);
             g2.drawString(line,x+5,y+5);
@@ -159,9 +163,28 @@ public class UserInterface {
             // Titulo
             g2.setColor(Color.WHITE);
             g2.drawString(line,x,y);
-            y+=120; // La siguiente linea se dibuja 120px por debajo
+            y+=100; // La siguiente linea se dibuja 120px por debajo
+        }
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,30F));
+        g2.setColor(Color.YELLOW);
+
+        String text = "DALLE";
+        x = (int) (teisPanel.screenWidth * 0.87) - ((int)g2.getFontMetrics().getStringBounds(text,g2).getWidth());
+        y = teisPanel.screenHeight - 100;
+        g2.drawString(text,x,y);
+        if (contadorTitulo == 0) {
+            g2.drawString(">>", x - teisPanel.sizeFinal, y);
+        }
+
+        text = "SAÍR";
+        x = (int) (teisPanel.screenWidth * 0.15);
+        g2.drawString(text,x,y);
+        if (contadorTitulo == 1) {
+            g2.drawString(">>", x - teisPanel.sizeFinal, y);
         }
     }
+
 
     public int centrado(String text) {
         int lenght = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
