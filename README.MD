@@ -980,6 +980,8 @@ ___
 
 ### Pantalla de carga
 
+### Eventos complejos y Cooldowns de los mismos
+
 ### IDEAS para los NPCs e Easter Eggs
 #### Idea de uso de la passVigo y las passVigoPLUS:
 Molaría poner que la PassVigo tiene X saldo dando resultado a que...
