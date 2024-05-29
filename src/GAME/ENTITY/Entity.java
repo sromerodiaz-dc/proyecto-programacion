@@ -34,6 +34,11 @@ public class Entity {
     public int maxLife;
     public int life;
 
+    // Objects
+    public BufferedImage image, image2, image3;
+    public String id;
+    public boolean collision = false;
+
     /**
     * BufferedImage en Java es una clase que representa una imagen digital en memoria. Proporciona un búfer de píxeles
     * manipulable para trabajar con imágenes de forma rasterizada (compuestas por una cuadrícula de píxeles individuales).
@@ -64,7 +69,7 @@ public class Entity {
     /**
      * Esta variable define en que orientación se encuentra el personaje
      */
-    public char sentido;
+    public char sentido = '0';
 
     /**
      * Constructor parametrizado

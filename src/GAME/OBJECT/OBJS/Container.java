@@ -1,32 +1,21 @@
 package GAME.OBJECT.OBJS;
 
-import GAME.OBJECT.ObjectGame;
+import GAME.ENTITY.Entity;
+import GAME.GAME.TeisPanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
-
-public class Container extends ObjectGame {
+public class Container extends Entity {
     /**
      * Constructor que inicializa el Passvigo con sus propiedades específicas.
      */
-    public Container() {
+    public Container(TeisPanel teisPanel) {
+        super(teisPanel);
+
         // Establece el identificador del Passvigo
         id = "Container";
 
         // Establece que la puerta tiene colisiones activadas
         collision = true;
-        // Carga la imagen del Passvigo desde un archivo de recursos
-        try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/contenedorVigo.png"));
-            piezaUtils.escalado(image,48,48);
 
-            height = image.getHeight() * 4;
-            width = image.getWidth() * 4;
-            solidArea.width = width;
-            solidArea.height = height;
-        } catch (IOException e) {
-            // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
-            throw new RuntimeException(e);
-        }
+        stop = setEntitySprite("objects/contenedor.png");
     }
 }

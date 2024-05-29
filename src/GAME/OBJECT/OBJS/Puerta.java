@@ -1,5 +1,7 @@
 package GAME.OBJECT.OBJS;
 
+import GAME.ENTITY.Entity;
+import GAME.GAME.TeisPanel;
 import GAME.OBJECT.ObjectGame;
 
 import javax.imageio.ImageIO;
@@ -12,25 +14,19 @@ import java.io.IOException;
  * Clase que representa una puerta en el juego.
  * Extiende de la clase ObjectGame, que probablemente contiene atributos y métodos comunes a todos los objetos del juego.
  */
-public class Puerta extends ObjectGame {
+public class Puerta extends Entity {
     /**
      * Constructor que inicializa la puerta con sus propiedades específicas.
      */
-    public Puerta() {
+    public Puerta(TeisPanel teisPanel) {
+        super(teisPanel);
+
         // Establece el identificador de la puerta
         id = "Puerta";
 
         // Establece que la puerta tiene colisiones activadas
         collision = true;
 
-        // Carga la imagen de la puerta desde un archivo de recursos
-        try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/portal.png"));
-            piezaUtils.escalado(image,48,48);
-
-        } catch (IOException e) {
-            // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
-            throw new RuntimeException(e);
-        }
+        stop = setEntitySprite("objects/busVitrasa.png");
     }
 }

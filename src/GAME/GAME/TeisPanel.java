@@ -1,5 +1,6 @@
 package GAME.GAME;
 
+import GAME.ENTITY.Entity;
 import GAME.ENTITY.Player;
 import GAME.FX.KeyManager;
 import GAME.FX.MapSelector;
@@ -9,6 +10,10 @@ import GAME.GPHICS.PiezaManager;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
 * @author Santiago Agustin Romero Diaz
@@ -76,38 +81,27 @@ public class TeisPanel extends JPanel implements Runnable{
         /*controller.playMusic(0);*/
     }
 
-    /** Metodo que inicializa un "Thread"
-     * ----------------------------------
-     * Este código de Java define un método para crear e iniciar un hilo (Thread) llamado "teisThread".
-     * -
-     * public void startTeisThread(): Esta línea define un método público llamado startTeisThread que no devuelve ningún valor (indicated by void).
-     * -
-     * teisThread = new Thread(this);: Aquí se crea un nuevo objeto de tipo Thread.
-     * La parte new Thread(this) indica que este mismo objeto (la clase actual) será el que se ejecute dentro del hilo.
-     * -
-     * teisThread.start();: Esta línea le dice al objeto teisThread que comience a ejecutarse como un hilo independiente.
-     * -
-     * En resumen, este código crea un nuevo hilo y lo inicia, pero aún no le dice qué hacer.
-     * */
+    /**
+     * Inicializa y ejecuta un nuevo hilo (thread) para el procesamiento de entidades en segundo plano.
+     *
+     * @since 1.0
+     */
     public void startTeisThread() {
+        // Crea un nuevo hilo y ejecuta la tarea en segundo plano.
         teisThread = new Thread(this);
         teisThread.start();
     }
 
     /**
-     * Metodo que de manera inherente no retorna nada por ser implementacion de RUNNABLE.
-     * Ejecutará el "Game Loop" (Explicación de lo que es en el README.MD).
-     * Funcionalidades (dividido en dos metodos desarrollados debajo):
-     * 1- ACTUALIZAR la información como las interacciones del PJ (Personaje). Por ejemplo, al pulsar la letra "W", caminar hacia adelante.
-     * 2- DIBUJAR / MOSTRAR la pantalla del juego con la INFORMACIÓN actualizada.
-     * -----------------------------------------------------------------------------------------
-     * El esquema se podría ver de la siguiente manera:
-     *             /<============================================\
-     * GAME LOOP { \=>ACTUALIZAR INFORMACIÓN => PINTAR PANTALLA=>/ }
-     * -
-     * Se llama al metodo Run() ejecutandose primero el metodo ACTUALIZA y seguido del metodo REPAINT el cual
-     * llama lo antes posible al metodo "paint" del componente siendo en este caso el metodo "paintComponent".
-     * */
+     * Ejecuta el "Game Loop" del juego, que se encarga de actualizar la información del juego y dibujar la pantalla.
+     *-
+     * El Game Loop se compone de dos pasos:
+     * 1. Actualizar la información del juego, como las interacciones del personaje jugador.
+     * 2. Dibujar la pantalla del juego con la información actualizada.
+     *-
+     * El método run() ejecuta estos dos pasos de manera cíclica, llamando primero al método update() y luego al método repaint(),
+     * que a su vez llama al método paintComponent() para dibujar la pantalla.
+     */
     @Override
     public void run() {
         // Implementación Delta / Iterador Game Loop
@@ -162,58 +156,81 @@ public class TeisPanel extends JPanel implements Runnable{
             }
         }
     }
+
     /**
-     * Dibujará la pantalla del juego con la información actualizada. El objeto Graphics proporciona métodos para dibujar formas, líneas, texto e imágenes en el componente.
-     * Siempre que se llame un metodo de la siguiente manera es un override de paintComponent de JComponent o mejor dicho, metodo ESTANDAR.
-     * IMPORTANTE:
-     * Dentro del método, la `línea super.paintComponent(g)` llama al método paintComponent de la clase padre.
-     * Este paso es importante porque los componentes Swing predeterminados (como botones, paneles) a menudo tienen su propia lógica de pintado.
-     * Al llamar a super.paintComponent(g), te aseguras de que el comportamiento de pintado predeterminado se ejecute primero, lo que normalmente se encarga de dibujar el fondo y el borde del componente.
-     * */
-    public void paintComponent(Graphics g){
+     * Método que se encarga de dibujar los componentes en la pantalla.
+     *
+     * @param g Objeto Graphics para dibujar los componentes.
+     */
+    @Override
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // Tiempo que tarda en dibujar:
         long tDraw = 0;
-        if (model.keyManager.Time)
+        if (model.keyManager.Time) {
+            // Medición del tiempo de dibujado.
             tDraw = System.nanoTime();
+        }
 
-        // Pantalla de Carga
         if (controller.estado == controller.cargaState) {
+            // Dibuja la pantalla de carga.
             controller.ui.draw(g2);
         } else {
-            // Dibuja el fondo
-            controller.getPiezaManager().pinta(g2);
+            // Dibuja el fondo.
+            drawBackground(g2);
 
-            // Objetos / Items
-            // Solo dibuja items existentes (Controla el NullPointer)
-            for (int i = 0; i < controller.obj.length; i++) {
-                if (controller.obj[i] != null)
-                    controller.obj[i].draw(g2, this);
-            }
+            // Dibuja las entidades.
+            drawEntities(g2);
 
-            // NPCs
-            for (int i = 0; i < controller.npc.length; i++) {
-                if (controller.npc[i] != null) {
-                    controller.npc[i].draw(g2);
-                }
-            }
-
-            // Dibuja el jugador
-            model.pinta(g2, model.screenX, model.screenY);
-
-            // Interfaz de Usuario
+            // Dibuja la interfaz de usuario.
             controller.ui.draw(g2);
         }
 
         if (model.keyManager.Time) {
+            // Calcula el tiempo de dibujado.
             long tDrawEnd = System.nanoTime();
             long tiempoRestante = tDrawEnd - tDraw;
-            System.out.println("Tiempo de pintado" + tiempoRestante);
+            System.out.println("Tiempo de pintado: " + tiempoRestante);
         }
 
-        // Libera espacio
+        // Libera los recursos gráficos.
         g2.dispose();
+    }
+
+    /**
+     * Método que se encarga de dibujar el fondo de la pantalla.
+     *
+     * @param g2 Objeto Graphics2D para dibujar el fondo.
+     */
+    private void drawBackground(Graphics2D g2) {
+        // Dibuja el fondo utilizando el objeto PiezaManager.
+        controller.getPiezaManager().pinta(g2);
+    }
+
+    /**
+     * Método que se encarga de dibujar las entidades en la pantalla.
+     *
+     * @param g2 Objeto Graphics2D para dibujar las entidades.
+     */
+    private void drawEntities(Graphics2D g2) {
+        // Limpia la lista de entidades.
+        controller.entities.clear();
+
+        // Agrega las entidades no nulas a la lista de entidades.
+        controller.entities.addAll(Arrays.stream(controller.npc).filter(Objects::nonNull).toList());
+        controller.entities.addAll(Arrays.stream(controller.obj).filter(Objects::nonNull).toList());
+        controller.entities.add(model);
+
+        // Ordena las entidades por su posición en Y.
+        controller.entities.sort(Comparator.comparingInt(e -> e.worldY));
+
+        // Dibuja cada entidad en la lista.
+        for (Entity entity : controller.entities) {
+            entity.draw(g2);
+        }
+
+        // Limpia la lista de entidades.
+        controller.entities.clear();
     }
 }

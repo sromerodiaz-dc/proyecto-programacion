@@ -1,31 +1,18 @@
 package GAME.OBJECT.OBJS;
 
-import GAME.OBJECT.ObjectGame;
+import GAME.ENTITY.Entity;
+import GAME.GAME.TeisPanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
+public class BusVitrasa extends Entity {
 
-public class BusVitrasa extends ObjectGame {
+    public BusVitrasa(TeisPanel teisPanel) {
+        super(teisPanel);
 
-    public BusVitrasa() {
         // Establece el identificador del Passvigo
         id = "Bus";
 
         // Establece que la puerta tiene colisiones activadas
         collision = true;
-
-        // Carga la imagen del Passvigo desde un archivo de recursos
-        try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
-            piezaUtils.escalado(image,48,48);
-
-            height = image.getHeight() * 7;
-            width = image.getWidth() * 7;
-            solidArea.width = width - 15;
-            solidArea.height = height - 40;
-        } catch (IOException e) {
-            // Si ocurre un error al cargar la imagen, lanza una excepción RuntimeException
-            throw new RuntimeException(e);
-        }
+        stop = setEntitySprite("objects/busVitrasa.png");
     }
 }

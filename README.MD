@@ -982,6 +982,74 @@ ___
 
 ### Eventos complejos y Cooldowns de los mismos
 
+### Reestructuración del código
+
+ObjectGame ya no existe, ahora todos los objetos son clases heredadas de Entity.
+
+TeisPanel tiene otra forma de dibujar la pantalla ya que el método paintComponent ha sido mejorado considerablemente:
+1. Reducir la cantidad de iteraciones: En lugar de iterar sobre los arrays controller.npc y controller.obj para agregar elementos a controller.entities, puedes utilizar Arrays.stream() para agregar todos los elementos no nulos en una sola línea.
+2. Utilizar métodos para agrupar lógica: El método paintComponent está haciendo demasiadas cosas. Puedes crear métodos separados para dibujar el fondo, dibujar las entidades, dibujar la interfaz de usuario, etc. Esto hará que el código sea más fácil de leer y mantener.
+3. Evitar crear objetos innecesarios: En lugar de crear un nuevo Graphics2D objeto cada vez que se llama a paintComponent, puedes reutilizar el objeto Graphics pasado como parámetro.
+4. Reducir la cantidad de llamadas a métodos: En lugar de llamar a controller.entities.get(i).draw(g2) en cada iteración, puedes crear una variable local para almacenar la entidad actual y llamar a su método draw solo una vez.
+
+````java
+public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      Graphics2D g2 = (Graphics2D) g;
+      //...
+      if (controller.estado == controller.cargaState) {
+         // Dibuja la pantalla de carga.
+         controller.ui.draw(g2);
+      } else {
+         // Dibuja el fondo.
+         drawBackground(g2);
+      
+         // Dibuja las entidades.
+         drawEntities(g2);
+      
+         // Dibuja la interfaz de usuario.
+         controller.ui.draw(g2);
+      }//...
+      // Libera los recursos gráficos.
+      g2.dispose();
+}
+````
+
+Los métodos drawBackground y drawEntities:
+````java
+private void drawBackground(Graphics2D g2) {
+   // Dibuja el fondo utilizando el objeto PiezaManager.
+   controller.getPiezaManager().pinta(g2);
+}
+private void drawEntities(Graphics2D g2) {
+   // Limpia la lista de entidades.
+   controller.entities.clear();
+   
+   // Agrega las entidades no nulas a la lista de entidades.
+   controller.entities.addAll(Arrays.stream(controller.npc).filter(Objects::nonNull).toList());
+   controller.entities.addAll(Arrays.stream(controller.obj).filter(Objects::nonNull).toList());
+   controller.entities.add(model);
+   
+   // Ordena las entidades por su posición en Y.
+   controller.entities.sort(Comparator.comparingInt(e -> e.worldY));
+   
+   // Dibuja cada entidad en la lista.
+   for (Entity entity : controller.entities) {
+      entity.draw(g2);
+   }
+   
+   // Limpia la lista de entidades.
+   controller.entities.clear();
+}
+````
+
+Explicación:
+1. Arrays.stream(controller.npc) crea un flujo de datos a partir del array controller.npc.
+2. filter(Objects::nonNull) filtra el flujo de datos y solo permite pasar los elementos no nulos.
+3. toList() convierte el flujo de datos en una lista y se agrega a la lista controller.entities utilizando el método addAll().
+4. Se repite el proceso para el array controller.obj.
+5. Finalmente, se agrega la entidad model a la lista controller.entities utilizando el método add().
+
 ### IDEAS para los NPCs e Easter Eggs
 #### Idea de uso de la passVigo y las passVigoPLUS:
 Molaría poner que la PassVigo tiene X saldo dando resultado a que...
