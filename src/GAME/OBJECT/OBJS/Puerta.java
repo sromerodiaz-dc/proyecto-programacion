@@ -2,10 +2,6 @@ package GAME.OBJECT.OBJS;
 
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
-import GAME.OBJECT.ObjectGame;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
 
 /**
  * @author Santiago Agustin Romero Diaz
