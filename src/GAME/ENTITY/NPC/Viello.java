@@ -34,12 +34,14 @@ public class Viello extends Entity {
         // Se ralentiza el intervalo de cambio de sprites (animación) cuanto más alto el valor, menos animación habrá
         intervalo = 15;
 
-        // Establece el ancho y alto de la imagen del anciano
-        width = 54;
         height = 72;
-
-        solidArea.width = width - 17;
-        solidArea.height = height - 10;
+        width = 54;
+        solidArea.x = 10;
+        solidArea.y = 25;
+        solidArea.width = width - 15;
+        solidArea.height = height - 30;
+        defaultSolidAreaX = solidArea.x;
+        defaultSolidAreaY = solidArea.y;
 
         // Carga las imágenes del anciano
         getVielloImage();
@@ -74,11 +76,6 @@ public class Viello extends Entity {
         if (capEvent == 120) {
             sentido = drawUtils.moveRandomEntity();
             capEvent = 0;
-            capMove++;
-            if (capMove == 2) {
-                sentido = '0';
-                capMove = 0;
-            }
         }
     }
 
