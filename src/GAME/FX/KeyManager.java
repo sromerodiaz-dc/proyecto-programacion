@@ -59,15 +59,23 @@ public class KeyManager implements KeyListener {
                 case KeyEvent.VK_D:
                     teisPanel.controller.ui.contadorTitulo--;
                     if (teisPanel.controller.ui.contadorTitulo < 0) {
-                        teisPanel.controller.ui.contadorTitulo = 1;
+                        teisPanel.controller.ui.contadorTitulo = 2;
                     }
                     break;
                 case KeyEvent.VK_A:
                     teisPanel.controller.ui.contadorTitulo++;
-                    if (teisPanel.controller.ui.contadorTitulo > 1) {
+                    if (teisPanel.controller.ui.contadorTitulo > 2) {
                         teisPanel.controller.ui.contadorTitulo = 0;
                     }
                     break;
+                case KeyEvent.VK_SPACE:
+                    if (teisPanel.controller.ui.contadorTitulo == 0) {
+                        System.exit(0);
+                    } else if (teisPanel.controller.ui.contadorTitulo == 1) {
+                        teisPanel.controller.estado = teisPanel.controller.playState;
+                    } else {
+                        // despues
+                    }
                 default:
                     teisPanel.controller.ui.getPosibleTitulo(); // pequeño secretito
             }

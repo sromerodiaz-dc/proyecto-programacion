@@ -4,8 +4,6 @@ import GAME.EFFECT.Sound;
 import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Entity;
-import GAME.FX.MapSelector;
-import GAME.FX.MapSize;
 import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.ObjectGame;
@@ -48,10 +46,6 @@ public class GameController {
     // DrawUtils
     public DrawUtils drawUtils = new DrawUtils();
 
-    // Selector de mapa
-    MapSelector mapSelector = new MapSelector();
-    public MapSize datos = mapSelector.getMapSize();
-
     /**
      * Constructor que inicializa el controlador del juego con el jugador y el gestor de piezas.
      *
@@ -65,9 +59,6 @@ public class GameController {
 
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(teisPanel);
-
-        teisPanel.maxWorldCol = datos.maxCol;
-        teisPanel.maxWorldRow = datos.maxRow;
     }
 
 
