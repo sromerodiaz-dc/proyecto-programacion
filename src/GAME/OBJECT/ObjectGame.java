@@ -15,7 +15,8 @@ import java.awt.image.BufferedImage;
  */
 public class ObjectGame {
     // Atributos
-    public BufferedImage image;
+    public BufferedImage image, image2, image3;
+
     public String id;
     public boolean collision = false;
     public int worldX, worldY;
