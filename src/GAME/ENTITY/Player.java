@@ -182,8 +182,12 @@ public class Player extends Entity {
 
     public void interactuarNPC(int i) {
         if (i != 999) {
-            teisPanel.controller.estado = teisPanel.controller.dialogo;
+            if (teisPanel.model.keyManager.isTalking) {
+                teisPanel.controller.estado = teisPanel.controller.dialogo;
+                teisPanel.controller.npc[i].fala();
+            }
         }
+        teisPanel.model.keyManager.isTalking = false;
     }
 
     /**Metodo PINTA

@@ -14,6 +14,7 @@ import GAME.GAME.TeisPanel;
  * no se sorprende"
  * */
 public class Viello extends Entity {
+    TeisPanel teisPanel;
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
      *
@@ -22,6 +23,7 @@ public class Viello extends Entity {
     public Viello(TeisPanel teisPanel) {
         // Llama al constructor de la clase padre (suponiendo que es una entidad en el juego)
         super(teisPanel);
+        this.teisPanel = teisPanel; // Inicializado
 
         // Inicializa la dirección del anciano en '0', que significa que no se está moviendo
         sentido = '0';
@@ -36,12 +38,13 @@ public class Viello extends Entity {
         width = 54;
         height = 72;
 
-        // Inicializa el área sólida del anciano con el mismo ancho y alto que la imagen
-        solidArea.width = width;
-        solidArea.height = height;
+        solidArea.width = width - 17;
+        solidArea.height = height - 10;
 
         // Carga las imágenes del anciano
         getVielloImage();
+        // Carga los dialogos
+        setDialogo();
     }
 
     public void getVielloImage() {
@@ -77,5 +80,17 @@ public class Viello extends Entity {
                 capMove = 0;
             }
         }
+    }
+
+    public void setDialogo() {
+        dialogos[0] = "mozo... \nsabes o que din dos pimentitos de padrón...?";
+        dialogos[1] = "\"uns pican... e outros non \n*risa jodidamente incontenible*\"";
+        dialogos[2] = "Deus deume o peor dos destinos deste mundo, \nser do Celta.";
+    }
+
+    public void fala() {
+
+        // Necesario para futuras modificaciones
+        super.fala();
     }
 }
