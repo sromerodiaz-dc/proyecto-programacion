@@ -1,8 +1,11 @@
 package GAME.EFFECT;
 
 import GAME.GAME.TeisPanel;
+import GAME.OBJECT.OBJS.Vida;
+import GAME.OBJECT.ObjectGame;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ public class UserInterface {
 
     TeisPanel teisPanel; // Referencia al panel donde se dibujará la interfaz de usuario.
     Font pixeledFont; // Fuente de texto utilizada para dibujar texto en la interfaz de usuario.
+
+    BufferedImage vida_entera, vida_mitad, vida_vacia;
 
     //DrawUtils drawUtils = new DrawUtils();
 
@@ -56,6 +61,12 @@ public class UserInterface {
 
         setPosiblesTitulos();
         getPosibleTitulo();
+
+        // Recibe datos de la vida y sprite de vida del player
+        ObjectGame vida = new Vida();
+        vida_entera = vida.image;
+        vida_mitad = vida.image2;
+        vida_vacia = vida.image3;
     }
 
     public void showMessage (String message) {
@@ -95,15 +106,41 @@ public class UserInterface {
         }
 
         if (teisPanel.controller.estado == teisPanel.controller.playState){
-            //
+            drawPlayerVida();
         }
 
         if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
+            drawPlayerVida();
             drawPauseState();
         }
 
         if (teisPanel.controller.estado == teisPanel.controller.dialogo) {
+            drawPlayerVida();
            drawDialogo();
+        }
+    }
+
+    public void drawPlayerVida() {
+        int x = teisPanel.sizeFinal / 2;
+        int y = teisPanel.sizeFinal / 2;
+        int i = 0;
+
+        // Corazones vacios
+        while (i < teisPanel.model.maxLife / 2) {
+            g2.drawImage(vida_vacia,x,y,null);
+            i++;
+            x+= teisPanel.sizeFinal;
+        }
+
+        // Dibujado de corazon dependiendo de los HP del jugador
+        x = teisPanel.sizeFinal / 2;
+        i = 0;
+        while (i < teisPanel.model.life) {
+            g2.drawImage(vida_mitad, x, y, null);
+            i++;
+            if (i < teisPanel.model.life) g2.drawImage(vida_entera,x,y,null);
+            i++;
+            x += teisPanel.sizeFinal;
         }
     }
 
