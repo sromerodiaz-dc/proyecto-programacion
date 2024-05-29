@@ -72,6 +72,20 @@ public class GUI extends JFrame {
         // Guardado de los sprites mediante el método loadSprites() de GUI
         sprites = loadSprites();
 
+
+
+        /*
+        * Para hacer que en el editor de mapas se pueda cargar un mapa hay que añadir un metodo
+        * que retorne un array con la lectura de un mapa (ya hecho, SpriteUtils > loadmap que retorna map[][].
+        * Ahora hay que emplearlo.
+        *
+        * Para esto:
+        * Primero se le da al usuario una de dos opciones, cargar mapa o crear nuevo mapa,
+        * Si clica sobre crear nuevo mapa, el programa sigue como hasta ahora pero si le da a la otra opción:
+        * - Se llama al metodo loadmap y de ahí se saca el numero máximo de columnas y filas para generar el
+        *   mapa cargado. Además, también se saca la correspondencia por lo que a VacioPanel se le ha de pasar
+        *   este array por parametro para que lo use dandole a cada CeldaVacia su Imagen correspondiente.
+        * */
         // Crea ambos menús
         createMenuIzquierda();
         createMenuInferior();
@@ -198,6 +212,8 @@ public class GUI extends JFrame {
     private ImageIcon[] loadSprites() {
         return spriteLoader.loadSprites("Assets/background").toArray(new ImageIcon[0]);
     }
+
+    public void cargarMapa() {}
 
     /**
      * LLama al método de generación de mapa de 'spriteUtils'

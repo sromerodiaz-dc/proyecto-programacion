@@ -18,7 +18,6 @@ import java.io.PrintWriter;
  * Proyecto: Teis
  */
 public class SpriteLoader {
-
     /**
      * Carga sprites (imágenes) desde una carpeta y devuelve una lista de ImageIcon.
      *

@@ -1,11 +1,10 @@
 package EDITOR.FX;
 
-import EDITOR.GUI.GUI;
+import GAME.FX.MapSelector;
+import GAME.FX.MapSize;
 
 import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.spi.AbstractResourceBundleProvider;
+import java.io.*;
 
 /**
  * Clase que proporciona métodos para generar un mapa de sprites y obtener el nombre del mapa y las dimensiones.
@@ -15,6 +14,9 @@ import java.util.spi.AbstractResourceBundleProvider;
  * Proyecto: Teis
  */
 public class SpriteUtils {
+    // Selector de mapa
+    MapSelector mapSelector = new MapSelector();
+
     public SpriteUtils(){}
     /**
      * Genera un mapa de sprites escrito en un archivo de texto a modo de matriz de números.
@@ -143,5 +145,58 @@ public class SpriteUtils {
         } while (!entradaValida);
 
         return valor;
+    }
+
+    public int[][] loadMap(String mapName) {
+        MapSize datos = mapSelector.getMapSize();
+        int maxWorldCol = datos.maxCol;
+        int maxWorldRow = datos.maxRow;
+
+        int[][] mapaPiezaNum = new int[maxWorldCol][maxWorldRow];
+
+        InputStream is;
+        BufferedReader br;
+        try {
+            // Intenta obtener un InputStream para el archivo del mapa utilizando el classpath.
+            is = getClass().getClassLoader().getResourceAsStream(mapName);
+            if (is != null) {
+                // Encuentra el archivo del mapa, procede a leerlo.
+                br = new BufferedReader(new InputStreamReader(is));
+
+                // Variables para controlar la columna (col) y la fila (fil) en el mapa.
+                int col = 0, fil = 0;
+
+                // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
+                while (col < maxWorldCol && fil < maxWorldRow) {
+                    String linea = br.readLine();
+
+                    // Bucle por cada elemento (separado por espacios) en la línea actual.
+                    while (col < maxWorldCol) {
+                        String[] mapID = linea.split(" ");
+                        // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
+                        int map = Integer.parseInt(mapID[col]);
+                        // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
+                        mapaPiezaNum[col][fil] = map;
+                        col++;
+                    }
+                    // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
+                    if (col == maxWorldCol) {
+                        col = 0;
+                        fil++;
+                    }
+                }
+                // Cierra el BufferedReader para liberar recursos.
+                br.close();
+            } else {
+                // No se encontró el archivo del mapa.
+                System.out.println("Error: ¡No se encontró el archivo del mapa '" + mapName + "'!");
+            }
+        } catch (IOException e) {
+            // Maneja cualquier IOException que pueda ocurrir durante la lectura del archivo.
+            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
+            e.printStackTrace(); // Opcional: Imprime la traza de pila para depuración.
+        }
+
+        return mapaPiezaNum;
     }
 }
