@@ -68,6 +68,10 @@ public class Player extends Entity {
         worldY = teisPanel.sizeFinal * 10;
         speed = 6;
         sentido = '0';
+
+        // Estado actual del jugador
+        maxLife = 10; // 5 Corazones que aguantan 2 golpes cada uno (5x2 = 6)
+        life = maxLife;
     }
 
     /**
