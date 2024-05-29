@@ -974,6 +974,12 @@ de ser pintada mediante un paintComponent.
 
 **Después de todas estas modificaciones el tiempo de carga ha bajado a: ~200000 nanosegundos**.
 ___
+### Diálogos
+
+#### Dependencia de fuente de texto
+
+### Pantalla de carga
+
 ### IDEAS para los NPCs e Easter Eggs
 #### Idea de uso de la passVigo y las passVigoPLUS:
 Molaría poner que la PassVigo tiene X saldo dando resultado a que...
