@@ -29,6 +29,11 @@ public class Entity {
     public int capEvent = 0;
     public int capMove = 0;
     public int intervalo = 7;
+
+    // Vida de la entidad
+    public int maxLife;
+    public int life;
+
     /**
     * BufferedImage en Java es una clase que representa una imagen digital en memoria. Proporciona un búfer de píxeles
     * manipulable para trabajar con imágenes de forma rasterizada (compuestas por una cuadrícula de píxeles individuales).
