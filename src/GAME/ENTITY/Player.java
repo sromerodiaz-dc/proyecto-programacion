@@ -128,6 +128,10 @@ public class Player extends Entity {
             int npc = teisPanel.controller.collisionCheck.checkEntity(this, teisPanel.controller.npc);
             interactuarNPC(npc);
 
+            // Trigger de eventos
+            teisPanel.controller.eventManager.checkEvent();
+            teisPanel.model.keyManager.isPressed = false;
+
             movement();
         } else {
             // Si no se ha presionado ninguna tecla, incrementa el contador de parada
@@ -187,7 +191,7 @@ public class Player extends Entity {
     public void interactuarNPC(int i) {
         if (i != 999) {
             if (teisPanel.model.keyManager.isTalking) {
-                teisPanel.controller.estado = teisPanel.controller.dialogo;
+                teisPanel.controller.estado = teisPanel.controller.dialogoState;
                 teisPanel.controller.npc[i].fala();
             }
         }
