@@ -136,20 +136,17 @@ public class Entity {
         teisPanel.controller.ui.dialogo = dialogos[dialogoIndex];
         dialogoIndex++;
 
-        switch (teisPanel.model.sentido){
-            case 'w':
-                sentido = 's';
-                break;
-            case 's':
-                sentido = 'w';
-                break;
-            case 'a':
-                sentido = 'd';
-                break;
-            case 'd':
-                sentido = 'a';
-                break;
-        }
+        sentido = sentidoHablar();
+    }
+
+    public char sentidoHablar () {
+        return switch (teisPanel.model.sentido) {
+            case 'w' -> 's';
+            case 's' -> 'w';
+            case 'a' -> 'd';
+            case 'd' -> 'a';
+            default -> '0';
+        };
     }
 
     /**
