@@ -139,19 +139,28 @@ public class TeisPanel extends JPanel implements Runnable{
         }
     }
 
-
     /**
-     * Actualizará información del juego.
-     * Funcionalidades:
-     * - Ofrecer movimiento mediante la actualizacion de posiciones de las entidades.
-     * */
+     * Actualiza el estado del juego.
+     *
+     * @throws LineUnavailableException si ocurre un error al actualizar el estado del juego
+     */
     public void update() throws LineUnavailableException {
-        if (controller.estado == controller.playState){
-            model.actualiza(); // Actualiza el estado del jugador
-            // NPCs
-            for (int i = 0; i < controller.npc.length; i++) {
-                if (controller.npc[i] != null) {
-                    controller.npc[i].update();
+        // Verificar si el juego está en estado de juego
+        if (controller.estado == controller.playState) {
+            // Actualizar el estado del jugador
+            model.actualiza();
+
+            // Actualizar NPCs
+            for (Entity npc : controller.npc) {
+                if (npc!= null) {
+                    npc.update();
+                }
+            }
+
+            // Actualizar enemigos
+            for (Entity enemy : controller.enemy) {
+                if (enemy!= null) {
+                    enemy.update();
                 }
             }
         }
@@ -220,6 +229,7 @@ public class TeisPanel extends JPanel implements Runnable{
         // Agrega las entidades no nulas a la lista de entidades.
         controller.entities.addAll(Arrays.stream(controller.npc).filter(Objects::nonNull).toList());
         controller.entities.addAll(Arrays.stream(controller.obj).filter(Objects::nonNull).toList());
+        controller.entities.addAll(Arrays.stream(controller.enemy).filter(Objects::nonNull).toList());
         controller.entities.add(model);
 
         // Ordena las entidades por su posición en Y.
