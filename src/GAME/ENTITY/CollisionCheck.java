@@ -115,20 +115,7 @@ public class CollisionCheck {
                 teisPanel.controller.obj[x].solidArea.y = teisPanel.controller.obj[x].worldY + teisPanel.controller.obj[x].solidArea.y;
 
                 // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
-                switch (entity.sentido) {
-                    case 'w': // Arriba
-                        entity.solidArea.y -= entity.speed;
-                        break;
-                    case 's': // Abajo
-                        entity.solidArea.y += entity.speed;
-                        break;
-                    case 'd': // Izquierda
-                        entity.solidArea.x += entity.speed;
-                        break;
-                    case 'a': // Derecha
-                        entity.solidArea.x -= entity.speed;
-                        break;
-                }
+                checkSolidArea(entity);
 
                 // Verifica si la entidad colisiona con el objeto
                 if (entity.solidArea.intersects(teisPanel.controller.obj[x].solidArea)) {
@@ -154,7 +141,7 @@ public class CollisionCheck {
         return i;
     }
 
-    // Checkea colisiones con NPC
+    // Checkea colisiones de NPC
     public int checkEntity(Entity entity, Entity[] target) {
         // Indice por defecto, si se mantiene intacto indica que no hay colision
         int i = 999;
@@ -170,26 +157,15 @@ public class CollisionCheck {
                 target[x].solidArea.y = target[x].worldY + target[x].solidArea.y;
 
                 // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
-                switch (entity.sentido) {
-                    case 'w': // Arriba
-                        entity.solidArea.y -= entity.speed;
-                        break;
-                    case 's': // Abajo
-                        entity.solidArea.y += entity.speed;
-                        break;
-                    case 'd': // Izquierda
-                        entity.solidArea.x += entity.speed;
-                        break;
-                    case 'a': // Derecha
-                        entity.solidArea.x -= entity.speed;
-                        break;
-                }
+                checkSolidArea(entity);
 
                 // Verifica si la entidad colisiona con el objeto
                 if (entity.solidArea.intersects(target[x].solidArea)) {
-                    // Verifica si el objeto tiene colisión
-                    entity.collisionOn = true;
-                    i = x;
+                    if (target[x] != entity) {
+                        // Verifica si el objeto tiene colisión
+                        entity.collisionOn = true;
+                        i = x;
+                    }
                 }
 
                 // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
@@ -201,5 +177,44 @@ public class CollisionCheck {
         }
 
         return i;
+    }
+
+    public boolean checkPlayer(Entity entity) {
+        boolean hitPlayer = false;
+
+        // Calcula las coordenadas de la entidad y el objeto en el mapa
+        entity.solidArea.x = entity.worldX + entity.solidArea.x;
+        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+        teisPanel.model.solidArea.x = teisPanel.model.worldX + teisPanel.model.solidArea.x;
+        teisPanel.model.solidArea.y = teisPanel.model.worldY + teisPanel.model.solidArea.y;
+
+        // Verifica la dirección de la entidad y calcula las coordenadas correspondientes
+        checkSolidArea(entity);
+
+        // Verifica si la entidad colisiona con el objeto
+        if (entity.solidArea.intersects(teisPanel.model.solidArea)) {
+            if (teisPanel.model != entity) {
+                // Verifica si el objeto tiene colisión
+                entity.collisionOn = true;
+                hitPlayer = true;
+            }
+        }
+
+        // Restaura las coordenadas originales de la entidad y el objeto para que no sumen al infinito
+        entity.solidArea.x = entity.defaultSolidAreaX;
+        entity.solidArea.y = entity.defaultSolidAreaY;
+        teisPanel.model.solidArea.x = teisPanel.model.defaultSolidAreaX;
+        teisPanel.model.solidArea.y = teisPanel.model.defaultSolidAreaY;
+
+        return hitPlayer;
+    }
+
+    private void checkSolidArea(Entity entity) {
+        switch (entity.sentido) {
+            case 'w': entity.solidArea.y -= entity.speed; break;
+            case 's': entity.solidArea.y += entity.speed; break;
+            case 'd': entity.solidArea.x += entity.speed; break;
+            case 'a': entity.solidArea.x -= entity.speed; break;
+        }
     }
 }
