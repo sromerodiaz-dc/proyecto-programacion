@@ -39,7 +39,7 @@ public class Viello extends Entity {
         solidArea.x = 10;
         solidArea.y = 25;
         solidArea.width = width - 15;
-        solidArea.height = height - 30;
+        solidArea.height = height - 34;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
@@ -81,7 +81,7 @@ public class Viello extends Entity {
 
     public void setDialogo() {
         dialogos[0] = "mozo... \nsabes o que din dos pimentitos de padrón...?";
-        dialogos[1] = "\"uns pican... e outros non \n*risa jodidamente incontenible*\"";
+        dialogos[1] = "\"uns pican... e outros non\" \n*risa jodidamente incontenible*";
         dialogos[2] = "Deus deume o peor dos destinos deste mundo, \nser do Celta.";
     }
 
