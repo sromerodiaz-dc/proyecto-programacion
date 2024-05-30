@@ -25,6 +25,8 @@ public class Viello extends Entity {
         super(teisPanel);
         this.teisPanel = teisPanel; // Inicializado
 
+        who = 1; // 1 = npc
+
         // Inicializa la dirección del anciano en '0', que significa que no se está moviendo
         sentido = '0';
 
