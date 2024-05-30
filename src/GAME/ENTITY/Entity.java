@@ -33,6 +33,13 @@ public class Entity {
     public int maxLife;
     public int life;
 
+    // Tiempo de invencibilidad
+    public boolean invencible = false;
+    public int timeInvencible;
+
+    // Entidad que colisiona |> 0 = player, 1 = npc, 2 = enemy
+    public int who;
+
     // Objects
     public BufferedImage image, image2, image3;
     public String id;
@@ -156,14 +163,30 @@ public class Entity {
         // Llama al método setEvent() para establecer eventos específicos
         setEvent();
 
+        // Checkea las colisiones de todas las entidades y piezas
+        colisiones();
+
+        // Actualiza el movimiento de la entidad
+        movement();
+    }
+
+    public void colisiones() {
         // Reinicia la bandera de colisión
         collisionOn = false;
 
         // Verifica si hay colisión con alguna pieza en el mapa
         teisPanel.controller.collisionCheck.checkPieza(this);
+        teisPanel.controller.collisionCheck.checkObject(this,false);
+        teisPanel.controller.collisionCheck.checkEntity(this,teisPanel.controller.npc);
+        teisPanel.controller.collisionCheck.checkEntity(this,teisPanel.controller.enemy);
+        boolean hitPlayer = teisPanel.controller.collisionCheck.checkPlayer(this);
 
-        // Actualiza el movimiento de la entidad
-        movement();
+        if (this.who == 2 && hitPlayer) {
+            if (!teisPanel.model.invencible) {
+                teisPanel.model.life -= 1;
+                teisPanel.model.invencible = true;
+            }
+        }
     }
 
     /**
@@ -171,7 +194,7 @@ public class Entity {
      */
     public void movement() {
         // Si no hay colisión, mueve al jugador
-        if (!collisionOn) {
+        if (!collisionOn && !teisPanel.model.keyManager.isTalking) {
             // Calcula la nueva posición del jugador según la dirección y velocidad
             int[] moveEnt = drawUtils.moveEntity(sentido, worldX, worldY, speed);
 
