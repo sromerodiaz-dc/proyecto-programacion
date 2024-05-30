@@ -40,6 +40,8 @@ public class Dinoseto extends Entity {
         up2 = setEntitySprite("npc/enemies/dinoseto_right2.png");
         down1 = setEntitySprite("npc/enemies/dinoseto_right1.png");
         down2 = setEntitySprite("npc/enemies/dinoseto_right2.png");
+        stop = setEntitySprite("npc/enemies/dinoseto_right2.png");
+        stop2 = setEntitySprite("npc/enemies/dinoseto_right2.png");
     }
 
     public void setEvent() {
