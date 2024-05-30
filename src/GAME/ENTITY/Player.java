@@ -108,7 +108,7 @@ public class Player extends Entity {
      */
     public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
         // Verifica si se ha presionado alguna tecla
-        if (e.up || e.down || e.left || e.right) {
+        if (e.up || e.down || e.left || e.right || e.isTalking) {
             // Inicializa el contador de parada
             stopCounter = 0;
 
@@ -121,6 +121,7 @@ public class Player extends Entity {
 
             // Colisión de objetos
             int obj = teisPanel.controller.collisionCheck.checkObject(this, true);
+
             // Llama al método pickUpItem para recoger el objeto si es posible
             pickUpItem(obj);
 
@@ -128,11 +129,16 @@ public class Player extends Entity {
             int npc = teisPanel.controller.collisionCheck.checkEntity(this, teisPanel.controller.npc);
             interactuarNPC(npc);
 
+            // Colision con enemigos
+            int enemy = teisPanel.controller.collisionCheck.checkEntity(this, teisPanel.controller.enemy);
+            interactuarEnemy(enemy);
+
             // Trigger de eventos
             teisPanel.controller.eventManager.checkEvent();
-            teisPanel.model.keyManager.isPressed = false;
 
             movement();
+
+            teisPanel.model.keyManager.isPressed = false;
         } else {
             // Si no se ha presionado ninguna tecla, incrementa el contador de parada
             sentido = '0';
@@ -142,6 +148,14 @@ public class Player extends Entity {
         if (stopCounter > 15) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             stopCounter = 0;
+        }
+
+        if (invencible) {
+            timeInvencible++;
+            if (timeInvencible > 30) {
+                invencible = false;
+                timeInvencible = 0;
+            }
         }
     }
 
@@ -196,6 +210,15 @@ public class Player extends Entity {
             }
         }
         teisPanel.model.keyManager.isTalking = false;
+    }
+
+    public void interactuarEnemy(int i) {
+        if (i != 999) {
+            if (!invencible) {
+                life -= 1;
+                invencible = true;
+            }
+        }
     }
 
     /**Metodo PINTA
