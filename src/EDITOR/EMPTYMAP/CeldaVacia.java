@@ -24,6 +24,8 @@ public class CeldaVacia extends JPanel {
     /** El boton será modificado desde la GUI. */
     public boolean buttonSelected = false;
 
+    int row, col;
+
     /**
      * Construye nueva CeldaVacia con las filas y columnas dadas.
      *
@@ -34,6 +36,8 @@ public class CeldaVacia extends JPanel {
     public CeldaVacia(int row, int col, VacioPanel panel) {
         // Inicializa el VacioPanel que contiene esta CeldaVacia
         this.vacioPanel = panel;
+        this.row = row;
+        this.col = col;
 
         // Establece el fondo y borde de la celda vacía
         setBackground(Color.DARK_GRAY);
@@ -115,5 +119,13 @@ public class CeldaVacia extends JPanel {
                 return celda.getHeight();
         }
     return 1;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getRow() {
+        return row;
     }
 }

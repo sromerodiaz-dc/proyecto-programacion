@@ -10,8 +10,12 @@ import EDITOR.SELECTPANEL.GridPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.*;
 
 import static EDITOR.EMPTYMAP.CeldaVacia.imageIcon;
@@ -72,8 +76,6 @@ public class GUI extends JFrame {
         // Guardado de los sprites mediante el método loadSprites() de GUI
         sprites = loadSprites();
 
-
-
         /*
         * Para hacer que en el editor de mapas se pueda cargar un mapa hay que añadir un metodo
         * que retorne un array con la lectura de un mapa (ya hecho, SpriteUtils > loadmap que retorna map[][].
@@ -86,9 +88,9 @@ public class GUI extends JFrame {
         *   mapa cargado. Además, también se saca la correspondencia por lo que a VacioPanel se le ha de pasar
         *   este array por parametro para que lo use dandole a cada CeldaVacia su Imagen correspondiente.
         * */
-        // Crea ambos menús
-        createMenuIzquierda();
-        createMenuInferior();
+
+        setSegunOpcion();
+
         // Crea ambos botones
         createBotonGuardar(menuIzquierda);
         createBotonFondo(menuIzquierda);
@@ -111,14 +113,43 @@ public class GUI extends JFrame {
         requestFocus();
     }
 
+    public void setSegunOpcion(){
+        if (create_load_map()) {
+            String mapName = JOptionPane.showInputDialog(null,"Nombre del mapa (sin extension):");
+            int[][] contenido = spriteUtils.loadMap("maps/"+mapName+".txt");
+            cargarMenuIzquierda(contenido, sprites);
+        } else {
+            int[] nums = spriteUtils.numRowsCols();
+            createMenuIzquierda(nums[0], nums[1]);
+        }
+        createMenuInferior();
+    }
+
+    public boolean create_load_map() {
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea cargar un mapa existente?", "Cargar Mapa", JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            // El usuario quiere cargar un mapa existente
+            return true;
+        } else {
+            // El usuario quiere crear un mapa nuevo
+            return false;
+        }
+    }
+
     /**
      * Genera un panel de paneles a partir de la clase VacioPanel.
      * El número de filas y columnas es determinado por el usuario a través de un método llamado
      * desde 'spriteUtils.numRowsCols()'
      * */
-    public void createMenuIzquierda() {
-        int[] nums = spriteUtils.numRowsCols();
-        menuIzquierda = new VacioPanel(nums[0], nums[1]);
+    public void createMenuIzquierda(int row,int col) {
+        menuIzquierda = new VacioPanel(row,col);
+        menuIzquierda.setBackground(Color.BLACK);
+        menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
+    }
+
+    public void cargarMenuIzquierda(int[][] contenido, ImageIcon[] sprites) {
+        menuIzquierda = new VacioPanel(contenido,sprites);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
