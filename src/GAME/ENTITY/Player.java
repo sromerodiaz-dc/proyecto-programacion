@@ -45,9 +45,9 @@ public class Player extends Entity {
         // Inicializa el área sólida del jugador
         // Es menor que el sprite del jugador (48x48px) porque de esta manera no hay colisiones excesivas con el entorno.
         solidArea.x = 10;
-        solidArea.y = 16;
+        solidArea.y = 22;
         solidArea.width = 32;
-        solidArea.height = 32;
+        solidArea.height = 22;
 
         // Guarda los valores por defecto del área sólida
         defaultSolidAreaX = solidArea.x;
