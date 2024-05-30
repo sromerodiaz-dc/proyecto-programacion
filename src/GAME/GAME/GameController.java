@@ -44,6 +44,9 @@ public class GameController {
     // Entidades
     public Entity[] npc = new Entity[10];
 
+    // Entidades no amistosas
+    public Entity[] enemy = new Entity[10];
+
     // Orden de renderizado
     ArrayList<Entity> entities = new ArrayList<>();
 
