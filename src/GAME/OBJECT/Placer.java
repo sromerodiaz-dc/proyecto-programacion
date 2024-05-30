@@ -1,5 +1,6 @@
 package GAME.OBJECT;
 
+import GAME.ENTITY.ENEMY.Dinoseto;
 import GAME.ENTITY.NPC.Viello;
 import GAME.GAME.TeisPanel;
 
@@ -29,8 +30,19 @@ public class Placer {
      * Coloca objetos / NPC / etc. en el panel de juego.
      */
     public void setRecursos() {
+        setNPC();
+        setEnemy();
+    }
+
+    public void setNPC() {
         teisPanel.controller.npc[0] = new Viello(teisPanel);
         teisPanel.controller.npc[0].worldX = teisPanel.sizeFinal * 19;
         teisPanel.controller.npc[0].worldY = teisPanel.sizeFinal * 12;
+    }
+
+    public void setEnemy() {
+        teisPanel.controller.enemy[0] = new Dinoseto(teisPanel);
+        teisPanel.controller.enemy[0].worldX = teisPanel.sizeFinal * 5;
+        teisPanel.controller.enemy[0].worldY = teisPanel.sizeFinal * 12;
     }
 }
