@@ -91,7 +91,7 @@ public class MapSelector {
     public MapSize getMapSize() {
         //String fileName = selectMap(); // Selecciona el nombre del archivo del mapa
 
-        String fileName = "maps/prueba4.txt";
+        String fileName = "maps/pruebas.txt";
 
         InputStream is; // Flujo de entrada para leer el archivo
         BufferedReader br; // Lector de búfer para leer el archivo línea por línea
