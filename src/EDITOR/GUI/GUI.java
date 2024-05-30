@@ -126,15 +126,12 @@ public class GUI extends JFrame {
     }
 
     public boolean create_load_map() {
-        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea cargar un mapa existente?", "Cargar Mapa", JOptionPane.YES_NO_OPTION);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Desea cargar un mapa existente?", "Cargar Mapa", JOptionPane.YES_NO_CANCEL_OPTION);
 
-        if (opcion == JOptionPane.YES_OPTION) {
-            // El usuario quiere cargar un mapa existente
-            return true;
-        } else {
-            // El usuario quiere crear un mapa nuevo
-            return false;
-        }
+        if (opcion == JOptionPane.YES_OPTION) return true;
+        else if (opcion == JOptionPane.NO_OPTION) return false;
+        else System.exit(0);
+        return false;
     }
 
     /**
