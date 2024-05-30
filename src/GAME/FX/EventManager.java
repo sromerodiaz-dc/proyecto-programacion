@@ -2,8 +2,6 @@ package GAME.FX;
 
 import GAME.GAME.TeisPanel;
 
-import java.awt.*;
-
 /**
  *
  *
@@ -41,7 +39,7 @@ public class EventManager {
     }
 
     public void checkEvent(){
-        if (hit(10, 12, 'a')) damage(10,12, teisPanel.controller.dialogoState);
+        if (hit(10, 12, 'a')) damage(10,12, teisPanel.controller.dialogoState, "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende,\nsó entrischécete\"");
 
         if (hit(14,13,'s')) heal(14,13,teisPanel.controller.dialogoState);
 
@@ -71,9 +69,9 @@ public class EventManager {
         return doesHit;
     }
 
-    public void damage(int col, int row, int estado) {
+    public void damage(int col, int row, int estado, String mensaje) {
         teisPanel.controller.estado = estado;
-        teisPanel.controller.ui.dialogo = "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende\nsó entrischécete\"";
+        teisPanel.controller.ui.dialogo = mensaje;
         teisPanel.model.life -= 5;
 
         eventRectangle[col][row].done = true;
