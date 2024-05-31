@@ -9,7 +9,7 @@ import GAME.GUI.ventana;
  * Clase GAME.GAME.Main se encarga de lanzar el programa
  * */
 public class Main {
-    public static void main() {
+    public static void main(String[] args) {
         new ventana();
     }
 }
