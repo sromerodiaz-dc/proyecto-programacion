@@ -2,6 +2,7 @@ package GAME.FX;
 
 import GAME.GAME.TeisPanel;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -21,8 +22,6 @@ public class KeyManager implements KeyListener {
     public boolean up,down,left,right;
 
     public boolean Time = false;
-
-    public boolean isTalking = false;
 
     public boolean isPressed = false;
 
@@ -83,7 +82,7 @@ public class KeyManager implements KeyListener {
         }
 
         // PLAY
-        if (teisPanel.controller.estado == teisPanel.controller.playState) {
+        else if (teisPanel.controller.estado == teisPanel.controller.playState) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
                     up = true;
@@ -98,7 +97,6 @@ public class KeyManager implements KeyListener {
                     right = true;
                     break;
                 case KeyEvent.VK_SPACE:
-                    isTalking = true;
                     isPressed = true;
                     break;
                 case KeyEvent.VK_ESCAPE:
