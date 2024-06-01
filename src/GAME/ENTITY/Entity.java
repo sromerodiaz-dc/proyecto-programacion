@@ -51,6 +51,11 @@ public class Entity {
     */
     public BufferedImage stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2;
 
+    // Propiedades de ataque
+    public BufferedImage attackUp, attackLeft, attackRight, attackDown;
+    public boolean attack = false;
+    public Rectangle attackArea = new Rectangle(0,0,0,0);
+
     /**
      * Para realizar un movimiento fluido, es decir, 2 sprites por movimiento es necesario un contador.
      * El contador que controla los Sprites es spriteNum y spriteCounter.
@@ -91,7 +96,7 @@ public class Entity {
      * @param path el camino a la imagen del sprite de la entidad
      * @return la imagen BufferedImage escalada del sprite de la entidad
      */
-    public BufferedImage setEntitySprite(String path) {
+    public BufferedImage setEntitySprite(String path, int width, int height) {
         // Crea un nuevo objeto PiezaUtils
         PiezaUtils piezaUtils = new PiezaUtils();
 
@@ -103,7 +108,7 @@ public class Entity {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
 
             // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
-            image = piezaUtils.escalado(image, 48, 48);
+            image = piezaUtils.escalado(image, width, height);
         } catch (IOException e) {
             // Lanza una RuntimeException si ocurre una IOException al cargar la imagen
             throw new RuntimeException(e);
@@ -120,10 +125,10 @@ public class Entity {
      */
     public void draw (Graphics2D g2) {
         // Obtiene la imagen de sprite correspondiente al número de sprite activo y la dirección actual
-        BufferedImage image = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
+        DrawUtils.Pair<BufferedImage, Integer, Integer> result = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2,attackUp,attackLeft,attackRight,attackDown,attack,0,0);
 
         // Dibuja la imagen en la posición relativa al jugador en el panel
-        drawUtils.drawRelativeToPlayer(worldX,worldY,teisPanel,g2,image, width, height);
+        drawUtils.drawRelativeToPlayer(result.second,result.third,worldX,worldY,teisPanel,g2,result.first, invencible);
     }
 
     /**
@@ -187,6 +192,15 @@ public class Entity {
                 teisPanel.model.invencible = true;
             }
         }
+
+        // Checkea el tiempo de invencibilidad
+        if (invencible) {
+            timeInvencible++;
+            if (timeInvencible > 30) {
+                invencible = false;
+                timeInvencible = 0;
+            }
+        }
     }
 
     /**
@@ -194,7 +208,7 @@ public class Entity {
      */
     public void movement() {
         // Si no hay colisión, mueve al jugador
-        if (!collisionOn && !teisPanel.model.keyManager.isTalking) {
+        if (!collisionOn && !teisPanel.model.keyManager.isPressed) {
             // Calcula la nueva posición del jugador según la dirección y velocidad
             int[] moveEnt = drawUtils.moveEntity(sentido, worldX, worldY, speed);
 
