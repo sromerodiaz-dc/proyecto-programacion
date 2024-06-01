@@ -21,6 +21,6 @@ public class Passvigo extends Entity {
         // Establece el identificador del Passvigo
         id = "Passvigo";
 
-        stop = setEntitySprite("objects/passvigo.png");
+        stop = setEntitySprite("objects/passvigo.png", 24, 24);
     }
 }
