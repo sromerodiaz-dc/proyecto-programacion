@@ -13,6 +13,6 @@ public class BusVitrasa extends Entity {
 
         // Establece que la puerta tiene colisiones activadas
         collision = true;
-        stop = setEntitySprite("objects/busVitrasa.png");
+        stop = setEntitySprite("objects/busVitrasa.png", teisPanel.sizeFinal*2, teisPanel.sizeFinal * 4);
     }
 }

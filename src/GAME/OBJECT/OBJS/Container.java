@@ -16,6 +16,6 @@ public class Container extends Entity {
         // Establece que la puerta tiene colisiones activadas
         collision = true;
 
-        stop = setEntitySprite("objects/contenedor.png");
+        stop = setEntitySprite("objects/contenedor.png", 48, 48);
     }
 }
