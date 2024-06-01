@@ -2,6 +2,7 @@ package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
+import GAME.GPHICS.DrawUtils;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
@@ -18,8 +19,8 @@ public class Player extends Entity {
 
     public KeyManager keyManager;
 
-    public final int screenX;
-    public final int screenY;
+    public int screenX;
+    public int screenY;
 
     // Checkea si tienes una VigoPass
     public boolean tenPass = false;
@@ -53,11 +54,18 @@ public class Player extends Entity {
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
+        // Iniciliaza el área de ataque del jugador
+        attackArea.width = 36;
+        attackArea.height = 36;
+
         // Inicializa los valores por defecto del jugador
         setValoresPorDefecto();
 
         // Carga las imágenes del jugador
         getPlayerImage();
+
+        // Carga las imágenes de ataque del jugador
+        getPlayerAttackImage();
     }
 
     /**
@@ -79,24 +87,31 @@ public class Player extends Entity {
      */
     public void getPlayerImage() {
         // Carga las imágenes del jugador caminando hacia arriba y las establece en las variables correspondientes
-        up1 = setEntitySprite("player/upWalkingBehind1.png");
-        up2 = setEntitySprite("player/upWalkingBehind2.png");
+        up1 = setEntitySprite("player/upWalkingBehind1.png", 48, 48);
+        up2 = setEntitySprite("player/upWalkingBehind2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia abajo y las establece en las variables correspondientes
-        down1 = setEntitySprite("player/downWalking1.png");
-        down2 = setEntitySprite("player/downWalking2.png");
+        down1 = setEntitySprite("player/downWalking1.png", 48, 48);
+        down2 = setEntitySprite("player/downWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia la izquierda y las establece en las variables correspondientes
-        left1 = setEntitySprite("player/leftWalking1.png");
-        left2 = setEntitySprite("player/leftWalking2.png");
+        left1 = setEntitySprite("player/leftWalking1.png", 48, 48);
+        left2 = setEntitySprite("player/leftWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia la derecha y las establece en las variables correspondientes
-        right1 = setEntitySprite("player/rightWalking1.png");
-        right2 = setEntitySprite("player/rightWalking2.png");
+        right1 = setEntitySprite("player/rightWalking1.png", 48, 48);
+        right2 = setEntitySprite("player/rightWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador detenido y las establece en las variables correspondientes
-        stop = setEntitySprite("player/frontStanding.png");
-        stop2 = setEntitySprite("player/stop2.png");
+        stop = setEntitySprite("player/frontStanding.png", 48, 48);
+        stop2 = setEntitySprite("player/stop2.png", 48, 48);
+    }
+
+    public void getPlayerAttackImage() {
+        attackUp = setEntitySprite("player/player_attack_up.png", 48, 96);
+        attackRight = setEntitySprite("player/player_attack_right.png", 96, 48);
+        attackLeft = setEntitySprite("player/player_attack_left.png", 96, 48);
+        attackDown = setEntitySprite("player/player_attack_down.png", 48, 96);
     }
 
     /**
@@ -107,8 +122,9 @@ public class Player extends Entity {
      * Además, controla los sprites por movimiento usados.
      */
     public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
-        // Verifica si se ha presionado alguna tecla
-        if (e.up || e.down || e.left || e.right || e.isTalking) {
+        if (attack) {
+            attack();
+        } else if (e.up || e.down || e.left || e.right || e.isPressed) {
             // Inicializa el contador de parada
             stopCounter = 0;
 
@@ -179,9 +195,10 @@ public class Player extends Entity {
             return 'a';
         }
         // Si la tecla 'right' está presionada, devuelve 'd'
-        else {
+        else if (e.right) {
             return 'd';
-        }
+        } // Devuelve 'd'
+        else return '0';
     }
 
     /**
@@ -203,13 +220,14 @@ public class Player extends Entity {
     }
 
     public void interactuarNPC(int i) {
-        if (i != 999) {
-            if (teisPanel.model.keyManager.isTalking) {
+        if (teisPanel.model.keyManager.isPressed) {
+            if (i != 999) {
                 teisPanel.controller.estado = teisPanel.controller.dialogoState;
                 teisPanel.controller.npc[i].fala();
+            } else {
+                attack = true;
             }
         }
-        teisPanel.model.keyManager.isTalking = false;
     }
 
     public void interactuarEnemy(int i) {
@@ -221,13 +239,66 @@ public class Player extends Entity {
         }
     }
 
-    /**Metodo PINTA
-     * Metodo empleado para mostrar por pantalla al jugador.
-     * Este metodo instancia un Buffer de Imagenes en "image". Este dependiendo de la accion entrante por teclado
-     * cambia el sprite empleado por otro nuevo.
-     */
-    public void pinta(Graphics2D g2, int screenX, int screenY) {
-        BufferedImage image = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
-        g2.drawImage(image, screenX, screenY, null);
+    /**
+     * Método de ataque, cuando termina la animación, el boolean vuelve a FALSE
+     * */
+    public void attack() {
+        spriteCounter++;
+        if (spriteCounter < 10) {
+            spriteNum = 1;
+
+            // Guarda las propiedades de posición del jugador
+            int currentX = worldX;
+            int currentY = worldY;
+            int solidAreaW = solidArea.width;
+            int solidAreaH = solidArea.width;
+
+            // Ajusta estas variables al área de ataque
+            switch (sentido) {
+                case 'w': worldY -= attackArea.height; break;
+                case 's': worldY += attackArea.height; break;
+                case 'a': worldX -= attackArea.width; break;
+                case 'd': worldX += attackArea.width; break;
+            }
+            // Transforma el área sólida del ataque
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
+            // Checkea la colisión con enemigos
+            int enemy = teisPanel.controller.collisionCheck.checkEntity(this,teisPanel.controller.enemy);
+            dealDamage(enemy);
+
+            // Restaura los valores por defecto.
+            worldX = currentX;
+            worldY = currentY;
+            solidArea.width = solidAreaW;
+            solidArea.height = solidAreaH;
+        } else {
+            spriteCounter = 0;
+            attack = false;
+        }
+    }
+
+    public void dealDamage(int i) {
+        if (i != 999) {
+            if (!teisPanel.controller.enemy[i].invencible) {
+                teisPanel.controller.enemy[i].life -= 1;
+                teisPanel.controller.enemy[i].invencible = true;
+                if (teisPanel.controller.enemy[i].life <= 0) {
+                    teisPanel.controller.enemy[i] = null; // El enemigo muere
+                }
+            }
+        }
+    }
+
+    /**
+     * Este metodo emplea el metodo de SUPER para dictaminar cosas como el tipo de animacion mostrada,
+     * ya que el player es la unica entidad que, DE MOMENTO, tiene animación de ataque.
+     * */
+    public void draw (Graphics2D g2) {
+        // Obtiene la imagen de sprite correspondiente al número de sprite activo y la dirección actual
+        DrawUtils.Pair<BufferedImage, Integer, Integer> result = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2,attackUp,attackLeft,attackRight,attackDown,attack,screenX,screenY);
+
+        // Dibuja la imagen en la posición relativa al jugador en el panel
+        drawUtils.drawRelativeToPlayer(result.second,result.third,worldX,worldY,teisPanel,g2,result.first,invencible);
     }
 }
