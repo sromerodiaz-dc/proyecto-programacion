@@ -34,20 +34,39 @@ public class DrawUtils {
      * @param right2 imagen de sprite para la dirección right
      * @return imagen de sprite correspondiente al número de sprite activo y la dirección actual
      */
-    public BufferedImage drawMovement(int spriteNum, char sentido, BufferedImage stop, BufferedImage stop2, BufferedImage up1, BufferedImage up2, BufferedImage down1, BufferedImage down2, BufferedImage left1, BufferedImage left2, BufferedImage right1, BufferedImage right2) {
+    public Pair<BufferedImage, Integer, Integer> drawMovement(int spriteNum, char sentido, BufferedImage stop, BufferedImage stop2, BufferedImage up1, BufferedImage up2, BufferedImage down1, BufferedImage down2, BufferedImage left1, BufferedImage left2, BufferedImage right1, BufferedImage right2, BufferedImage attackUp, BufferedImage attackLeft, BufferedImage attackRight, BufferedImage attackDown, boolean attack, int x, int y) {
         // Crea un mapa que asocia cada dirección con un array de imágenes de sprite
         Map<Character, BufferedImage[]> sprites = new HashMap<>();
-        sprites.put('w', new BufferedImage[]{up1, up2});
-        sprites.put('a', new BufferedImage[]{left1, left2});
-        sprites.put('s', new BufferedImage[]{down1, down2});
-        sprites.put('d', new BufferedImage[]{right1, right2});
-        sprites.put('0', new BufferedImage[]{stop, stop2});
+        if (!attack) {
+            sprites = fillSprites(sprites,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
+        } else {
+            sprites = fillSprites(sprites,attackDown,attackDown,attackUp,attackUp,attackDown,attackDown,attackLeft,attackLeft,attackRight,attackRight);
+            if (x != 0 && y != 0) {
+                if (sentido == 'a') x -= 48;
+                if (sentido == 'w') y -= 48;
+            }
+        }
 
         // Obtiene el array de imágenes de sprite correspondiente a la dirección actual
         BufferedImage[] images = sprites.get(sentido);
 
         // Obtiene la imagen de sprite correspondiente al número de sprite activo
-        return images[spriteNum - 1];
+        BufferedImage image = images[spriteNum - 1];
+
+        // Devuelve una clase Pair con datos de coordenadas e imagen.
+        return new Pair<>(image, x, y);
+    }
+
+    /**
+     * Método generico de dibujado de spritems
+     * */
+    public Map<Character, BufferedImage[]> fillSprites(Map<Character, BufferedImage[]> sprites, BufferedImage stop, BufferedImage stop2, BufferedImage up1, BufferedImage up2, BufferedImage down1, BufferedImage down2, BufferedImage left1, BufferedImage left2, BufferedImage right1, BufferedImage right2) {
+        sprites.put('w', new BufferedImage[]{up1, up2});
+        sprites.put('a', new BufferedImage[]{left1, left2});
+        sprites.put('s', new BufferedImage[]{down1, down2});
+        sprites.put('d', new BufferedImage[]{right1, right2});
+        sprites.put('0', new BufferedImage[]{stop, stop2});
+        return sprites;
     }
 
     /**
@@ -58,13 +77,19 @@ public class DrawUtils {
      * @param teisPanel panel donde se dibujará la imagen
      * @param g2 objeto Graphics2D para dibujar la imagen
      * @param image imagen a dibujar
-     * @param width ancho de la imagen
-     * @param height alto de la imagen
      */
-    public void drawRelativeToPlayer(int worldX, int worldY, TeisPanel teisPanel, Graphics2D g2, BufferedImage image, int width, int height) {
-        // Calcula las coordenadas de pantalla para dibujar la imagen
-        int screenX = worldX - teisPanel.model.worldX + teisPanel.model.screenX;
-        int screenY = worldY - teisPanel.model.worldY + teisPanel.model.screenY;
+    public void drawRelativeToPlayer(int tempX, int tempY, int worldX, int worldY, TeisPanel teisPanel, Graphics2D g2, BufferedImage image, boolean invencible) {
+        int screenX, screenY;
+        // Verifica si se proporcionaron valores para tempX e tempY
+        if (tempX != 0 && tempY != 0) {
+            // Usa tempX e tempY en lugar de worldX e worldY
+            screenX = tempX;
+            screenY = tempY;
+        } else {
+            // Calcula las coordenadas de pantalla a partir de worldX e worldY
+            screenX = worldX - teisPanel.model.worldX + teisPanel.model.screenX;
+            screenY = worldY - teisPanel.model.worldY + teisPanel.model.screenY;
+        }
 
         // Verifica si la imagen está dentro de la pantalla
         if (worldX + teisPanel.sizeFinal > teisPanel.model.worldX - teisPanel.model.screenX &&
@@ -72,7 +97,9 @@ public class DrawUtils {
                 worldY + teisPanel.sizeFinal > teisPanel.model.worldY - teisPanel.model.screenY &&
                 worldY - teisPanel.sizeFinal < teisPanel.model.worldY + teisPanel.model.screenY) {
             // Dibuja la imagen en la posición correspondiente
-            g2.drawImage(image, screenX, screenY, width, height, null);
+            if (invencible) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+            g2.drawImage(image, screenX, screenY, null);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         }
     }
 
@@ -144,5 +171,21 @@ public class DrawUtils {
         counters[0] = spriteNum;
         counters[1] = spriteCounter;
         return counters;
+    }
+
+
+    /**
+     * Se emplea para guardar los datos de dibujado y devolver una imagen u otra
+     * */
+    public static class Pair<T, X, Y> {
+        public T first;
+        public X second;
+        public Y third;
+
+        public Pair(T first, X second, Y third) {
+            this.first = first;
+            this.second = second;
+            this.third = third;
+        }
     }
 }
