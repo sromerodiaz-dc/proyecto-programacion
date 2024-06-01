@@ -1,25 +1,40 @@
 package GAME.GUI;
 
-import GAME.FX.TeisPanel;
+import GAME.GAME.TeisPanel;
+
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 /**
+ * Clase que define la ventana principal de la aplicación.
+ *
  * @author Santiago Agustin Romero Diaz
- * * CFP Daniel Castelao
- * * Proyecto: Teis
- * --------------------------------
- * Esta clase define la GAME.GUI.ventana (JFrame) sobre la que se implementaran diferentes JPanel, JButtons, etc.
- * */
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ */
 public class ventana extends JFrame {
-    TeisPanel teisPanel = new TeisPanel();
+    /**
+     * El panel principal del juego.
+     */
+    private TeisPanel teisPanel;
+
+    /**
+     * Constructor que inicializa la ventana principal de la aplicación.
+     */
     public ventana() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
-        setTitle("Teis");
-        add(teisPanel);
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        teisPanel = new TeisPanel(); // Crea un nuevo panel principal
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
+        setResizable(false); // Impide que la ventana sea redimensionable
+        setTitle("Teis"); // Establece el título de la ventana
+        add(teisPanel); // Agrega el panel principal a la ventana
+        pack(); // Ajusta el tamaño de la ventana para que quepa el panel principal
+        setLocationRelativeTo(null); // Centra la ventana en la pantalla
+        setVisible(true); // Hace visible la ventana
+
+        // Inicializa los items del mapa
+        teisPanel.setUpItems();
+
+        // Inicializa el hilo principal del juego
         teisPanel.startTeisThread();
     }
 }

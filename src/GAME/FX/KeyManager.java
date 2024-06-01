@@ -1,5 +1,8 @@
 package GAME.FX;
 
+import GAME.GAME.TeisPanel;
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -17,6 +20,16 @@ public class KeyManager implements KeyListener {
 
     /**Indica que direccion toma el personaje*/
     public boolean up,down,left,right;
+
+    public boolean Time = false;
+
+    public boolean isPressed = false;
+
+    TeisPanel teisPanel;
+
+    public KeyManager (TeisPanel teisPanel) {
+        this.teisPanel = teisPanel;
+    }
 
     /**
      * Método que se ejecuta cuando se teclea una tecla.
@@ -39,19 +52,73 @@ public class KeyManager implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                up = true;
-                break;
-            case KeyEvent.VK_S:
-                down = true;
-                break;
-            case KeyEvent.VK_A:
-                left = true;
-                break;
-            case KeyEvent.VK_D:
-                right = true;
-                break;
+
+        // PANTALLA DE CARGA
+        if (teisPanel.controller.estado == teisPanel.controller.cargaState) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_D:
+                    teisPanel.controller.ui.contadorTitulo--;
+                    if (teisPanel.controller.ui.contadorTitulo < 0) {
+                        teisPanel.controller.ui.contadorTitulo = 2;
+                    }
+                    break;
+                case KeyEvent.VK_A:
+                    teisPanel.controller.ui.contadorTitulo++;
+                    if (teisPanel.controller.ui.contadorTitulo > 2) {
+                        teisPanel.controller.ui.contadorTitulo = 0;
+                    }
+                    break;
+                case KeyEvent.VK_SPACE:
+                    if (teisPanel.controller.ui.contadorTitulo == 0) {
+                        System.exit(0);
+                    } else if (teisPanel.controller.ui.contadorTitulo == 1) {
+                        teisPanel.controller.estado = teisPanel.controller.playState;
+                    } else {
+                        // despues
+                    }
+                default:
+                    teisPanel.controller.ui.getPosibleTitulo(); // pequeño secretito
+            }
+        }
+
+        // PLAY
+        else if (teisPanel.controller.estado == teisPanel.controller.playState) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    up = true;
+                    break;
+                case KeyEvent.VK_S:
+                    down = true;
+                    break;
+                case KeyEvent.VK_A:
+                    left = true;
+                    break;
+                case KeyEvent.VK_D:
+                    right = true;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    isPressed = true;
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    teisPanel.controller.estado = teisPanel.controller.pauseState;
+                    break;
+                case KeyEvent.VK_T: // DEBUGGING
+                    Time = !Time;
+                    break;
+            }
+        }
+
+        // PAUSA
+        else if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                teisPanel.controller.estado = teisPanel.controller.playState;
+            }
+        }
+
+        // DIÁLOGO
+        else if (teisPanel.controller.estado == teisPanel.controller.dialogoState) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE)
+                teisPanel.controller.estado = teisPanel.controller.playState;
         }
     }
 

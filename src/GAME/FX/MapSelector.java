@@ -1,7 +1,7 @@
 package GAME.FX;
 
 import javax.swing.*;
-import java.io.File;
+import java.io.*;
 import java.util.Objects;
 
 /**
@@ -60,7 +60,7 @@ public class MapSelector {
      *
      * @return un arreglo de archivos de mapas
      */
-    private File[] getFiles() {
+    public File[] getFiles() {
         // Crea un objeto File para la carpeta "Assets/maps"
         File mapsFolder = new File("Assets/maps");
 
@@ -71,7 +71,7 @@ public class MapSelector {
         }
 
         // Obtiene un arreglo de archivos de texto (.txt) en la carpeta
-        File[] mapFiles = mapsFolder.listFiles((dir, name) -> Objects.requireNonNull(name).toLowerCase().endsWith(".txt"));
+        File[] mapFiles = mapsFolder.listFiles((_, name) -> Objects.requireNonNull(name).toLowerCase().endsWith(".txt"));
 
         // Verifica si el arreglo de archivos es nulo o vacío
         if (mapFiles == null || mapFiles.length == 0) {
@@ -81,5 +81,45 @@ public class MapSelector {
 
         // Devuelve el arreglo de archivos de mapas
         return mapFiles;
+    }
+
+    /**
+     * Obtiene el tamaño del mapa leyéndolo desde un archivo de texto.
+     *
+     * @return Un objeto MapSize con el tamaño del mapa.
+     */
+    public MapSize getMapSize() {
+        //String fileName = selectMap(); // Selecciona el nombre del archivo del mapa
+
+        String fileName = "maps/pruebas.txt";
+
+        InputStream is; // Flujo de entrada para leer el archivo
+        BufferedReader br; // Lector de búfer para leer el archivo línea por línea
+        int maxCol = 0, maxRow = 0; // Variables para almacenar el tamaño del mapa
+
+        try {
+            is = getClass().getClassLoader().getResourceAsStream(fileName); // Obtiene el flujo de entrada para el archivo
+            if (is != null) {
+                br = new BufferedReader(new InputStreamReader(is)); // Crea un lector de búfer para leer el archivo
+
+                String linea; // Variable para almacenar cada línea del archivo
+                while ((linea = br.readLine()) != null) { // Lee cada línea del archivo
+                    String[] mapID = linea.split(" "); // Divide la línea por espacios en blanco
+                    if (mapID.length > maxCol) { // Si la longitud del array es mayor que el número de columnas actual
+                        maxCol = mapID.length; // Actualiza el número de columnas
+                    }
+                    maxRow++; // Incrementa el número de filas
+                }
+
+                br.close(); // Cierra el lector de búfer
+            } else {
+                System.out.println("Error: ¡No se encontró el archivo del mapa '" + fileName + "'!");
+            }
+        } catch (IOException e) { // Maneja las excepciones de entrada/salida
+            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
+            e.printStackTrace();
+        }
+
+        return new MapSize(maxCol, maxRow, fileName); // Devuelve un objeto MapSize con el tamaño del mapa
     }
 }

@@ -1,8 +1,7 @@
 package GAME.GPHICS;
 
-import GAME.FX.MapSelector;
-import GAME.FX.TeisPanel;
 
+import GAME.GAME.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
@@ -17,69 +16,103 @@ import java.util.ArrayList;
  * */
 public class PiezaManager {
     // Atributos
-    Pieza[] pieza;
-    int[][] mapaPiezaNum;
-    String[] imagePaths = getImagePaths();
-    MapSelector mapSelector = new MapSelector();
-    String mapName = mapSelector.selectMap(); // variable que usaré cuando haya más de un mapa
+    TeisPanel t;
+    public Pieza[] pieza;
+    public int[][] mapaPiezaNum;
+    public String[] imagePaths = getImagePaths();
+    public String mapName;
+
+    // Crea un nuevo objeto PiezaUtils
+    public PiezaUtils piezaUtils = new PiezaUtils();
 
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
      */
-    public PiezaManager() {
+    public PiezaManager(TeisPanel teis) {
+        this.t = teis;
 
         // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
         pieza = new Pieza[imagePaths.length];
 
-
         // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
         // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
-        mapaPiezaNum = new int[TeisPanel.maxScreenColumnas][TeisPanel.maxScreenFilas];
+        mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow];
 
+        mapName = t.datos.fileName;
 
         // Carga las imágenes de las piezas.
         getPiezaImage();
+
         // Carga el mapa.
-        loadMap(mapName);
+        loadMap();
     }
 
-
     /**
-     * Carga las imágenes de las Piezas predefinidas (pasto, muro, agua).
+     * Instancia un nuevo objeto Pieza que puede ser colisionable o no.
+     * Para saber si lo es o no lo es difirere entre los String que comienzan por asterisco y los que no.
      */
     public void getPiezaImage() {
+        for (int i = 0; i < pieza.length; i++) {
+            setEscaled(i);
+        }
+    }
+
+    /**
+     * Establece la imagen escalada para el objeto Pieza en el índice dado.
+     *
+     * @param i el índice del objeto Pieza para establecer la imagen escalada
+     */
+    public void setEscaled(int i) {
         try {
-            for (int i = 0; i < pieza.length && i < imagePaths.length; i++) {
+            // Verifica si la ruta de la imagen comienza con un asterisco
+            if (imagePaths[i].startsWith("*")) {
+                // Elimina el asterisco de la ruta de la imagen
+                imagePaths[i] = imagePaths[i].substring(1);
+                // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
+                pieza[i] = new Pieza(true);
+            } else {
+                // Crea un nuevo objeto Pieza con el constructor predeterminado
                 pieza[i] = new Pieza();
-                pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
             }
-        } catch (Exception e) {
+            // Lee la imagen desde el recurso especificado por la ruta de la imagen
+            pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+
+            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el método escalado de PiezaUtils
+            pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
+        } catch (IOException e) {
+            // Imprime el mensaje de error si ocurre una excepción al leer la imagen
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Obtiene las rutas de las imágenes desde el archivo "c_assets.txt".
+     *
+     * @return un arreglo de cadenas con las rutas de las imágenes
+     */
     public String[] getImagePaths() {
+        // Crea una nueva lista de cadenas para almacenar las rutas de las imágenes
         ArrayList<String> imagePaths = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
+            // Lee las líneas del archivo "c_assets.txt" y las agrega a la lista de rutas de imágenes
             String line;
             while ((line = reader.readLine()) != null) {
-                line = line.replaceAll("^\\d+:\\s*Assets\\\\", "");
-                line = line.replaceAll("\\\\", "/");
                 imagePaths.add(line.trim());
             }
         } catch (Exception e) {
+            // Imprime el mensaje de error si ocurre una excepción al leer el archivo
             System.out.println(e.getMessage());
         }
+
+        // Convierte la lista de rutas de imágenes a un arreglo de cadenas y lo devuelve
         return imagePaths.toArray(new String[0]);
     }
 
     /**
      * Carga el diseño del mapa desde un archivo ubicado en el classpath con el nombre especificado en `mapName`.
-     *
-     * @param mapName El nombre del archivo del mapa (por ejemplo, "maps/default.txt").
      */
-    public void loadMap(String mapName) {
+    public void loadMap() {
         InputStream is;
         BufferedReader br;
         try {
@@ -93,11 +126,11 @@ public class PiezaManager {
                 int col = 0, fil = 0;
 
                 // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
-                while (col < TeisPanel.maxScreenColumnas && fil < TeisPanel.maxScreenFilas) {
-
+                while (col < t.maxWorldCol && fil < t.maxWorldRow) {
                     String linea = br.readLine();
+
                     // Bucle por cada elemento (separado por espacios) en la línea actual.
-                    while (col < TeisPanel.maxScreenColumnas) {
+                    while (col < t.maxWorldCol) {
                         String[] mapID = linea.split(" ");
                         // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
                         int map = Integer.parseInt(mapID[col]);
@@ -105,9 +138,8 @@ public class PiezaManager {
                         mapaPiezaNum[col][fil] = map;
                         col++;
                     }
-
                     // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
-                    if (col == TeisPanel.maxScreenColumnas) {
+                    if (col == t.maxWorldCol) {
                         col = 0;
                         fil++;
                     }
@@ -132,35 +164,43 @@ public class PiezaManager {
      */
     public void pinta(Graphics2D g2) {
         // Variables para controlar las columnas (col) y las filas (fil) del mapa.
-        int col = 0;
-        int fil = 0;
-
-        // Variables coordenadas X e Y.
-        int x = 0;
-        int y = 0;
+        int worldCol = 0;
+        int worldFil = 0;
 
         // Bucle que recorre el mapa fila por fila, dibujando las piezas correspondientes.
-        while (col < TeisPanel.maxScreenColumnas && fil < TeisPanel.maxScreenFilas) {
+        while (worldCol < t.maxWorldCol && worldFil < t.maxWorldRow) {
             // Obtiene el ID del tipo de Pieza en la posición actual del mapa.
-            int id = mapaPiezaNum[col][fil];
+            int id = mapaPiezaNum[worldCol][worldFil];
 
-            // Dibuja la imagen de la Pieza correspondiente en la posición actual.
-            g2.drawImage(pieza[id].image, x, y, TeisPanel.sizeFinal, TeisPanel.sizeFinal, null);
+            // Coordenadas relativas al jugador
+            int playerWorldX = t.model.worldX;
+            int playerWorldY = t.model.worldY;
+            int playerScreenX = t.model.screenX;
+            int playerScreenY = t.model.screenY;
+
+            // Coordenadas de pantalla relativas al jugador
+            int worldX = worldCol * t.sizeFinal;
+            int worldY = worldFil * t.sizeFinal;
+            int screenX = worldX - playerWorldX + playerScreenX;
+            int screenY = worldY - playerWorldY + playerScreenY;
+
+            // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
+            // empleando las coordenadas absolutas y las relativas al jugador.
+            if (worldX + t.sizeFinal > playerWorldX - playerScreenX && worldX - t.sizeFinal < playerWorldX + playerScreenX &&
+                worldY + t.sizeFinal > playerWorldY - playerScreenY && worldY - t.sizeFinal < playerWorldY + playerScreenY) {
+                // Dibuja la imagen de la Pieza correspondiente en la posición actual.
+                g2.drawImage(pieza[id].image, screenX, screenY, null);
+            }
 
             // Incrementa la columna (col) para pasar a la siguiente posición horizontal.
-            col++;
-
-            // Actualiza la coordenada X para la siguiente posición horizontal.
-            x += TeisPanel.sizeFinal;
+            worldCol++;
 
             // Si se llega al final de la fila actual (col == TeisPanel.maxScreenColumnas),
             // reinicia la columna (col) y la coordenada X, e incrementa la fila (fil)
             // para pasar a la siguiente fila.
-            if (col == TeisPanel.maxScreenColumnas) {
-                col = 0;
-                x = 0;
-                fil++;
-                y += TeisPanel.sizeFinal;
+            if (worldCol == t.maxWorldCol) {
+                worldCol = 0;
+                worldFil++;
             }
         }
     }

@@ -2,7 +2,6 @@ package EDITOR.SELECTPANEL;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,31 +10,33 @@ import java.util.List;
  * Cada celda en el panel puede contener una imagen y puede ser seleccionada o deseleccionada.
  *
  * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
  */
 public class GridPanel extends JPanel {
     /**
      * Lista de paneles cuadrados en el panel de cuadrícula.
      */
     private static List<Celda> celdas;
-    Celda celda;
-    ImageIcon sprite;
     /**
      * Crea un nuevo panel de cuadrícula con el número de filas y columnas especificadas.
      *
      * @param rows número de filas en el panel de cuadrícula
      * @param cols número de columnas en el panel de cuadrícula
      * @param sprites matriz de ImageIcon que representan los sprites
-     * @throws IOException si ocurre un error al crear el panel de cuadrícula
      */
     public GridPanel(int rows, int cols, ImageIcon[] sprites) {
         celdas = new ArrayList<>();
 
+        // Establece el fondo del panel en gris oscuro
         setBackground(Color.DARK_GRAY);
-        setLayout(new GridLayout(rows, cols)); // Usar GridLayout para el diseño
+        // Establece el diseño del panel en una cuadrícula con el número de filas y columnas especificado
+        setLayout(new GridLayout(rows, cols));
 
         int contador = 0;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
+                // Si hay suficientes imágenes en el array, crea una celda con la imagen correspondiente
                 if (sprites.length > contador) {
                     ImageIcon sprite = sprites[contador];
                     contador++;
@@ -43,6 +44,7 @@ public class GridPanel extends JPanel {
                     celdas.add(celda);
                     add(celda);
                 } else {
+                    // Si no hay suficientes imágenes en el array, crea una celda vacía
                     Celda celda = new Celda(new ImageIcon());
                     celdas.add(celda);
                     add(celda);
