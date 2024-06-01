@@ -2,11 +2,11 @@ package GAME.ENTITY;
 
 import GAME.FX.KeyManager;
 import GAME.GAME.TeisPanel;
-import GAME.GPHICS.DrawUtils;
-
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Santiago Agustin Romero Diaz
@@ -291,14 +291,64 @@ public class Player extends Entity {
     }
 
     /**
-     * Este metodo emplea el metodo de SUPER para dictaminar cosas como el tipo de animacion mostrada,
-     * ya que el player es la unica entidad que, DE MOMENTO, tiene animación de ataque.
-     * */
+     * Método que se encarga de establecer eventos específicos para cada entidad.
+     * Debe ser sobreescrito en las clases hijas para implementar la lógica de eventos específica.
+     */
+    public void setEvent() {
+        // Este método debe ser implementado en las clases hijas
+    }
+
+    /**
+     * Método que se encarga de actualizar el estado de la entidad.
+     */
+    public void update() {
+        // Llama al método setEvent() para establecer eventos específicos
+        setEvent();
+
+        // Checkea las colisiones de todas las entidades y piezas
+        colisiones();
+
+        // Actualiza el movimiento de la entidad
+        movement();
+    }
+
     public void draw (Graphics2D g2) {
         // Obtiene la imagen de sprite correspondiente al número de sprite activo y la dirección actual
-        DrawUtils.Pair<BufferedImage, Integer, Integer> result = teisPanel.controller.drawUtils.drawMovement(spriteNum,sentido,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2,attackUp,attackLeft,attackRight,attackDown,attack,screenX,screenY);
-
         // Dibuja la imagen en la posición relativa al jugador en el panel
-        drawUtils.drawRelativeToPlayer(result.second,result.third,worldX,worldY,teisPanel,g2,result.first,invencible);
+        drawMovement(g2);
+    }
+
+    /**
+     * Dibuja una imagen en una posición relativa al jugador en un panel.
+     */
+    public void drawMovement(Graphics2D g2) {
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
+
+        // Crea un mapa que asocia cada dirección con un array de imágenes de sprite
+        Map<Character, BufferedImage[]> sprites = new HashMap<>();
+        if (!attack) {
+            sprites = fillSprites(sprites,stop,stop2,up1,up2,down1,down2,left1,left2,right1,right2);
+        } else {
+            sprites = fillSprites(sprites,attackDown,attackDown,attackUp,attackUp,attackDown,attackDown,attackLeft,attackLeft,attackRight,attackRight);
+            if (sentido == 'a') tempScreenX -= 48;
+            if (sentido == 'w') tempScreenY -= 48;
+        }
+
+        // Obtiene el array de imágenes de sprite correspondiente a la dirección actual
+        BufferedImage[] images = sprites.get(sentido);
+
+        // Obtiene la imagen de sprite correspondiente al número de sprite activo
+        BufferedImage image = images[spriteNum - 1];
+
+        // Pasa tempScreenX y tempScreenY al método drawPlayer
+        drawPlayer(g2, image, tempScreenX, tempScreenY);
+    }
+
+    public void drawPlayer(Graphics2D g2, BufferedImage image, int tempX, int tempY) {
+        // Dibuja la imagen en la posición correspondiente
+        if (invencible) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+        g2.drawImage(image, tempX, tempY, null);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
     }
 }
