@@ -13,8 +13,8 @@ public class Vida extends Entity {
         // Establece que la puerta tiene colisiones activadas
         collision = true;
 
-        image = setEntitySprite("npc/heart_full.png");
-        image2 = setEntitySprite("npc/heart_half.png");
-        image3 = setEntitySprite("npc/heart_blank.png");
+        image = setEntitySprite("npc/heart_full.png", 48, 48);
+        image2 = setEntitySprite("npc/heart_half.png", 48, 48);
+        image3 = setEntitySprite("npc/heart_blank.png", 48, 48);
     }
 }
