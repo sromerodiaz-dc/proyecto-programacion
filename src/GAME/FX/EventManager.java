@@ -79,9 +79,14 @@ public class EventManager {
 
     public void heal(int col, int row, int estado) {
         if (teisPanel.model.keyManager.isPressed) {
+            teisPanel.model.attack = false; // Hace que el player no haga animación de ataque al interactuar con un evento
             teisPanel.controller.estado = estado;
             teisPanel.controller.ui.dialogo = "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"";
-            teisPanel.model.life += 3;
+            if (teisPanel.model.life <= 7) { // Controla que no se sume más vida que la máxima
+                teisPanel.model.life += 3;
+            } else {
+                teisPanel.model.life += (teisPanel.model.maxLife - teisPanel.model.life);
+            }
             eventRectangle[col][row].done = true;
         }
     }
