@@ -76,7 +76,7 @@ public class Viello extends Entity {
     public void setEvent() {
         capEvent++;
         if (capEvent == 120) {
-            sentido = drawUtils.moveRandomEntity();
+            sentido = moveRandomEntity();
             capEvent = 0;
         }
     }
