@@ -5,7 +5,6 @@ import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Entity;
 import GAME.FX.EventManager;
-import GAME.GPHICS.DrawUtils;
 import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.Placer;
 
@@ -49,9 +48,6 @@ public class GameController {
 
     // Orden de renderizado
     ArrayList<Entity> entities = new ArrayList<>();
-
-    // DrawUtils
-    public DrawUtils drawUtils = new DrawUtils();
 
     // Manejo de eventos del juego
     public EventManager eventManager;
