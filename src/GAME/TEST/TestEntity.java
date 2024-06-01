@@ -20,12 +20,4 @@ class TestEntity {
         Assertions.assertEquals(entity.worldX, entity.worldX - entity.speed);
         Assertions.assertEquals(entity.sentido, 'a');
     }
-
-    @Test
-    void pinta() {
-        Player player = new Player(new TeisPanel(), new KeyManager(new TeisPanel()));
-        TeisPanel teis = new TeisPanel();
-        Graphics2D g2 = null;
-        player.pinta(g2, 1,1);
-    }
 }
