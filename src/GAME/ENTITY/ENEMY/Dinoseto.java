@@ -1,32 +1,19 @@
 package GAME.ENTITY.ENEMY;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.GAME.TeisPanel;
 
 public class Dinoseto extends Entity {
-    public Dinoseto (TeisPanel teisPanel) {
-        super(teisPanel);
+    Propierties propierties;
+    public Dinoseto (TeisPanel teisPanel, Propierties propierties) {
+        super(teisPanel, propierties);
+        this.propierties = propierties;
 
-        who = 2; // 2 = enemy
+        setPropierties("Dinoseto_elegante");
 
-        id = "Dinoseto_elegante";
-
-        sentido = '0';
-
-        speed = 1;
-        maxLife = 20;
-        life = maxLife;
-
-        height = teisPanel.sizeFinal * 2;
-        width = height - 5;
-        solidArea.x = 10;
-        solidArea.y = 25;
-        solidArea.width = width - 25;
-        solidArea.height = height - 35;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
-
-        intervalo = 15;
 
         getImage();
     }
