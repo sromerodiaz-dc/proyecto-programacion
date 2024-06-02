@@ -1,6 +1,7 @@
 package GAME.TEST;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.GAME.TeisPanel;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ class TestPlayer {
 
     @Test
     void testSetValoresPorDefecto() {
-        Entity entity = new Entity(new TeisPanel());
+        Entity entity = new Entity(new TeisPanel(),new Propierties("asf","as","123"));
         TeisPanel teisPanel = null;
         assertEquals(entity.worldX, 15 * teisPanel.sizeFinal);
         assertEquals(entity.worldY, 15 * teisPanel.sizeFinal);
@@ -20,7 +21,7 @@ class TestPlayer {
 
     @Test
     void testGetPlayerImage() {
-        Entity entity = new Entity(new TeisPanel());
+        Entity entity = new Entity(new TeisPanel(),new Propierties("asf","as","123"));
 
         try {
             assertNotNull(entity.up1);
@@ -41,6 +42,6 @@ class TestPlayer {
 
     @Test
     void testActualiza() {
-        Entity entity = new Entity(new TeisPanel());
+        Entity entity = new Entity(new TeisPanel(),new Propierties("asf","as","123"));
     }
 }
