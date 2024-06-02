@@ -213,21 +213,40 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Interactúa con un NPC (Non-Player Character) específico.
+     *
+     * @param i El índice del NPC con el que se interactúa.
+     */
     public void interactuarNPC(int i) {
+        // Verifica si se ha presionado una tecla
         if (teisPanel.model.keyManager.isPressed) {
-            if (i != 999) {
+            // Verifica si el índice es válido (no es 999)
+            if (i!= 999) {
+                // Cambia el estado del juego a diálogo
                 teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                // Hace que el NPC hable
                 teisPanel.controller.npc[i].fala();
             } else {
+                // Activa el ataque
                 attack = true;
             }
         }
     }
 
+    /**
+     * Interactúa con un enemigo específico.
+     *
+     * @param i El índice del enemigo con el que se interactúa.
+     */
     public void interactuarEnemy(int i) {
-        if (i != 999) {
+        // Verifica si el índice es válido (no es 999)
+        if (i!= 999) {
+            // Verifica si el enemigo no es invencible
             if (!invencible) {
+                // Aplica daño al enemigo
                 life -= 1;
+                // Hace que el enemigo sea invencible temporalmente
                 invencible = true;
             }
         }
@@ -272,13 +291,30 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Aplica daño a un enemigo específico.
+     *
+     * @param i El índice del enemigo que recibirá el daño.
+     */
     public void dealDamage(int i) {
-        if (i != 999) {
+        // Verifica si el índice es válido (no es 999)
+        if (i!= 999) {
+
+            // Verifica si el enemigo no es invencible
             if (!teisPanel.controller.enemy[i].invencible) {
+
+                // Aplica daño al enemigo
                 teisPanel.controller.enemy[i].life -= 1;
+
+                // Hace que el enemigo sea invencible temporalmente
                 teisPanel.controller.enemy[i].invencible = true;
+
+                // Verifica si la vida del enemigo ha llegado a cero
                 if (teisPanel.controller.enemy[i].life <= 0) {
+
+                    // Elimina al enemigo (lo marca como nulo)
                     teisPanel.controller.enemy[i] = null; // El enemigo muere
+
                 }
             }
         }

@@ -62,23 +62,35 @@ public class Viello extends Entity {
         stop2 = setEntitySprite("npc/viello/viello_stop2.png", width, height);
     }
 
+    /**
+     * Establece el evento de movimiento aleatorio del enemigo.
+     */
     public void setEvent() {
+        // Incrementa el contador de eventos
         capEvent++;
+
+        // Cada 120 frames, cambia la dirección del enemigo de manera aleatoria
         if (capEvent == 120) {
             sentido = moveRandomEntity();
             capEvent = 0;
         }
     }
 
+    /**
+     * Establece los diálogos del enemigo Dinoseto.
+     */
     public void setDialogo() {
+        // Establece los diálogos del enemigo
         dialogos[0] = "mozo... \nsabes o que din dos pimentitos de padrón...?";
         dialogos[1] = "\"uns pican... e outros non\" \n*risa jodidamente incontenible*";
         dialogos[2] = "Deus deume o peor dos destinos deste mundo, \nser do Celta.";
     }
 
+    /**
+     * Método para que el enemigo hable.
+     */
     public void fala() {
-
-        // Necesario para futuras modificaciones
+        // Llama al método fala() de la clase padre (Entity) para futuras modificaciones
         super.fala();
     }
 }
