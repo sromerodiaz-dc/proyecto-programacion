@@ -4,6 +4,7 @@ import GAME.EFFECT.Sound;
 import GAME.EFFECT.UserInterface;
 import GAME.ENTITY.CollisionCheck;
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.FX.EventManager;
 import GAME.GPHICS.PiezaManager;
 import GAME.OBJECT.Placer;
@@ -33,6 +34,9 @@ public class GameController {
     public CollisionCheck collisionCheck;
     public Placer placer;
 
+    // Propiedades de cada entidad
+    public Propierties propierties = new Propierties("jdbc:postgresql://localhost:5432/proyecto", "postgres", "123");
+
     // Manejo de objetos
     public Entity[] obj = new Entity[10];
 
@@ -59,9 +63,10 @@ public class GameController {
      */
     public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
+        propierties.crearTablaEntidad();
 
-        ui = new UserInterface(teisPanel);
-        placer = new Placer(teisPanel);
+        ui = new UserInterface(teisPanel, propierties);
+        placer = new Placer(teisPanel, propierties);
 
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(teisPanel);
@@ -69,8 +74,6 @@ public class GameController {
         // Inicializa el manejo de eventos
         eventManager = new EventManager(teisPanel);
     }
-
-
 
     /**
      * Obtiene el gestor de piezas del juego.
