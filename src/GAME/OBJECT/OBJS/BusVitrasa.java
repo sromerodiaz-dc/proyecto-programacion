@@ -1,4 +1,4 @@
-package GAME.OBJECT.OBJS;
+/*package GAME.OBJECT.OBJS;
 
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
@@ -15,4 +15,4 @@ public class BusVitrasa extends Entity {
         collision = true;
         stop = setEntitySprite("objects/busVitrasa.png", teisPanel.sizeFinal*2, teisPanel.sizeFinal * 4);
     }
-}
+}*/

@@ -1,8 +1,10 @@
+/*
 package GAME.OBJECT.OBJS;
 
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
 
+*/
 /**
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
@@ -10,11 +12,14 @@ import GAME.GAME.TeisPanel;
  * -
  * Clase que representa un Passvigo en el juego.
  * Extiende de la clase ObjectGame, que probablemente contiene atributos y métodos comunes a todos los objetos del juego.
- * */
+ * *//*
+
 public class Passvigo extends Entity {
-    /**
+    */
+/**
      * Constructor que inicializa el Passvigo con sus propiedades específicas.
-     */
+     *//*
+
     public Passvigo(TeisPanel teisPanel) {
         super(teisPanel);
 
@@ -24,3 +29,4 @@ public class Passvigo extends Entity {
         stop = setEntitySprite("objects/passvigo.png", 24, 24);
     }
 }
+*/

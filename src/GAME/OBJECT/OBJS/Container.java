@@ -1,12 +1,15 @@
+/*
 package GAME.OBJECT.OBJS;
 
 import GAME.ENTITY.Entity;
 import GAME.GAME.TeisPanel;
 
 public class Container extends Entity {
-    /**
+    */
+/**
      * Constructor que inicializa el Passvigo con sus propiedades específicas.
-     */
+     *//*
+
     public Container(TeisPanel teisPanel) {
         super(teisPanel);
 
@@ -19,3 +22,4 @@ public class Container extends Entity {
         stop = setEntitySprite("objects/contenedor.png", 48, 48);
     }
 }
+*/
