@@ -1,6 +1,7 @@
 package GAME.EFFECT;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.GAME.TeisPanel;
 import GAME.OBJECT.OBJS.Vida;
 
@@ -48,7 +49,7 @@ public class UserInterface {
      * Constructor de la clase UserInterface.
      * @param teisPanel Panel donde se dibujará la interfaz de usuario.
      */
-    public UserInterface(TeisPanel teisPanel) {
+    public UserInterface(TeisPanel teisPanel, Propierties propierties) {
         this.teisPanel = teisPanel;
 
         try {
@@ -63,7 +64,7 @@ public class UserInterface {
         getPosibleTitulo();
 
         // Recibe datos de la vida y sprite de vida del player
-        Entity vida = new Vida(teisPanel);
+        Entity vida = new Vida(teisPanel, propierties);
         vida_entera = vida.image;
         vida_mitad = vida.image2;
         vida_vacia = vida.image3;
@@ -116,7 +117,7 @@ public class UserInterface {
 
         if (teisPanel.controller.estado == teisPanel.controller.dialogoState) {
             drawPlayerVida();
-           drawDialogo();
+            drawDialogo();
         }
     }
 
