@@ -8,7 +8,7 @@ import java.awt.event.KeyListener;
 
 /**
  * Clase que gestiona las entradas de teclado del usuario.
- *
+ * -
  * Esta clase implementa la interfaz `KeyListener` y define los métodos `keyTyped()`, `keyPressed()` y `keyReleased()`.
  * Cuando se presiona o se suelta una tecla, se actualizan las variables booleanas `up`, `down`, `left` y `right`.
  *
@@ -46,85 +46,100 @@ public class KeyManager implements KeyListener {
     /**
      * Método que se ejecuta cuando se presiona una tecla.
      *
-     * Cuando se presiona una tecla, se actualiza la variable correspondiente a la tecla presionada.
+     * Actualiza las variables correspondientes a la tecla presionada según el estado actual del juego.
      *
      * @param e el evento de teclado
      */
     @Override
     public void keyPressed(KeyEvent e) {
-
         // PANTALLA DE CARGA
         if (teisPanel.controller.estado == teisPanel.controller.cargaState) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_D:
-                    teisPanel.controller.ui.contadorTitulo--;
-                    if (teisPanel.controller.ui.contadorTitulo < 0) {
-                        teisPanel.controller.ui.contadorTitulo = 2;
-                    }
-                    break;
-                case KeyEvent.VK_A:
-                    teisPanel.controller.ui.contadorTitulo++;
-                    if (teisPanel.controller.ui.contadorTitulo > 2) {
-                        teisPanel.controller.ui.contadorTitulo = 0;
-                    }
-                    break;
-                case KeyEvent.VK_SPACE:
-                    if (teisPanel.controller.ui.contadorTitulo == 0) {
-                        System.exit(0);
-                    } else if (teisPanel.controller.ui.contadorTitulo == 1) {
-                        teisPanel.controller.estado = teisPanel.controller.playState;
-                    } else {
-                        // despues
-                    }
-                default:
-                    teisPanel.controller.ui.getPosibleTitulo(); // pequeño secretito
-            }
+            handleLoadScreenInput(e);
         }
-
         // PLAY
         else if (teisPanel.controller.estado == teisPanel.controller.playState) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_W:
-                    up = true;
-                    break;
-                case KeyEvent.VK_S:
-                    down = true;
-                    break;
-                case KeyEvent.VK_A:
-                    left = true;
-                    break;
-                case KeyEvent.VK_D:
-                    right = true;
-                    break;
-                case KeyEvent.VK_SPACE:
-                    isPressed = true;
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    teisPanel.controller.estado = teisPanel.controller.pauseState;
-                    break;
-                case KeyEvent.VK_T: // DEBUGGING
-                    Time = !Time;
-                    break;
-            }
+            handlePlayInput(e);
         }
-
         // PAUSA
         else if (teisPanel.controller.estado == teisPanel.controller.pauseState) {
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                teisPanel.controller.estado = teisPanel.controller.playState;
-            }
+            handlePauseInput(e);
         }
-
         // DIÁLOGO
         else if (teisPanel.controller.estado == teisPanel.controller.dialogoState) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE)
-                teisPanel.controller.estado = teisPanel.controller.playState;
+            handleDialogInput(e);
+        }
+    }
+
+// Métodos auxiliares para manejar la entrada en cada estado
+
+    private void handleLoadScreenInput(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_D:
+                teisPanel.controller.ui.contadorTitulo--;
+                if (teisPanel.controller.ui.contadorTitulo < 0) {
+                    teisPanel.controller.ui.contadorTitulo = 2;
+                }
+                break;
+            case KeyEvent.VK_A:
+                teisPanel.controller.ui.contadorTitulo++;
+                if (teisPanel.controller.ui.contadorTitulo > 2) {
+                    teisPanel.controller.ui.contadorTitulo = 0;
+                }
+                break;
+            case KeyEvent.VK_SPACE:
+                if (teisPanel.controller.ui.contadorTitulo == 0) {
+                    System.exit(0);
+                } else if (teisPanel.controller.ui.contadorTitulo == 1) {
+                    teisPanel.controller.estado = teisPanel.controller.playState;
+                } else {
+                    // después
+                }
+            default:
+                teisPanel.controller.ui.getPosibleTitulo(); // pequeño secretito
+        }
+    }
+
+    private void handlePlayInput(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                up = true;
+                break;
+            case KeyEvent.VK_S:
+                down = true;
+                break;
+            case KeyEvent.VK_A:
+                left = true;
+                break;
+            case KeyEvent.VK_D:
+                right = true;
+                break;
+            case KeyEvent.VK_SPACE:
+                isPressed = true;
+                break;
+            case KeyEvent.VK_ESCAPE:
+                teisPanel.controller.estado = teisPanel.controller.pauseState;
+                break;
+            case KeyEvent.VK_T: // DEBUGGING
+                Time =!Time;
+                break;
+        }
+    }
+
+    private void handlePauseInput(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            teisPanel.controller.estado = teisPanel.controller.playState;
+        }
+    }
+
+    private void handleDialogInput(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            teisPanel.controller.estado = teisPanel.controller.playState;
         }
     }
 
     /**
      * Método que se ejecuta cuando se suelta una tecla.
-     *
+     * -
      * Cuando se suelta una tecla, se actualiza la variable correspondiente a la tecla soltada.
      *
      * @param e el evento de teclado
