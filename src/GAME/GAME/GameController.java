@@ -88,23 +88,44 @@ public class GameController {
         return sound;
     }
 
+    /**
+     * Reproduce la música del juego según el índice proporcionado.
+     *
+     * @param i índice de la música a reproducir
+     * @throws LineUnavailableException si no se puede reproducir la música
+     */
     public void playMusic(int i) throws LineUnavailableException {
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        sound.setFile(i); // Establece el archivo de música según el índice
+        sound.play(); // Reproduce la música
+        sound.loop(); // Repite la música en bucle
     }
 
+    /**
+     * Detiene la reproducción de la música del juego.
+     */
     public void stopMusic() {
-        sound.stop();
+        sound.stop(); // Detiene la reproducción de la música
     }
 
+    /**
+     * Reproduce el sonido de selección del juego según el índice proporcionado.
+     *
+     * @param i índice del sonido de selección a reproducir
+     * @throws LineUnavailableException si no se puede reproducir el sonido
+     */
     public void playSelection(int i) throws LineUnavailableException {
-        se.setFile(i);
-        se.play();
+        se.setFile(i); // Establece el archivo de sonido de selección según el índice
+        se.play(); // Reproduce el sonido de selección
     }
 
+    /**
+     * Detiene la reproducción del sonido de selección del juego según el índice proporcionado.
+     *
+     * @param i índice del sonido de selección a detener
+     * @throws LineUnavailableException si no se puede detener el sonido
+     */
     public void stopSelection(int i) throws LineUnavailableException {
-        se.setFile(i);
-        se.stop();
+        se.setFile(i); // Establece el archivo de sonido de selección según el índice
+        se.stop(); // Detiene la reproducción del sonido de selección
     }
 }
