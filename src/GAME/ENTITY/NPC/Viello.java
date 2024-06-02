@@ -1,6 +1,7 @@
 package GAME.ENTITY.NPC;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.GAME.TeisPanel;
 
 /**
@@ -15,33 +16,21 @@ import GAME.GAME.TeisPanel;
  * */
 public class Viello extends Entity {
     TeisPanel teisPanel;
+    Propierties propierties;
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
      *
      * @param teisPanel panel donde se dibujará el anciano
      */
-    public Viello(TeisPanel teisPanel) {
+    public Viello(TeisPanel teisPanel, Propierties propierties) {
         // Llama al constructor de la clase padre (suponiendo que es una entidad en el juego)
-        super(teisPanel);
-        this.teisPanel = teisPanel; // Inicializado
+        super(teisPanel,propierties);
+        this.teisPanel = teisPanel;
+        this.propierties = propierties;
 
-        who = 1; // 1 = npc
+        // Pasa por parametro el identificador = 1;
+        setPropierties("Viello");
 
-        // Inicializa la dirección del anciano en '0', que significa que no se está moviendo
-        sentido = '0';
-
-        // Establece la velocidad del anciano en 2, lo que significa que se mueve lentamente
-        speed = 1;
-
-        // Se ralentiza el intervalo de cambio de sprites (animación) cuanto más alto el valor, menos animación habrá
-        intervalo = 15;
-
-        height = 72;
-        width = 54;
-        solidArea.x = 10;
-        solidArea.y = 25;
-        solidArea.width = width - 15;
-        solidArea.height = height - 34;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
