@@ -72,8 +72,8 @@ public class TeisPanel extends JPanel implements Runnable{
         setFocusable(true);
 
         // Inicializa el modelo y el controlador
-        model = new Player(this,key);
         controller = new GameController(piezaM,this);
+        model = new Player(this, key, controller.propierties);
     }
 
     public void setUpItems() {
