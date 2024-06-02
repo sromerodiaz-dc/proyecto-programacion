@@ -21,6 +21,7 @@ import java.util.Random;
  * */
 public class Entity {
     TeisPanel teisPanel;
+    Propierties propierties;
 
     // Atributos
     public int speed;
@@ -87,8 +88,8 @@ public class Entity {
      * Constructor parametrizado
      * @param teisPanel gráfico del juego
      * */
-    public Entity (TeisPanel teisPanel) {
-        this.teisPanel = teisPanel;
+    public Entity (TeisPanel teisPanel, Propierties propierties) {
+        this.teisPanel = teisPanel; this.propierties = propierties;
     }
 
     /**
@@ -117,6 +118,32 @@ public class Entity {
 
         // Devuelve la imagen BufferedImage escalada del sprite del jugador
         return image;
+    }
+
+    public void setPropierties(String id) {
+        Object[][] datos = propierties.obtenerDatosEntidad();
+        for (Object[] fila : datos) {
+            if ((fila[0]).equals(id)) {
+                asignarValores(fila);
+                break;
+            }
+        }
+    }
+
+    private void asignarValores(Object[] fila) {
+        this.id = (String) fila[0];
+        this.who = (int) fila[1];
+        this.sentido = (char) fila[2];
+        this.speed = (int) fila[3];
+        this.intervalo = (int) fila[4];
+        this.width = (int) fila[5];
+        this.height = (int) fila[6];
+        solidArea.x = (int) fila[7];
+        solidArea.y = (int) fila[8];
+        solidArea.width = (int) fila[9];
+        solidArea.height = (int) fila[10];
+        maxLife = (int) fila[11];
+        life = (int) fila[12];
     }
 
     /**
