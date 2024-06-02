@@ -1,11 +1,12 @@
 package GAME.OBJECT.OBJS;
 
 import GAME.ENTITY.Entity;
+import GAME.ENTITY.Propierties;
 import GAME.GAME.TeisPanel;
 
 public class Vida extends Entity {
-    public Vida(TeisPanel teisPanel) {
-        super(teisPanel);
+    public Vida(TeisPanel teisPanel, Propierties propierties) {
+        super(teisPanel, propierties);
 
         // Establece el identificador de la puerta
         id = "Vida";
