@@ -17,6 +17,9 @@ import java.util.Map;
  * */
 public class Player extends Entity {
 
+    // Propiedades del jugador
+    Propierties propierties;
+
     public KeyManager keyManager;
 
     public int screenX;
@@ -32,31 +35,18 @@ public class Player extends Entity {
      * @param t instancia de TeisPanel, que es el panel donde se dibujará el jugador
      * @param k instancia de KeyManager, que maneja las entradas del teclado
      */
-    public Player(TeisPanel t, KeyManager k) {
+    public Player(TeisPanel t, KeyManager k, Propierties propierties) {
         // Llama al constructor de la clase padre (Entity) y pasa la instancia de TeisPanel
-        super(t);
+        super(t,propierties);
 
         // Asigna la instancia de KeyManager para manejar las entradas del teclado
         this.keyManager = k;
 
+        this.propierties = propierties;
+
         // Inicializa la posición del jugador en la pantalla
         screenX = t.screenWidth / 2 - (t.sizeFinal / 2);
         screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
-
-        // Inicializa el área sólida del jugador
-        // Es menor que el sprite del jugador (48x48px) porque de esta manera no hay colisiones excesivas con el entorno.
-        solidArea.x = 10;
-        solidArea.y = 22;
-        solidArea.width = 32;
-        solidArea.height = 22;
-
-        // Guarda los valores por defecto del área sólida
-        defaultSolidAreaX = solidArea.x;
-        defaultSolidAreaY = solidArea.y;
-
-        // Iniciliaza el área de ataque del jugador
-        attackArea.width = 36;
-        attackArea.height = 36;
 
         // Inicializa los valores por defecto del jugador
         setValoresPorDefecto();
@@ -72,14 +62,18 @@ public class Player extends Entity {
      * Metodo que define el estado inicial del jugador
      */
     public void setValoresPorDefecto() {
+        setPropierties("player");
+
         worldX = teisPanel.sizeFinal * 18;
         worldY = teisPanel.sizeFinal * 10;
-        speed = 6;
-        sentido = '0';
 
-        // Estado actual del jugador
-        maxLife = 10; // 5 Corazones que aguantan 2 golpes cada uno (5x2 = 6)
-        life = maxLife;
+        // Guarda los valores por defecto del área sólida
+        defaultSolidAreaX = solidArea.x;
+        defaultSolidAreaY = solidArea.y;
+
+        // Iniciliaza el área de ataque del jugador
+        attackArea.width = 36;
+        attackArea.height = 36;
     }
 
     /**
