@@ -141,7 +141,13 @@ public class CollisionCheck {
         return i;
     }
 
-    // Checkea colisiones de NPC
+    /**
+     * Verifica si una entidad colisiona con otros objetos en el mapa.
+     *
+     * @param entity La entidad que se va a verificar.
+     * @param target El array de objetos en el mapa.
+     * @return El índice del objeto con el que colisionó, o 999 si no hay colisión.
+     */
     public int checkEntity(Entity entity, Entity[] target) {
         // Indice por defecto, si se mantiene intacto indica que no hay colision
         int i = 999;
@@ -149,7 +155,7 @@ public class CollisionCheck {
         // Recorre todos los objetos del mapa
         for (int x = 0; x < target.length; x++) {
             // Verifica si el objeto no es nulo
-            if (target[x] != null) {
+            if (target[x]!= null) {
                 // Calcula las coordenadas de la entidad y el objeto en el mapa
                 entity.solidArea.x = entity.worldX + entity.solidArea.x;
                 entity.solidArea.y = entity.worldY + entity.solidArea.y;
@@ -161,7 +167,7 @@ public class CollisionCheck {
 
                 // Verifica si la entidad colisiona con el objeto
                 if (entity.solidArea.intersects(target[x].solidArea)) {
-                    if (target[x] != entity) {
+                    if (target[x]!= entity) {
                         // Verifica si el objeto tiene colisión
                         entity.collisionOn = true;
                         i = x;
@@ -179,6 +185,12 @@ public class CollisionCheck {
         return i;
     }
 
+    /**
+     * Verifica si una entidad colisiona con el jugador.
+     *
+     * @param entity La entidad que se va a verificar.
+     * @return True si la entidad colisiona con el jugador, false en caso contrario.
+     */
     public boolean checkPlayer(Entity entity) {
         boolean hitPlayer = false;
 
@@ -193,7 +205,7 @@ public class CollisionCheck {
 
         // Verifica si la entidad colisiona con el objeto
         if (entity.solidArea.intersects(teisPanel.model.solidArea)) {
-            if (teisPanel.model != entity) {
+            if (teisPanel.model!= entity) {
                 // Verifica si el objeto tiene colisión
                 entity.collisionOn = true;
                 hitPlayer = true;
@@ -209,6 +221,11 @@ public class CollisionCheck {
         return hitPlayer;
     }
 
+    /**
+     * Verifica la dirección de la entidad y ajusta las coordenadas de su área sólida según sea necesario.
+     *
+     * @param entity La entidad que se va a verificar.
+     */
     private void checkSolidArea(Entity entity) {
         switch (entity.sentido) {
             case 'w': entity.solidArea.y -= entity.speed; break;

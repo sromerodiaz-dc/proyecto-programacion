@@ -120,17 +120,33 @@ public class Entity {
         return image;
     }
 
+    /**
+     * Establece las propiedades de la entidad según su ID.
+     *
+     * @param id ID de la entidad.
+     */
     public void setPropierties(String id) {
+        // Obtiene los datos de las entidades desde la base de datos
         Object[][] datos = propierties.obtenerDatosEntidad();
+
+        // Recorre cada fila de datos
         for (Object[] fila : datos) {
+            // Verifica si la ID de la fila coincide con la ID proporcionada
             if ((fila[0]).equals(id)) {
+                // Asigna los valores de la fila a las propiedades de la entidad
                 asignarValores(fila);
                 break;
             }
         }
     }
 
+    /**
+     * Asigna los valores de una fila de datos a las propiedades de la entidad.
+     *
+     * @param fila La fila de datos que contiene los valores a asignar.
+     */
     private void asignarValores(Object[] fila) {
+        // Asigna los valores de la fila a las propiedades de la entidad
         this.id = (String) fila[0];
         this.who = (int) fila[1];
         this.sentido = (char) fila[2];
