@@ -2,7 +2,7 @@
 
 - [Introducción](#notas-de-desarrollo)
 - [Registro por semanas](#registro-semanal)
-1. [Semana 1](#semana-del-06052024) 
+1. [Semana 1](#semana-del-06052024)
    1. [Game Loop](#qué-es-un-game-loop)
    2. [¿Por qué es importante?](#por-qué-es-importante-el-bucle-de-juego)
    3. [Animaciones de personaje](#implementación-de-sprites-hechos-con-pixel-studio)
@@ -19,6 +19,8 @@
    1. [Optimización del código](#optimización-del-código)
    2. [Pantalla de Carga: GameStates](#pantalla-de-carga)
    3. [Reestructuración del código](#reestructuración-del-código)
+5. [Semana 5](#semana-del-07052025)
+   1. [Refactorización e implementación de Maven](#refactorización-del-código-e-implementación-de-maven)
 ___
 # Notas de desarrollo
 
@@ -293,16 +295,16 @@ ___
 He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
 y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imágenes interesantes logradas
 con un programa llamado Pixel Studio.
-1. ![suelos](Assets/background/alcantarilla.png) 
+1. ![suelos](Assets/background/alcantarilla.png)
 2. ![suelos](Assets/background/sueloEstandarPlaza.png)
 ___
 ## Semana del 13/05/2024
 Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
 
 - *Crear un editor de mapas*
-  - *Que el editor pudiese guardar mapas*
-  - *Que te permitiese decidir el tamaño del mapa*
-  - *Que te permitiese cambiar el fondo por el sprite que quisieras*
+   - *Que el editor pudiese guardar mapas*
+   - *Que te permitiese decidir el tamaño del mapa*
+   - *Que te permitiese cambiar el fondo por el sprite que quisieras*
 ___
 ### Editor de mapas con sprites
 El editor funciona de la siguiente manera:
@@ -482,7 +484,7 @@ Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo
 * ![bus](Assets/objects/busVitrasa.png) ![bus](Assets/objects/busVitrasa2.png) ![bus](Assets/objects/contenedorVigo.png)
 * ![passvigo](Assets/objects/passvigo.png) ![passvigo](Assets/objects/passvigoPlus.png)
 
-Próximamente, estaré creando assets para el suelo y demás cosas... 
+Próximamente, estaré creando assets para el suelo y demás cosas...
 ___
 ### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
@@ -492,7 +494,7 @@ El parametro que define si es colisionable o no una ``pieza`` será ``colision``
 un asset se distinguirá de la siguiente manera:
 
 1. El diccionario **"c_assets.txt"** contendrá un asterisco al comienzo de aquellos sprites colisionables.
-Ejemplo:
+   Ejemplo:
 ````text
 19: Assets\background\sueloEstandarPlaza.png
 *20: Assets\background\table01.png
@@ -505,12 +507,13 @@ Para realizar esto he decidido *cambiar* 2 cosas:
 2. El filtrado de los Strings ya *no* se realizará desde ***PiezaManager*** sino desde el propio Editor de Mapas.
 
 Esta es la clase SpriteLoader de EditorMap:
+
 ````java
 public List<ImageIcon> loadSprites(String folderPath) {
    //...
-   
+
    // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
-   File file = new File("Assets/maps_correspondencia/c_assets_user.txt");
+   File file = new File("maps_correspondencia/c_assets_user.txt");
    if (!file.exists()) {
       try {
          file.createNewFile();
@@ -520,8 +523,8 @@ public List<ImageIcon> loadSprites(String folderPath) {
          // Ignorar la excepción
       }
    }
-   
-   file = new File("Assets/maps_correspondencia/c_assets.txt");
+
+   file = new File("maps_correspondencia/c_assets.txt");
    if (!file.exists()) {
       try {
          file.createNewFile();
@@ -531,21 +534,22 @@ public List<ImageIcon> loadSprites(String folderPath) {
          // Ignorar la excepción
       }
    }
-   
+
    //...
    return sprites;
 }
 ````
 
 Por otro lado, ``PiezaManager`` ya no realiza ningún filtrado de String:
+
 ````java
 public String[] getImagePaths() {
    ArrayList<String> imagePaths = new ArrayList<>();
-   
-   try (BufferedReader reader = new BufferedReader(new FileReader("Assets/maps_correspondencia/c_assets.txt"))) {
+
+   try (BufferedReader reader = new BufferedReader(new FileReader("maps_correspondencia/c_assets.txt"))) {
       String line;
       while ((line = reader.readLine()) != null) {
-          imagePaths.add(line.trim());
+         imagePaths.add(line.trim());
       }
    } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -573,8 +577,8 @@ public void getPiezaImage() {
    }
 }
 ````
-Cabe mencionar que estos asteriscos *DE MOMENTO* se ponen a mano al ``COMIENZO`` de aquellos sprites que tengan que 
-ser colisionables en el diccionario de correspondencia "c_assets.txt". 
+Cabe mencionar que estos asteriscos *DE MOMENTO* se ponen a mano al ``COMIENZO`` de aquellos sprites que tengan que
+ser colisionables en el diccionario de correspondencia "c_assets.txt".
 El método ``getPiezaImage()`` realiza una instanciación de Piezas colisionables pasando un boolean por parametro al
 constructor parametrizado de ``Pieza``:
 ````java
@@ -607,14 +611,14 @@ Cuando por fin logra entrar es cuando ninguno de sus bordes toca nada:
 ![colision](images/exp_colision2.gif)
 
 #### El código desarrollado para las colisiones es el siguiente:
-Para solucionar estos problemas, ahora tanto la clase padre Entity como su clase hija ``Player`` cuentan 
+Para solucionar estos problemas, ahora tanto la clase padre Entity como su clase hija ``Player`` cuentan
 con los siguientes atributos:
 ````java
 public Rectangle solidArea;
 public int defaultSolidAreaX, defaultSolidAreaY;
 public boolean collisionOn = false;
 ````
-Estos atributos definen el área de colisión de las entidades. Para comprobar las colisiones entre objetos, piezas y 
+Estos atributos definen el área de colisión de las entidades. Para comprobar las colisiones entre objetos, piezas y
 demás cosas colisionables se crea una clase llamada ``CollisionCheck`` cuyo método más importante es el siguiente:
 ````java
 public void checkPieza(Entity entity) {
@@ -765,7 +769,7 @@ ___
 
 Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController.
 
-Falta por añadir algún tipo de menu que controle el nivel de volumen del juego. Es decir, un menú. 
+Falta por añadir algún tipo de menu que controle el nivel de volumen del juego. Es decir, un menú.
 
 Se crea la clase Sound cuya función se basa en recoger archivos de audio **wav 16bit** y reproducirlos:
 ````java
@@ -971,7 +975,7 @@ public BufferedImage setPlayerSprite(String path) {
 ````
 #### Además...
 La clase que maneja los objetos (`ObjectGame`) ahora instancia también la clase de `PiezaUtils` para que las clases
-heredadas como `Container` y las demás hereden esta misma. De esta manera, la imágen de cada objeto es escalada antes 
+heredadas como `Container` y las demás hereden esta misma. De esta manera, la imágen de cada objeto es escalada antes
 de ser pintada mediante un paintComponent.
 
 **Después de todas estas modificaciones el tiempo de carga ha bajado a: ~200000 nanosegundos**.
@@ -980,7 +984,7 @@ ___
 Para la implementación de mensajes de texto en el juego se agregan varias cosas en forma de atributos y métodos al juego:
 ``String message`` y ``boolean messageOn``.
 Por otra parte, se implementan nuevas funcionalidades en la clase de KeyManager y en Entity donde se guardan todos los
-diálogos en un array de tipo *String*. 
+diálogos en un array de tipo *String*.
 
 En general, **Entity, KeyManager, Player, UserInterface y Viello** emplean estos atributos para displayear mensajes en
 varias situaciones como:
@@ -1025,7 +1029,7 @@ ___
 En el código de mi juego hay una variable que **hace que haya un display u otro de lo que el jugador ve por pantalla**.
 Esto se consigue implementando ``GameStates`` que en mi caso pueden ser `0, 1, 2 y 3`:
 - 0: pauseState
-- 1: dialogoState 
+- 1: dialogoState
 - 2: playState
 - 3: cargaState
 
@@ -1059,7 +1063,7 @@ Se crean dos nuevas clases: ``EventManager`` y `EventRectangle`:
 - EventManager: maneja el funcionamiento y posicionamiento de cada evento.
 - EventRectangle: maneja los datos de cada evento.
 
-La clase Manager contiene métodos como ``heal()``, ``damage()`` o ``hit`` con una funcionalidad diferente cada uno. 
+La clase Manager contiene métodos como ``heal()``, ``damage()`` o ``hit`` con una funcionalidad diferente cada uno.
 El método ``hit`` se encarga de detectar si ha habido colisión entre el evento y alguna entidad y si es así entonces
 lanza otro método que activa el evento. Hay eventos que quitan vida, otros que curan y otros meramente informativos.
 ___
@@ -1131,8 +1135,8 @@ Explicación:
 5. Finalmente, se agrega la entidad model a la lista controller.entities utilizando el método add().
 ___
 ### Implementación de PostgreSQL
-Se crea la clase `Propierties` que se encarga de interactuar con una base de datos PostgreSQL. 
-Esta clase proporciona métodos para establecer ***la conexión a la base de datos***, crear una tabla llamada ```"entidad"```, 
+Se crea la clase `Propierties` que se encarga de interactuar con una base de datos PostgreSQL.
+Esta clase proporciona métodos para establecer ***la conexión a la base de datos***, crear una tabla llamada ```"entidad"```,
 obtener los datos de la tabla "entidad" y cerrar la conexión a la base de datos.
 
 El constructor de la clase Propierties recibe tres parámetros: url, usuario y password para establecer la conexión a la base de datos PostgreSQL.
@@ -1142,36 +1146,196 @@ Por otro lado, el _constructor_ carga el driver de PostgreSQL, establece la cone
 - El método obtenerDatosEntidad() devuelve un arreglo de objetos que contiene los datos de la tabla "entidad". El método utiliza un objeto Statement para ejecutar una consulta SQL que selecciona todos los registros de la tabla "entidad". Luego, itera sobre los resultados y almacena los datos en un arreglo de objetos.
 - El método cerrarConexion() cierra la conexión a la base de datos. Este método es importante para liberar recursos y evitar problemas de concurrencia.
 ___
-### IDEAS para los NPCs e Easter Eggs
-#### Idea de uso de la passVigo y las passVigoPLUS:
-Molaría poner que la PassVigo tiene X saldo dando resultado a que...
-* puedes abrir X número de puertas dependiendo del saldo que tengas.
-* Con las PassVigoPLUS puedes acceder a un easter egg, donde luchas contra el dinoseto, estaría guapísimo.
-* Por casa uso de la PassVigo, notificación en la pantalla sobre cuanto saldo queda.
+## Semana del 07/05/2025
+### Refactorización del código e implementación de Maven
+Se ha implementado Maven añadiendo un `pom.xml` y cambiando la estructura del código a:
+```text
+mi-proyecto/
+├── pom.xml                     <-- archivo de configuración de Maven
+└── src/
+    ├── main/
+    │   ├── java/               <-- código fuente Java
+    │   │   └── com/
+    │   │       └── ejemplo/
+    │   │           └── MiClase.java
+    │   └── resources/          <-- recursos (imágenes, mapas, txt, propiedades, etc.)
+    │       ├── background/
+    │       │   └── AAbloqueNegro.png
+    │       └── maps_correspondencia/
+    │           └── c_assets_user.txt
+    └── test/
+        ├── java/              <-- aquí van tus tests (JUnit, etc.)
+        └── resources/         <-- recursos para pruebas
 
-#### Ideas para más NPCs
-Abres un contenedor que pone VIGO CIUDAD MÁS LIMPIA DE EUROPA y:
-* lo único que encuentras es "outra botella de mayerlin baleira, outra vez será..."
-* encuentras una botella de mayerlin llena "Deus está a sorrirche, hoxe touca Churru sí ou non sí...(?)"
+```
 
-Encuentras un Item que parece una cajetilla en el suelo tirado... "haberá biruta?":
-* está vacío "Deus da ós seus mellores guerreiros as peores das batallas (touca ir ó estanco, manin)"
-* tiene algún que otro cigarro "Sorride, que hoxe non se o pides a tua nai!"
+Con la nueva estructura implementada en el código queda anotar aspectos a mejorar de cada parte.
 
-Encuentras un periodico en el suelo:
-* lo recoges y el titular pone "O Celta volveu a perder...", "ai... a combinada, qué mala sorte que ten sempre este equipo!".
-* lo recoger y el titular pone "O Celta gañou!", "*Simplemente non cho cres e segues coa tua vida*".
+### Problemas del `Editor`:
+Varios puntos a comentar...
+- Cuando se carga un mapa desde el editor para modificarlo, los sprites cargados en el panel no corresponde con el dado en el archivo de correspondencias.
+- Al haber reestructurado el código y meter los `ASSETS` directamente dentro de la carpeta `resources`, la manera en la que se leen es diferente y como tal hay que modificar el código para esto.
 
-Bebes de una botella que te da un NPC:
-* "bebiches da botella dun bo home do naútico, agora ves sonidas e escoitas cores"
+### Soluciones aplicadas:
+El juego carga sprites desde la carpeta `background/` y los guarda en un array `sprites[]`. Luego carga un mapa (`contenido[][]`) que contiene números enteros que indican qué sprite debe colocarse en cada posición.
 
-Un vieixo de dubidosa procedencia non deixate pasar pola porta:
-* "Un viello de dubidosa procedencia non deixate pasar ainda despois de pedirlle amablemente que faga o favor de moverse, terás que tomar a xustiza pola tua man"
+**PERO:**
 
-Un fulano de Ourense pregunta que donde está la máquina de tabaco más cercana:
-* "O acabas de mandar pra o Vialia (encóntraste en Teis), eres o mal en persoa"
+- El método `File.listFiles()` no garantiza un orden fijo al leer los archivos.
+- Como consecuencia, el sprite en `sprites[0]` puede no ser el que debería (por ejemplo, `AAbloqueNegro.png`).
+- Aunque existe un archivo de correspondencia `c_assets_user.txt` con líneas como: "0: background/AAbloqueNegro.png 1: background/alcantarilla.png"
 
-Ejemplo:
--  ==> La parca de Bill y Mandy
--  ==> Finn y Jake
--  ==> Pedro Sánchez: entregandote una carta a la ciudadania
+El archivo "`c_assets_user.txt`" no se estaba utilizando al construir el array `sprites[]`.
+
+---
+### Usar el archivo `c_assets_user.txt` como fuente para construir el array `sprites[]` con el orden correcto.
+
+---
+### ¿Qué debe hacer `loadSprites()`?
+1. Leer el archivo `c_assets_user.txt`
+2. Por cada línea:
+   - Obtener el índice y la ruta de la imagen
+   - Cargar la imagen correspondiente
+   - Colocarla en la posición correcta dentro de `sprites[]`
+---
+## Código corregido de `loadSprites()`
+```java
+public ImageIcon[] loadSprites() {
+  List<ImageIcon> spriteList = new ArrayList<>();
+
+  try (BufferedReader br = new BufferedReader(
+          new InputStreamReader(getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets_user.txt")))) {
+
+      String line;
+      while ((line = br.readLine()) != null) {
+          String[] parts = line.split(":");
+          if (parts.length != 2) continue;
+
+          int index = Integer.parseInt(parts[0].trim());
+          String path = parts[1].trim();
+
+          URL resourceUrl = getClass().getClassLoader().getResource(path);
+          if (resourceUrl != null) {
+              while (spriteList.size() <= index) spriteList.add(null);
+              spriteList.set(index, new ImageIcon(resourceUrl));
+          } else {
+              System.err.println("No se encontró imagen: " + path);
+              while (spriteList.size() <= index) spriteList.add(null);
+          }
+      }
+
+  } catch (IOException | NullPointerException e) {
+      System.err.println("Error al cargar sprites desde c_assets_user.txt");
+      e.printStackTrace();
+  }
+
+  return spriteList.toArray(new ImageIcon[0]);
+}
+```
+---
+## Semana del 14/07/2025
+### Añadiendo efectos de sonido al juego
+
+Por añadir, sacar los efectos de sonido de aqui:
+https://drive.google.com/drive/folders/1xelhONaiD3G12z9J3N6BqVR6Ts08pRwg
+
+La lógica ya está creada, falta por posicionar los objetos aunque sus assets ya están creadas.
+
+Funciona de la siguiente manera:
+
+TeisPanel inicia los recursos gráficos del juego como las propiedades de la resolucion y los controladores necesarios 
+para el manejo de las entidades. Por otro lado, el GameController instancia las clases que llevan la física y las
+diferentes mecánicas del juego como por ejemplo el gestor de las piezas, los efectos de sonido, las entidades, la interfaz
+de usuario, las colisiones, los objetos, los estados de juego, etc...
+
+Bien, pues dentro del controller es donde se encuentra el manejo de sonidos del juego, estos metodos luego son empleados
+por la clase de player para cuando tiene que emplear objetos o abrir puertas y demas cosas. Por ejemplo, para cuando
+intenta abrir una puerta sin el objeto adecuado hay un efecto diferente a cuando efectivamente tiene la llave para abrirla.
+
+Luego, la clase Sound contiene las rutas a estos diferentes archivos. HAY QUE CAMBIAR LA LÓGICA DE ESTO YA QUE AL 
+ESTAR CONTENIDO DENTRO DE RESOURCES_ROOT SE MANEJA DE MANERA DIFERENTE.
+---
+### Añadiendo efectos visuales
+
+En la clase Entity se añade una nueva variable booleana llamada "alive" y otra llamada "dying".
+Dentro de la clase Player en el metodo dealDamage() se añade una nueva linea que define cuando el enemigo está muriendo.
+
+Si dying es true entonces se activa un nuevo metodo llamado dyingAnimation()
+```java
+public void dyingAnimation(Graphics2D g2) {
+    dyingCounter++;
+
+    if (dyingCounter <= 40) {
+        float alphaValue = (dyingCounter / 5) % 2 == 0 ? 0f : 1f;
+        alphaAnimation(g2, alphaValue);
+    } else {
+        dying = false;
+        alive = false;
+    }
+}
+```
+1. Contador de animación:
+   - Se incrementa dyingCounter en cada llamada para actuar como un temporizador interno.
+2. Control de duración:
+   - El efecto dura 40 framde. Después de eso, se marca al personaje como muerto.
+3. Alternancia de opacidad:
+   - Con `% 2`, se alterna entre transparente y opaco:
+     - Si el resultado es par → alphaValue = 0f (transparente).
+     - Si es impar → `alphaValue = 1f` (opaco).
+4. Aplicación del alpha:
+   - El valor calculado se pasa al método alphaAnimation para actualizar la opacidad del gráfico.
+5. Fin de la animación:
+   - Al finalizar los 40 frames, se desactiva la animación y se marca el personaje como not alive.
+
+#### `Ejemplo `de comportamiento:
+
+| dyingCounter  | dyingCounter / 5  | % 2  | alphaValue  |      Resultado      |
+|:-------------:|:-----------------:|:----:|:-----------:|:-------------------:|
+|       1       |         0         |  0   |     0f      |    Transparente     | 
+|       5       |         1         |  1   |     1f      |        Opaco        |
+|      10       |         2         |  0   |     0f      |    Transparente     |
+|      15       |         3         |  1   |     1f      |        Opaco        | 
+|      40       |         8         |  0   |     0f      |    Transparente     |
+|      41       |         -         |  -   |      -      | Finaliza animación  |
+
+### El operador ternario
+
+`(condition) ? valueIfTrue : valueIfFalse;`
+
+Esto significa:
+```text
+Si el resultado del módulo es 0 (es par) → usar 0f → transparencia total.
+
+Si es 1 (es impar) → usar 1f → completamente visible.
+
+==> (dyingCounter / 5) % 2 == 0 ? 0f : 1f; <==
+```
+---
+### Barra de vida
+
+Falta por explicar como funciona la barra de vida de la clase de Entity y reestructuracion de la clase drawRelativeToPlayer()
+
+### 1. Eliminación de código repetido
+- Se extrajeron variables como `playerWorldX`, `playerWorldY`, `playerScreenX`, `playerScreenY` y `size` para evitar acceder múltiples veces a las mismas propiedades del objeto `teisPanel`.
+
+### 2. Simplificación de condición de visibilidad
+- Se encapsuló la lógica de visibilidad en una variable booleana `isVisible` para mayor claridad y legibilidad.
+- Se agregó un `return` temprano si no es visible, reduciendo indentación innecesaria.
+
+### 3. Consolidación de lógica de la barra de vida
+- Se movió el cálculo y renderizado de la barra de vida a una sección específica, eliminando redundancia y mejorando estructura.
+- Se usó `++hpBarCounter` directamente en el `if` para hacer más compacta la lógica.
+
+### 4. Mejor legibilidad general
+- Se reordenó y limpió el flujo del método para seguir un orden lógico y fácil de seguir:
+   1. Cálculos iniciales
+   2. Verificación de visibilidad
+   3. Lógica de barra de vida
+   4. Efectos visuales (invencible, dying)
+   5. Dibujo final de la imagen
+
+### 5. Optimización leve en rendimiento
+- Menor cantidad de operaciones redundantes en cada frame (especialmente en accesos a objetos anidados).
+- Uso más eficiente de condiciones para evitar ejecuciones innecesarias.
+---
+### Por implementar diferentes reacciones ante ataques de los enemigos
