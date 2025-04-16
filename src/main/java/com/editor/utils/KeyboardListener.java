@@ -46,7 +46,7 @@ public class KeyboardListener implements KeyListener {
     }
 
     /**
-     * Método vacío que maneja el evento de teclado cuando una tecla es liberada.
+     * Metodo vacío que maneja el evento de teclado cuando una tecla es liberada.
      *
      * @param e El evento de teclado a ser procesado.
      */
@@ -56,7 +56,7 @@ public class KeyboardListener implements KeyListener {
     }
 
     /**
-     * Método vacío que maneja el evento de teclado cuando una tecla es tecleada.
+     * Metodo vacío que maneja el evento de teclado cuando una tecla es tecleada.
      *
      * @param e El evento de teclado a ser procesado.
      */

@@ -29,7 +29,7 @@ class TestCelda {
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda = new Celda(imageIcon);
 
-        // Llama al método seleccionar()
+        // Llama al metodo seleccionar()
         ImageIcon selectedImageIcon = celda.seleccionar();
 
         // Comprueba que la celda se haya seleccionado correctamente
@@ -44,10 +44,10 @@ class TestCelda {
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda = new Celda(imageIcon);
 
-        // Llama al método seleccionar()
+        // Llama al metodo seleccionar()
         celda.seleccionar();
 
-        // Llama al método deseleccionar()
+        // Llama al metodo deseleccionar()
         celda.deseleccionar();
 
         // Comprueba que la celda se haya deseleccionado correctamente
@@ -69,7 +69,7 @@ class TestCelda {
         celda2.seleccionar();
         celda3.seleccionar();
 
-        // Llama al método deseleccionarTodas()
+        // Llama al metodo deseleccionarTodas()
         celda1.deseleccionarTodas(celda1);
 
         // Comprueba que solo la celda especificada no se haya deseleccionado
@@ -83,7 +83,7 @@ class TestCelda {
         // Crea una nueva instancia de la clase Celda
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
 
-        // Llama al método escaladoImage()
+        // Llama al metodo escaladoImage()
         ImageIcon escaladoImageIcon = Celda.escaladoImage(imageIcon, 100, 100);
 
         // Comprueba que la imagen se haya escalado correctamente

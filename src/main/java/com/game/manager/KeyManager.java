@@ -31,9 +31,8 @@ public class KeyManager implements KeyListener {
     }
 
     /**
-     * Método que se ejecuta cuando se teclea una tecla.
-     *
-     * Este método está vacío y no hace nada.
+     * Metodo que se ejecuta cuando se teclea una tecla.
+     * Este metodo está vacío y no hace nada.
      *
      * @param e el evento de teclado
      */
@@ -43,7 +42,7 @@ public class KeyManager implements KeyListener {
     }
 
     /**
-     * Método que se ejecuta cuando se presiona una tecla.
+     * Metodo que se ejecuta cuando se presiona una tecla.
      *
      * Actualiza las variables correspondientes a la tecla presionada según el estado actual del juego.
      *
@@ -137,7 +136,7 @@ public class KeyManager implements KeyListener {
     }
 
     /**
-     * Método que se ejecuta cuando se suelta una tecla.
+     * Metodo que se ejecuta cuando se suelta una tecla.
      * -
      * Cuando se suelta una tecla, se actualiza la variable correspondiente a la tecla soltada.
      *

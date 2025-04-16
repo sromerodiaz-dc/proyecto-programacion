@@ -27,7 +27,7 @@ public class SpriteUtils {
      * @throws IOException Si ocurre un error al escribir el archivo.
      */
     public void generateSpriteMap(ImageIcon[] sprites, ImageIcon[][] formato) throws IOException {
-        // Recoge el nombre del mapa a través de otro método de la misma clase
+        // Recoge el nombre del mapa a través de otro metodo de la misma clase
         String mapName = mapName();
         if (mapName != null) {
             // Escribir el mapa de sprites en un archivo de texto
@@ -75,7 +75,7 @@ public class SpriteUtils {
         while (true) {
             userInput = JOptionPane.showInputDialog(null, "Introduzca el nombre del mapa:");
             if (userInput == null) {
-                // El usuario canceló la operación, salir del método
+                // El usuario canceló la operación, salir del metodo
                 break; // o lanzar una excepción, según sea necesario
             } else if (!userInput.isEmpty()) {
                 mapName = userInput.trim();
@@ -92,7 +92,7 @@ public class SpriteUtils {
 
     /**
      * Solicita al usuario que introduzca el número de filas y columnas del mapa y devuelve un array de enteros con
-     * el número de filas y columnas. El método continúa solicitando al usuario que introduzca el número de filas
+     * el número de filas y columnas. El metodo continúa solicitando al usuario que introduzca el número de filas
      * y columnas hasta que se introduzcan valores válidos entre 1 y 50.
      * -
      * En otras palabras, especifica las dimensiones del mapa que se quiere crear

@@ -87,10 +87,10 @@ public class Viello extends Entity {
     }
 
     /**
-     * Método para que el enemigo hable.
+     * Metodo para que el enemigo hable.
      */
     public void fala() {
-        // Llama al método fala() de la clase padre (Entity) para futuras modificaciones
+        // Llama al metodo fala() de la clase padre (Entity) para futuras modificaciones
         super.fala();
     }
 }

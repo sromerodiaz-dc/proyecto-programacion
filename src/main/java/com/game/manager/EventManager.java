@@ -113,7 +113,7 @@ public class EventManager {
     }
 
     /**
-     * Método que aplica daño al jugador.
+     * Metodo que aplica daño al jugador.
      *
      * @param col La columna del evento que causa daño.
      * @param row La fila del evento que causa daño.
@@ -132,7 +132,7 @@ public class EventManager {
     }
 
     /**
-     * Método que cura al jugador.
+     * Metodo que cura al jugador.
      *
      * @param col La columna del evento que cura al jugador.
      * @param row La fila del evento que cura al jugador.

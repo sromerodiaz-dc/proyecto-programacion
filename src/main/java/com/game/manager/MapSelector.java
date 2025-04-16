@@ -55,7 +55,7 @@ public class MapSelector {
     /**
      * Obtiene un arreglo de archivos de la carpeta "Assets/maps" que terminan en ".txt".
      *
-     * Este método crea un objeto `File` para la carpeta "Assets/maps" y verifica si existe y es una carpeta.
+     * Este metodo crea un objeto `File` para la carpeta "Assets/maps" y verifica si existe y es una carpeta.
      * Luego, lista todos los archivos de texto (.txt) en la carpeta y devuelve un arreglo de archivos.
      *
      * @return un arreglo de archivos de mapas

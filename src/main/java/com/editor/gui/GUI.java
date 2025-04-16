@@ -241,7 +241,7 @@ public class GUI extends JFrame {
     public void cargarMapa() {}
 
     /**
-     * LLama al método de generación de mapa de 'spriteUtils'
+     * LLama al metodo de generación de mapa de 'spriteUtils'
      * @param panel Recibe por parametro VacioPanel para poder acceder al array de CeldaVacias y procesar la información
      * @throws IOException Lanza una excepción de tipo INPUT / OUTPUT
      * */

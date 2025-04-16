@@ -100,7 +100,7 @@ public class TeisPanel extends JPanel implements Runnable{
      * 1. Actualizar la información del juego, como las interacciones del personaje jugador.
      * 2. Dibujar la pantalla del juego con la información actualizada.
      *-
-     * El metodo run() ejecuta estos dos pasos de manera cíclica, llamando primero al método update() y luego al método repaint(),
+     * El metodo run() ejecuta estos dos pasos de manera cíclica, llamando primero al metodo update() y luego al metodo repaint(),
      * que a su vez llama al metodo paintComponent() para dibujar la pantalla.
      */
     @Override

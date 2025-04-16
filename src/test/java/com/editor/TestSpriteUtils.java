@@ -70,7 +70,7 @@ public class TestSpriteUtils {
         // Crea una nueva instancia de SpriteUtils
         SpriteUtils spriteUtils = new SpriteUtils();
 
-        // Llama al método mapName y comprueba el resultado
+        // Llama al metodo mapName y comprueba el resultado
         String mapName = spriteUtils.mapName();
         assertEquals("TestMap", mapName);
     }
