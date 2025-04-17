@@ -1,15 +1,15 @@
-package com.game.manager;
+package com.game.map;
 
 import javax.swing.*;
 import java.io.*;
 import java.util.Objects;
 
 /**
+ * Contiene los metodos que seleccionan el mapa inicial de juego.
+ *
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Contiene los metodos que seleccionan el mapa inicial de juego.
  * */
 public class MapSelector {
     /**

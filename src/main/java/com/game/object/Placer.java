@@ -2,15 +2,15 @@ package com.game.object;
 
 import com.game.entity.enemy.Dinoseto;
 import com.game.entity.npc.Viello;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 
 /**
+ * Clase que se encarga de colocar objetos, NPC y enemigos en el panel de juego.
+ *
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que se encarga de colocar objetos, NPC y enemigos en el panel de juego.
  */
 public class Placer {
     /**

@@ -2,9 +2,8 @@ package com.game.controller;
 
 import com.game.entity.Entity;
 import com.game.entity.Player;
-import com.game.manager.KeyManager;
-import com.game.manager.MapSelector;
-import com.game.manager.MapSize;
+import com.game.map.MapSelector;
+import com.game.map.MapSize;
 import com.game.gphics.PiezaManager;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -15,12 +14,11 @@ import java.util.Iterator;
 import java.util.Objects;
 
 /**
-* @author Santiago Agustin Romero Diaz
-* CFP Daniel Castelao
-* Proyecto: Teis
-* -
-* Esta clase llamada "gui" o interfaz gráfica sirve para determinar la resolucion, el escalado y demas propiedades del panel dentro del JFrame
-* */
+ * Esta clase llamada "gui" o interfaz gráfica sirve para determinar la resolucion, el escalado y demas propiedades del panel dentro del JFrame
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
+ */
 public class TeisPanel extends JPanel implements Runnable{
     //-> RESOLUCION
     private static final int ResolucionPorDefecto = 16; // 16x16 (el más común)
@@ -54,8 +52,8 @@ public class TeisPanel extends JPanel implements Runnable{
 
     // Constructor
     public TeisPanel() {
-        // Implementación de la clase main.GAME.FX.KeyManager (Lectura de acciones de teclado)
-        KeyManager key = new KeyManager(this);
+        // Implementación de la clase main.GAME.FX.KeyboardController (Lectura de acciones de teclado)
+        KeyboardController key = new KeyboardController(this);
 
         maxWorldCol = datos.maxCol;
         maxWorldRow = datos.maxRow;
@@ -186,7 +184,7 @@ public class TeisPanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         long tDraw = 0;
-        if (model.keyManager.Time) {
+        if (model.keyboardController.Time) {
             // Medición del tiempo de dibujado.
             tDraw = System.nanoTime();
         }
@@ -205,7 +203,7 @@ public class TeisPanel extends JPanel implements Runnable{
             controller.ui.draw(g2);
         }
 
-        if (model.keyManager.Time) {
+        if (model.keyboardController.Time) {
             // Calcula el tiempo de dibujado.
             long tDrawEnd = System.nanoTime();
             long tiempoRestante = tDrawEnd - tDraw;

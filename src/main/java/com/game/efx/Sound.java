@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
+ * Clase que maneja la reproducción de sonidos en el programa.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que maneja la reproducción de sonidos en el programa.
  */
 public class Sound {
     /**

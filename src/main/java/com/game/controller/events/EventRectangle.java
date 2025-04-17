@@ -1,14 +1,13 @@
-package com.game.manager;
+package com.game.controller.events;
 
 import java.awt.*;
 
 /**
+ * Clase que representa un rectángulo de evento en el mapa.
+ * Extiende la clase Rectangle para agregar funcionalidades adicionales.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que representa un rectángulo de evento en el mapa.
- * Extiende la clase Rectangle para agregar funcionalidades adicionales.
  */
 public class EventRectangle extends Rectangle {
     /**

@@ -1,6 +1,6 @@
 package com.game;
 
-import com.game.manager.MapSelector;
+import com.game.map.MapSelector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1338,4 +1338,8 @@ Falta por explicar como funciona la barra de vida de la clase de Entity y reestr
 - Menor cantidad de operaciones redundantes en cada frame (especialmente en accesos a objetos anidados).
 - Uso más eficiente de condiciones para evitar ejecuciones innecesarias.
 ---
-### Por implementar diferentes reacciones ante ataques de los enemigos
+### Patrones de diseño en videojuegos
+
+1. Implementar Singleton para la base de datos
+2. Desarrollar el Factory de las entidades
+3. Desarrollar el patron Observer de los eventos del juego y el eventListener

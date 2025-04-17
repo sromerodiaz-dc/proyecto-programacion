@@ -1,7 +1,7 @@
 package com.game.gui;
 
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 import com.game.object.objs.Vida;
 
@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
+ * Clase que representa la interfaz de usuario del programa.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que representa la interfaz de usuario del programa.
  */
 public class UserInterface {
     Graphics2D g2; // Gráficos 2D

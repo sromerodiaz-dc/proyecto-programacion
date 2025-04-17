@@ -1,15 +1,14 @@
 package com.game.entity.enemy;
 
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 
 /**
+ * Clase que representa al enemigo "Dinoseto" en el juego.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que representa al enemigo "Dinoseto" en el juego.
  */
 public class Dinoseto extends Entity {
     /**
@@ -25,7 +24,7 @@ public class Dinoseto extends Entity {
      */
     public Dinoseto(TeisPanel teisPanel, Propierties propierties) {
         super(teisPanel, propierties);
-        this.propierties = propierties;
+        this.propierties = propierties; // TODO Adaptar código a Singleton
 
         // Establece las propiedades específicas del enemigo Dinoseto
         setPropierties("Dinoseto_elegante");

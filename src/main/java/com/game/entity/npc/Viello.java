@@ -1,22 +1,21 @@
 package com.game.entity.npc;
 
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 
 /**
- * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
- * Proyecto: Teis
- * -
  * Define al NPC: Viello
  * "Se dice que cuando pierde el Celta,
  * Viello, algo se entristece y, sin embargo,
  * no se sorprende"
+ * @author Santiago Agustin Romero Diaz
+ * CFP Daniel Castelao
+ * Proyecto: Teis
  * */
 public class Viello extends Entity {
     TeisPanel teisPanel;
-    Propierties propierties;
+    Propierties propierties; // TODO adaptar código a Singleton
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
      *

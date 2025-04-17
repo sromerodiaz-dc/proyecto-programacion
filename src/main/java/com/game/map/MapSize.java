@@ -1,7 +1,8 @@
-package com.game.manager;
+package com.game.map;
 
 /**
  * Clase que representa el tamaño de un mapa, incluyendo el número de filas y columnas, y el nombre del archivo.
+ *
  * @author Santiago Agustin Romero Diaz
  * @version 1.0
  */

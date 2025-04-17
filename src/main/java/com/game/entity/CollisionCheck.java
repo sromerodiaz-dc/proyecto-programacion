@@ -6,11 +6,10 @@ import com.game.gphics.PiezaManager;
 import java.util.ArrayList;
 
 /**
+ * Clase que se encarga de verificar las colisiones entre entidades y objetos en el mapa.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que se encarga de verificar las colisiones entre entidades y objetos en el mapa.
  */
 public class CollisionCheck {
     /**

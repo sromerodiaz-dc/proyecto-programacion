@@ -1,20 +1,17 @@
-package com.game.manager;
-
-import com.game.controller.TeisPanel;
+package com.game.controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
  * Clase que gestiona las entradas de teclado del usuario.
- * -
  * Esta clase implementa la interfaz `KeyListener` y define los métodos `keyTyped()`, `keyPressed()` y `keyReleased()`.
  * Cuando se presiona o se suelta una tecla, se actualizan las variables booleanas `up`, `down`, `left` y `right`.
  *
  * @author Santiago Agustin Romero Diaz
  * @version 1.0
  */
-public class KeyManager implements KeyListener {
+public class KeyboardController implements KeyListener {
     // Atributos
 
     /**Indica que direccion toma el personaje*/
@@ -26,7 +23,7 @@ public class KeyManager implements KeyListener {
 
     TeisPanel teisPanel;
 
-    public KeyManager (TeisPanel teisPanel) {
+    public KeyboardController(TeisPanel teisPanel) {
         this.teisPanel = teisPanel;
     }
 

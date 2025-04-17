@@ -1,7 +1,7 @@
 package com.editor.utils;
 
-import com.game.manager.MapSelector;
-import com.game.manager.MapSize;
+import com.game.map.MapSelector;
+import com.game.map.MapSize;
 
 import javax.swing.*;
 import java.io.*;

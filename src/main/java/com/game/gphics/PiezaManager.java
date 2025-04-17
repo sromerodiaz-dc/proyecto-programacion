@@ -8,11 +8,10 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
+ * Esta clase define el algoritmo de mapeo del juego.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Esta clase define el algoritmo de mapeo del juego.
  * */
 public class PiezaManager {
     // Atributos

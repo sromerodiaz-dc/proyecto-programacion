@@ -4,11 +4,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
+ * La clase PiezaUtils proporciona métodos de utilidad para el procesamiento de imágenes.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * La clase PiezaUtils proporciona métodos de utilidad para el procesamiento de imágenes.
  */
 public class PiezaUtils {
     /**

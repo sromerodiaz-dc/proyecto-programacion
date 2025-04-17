@@ -1,6 +1,7 @@
 package com.game.entity;
 
-import com.game.manager.KeyManager;
+import com.game.data.Propierties;
+import com.game.controller.KeyboardController;
 import com.game.controller.TeisPanel;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
@@ -9,18 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
  * */
 public class Player extends Entity {
 
     // Propiedades del jugador
     Propierties propierties;
 
-    public KeyManager keyManager;
+    public KeyboardController keyboardController;
 
     public int screenX;
     public int screenY;
@@ -33,14 +33,14 @@ public class Player extends Entity {
      * Constructor de la clase Player, que representa al jugador en el juego.
      *
      * @param t instancia de TeisPanel, que es el panel donde se dibujará el jugador
-     * @param k instancia de KeyManager, que maneja las entradas del teclado
+     * @param k instancia de KeyboardController, que maneja las entradas del teclado
      */
-    public Player(TeisPanel t, KeyManager k, Propierties propierties) {
+    public Player(TeisPanel t, KeyboardController k, Propierties propierties) {
         // Llama al constructor de la clase padre (Entity) y pasa la instancia de TeisPanel
         super(t,propierties);
 
-        // Asigna la instancia de KeyManager para manejar las entradas del teclado
-        this.keyManager = k;
+        // Asigna la instancia de KeyboardController para manejar las entradas del teclado
+        this.keyboardController = k;
 
         this.propierties = propierties;
 
@@ -115,7 +115,7 @@ public class Player extends Entity {
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además, controla los sprites por movimiento usados.
      */
-    public void move(KeyManager e, TeisPanel teisPanel) throws LineUnavailableException {
+    public void move(KeyboardController e, TeisPanel teisPanel) throws LineUnavailableException {
         if (attack) {
             attack();
         } else if (e.up || e.down || e.left || e.right || e.isPressed) {
@@ -148,7 +148,7 @@ public class Player extends Entity {
 
             movement();
 
-            teisPanel.model.keyManager.isPressed = false;
+            teisPanel.model.keyboardController.isPressed = false;
         } else {
             // Si no se ha presionado ninguna tecla, incrementa el contador de parada
             sentido = '0';
@@ -172,10 +172,10 @@ public class Player extends Entity {
     /**
      * Devuelve la dirección del movimiento según la tecla presionada.
      *
-     * @param e el objeto KeyManager que contiene el estado de las teclas
+     * @param e el objeto KeyboardController que contiene el estado de las teclas
      * @return la dirección del movimiento como un carácter ('w', 's', 'a', 'd')
      */
-    private char getDirection(KeyManager e) {
+    private char getDirection(KeyboardController e) {
         // Si la tecla 'up' está presionada, devuelve 'w'
         if (e.up) {
             return 'w';
@@ -199,7 +199,7 @@ public class Player extends Entity {
      * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
      */
     public void actualiza() throws LineUnavailableException {
-        move(keyManager, teisPanel);
+        move(keyboardController, teisPanel);
     }
 
     /**
@@ -243,7 +243,7 @@ public class Player extends Entity {
      */
     public void interactuarNPC(int i) {
         // Verifica si se ha presionado una tecla
-        if (teisPanel.model.keyManager.isPressed) {
+        if (teisPanel.model.keyboardController.isPressed) {
             // Verifica si el índice es válido (no es 999)
             if (i!= 999) {
                 // Cambia el estado del juego a diálogo

@@ -4,8 +4,8 @@ import com.game.efx.Sound;
 import com.game.gui.UserInterface;
 import com.game.entity.CollisionCheck;
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
-import com.game.manager.EventManager;
+import com.game.data.Propierties;
+import com.game.controller.events.EventManager;
 import com.game.gphics.PiezaManager;
 import com.game.object.Placer;
 
@@ -13,12 +13,12 @@ import javax.sound.sampled.LineUnavailableException;
 import java.util.ArrayList;
 
 /**
+ * Mantiene una referencia al jugador y al gestor de piezas del juego.
+ *
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Mantiene una referencia al jugador y al gestor de piezas del juego.
- * */
+ */
 public class GameController {
     // Gestor de piezas
     private final PiezaManager piezaManager;

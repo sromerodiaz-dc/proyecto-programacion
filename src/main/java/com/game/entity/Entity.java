@@ -1,6 +1,7 @@
 package com.game.entity;
 
 import com.game.controller.TeisPanel;
+import com.game.data.Propierties;
 import com.game.gphics.PiezaUtils;
 
 import javax.imageio.ImageIO;
@@ -13,16 +14,16 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
+ * Esta clase registrará valores, atributos y propiedades que serán empleadas para las estadisticas
+ * como la posicion, velocidad, vida y demás utilidades que puedan surgir.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Esta clase registrará valores, atributos y propiedades que serán empleadas para las estadisticas
- * como la posicion, velocidad, vida y demás utilidades que puedan surgir.
  * */
-public class Entity {
+
+public class Entity { //TODO Implementar listener del nuevo patron Observer de la clase EventManager
     TeisPanel teisPanel;
-    Propierties propierties;
+    Propierties propierties; // TODO adaptar código a Singleton de propierties
 
     // Atributos
     public int speed;
@@ -250,7 +251,7 @@ public class Entity {
      */
     public void movement() {
         // Si no hay colisión, mueve al jugador
-        if (!collisionOn && !teisPanel.model.keyManager.isPressed) {
+        if (!collisionOn && !teisPanel.model.keyboardController.isPressed) {
             // Calcula la nueva posición del jugador según la dirección y velocidad
             int[] moveEnt = moveEntity(speed);
 
@@ -357,7 +358,6 @@ public class Entity {
 
         alphaAnimation(g2, 1f);
     }
-
 
     // TODO Nueva implementacion comprobar funcionamiento
     /**

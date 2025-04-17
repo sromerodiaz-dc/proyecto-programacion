@@ -1,16 +1,15 @@
-package com.game.manager;
+package com.game.controller.events;
 
 import com.game.controller.TeisPanel;
 
 /**
+ * Clase muy importante, ya que maneja todos los eventos del juego.
+ * Gracias a esta clase se pueden manejar cambios de mapa, de puntos de vida, cambios de sprites, etc.
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase muy importante, ya que maneja todos los eventos del juego.
- * Gracias a esta clase se pueden manejar cambios de mapa, de puntos de vida, cambios de sprites, etc.
  */
-public class EventManager {
+public class EventManager { // TODO convertir esta clase a PATRON OBSERVER
     /**
      * Referencia al panel de juego.
      */
@@ -140,7 +139,7 @@ public class EventManager {
      */
     public void heal(int col, int row, int estado) {
         // Verifica si se ha presionado una tecla
-        if (teisPanel.model.keyManager.isPressed) {
+        if (teisPanel.model.keyboardController.isPressed) {
             // Desactiva la animación de ataque del jugador
             teisPanel.model.attack = false;
             // Cambia el estado del juego

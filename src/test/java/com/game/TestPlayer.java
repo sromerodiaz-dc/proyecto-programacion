@@ -1,7 +1,7 @@
 package com.game;
 
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 import org.junit.jupiter.api.Test;
 

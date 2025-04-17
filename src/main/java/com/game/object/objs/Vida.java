@@ -1,15 +1,15 @@
 package com.game.object.objs;
 
 import com.game.entity.Entity;
-import com.game.entity.Propierties;
+import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 
 /**
+ * Clase que representa una entidad de vida en el juego.
+ *
  * @author Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que representa una entidad de vida en el juego.
  */
 public class Vida extends Entity {
     /**

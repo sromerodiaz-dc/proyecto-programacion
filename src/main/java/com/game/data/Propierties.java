@@ -1,15 +1,14 @@
-package com.game.entity;
+package com.game.data;
 
 import java.sql.*;
 
 /**
- * @author Santiago Agustin Romero Diaz
+ * Clase que maneja las propiedades de la base de datos.
+ * Autor: Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
- * -
- * Clase que maneja las propiedades de la base de datos.
  */
-public class Propierties {
+public class Propierties implements AutoCloseable { // TODO Cambiar la clase para que sea Singleton
     private Connection conexion;
 
     /**
@@ -21,9 +20,7 @@ public class Propierties {
      */
     public Propierties(String url, String usuario, String password) {
         try {
-            // Carga el driver de PostgreSQL
             Class.forName("org.postgresql.Driver");
-            // Establece la conexión a la base de datos
             conexion = DriverManager.getConnection(url, usuario, password);
         } catch (ClassNotFoundException e) {
             System.out.println("Error al cargar el driver: " + e.getMessage());
@@ -37,10 +34,8 @@ public class Propierties {
      */
     public void crearTablaEntidad() {
         try (Statement stmt = conexion.createStatement()) {
-            // Borra la tabla anterior si existe
             stmt.executeUpdate("DROP TABLE IF EXISTS public.entidad");
 
-            // Crea la tabla
             String sql = "CREATE TABLE public.entidad (" +
                     "id VARCHAR(255) PRIMARY KEY, " +
                     "who INTEGER NOT NULL, " +
@@ -57,7 +52,6 @@ public class Propierties {
                     "life INTEGER NOT NULL)";
             stmt.executeUpdate(sql);
 
-            // Inserta los datos iniciales
             stmt.executeUpdate("INSERT INTO public.entidad (id, who, sentido, speed, intervalo, width, height, solidArea_x, solidArea_y, solidArea_width, solidArea_height, maxlife, life)" +
                     "VALUES ('player', 0, '0', 6, 7, 48, 48, 10, 22, 32, 20, 10, 10)");
             stmt.executeUpdate("INSERT INTO public.entidad (id, who, sentido, speed, intervalo, width, height, solidArea_x, solidArea_y, solidArea_width, solidArea_height, maxlife, life)" +
@@ -104,13 +98,17 @@ public class Propierties {
     /**
      * Cierra la conexión a la base de datos.
      */
-    public void cerrarConexion() {
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            System.out.println("Error al cerrar la conexión: " + e.getMessage());
+    @Override
+    public void close() {
+        if (conexion != null) {
+            try {
+                conexion.close();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar la conexión: " + e.getMessage());
+            }
         }
     }
 
-    // TODO Forma de cambiar valores de cada entidad sin necesidad de acceder a la base de datos. Primero en local y luego se suben los cambios
+    // TODO: Forma de cambiar valores de cada entidad sin necesidad de acceder a la base de datos.
+    // Primero en local y luego se suben los cambios
 }
