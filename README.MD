@@ -1343,3 +1343,41 @@ Falta por explicar como funciona la barra de vida de la clase de Entity y reestr
 1. Implementar Singleton para la base de datos
 2. Desarrollar el Factory de las entidades
 3. Desarrollar el patron Observer de los eventos del juego y el eventListener
+
+### Modificacion del controlador de eventos del juego
+Algunas ideas para modificar EventManager:
+````text
+Aplicar el Patrón Observer:
+
+1. Crear una interfaz GameEventListener con métodos como onDamage, onHeal, onEventTriggered, etc.
+
+2. Permitir que otras clases se registren como observadores.
+
+3. Cuando se detecte un hit, notificar a los observadores en vez de manejar directamente la lógica.
+
+Separar responsabilidades:
+
+1. Mover lógica de daño y curación a clases específicas (DamageEvent, HealEvent), y dejar que EventManager solo detecte los hits.
+
+Agregar un sistema de tipo de eventos dinámico:
+
+1. Podrías tener un Map<Point, GameEvent> donde se asocie cada evento con su posición.
+
+De esta manera, puedes añadir más tipos de eventos sin modificar checkEvent() directamente.
+
+Agregar cooldown centralizado por evento:
+
+1. Crear una clase EventCooldownManager que se encargue de manejar todos los cooldowns y que sea reutilizable.
+````
+### Problemas actuales del controlador de eventos
+Problemas de acoplamiento y escalabilidad
+   
+1. Responsabilidad única: EventManager sabe de colisiones, de lógica de daño, de lógica de curación, de estados de UI, de control de cooldown…
+
+2. Eventos “hard–coded”: posiciones y tipos de evento están fijos en el código.
+
+3. Acoplamiento fuerte: llama directamente a teisPanel.model, controller, ui, keyboardController…
+
+4. Difícil de extender: para introducir un nuevo tipo de evento (por ejemplo, un “checkpoint” o un “aumento de fuerza”) hay que tocar checkEvent() y añadir ramas.
+
+Pasos para la refactorización: https://chatgpt.com/c/6802a402-c248-8007-b786-f8e6f6d60593
