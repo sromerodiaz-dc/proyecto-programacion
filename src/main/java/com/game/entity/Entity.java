@@ -1,7 +1,7 @@
 package com.game.entity;
 
 import com.game.controller.TeisPanel;
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.gphics.PiezaUtils;
 
 import javax.imageio.ImageIO;
@@ -21,9 +21,9 @@ import java.util.Random;
  * Proyecto: Teis
  * */
 
-public class Entity { //TODO Implementar listener del nuevo patron Observer de la clase EventManager
+public class Entity {
     TeisPanel teisPanel;
-    Propierties propierties; // TODO adaptar código a Singleton de propierties
+    Properties properties;
 
     // Atributos
     public int speed;
@@ -97,8 +97,8 @@ public class Entity { //TODO Implementar listener del nuevo patron Observer de l
      * Constructor parametrizado
      * @param teisPanel gráfico del juego
      * */
-    public Entity (TeisPanel teisPanel, Propierties propierties) {
-        this.teisPanel = teisPanel; this.propierties = propierties;
+    public Entity (TeisPanel teisPanel, Properties properties) {
+        this.teisPanel = teisPanel; this.properties = properties;
     }
 
     /**
@@ -136,7 +136,7 @@ public class Entity { //TODO Implementar listener del nuevo patron Observer de l
      */
     public void setPropierties(String id) {
         // Obtiene los datos de las entidades desde la base de datos
-        Object[][] datos = propierties.obtenerDatosEntidad();
+        Object[][] datos = properties.obtenerDatosEntidad();
 
         // Recorre cada fila de datos
         for (Object[] fila : datos) {
@@ -359,7 +359,6 @@ public class Entity { //TODO Implementar listener del nuevo patron Observer de l
         alphaAnimation(g2, 1f);
     }
 
-    // TODO Nueva implementacion comprobar funcionamiento
     /**
      * Alterna entre opacidad y transparencia para dar efecto de muerte
      * */
@@ -376,7 +375,7 @@ public class Entity { //TODO Implementar listener del nuevo patron Observer de l
     }
 
     /**
-     * Complementa la animacion de muerte
+     * Auxiliar de las animaciones
      */
     public void alphaAnimation(Graphics2D g2, float alphaValue) {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,alphaValue));
