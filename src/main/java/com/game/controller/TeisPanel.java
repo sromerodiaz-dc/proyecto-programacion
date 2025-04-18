@@ -69,7 +69,7 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Inicializa el modelo y el controlador
         controller = new GameController(piezaM,this);
-        model = new Player(this, key, controller.propierties);
+        model = new Player(this, key, controller.properties);
 
         // Inicia la mísica del juego
         // controller.playMusic(0);

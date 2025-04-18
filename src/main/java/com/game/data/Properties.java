@@ -8,8 +8,8 @@ import java.sql.*;
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
-public class Propierties implements AutoCloseable {
-    private static Propierties instance;
+public class Properties implements AutoCloseable {
+    private static Properties instance;
     private Connection conexion;
 
     /**
@@ -19,7 +19,7 @@ public class Propierties implements AutoCloseable {
      * @param usuario El usuario de la base de datos.
      * @param password La contraseña de la base de datos.
      */
-    private Propierties(String url, String usuario, String password) {
+    private Properties(String url, String usuario, String password) {
         try {
             Class.forName("org.postgresql.Driver");
             conexion = DriverManager.getConnection(url, usuario, password);
@@ -37,23 +37,23 @@ public class Propierties implements AutoCloseable {
      * @param url La URL de la base de datos.
      * @param usuario El usuario de la base de datos.
      * @param password La contraseña de la base de datos.
-     * @return La instancia única de Propierties.
+     * @return La instancia única de Properties.
      */
-    public static synchronized Propierties getInstance(String url, String usuario, String password) {
+    public static synchronized Properties getInstance(String url, String usuario, String password) {
         if (instance == null) {
-            instance = new Propierties(url, usuario, password);
+            instance = new Properties(url, usuario, password);
         }
         return instance;
     }
 
     /**
      * Método estático para obtener la instancia única de la clase.
-     * @return La instancia única de Propierties.
+     * @return La instancia única de Properties.
      * @throws IllegalStateException si la instancia no ha sido inicializada.
      */
-    public static Propierties getInstance() {
+    public static Properties getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Propierties no ha sido inicializado. Llame primero a getInstance(url, usuario, password)");
+            throw new IllegalStateException("Properties no ha sido inicializado. Llame primero a getInstance(url, usuario, password)");
         }
         return instance;
     }

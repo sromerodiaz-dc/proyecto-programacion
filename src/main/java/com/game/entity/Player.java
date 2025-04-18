@@ -1,6 +1,6 @@
 package com.game.entity;
 
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.controller.KeyboardController;
 import com.game.controller.TeisPanel;
 import javax.sound.sampled.LineUnavailableException;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class Player extends Entity {
 
     // Propiedades del jugador
-    Propierties propierties;
+    Properties properties;
 
     public KeyboardController keyboardController;
 
@@ -35,14 +35,14 @@ public class Player extends Entity {
      * @param t instancia de TeisPanel, que es el panel donde se dibujará el jugador
      * @param k instancia de KeyboardController, que maneja las entradas del teclado
      */
-    public Player(TeisPanel t, KeyboardController k, Propierties propierties) {
+    public Player(TeisPanel t, KeyboardController k, Properties properties) {
         // Llama al constructor de la clase padre (Entity) y pasa la instancia de TeisPanel
-        super(t,propierties);
+        super(t, properties);
 
         // Asigna la instancia de KeyboardController para manejar las entradas del teclado
         this.keyboardController = k;
 
-        this.propierties = propierties;
+        this.properties = properties;
 
         // Inicializa la posición del jugador en la pantalla
         screenX = t.screenWidth / 2 - (t.sizeFinal / 2);

@@ -1,7 +1,7 @@
 package com.game;
 
 import com.game.entity.Entity;
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.controller.TeisPanel;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestPlayer {
     @Test
     void testGetPlayerImage() {
-        Entity entity = new Entity(new TeisPanel(),new Propierties("asf","as","123"));
+        Entity entity = new Entity(new TeisPanel(),Properties.getInstance("asf","as","123"));
 
         try {
             assertNotNull(entity.up1);
@@ -31,6 +31,6 @@ class TestPlayer {
 
     @Test
     void testActualiza() {
-        Entity entity = new Entity(new TeisPanel(),new Propierties("asf","as","123"));
+        Entity entity = new Entity(new TeisPanel(),Properties.getInstance("asf","as","123"));
     }
 }
