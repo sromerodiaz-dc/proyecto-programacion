@@ -1,15 +1,6 @@
+//TODO Modificar el constructor para que reciba directamente su posición por parametro, de esta manera el factory será más encapsulado.
 /*
-package main.GAME.OBJECT.OBJS;
-
-import main.GAME.ENTITY.Entity;
-import main.GAME.main.GAME.TeisPanel;
-
 public class Container extends Entity {
-    */
-/**
-     * Constructor que inicializa el Passvigo con sus propiedades específicas.
-     *//*
-
     public Container(TeisPanel teisPanel) {
         super(teisPanel);
 
