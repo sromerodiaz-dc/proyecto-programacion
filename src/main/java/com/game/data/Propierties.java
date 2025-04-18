@@ -8,17 +8,18 @@ import java.sql.*;
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
-public class Propierties implements AutoCloseable { // TODO Cambiar la clase para que sea Singleton
+public class Propierties implements AutoCloseable {
+    private static Propierties instance;
     private Connection conexion;
 
     /**
-     * Constructor que establece la conexión a la base de datos.
+     * Constructor privado para evitar instanciación externa.
      *
      * @param url La URL de la base de datos.
      * @param usuario El usuario de la base de datos.
      * @param password La contraseña de la base de datos.
      */
-    public Propierties(String url, String usuario, String password) {
+    private Propierties(String url, String usuario, String password) {
         try {
             Class.forName("org.postgresql.Driver");
             conexion = DriverManager.getConnection(url, usuario, password);
@@ -30,8 +31,34 @@ public class Propierties implements AutoCloseable { // TODO Cambiar la clase par
     }
 
     /**
-     * Crea la tabla "entidad" en la base de datos.
+     * Método estático para obtener la instancia única de la clase.
+     * Si no existe, la crea.
+     *
+     * @param url La URL de la base de datos.
+     * @param usuario El usuario de la base de datos.
+     * @param password La contraseña de la base de datos.
+     * @return La instancia única de Propierties.
      */
+    public static synchronized Propierties getInstance(String url, String usuario, String password) {
+        if (instance == null) {
+            instance = new Propierties(url, usuario, password);
+        }
+        return instance;
+    }
+
+    /**
+     * Método estático para obtener la instancia única de la clase.
+     * @return La instancia única de Propierties.
+     * @throws IllegalStateException si la instancia no ha sido inicializada.
+     */
+    public static Propierties getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Propierties no ha sido inicializado. Llame primero a getInstance(url, usuario, password)");
+        }
+        return instance;
+    }
+
+    // Resto de los métodos permanecen igual...
     public void crearTablaEntidad() {
         try (Statement stmt = conexion.createStatement()) {
             stmt.executeUpdate("DROP TABLE IF EXISTS public.entidad");
@@ -63,11 +90,6 @@ public class Propierties implements AutoCloseable { // TODO Cambiar la clase par
         }
     }
 
-    /**
-     * Obtiene los datos de la tabla "entidad".
-     *
-     * @return Un arreglo de objetos con los datos de la tabla.
-     */
     public Object[][] obtenerDatosEntidad() {
         Object[][] datos = new Object[3][13];
         try (Statement stmt = conexion.createStatement()) {
@@ -95,20 +117,15 @@ public class Propierties implements AutoCloseable { // TODO Cambiar la clase par
         return datos;
     }
 
-    /**
-     * Cierra la conexión a la base de datos.
-     */
     @Override
     public void close() {
         if (conexion != null) {
             try {
                 conexion.close();
+                instance = null; // Permitir que se cree una nueva instancia si se vuelve a llamar a getInstance
             } catch (SQLException e) {
                 System.out.println("Error al cerrar la conexión: " + e.getMessage());
             }
         }
     }
-
-    // TODO: Forma de cambiar valores de cada entidad sin necesidad de acceder a la base de datos.
-    // Primero en local y luego se suben los cambios
 }
