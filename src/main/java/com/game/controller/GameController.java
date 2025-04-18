@@ -1,13 +1,13 @@
 package com.game.controller;
 
+import com.game.data.Properties;
 import com.game.efx.Sound;
 import com.game.gui.UserInterface;
 import com.game.entity.CollisionCheck;
 import com.game.entity.Entity;
-import com.game.data.Propierties;
 import com.game.controller.events.EventManager;
 import com.game.gphics.PiezaManager;
-import com.game.object.Placer;
+import com.game.entity.Placer;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class GameController {
     public Placer placer;
 
     // Propiedades de cada entidad
-    public Propierties propierties = new Propierties("jdbc:postgresql://localhost:5432/proyecto", "postgres", "123");
+    public Properties properties = Properties.getInstance("jdbc:postgresql://localhost:5432/proyecto", "postgres", "123");
 
     // Manejo de objetos
     public ArrayList<Entity> obj = new ArrayList<>();
@@ -63,10 +63,10 @@ public class GameController {
      */
     public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
-        propierties.crearTablaEntidad();
+        properties.crearTablaEntidad();
 
-        ui = new UserInterface(teisPanel, propierties);
-        placer = new Placer(teisPanel, propierties);
+        ui = new UserInterface(teisPanel, properties);
+        placer = new Placer(teisPanel, properties);
 
         // Inicializa el controlador de colisiones
         collisionCheck = new CollisionCheck(teisPanel);
