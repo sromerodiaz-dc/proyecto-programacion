@@ -1,8 +1,6 @@
-/*package main.GAME.OBJECT.OBJS;
-
-import main.GAME.ENTITY.Entity;
-import main.GAME.main.GAME.TeisPanel;
-
+// ? Para pasar de un nivel a otro hará falta subirse a un bus Vitrasa
+//TODO Modificar el constructor para que reciba directamente su posición por parametro, de esta manera el factory será más encapsulado.
+/*
 public class BusVitrasa extends Entity {
 
     public BusVitrasa(TeisPanel teisPanel) {
