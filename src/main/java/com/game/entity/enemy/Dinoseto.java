@@ -1,7 +1,7 @@
 package com.game.entity.enemy;
 
 import com.game.entity.Entity;
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.controller.TeisPanel;
 
 /**
@@ -14,17 +14,17 @@ public class Dinoseto extends Entity {
     /**
      * Referencia a las propiedades del juego.
      */
-    Propierties propierties;
+    Properties properties;
 
     /**
      * Constructor de la clase Dinoseto.
      *
      * @param teisPanel El panel de juego de Teis.
-     * @param propierties Las propiedades del juego.
+     * @param properties Las propiedades del juego.
      */
-    public Dinoseto(TeisPanel teisPanel, Propierties propierties) {
-        super(teisPanel, propierties);
-        this.propierties = propierties; // TODO Adaptar código a Singleton
+    public Dinoseto(TeisPanel teisPanel, Properties properties) {
+        super(teisPanel, properties);
+        this.properties = properties;
 
         // Establece las propiedades específicas del enemigo Dinoseto
         setPropierties("Dinoseto_elegante");

@@ -1,7 +1,7 @@
-package com.game.object.objs;
+package com.game.entity.stats;
 
+import com.game.data.Properties;
 import com.game.entity.Entity;
-import com.game.data.Propierties;
 import com.game.controller.TeisPanel;
 
 /**
@@ -16,10 +16,10 @@ public class Vida extends Entity {
      * Constructor de la entidad de vida.
      *
      * @param teisPanel panel del juego
-     * @param propierties propiedades de la entidad
+     * @param properties propiedades de la entidad
      */
-    public Vida(TeisPanel teisPanel, Propierties propierties) {
-        super(teisPanel, propierties);
+    public Vida(TeisPanel teisPanel, Properties properties) {
+        super(teisPanel, properties);
 
         // Establece el identificador de la entidad de vida
         name = "Vida";

@@ -1,7 +1,7 @@
 package com.game.entity.npc;
 
 import com.game.entity.Entity;
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.controller.TeisPanel;
 
 /**
@@ -15,17 +15,24 @@ import com.game.controller.TeisPanel;
  * */
 public class Viello extends Entity {
     TeisPanel teisPanel;
-    Propierties propierties; // TODO adaptar código a Singleton
+    Properties properties;
+
+    // TODO patron Observer para los eventos
+    // ! Aplicar el patron para que cuando el jugador lance un evento este llegue a este npc
+
+
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
      *
      * @param teisPanel panel donde se dibujará el anciano
      */
-    public Viello(TeisPanel teisPanel, Propierties propierties) {
+    public Viello(TeisPanel teisPanel, Properties properties, int worldX, int worldY) {
         // Llama al constructor de la clase padre (suponiendo que es una entidad en el juego)
-        super(teisPanel,propierties);
+        super(teisPanel, properties);
         this.teisPanel = teisPanel;
-        this.propierties = propierties;
+        this.properties = properties;
+        this.worldX = worldX;
+        this.worldY = worldY;
 
         // Pasa por parametro el identificador = 1;
         setPropierties("Viello");
