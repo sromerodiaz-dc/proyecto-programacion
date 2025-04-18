@@ -1,9 +1,9 @@
 package com.game.gui;
 
 import com.game.entity.Entity;
-import com.game.data.Propierties;
+import com.game.data.Properties;
 import com.game.controller.TeisPanel;
-import com.game.object.objs.Vida;
+import com.game.entity.stats.Vida;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -48,9 +48,9 @@ public class UserInterface {
      * Constructor de la interfaz de usuario.
      *
      * @param teisPanel El panel de juego de Teis.
-     * @param propierties Las propiedades del juego.
+     * @param properties Las propiedades del juego.
      */
-    public UserInterface(TeisPanel teisPanel, Propierties propierties) {
+    public UserInterface(TeisPanel teisPanel, Properties properties) {
         // Asigna el panel de juego de Teis a la variable de instancia teisPanel
         this.teisPanel = teisPanel;
 
@@ -69,7 +69,7 @@ public class UserInterface {
         getPosibleTitulo();
 
         // Crea una entidad de vida para el jugador y obtiene sus imágenes
-        Entity vida = new Vida(teisPanel, propierties);
+        Entity vida = new Vida(teisPanel, properties);
         vida_entera = vida.image; // Imagen de vida completa
         vida_mitad = vida.image2; // Imagen de vida a la mitad
         vida_vacia = vida.image3; // Imagen de vida vacía
