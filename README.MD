@@ -1164,7 +1164,7 @@ mi-proyecto/
     │       └── maps_correspondencia/
     │           └── c_assets_user.txt
     └── test/
-        ├── java/              <-- aquí van tus tests (JUnit, etc.)
+        ├── java/              <-- aquí van los tests (JUnit, etc.)
         └── resources/         <-- recursos para pruebas
 
 ```
