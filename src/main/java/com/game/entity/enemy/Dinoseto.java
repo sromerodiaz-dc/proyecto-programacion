@@ -22,9 +22,11 @@ public class Dinoseto extends Entity {
      * @param teisPanel El panel de juego de Teis.
      * @param properties Las propiedades del juego.
      */
-    public Dinoseto(TeisPanel teisPanel, Properties properties) {
+    public Dinoseto(TeisPanel teisPanel, Properties properties, int worldX, int worldY) {
         super(teisPanel, properties);
         this.properties = properties;
+        this.worldX = worldX;
+        this.worldY = worldY;
 
         // Establece las propiedades específicas del enemigo Dinoseto
         setPropierties("Dinoseto_elegante");
@@ -60,7 +62,7 @@ public class Dinoseto extends Entity {
     public void setEvent() {
         // Incrementa el contador de eventos
         capEvent++;
-
+        //System.out.println("Posicion del dinoseto:" + worldX +" :" + worldY);
         // Cada 120 frames, cambia la dirección del enemigo de manera aleatoria
         if (capEvent == 120) {
             sentido = moveRandomEntity();
