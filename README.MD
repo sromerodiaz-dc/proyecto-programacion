@@ -1381,3 +1381,15 @@ Problemas de acoplamiento y escalabilidad
 4. Difícil de extender: para introducir un nuevo tipo de evento (por ejemplo, un “checkpoint” o un “aumento de fuerza”) hay que tocar checkEvent() y añadir ramas.
 
 Pasos para la refactorización: https://chatgpt.com/c/6802a402-c248-8007-b786-f8e6f6d60593
+
+---
+### Diseño y control de sonido
+
+https://www.beepbox.co
+
+![img.png](images/songs.png)
+
+![img.png](images/beepBoxPanel.png)
+
+---
+### Migración de la base de datos a un servidor
