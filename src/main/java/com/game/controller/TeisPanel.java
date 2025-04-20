@@ -75,9 +75,9 @@ public class TeisPanel extends JPanel implements Runnable{
         // controller.playMusic(0);
     }
 
-    public void setUpItems() {
+    public void setUpItems() throws LineUnavailableException {
         controller.placer.setRecursos();
-        // controller.playMusic(0);
+        controller.playMusic(1);
     }
 
     /**
@@ -85,7 +85,8 @@ public class TeisPanel extends JPanel implements Runnable{
      *
      * @since 1.0
      */
-    public void startTeisThread() {
+    public void startTeisThread() throws LineUnavailableException {
+        controller.playMusic(3);
         // Crea un nuevo hilo y ejecuta la tarea en segundo plano.
         teisThread = new Thread(this);
         teisThread.start();
