@@ -19,15 +19,24 @@ public class Sound {
      * Arreglo de URL que contienen los paths de los archivos de sonido.
      */
     URL[] soundPath = new URL[10];
+    URL[] sePath = new URL[10];
 
     /**
      * Constructor de la clase Sound.
      */
-    public Sound() {
-        // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
-        soundPath[0] = getClass().getClassLoader().getResource("effects/chillbeat.wav");
-        soundPath[1] = getClass().getClassLoader().getResource("effects/recogeobjetos.wav");
-        soundPath[2] = getClass().getClassLoader().getResource("effects/normalito.wav");
+    public Sound(String type) {
+        if  (type.equals("sound")) {
+            // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
+            soundPath[0] = getClass().getClassLoader().getResource("effects/songs/introGame.wav");
+            soundPath[1] = getClass().getClassLoader().getResource("effects/songs/bassDrumsGame.wav");
+            soundPath[2] = getClass().getClassLoader().getResource("effects/songs/bridgeGame.wav");
+            soundPath[3] = getClass().getClassLoader().getResource("effects/songs/chorusGame.wav");
+            soundPath[4] = getClass().getClassLoader().getResource("effects/songs/generalMysteriousGame.wav");
+            soundPath[5] = getClass().getClassLoader().getResource("effects/songs/generalPartGame.wav");
+            soundPath[6] = getClass().getClassLoader().getResource("effects/songs/melodicPartGame.wav");
+        } else  if  (type.equals("se")) {
+            // sePath[0] = getClass().getClassLoader().getResource("effects/soundEffects/combat/");
+        }
     }
 
     /**
