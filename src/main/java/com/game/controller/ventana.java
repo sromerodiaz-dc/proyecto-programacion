@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 /**
@@ -14,7 +15,7 @@ public class ventana extends JFrame {
     /**
      * Constructor que inicializa la ventana principal de la aplicación.
      */
-    public ventana() {
+    public ventana() throws LineUnavailableException {
         TeisPanel teisPanel = new TeisPanel(); // Crea un nuevo panel principal
         setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
         setResizable(false); // Impide que la ventana sea redimensionable
