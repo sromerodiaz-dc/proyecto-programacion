@@ -2,7 +2,7 @@ package com.game.entity.factory;
 
 public enum EntityType {
     VIELLO("Viello"),
-    DINOSETO("Dinoseto_elegante");
+    DINOSETO("Dinoseto");
     // passvigo etc...
 
     private final String id;
