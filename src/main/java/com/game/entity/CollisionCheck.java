@@ -94,6 +94,15 @@ public class CollisionCheck {
      * -
      */
     private void checkTileCollision(PiezaManager pm, Entity entity, int col1, int col2, int row1, int row2) {
+        // Validar índices antes de acceder al array
+        if (col1 < 0 || col1 >= pm.mapaPiezaNum.length ||
+                col2 < 0 || col2 >= pm.mapaPiezaNum.length ||
+                row1 < 0 || row1 >= pm.mapaPiezaNum[0].length ||
+                row2 < 0 || row2 >= pm.mapaPiezaNum[0].length) {
+            entity.collisionOn = true; // Bloquear movimiento si está fuera del mapa
+            return;
+        }
+
         int pieza1 = pm.mapaPiezaNum[col1][row1];
         int pieza2 = pm.mapaPiezaNum[col2][row2];
         entity.collisionOn = pm.pieza[pieza1].colision || pm.pieza[pieza2].colision;
