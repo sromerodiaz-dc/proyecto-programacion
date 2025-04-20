@@ -24,8 +24,9 @@ public class GameController {
     private final PiezaManager piezaManager;
 
     // Efectos de sonido
-    Sound sound = new Sound();
-    Sound se = new Sound(); // SoundEffect
+    Sound sound = new Sound("sound");
+    Sound se = new Sound("se"); // SoundEffect
+    private int currentMusicIndex = -1; // -1 significa que no hay música sonando
 
     // Interfaz de Usuario
     public UserInterface ui;
@@ -91,16 +92,31 @@ public class GameController {
      * @throws LineUnavailableException si no se puede reproducir la música
      */
     public void playMusic(int i) throws LineUnavailableException {
-        sound.setFile(i); // Establece el archivo de música según el índice
-        sound.play(); // Reproduce la música
-        sound.loop(); // Repite la música en bucle
+        // Si ya está sonando la música que queremos, no hacemos nada
+        if (currentMusicIndex == i) {
+            return;
+        }
+
+        // Si hay música previa, la detenemos
+        if (currentMusicIndex != -1) {
+            stopMusic();
+        }
+
+        // Reproducimos la nueva música
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+
+        // Guardamos el índice de la música actual
+        currentMusicIndex = i;
     }
 
     /**
      * Detiene la reproducción de la música del juego.
      */
     public void stopMusic() {
-        sound.stop(); // Detiene la reproducción de la música
+        sound.stop();
+        currentMusicIndex = -1;
     }
 
     /**
