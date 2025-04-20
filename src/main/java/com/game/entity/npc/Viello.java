@@ -75,6 +75,8 @@ public class Viello extends Entity {
         // Incrementa el contador de eventos
         capEvent++;
 
+        //System.out.println("Posicion del viello:" + worldX +" :" + worldY);
+
         // Cada 120 frames, cambia la dirección del enemigo de manera aleatoria
         if (capEvent == 120) {
             sentido = moveRandomEntity();
