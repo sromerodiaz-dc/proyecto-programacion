@@ -1397,3 +1397,8 @@ https://www.beepbox.co
 ---
 ## Semana del 21/04/2025
 ### Implementación del patron Observer en el gestor de eventos
+
+---
+### Editor de mapa optimizado
+
+https://chat.deepseek.com/a/chat/s/03c64e7b-a50a-4f08-8e3e-d6f052861f3f

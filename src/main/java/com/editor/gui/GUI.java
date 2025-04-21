@@ -1,7 +1,7 @@
 package com.editor.gui;
 
 import com.editor.emptymap.CeldaVacia;
-import com.editor.emptymap.VacioPanel;
+import com.editor.emptymap.PanelVacio;
 import com.editor.utils.KeyboardListener;
 import com.editor.utils.SpriteLoader;
 import com.editor.utils.SpriteUtils;
@@ -48,7 +48,7 @@ public class GUI extends JFrame {
     private final KeyboardListener keyboardListener = new KeyboardListener(this); // Controlador para el modo 'pincel'
 
     // Paneles contenedores
-    private VacioPanel menuIzquierda;
+    private PanelVacio menuIzquierda;
     private JPanel menuInferior;
     private JPanel labelPanel;
     private JLabel isPressed;
@@ -82,7 +82,7 @@ public class GUI extends JFrame {
         * Primero se le da al usuario una de dos opciones, cargar mapa o crear nuevo mapa,
         * Si clica sobre crear nuevo mapa, el programa sigue como hasta ahora pero si le da a la otra opción:
         * - Se llama al metodo loadmap y de ahí se saca el numero máximo de columnas y filas para generar el
-        *   mapa cargado. Además, también se saca la correspondencia por lo que a VacioPanel se le ha de pasar
+        *   mapa cargado. Además, también se saca la correspondencia por lo que a PanelVacio se le ha de pasar
         *   este array por parametro para que lo use dandole a cada CeldaVacia su Imagen correspondiente.
         * */
 
@@ -132,18 +132,18 @@ public class GUI extends JFrame {
     }
 
     /**
-     * Genera un panel de paneles a partir de la clase VacioPanel.
+     * Genera un panel de paneles a partir de la clase PanelVacio.
      * El número de filas y columnas es determinado por el usuario a través de un metodo llamado
      * desde 'spriteUtils.numRowsCols()'
      * */
     public void createMenuIzquierda(int row,int col) {
-        menuIzquierda = new VacioPanel(row,col);
+        menuIzquierda = new PanelVacio(row,col);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
 
     public void cargarMenuIzquierda(int[][] contenido, ImageIcon[] sprites) {
-        menuIzquierda = new VacioPanel(contenido,sprites);
+        menuIzquierda = new PanelVacio(contenido,sprites);
         menuIzquierda.setBackground(Color.BLACK);
         menuIzquierda.setBounds(MENU_IZQUIERDA_X, MENU_IZQUIERDA_Y, MENU_IZQUIERDA_ANCHO, MENU_IZQUIERDA_ALTO);
     }
@@ -161,7 +161,7 @@ public class GUI extends JFrame {
      * Genera el botón de guardado para que una vez se haya terminado la edición o creación de un mapa
      * se guarde como una matriz de números donde cada número corresponde a un sprite.
      * */
-    public void createBotonGuardar(VacioPanel panel) {
+    public void createBotonGuardar(PanelVacio panel) {
         botonGuardar = new JButton("Guardar");
         botonGuardar.setBackground(Color.BLACK);
         botonGuardar.setForeground(Color.WHITE);
@@ -180,7 +180,7 @@ public class GUI extends JFrame {
      * Genera el botón de generación de fondo automático.
      * Una vez clicado este botón habiendo seleccionado un Sprite, todas las celdas pasarán a contener dicho sprite.
      * */
-    public void createBotonFondo(VacioPanel panel) {
+    public void createBotonFondo(PanelVacio panel) {
         botonFondo = new JButton("Fondo");
         botonFondo.setBackground(Color.BLACK);
         botonFondo.setForeground(Color.WHITE);
@@ -242,19 +242,19 @@ public class GUI extends JFrame {
 
     /**
      * LLama al metodo de generación de mapa de 'spriteUtils'
-     * @param panel Recibe por parametro VacioPanel para poder acceder al array de CeldaVacias y procesar la información
+     * @param panel Recibe por parametro PanelVacio para poder acceder al array de CeldaVacias y procesar la información
      * @throws IOException Lanza una excepción de tipo INPUT / OUTPUT
      * */
-    private void botonGuardarClickeado(VacioPanel panel) throws IOException {
+    private void botonGuardarClickeado(PanelVacio panel) throws IOException {
         spriteUtils.generateSpriteMap(sprites, panel.formato);
     }
 
     /**
      * Llena el panel rellenable con el sprite seleccionado.
-     * @param panel Recibe por parametro VacioPanel para poder acceder al array de CeldaVacias y procesar la información
+     * @param panel Recibe por parametro PanelVacio para poder acceder al array de CeldaVacias y procesar la información
      * @throws IOException Lanza una excepción de tipo INPUT / OUTPUT
      * */
-    public void fondoSprite(VacioPanel panel) throws IOException {
+    public void fondoSprite(PanelVacio panel) throws IOException {
         // Vuelve a darle el FOCUSABLE al panel contenedor #BugFixed
         requestFocus();
         for (ImageIcon[] row : panel.formato) {

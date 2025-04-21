@@ -1,7 +1,7 @@
 /*
 package main.EDITOR.TEST;
 
-import main.EDITOR.EMPTYMAP.VacioPanel;
+import main.EDITOR.EMPTYMAP.PanelVacio;
 import main.EDITOR.GUI.GUI;
 import org.junit.jupiter.api.Test;
 
@@ -12,28 +12,28 @@ class TestVacioPanel {
 
     @Test
     public void testIniciarComponente() {
-        // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10, new GUI());
+        // Create a PanelVacio instance
+        PanelVacio panelVacio = new PanelVacio(10, 10, new GUI());
 
         // Test the iniciarComponente method
-        assertEquals(10, vacioPanel.getComponentCount());
-        assertEquals(10, vacioPanel.formato.length);
-        assertEquals(10, vacioPanel.celdaVacias.size());
+        assertEquals(10, panelVacio.getComponentCount());
+        assertEquals(10, panelVacio.formato.length);
+        assertEquals(10, panelVacio.celdaVacias.size());
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                assertEquals(vacioPanel, vacioPanel.celdaVacias.get(row * 10 + col).vacioPanel);
+                assertEquals(panelVacio, panelVacio.celdaVacias.get(row * 10 + col).panelVacio);
             }
         }
     }
 
     @Test
     public void testGetFormato() {
-        // Create a VacioPanel instance
-        VacioPanel vacioPanel = new VacioPanel(10, 10, new GUI());
+        // Create a PanelVacio instance
+        PanelVacio panelVacio = new PanelVacio(10, 10, new GUI());
 
         // Test the getFormato method
-        ImageIcon[][] format = vacioPanel.getFormato();
+        ImageIcon[][] format = panelVacio.getFormato();
         assertEquals(10, format.length);
 
         for (int row = 0; row < 10; row++) {

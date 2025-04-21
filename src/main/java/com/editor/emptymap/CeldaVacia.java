@@ -19,8 +19,8 @@ public class CeldaVacia extends JPanel {
     public JLabel imageLabel;
     /** El ImageIcon que se mostrará en el JLabel. */
     public static ImageIcon imageIcon;
-    /** El VacioPanel que contiene esta CeldaVacia. */
-    public VacioPanel vacioPanel;
+    /** El PanelVacio que contiene esta CeldaVacia. */
+    public PanelVacio panelVacio;
     /** El boton será modificado desde la GUI. */
     public boolean buttonSelected = false;
 
@@ -33,9 +33,9 @@ public class CeldaVacia extends JPanel {
      * @param col        columna.
      * @param panel      Panel contenedor sobre CeldaVacia.
      */
-    public CeldaVacia(int row, int col, VacioPanel panel) {
-        // Inicializa el VacioPanel que contiene esta CeldaVacia
-        this.vacioPanel = panel;
+    public CeldaVacia(int row, int col, PanelVacio panel) {
+        // Inicializa el PanelVacio que contiene esta CeldaVacia
+        this.panelVacio = panel;
         this.row = row;
         this.col = col;
 
@@ -76,9 +76,9 @@ public class CeldaVacia extends JPanel {
      * @param height     La altura del icono de imagen.
      */
     public void setImageIcon(ImageIcon imageIcon, int row, int col,int width, int height) {
-        // Establece el icono de imagen en el JLabel y actualiza el formato en el VacioPanel
+        // Establece el icono de imagen en el JLabel y actualiza el formato en el PanelVacio
         imageLabel.setIcon(Celda.escaladoImage(imageIcon, width, height));
-        vacioPanel.getFormato()[row][col] = imageIcon;
+        panelVacio.getFormato()[row][col] = imageIcon;
     }
 
     /**
@@ -99,8 +99,8 @@ public class CeldaVacia extends JPanel {
      * @return El ancho local de la celda vacía.
      */
     public int getWidthLocal(){
-        // Iterar sobre las celdas vacías en el VacioPanel para encontrar esta celda vacía
-        for (CeldaVacia celda : vacioPanel.celdaVacias) {
+        // Iterar sobre las celdas vacías en el PanelVacio para encontrar esta celda vacía
+        for (CeldaVacia celda : panelVacio.celdaVacias) {
             if (celda == this)
                 return celda.getWidth();
         }
@@ -113,7 +113,7 @@ public class CeldaVacia extends JPanel {
      * @return El largo local de la celda vacía.
      */
     public int getHeightLocal(){
-        for (CeldaVacia celda : vacioPanel.celdaVacias) {
+        for (CeldaVacia celda : panelVacio.celdaVacias) {
             if (celda == this)
                 return celda.getHeight();
         }

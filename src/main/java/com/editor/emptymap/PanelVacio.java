@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
-public class VacioPanel extends JPanel {
+public class PanelVacio extends JPanel {
     /** El arreglo de ImageIcon que representa el formato del panel principal. */
     public ImageIcon[][] formato;
     /** La lista de celdas vacías en el panel principal. */
@@ -22,16 +22,16 @@ public class VacioPanel extends JPanel {
     ImageIcon[] sprites;
 
     /**
-     * Construye nuevo VacioPanel con las filas y columnas dadas.
+     * Construye nuevo PanelVacio con las filas y columnas dadas.
      *
      * @param rows       filas.
      * @param cols       columnas.
      */
-    public VacioPanel(int rows, int cols) {
+    public PanelVacio(int rows, int cols) {
         iniciarComponente(rows, cols);
     }
 
-    public VacioPanel(int[][] contenido, ImageIcon[] sprites){
+    public PanelVacio(int[][] contenido, ImageIcon[] sprites){
         this.contenido = contenido;
         this.sprites = sprites;
         int[] datos = getFilasYColumnas(contenido);

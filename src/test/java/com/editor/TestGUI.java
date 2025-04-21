@@ -1,7 +1,7 @@
 /*
 package main.EDITOR.TEST;
 
-import main.EDITOR.EMPTYMAP.VacioPanel;
+import main.EDITOR.EMPTYMAP.PanelVacio;
 import main.EDITOR.GUI.GUI;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ class TestGUI {
         GUI gui = new GUI();
 
         // Llama al metodo createBotonGuardar()
-        gui.createBotonGuardar(new VacioPanel(1,1,new GUI()));
+        gui.createBotonGuardar(new PanelVacio(1,1,new GUI()));
 
         // Simula el clic en el botón guardar
         gui.botonGuardar.doClick();
@@ -61,7 +61,7 @@ class TestGUI {
         GUI gui = new GUI();
 
         // Llama al metodo createBotonFondo()
-        gui.createBotonFondo(new VacioPanel(1,1, new GUI()));
+        gui.createBotonFondo(new PanelVacio(1,1, new GUI()));
 
         // Comprueba que el botón fondo se haya creado correctamente
         assertNotNull(gui.getBotonFondo());
