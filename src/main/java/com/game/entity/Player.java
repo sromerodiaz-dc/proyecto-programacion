@@ -1,5 +1,7 @@
 package com.game.entity;
 
+import com.game.controller.events.EventListener;
+import com.game.controller.events.GameEvent;
 import com.game.data.Properties;
 import com.game.controller.KeyboardController;
 import com.game.controller.TeisPanel;
@@ -15,7 +17,7 @@ import java.util.Map;
  * CFP Daniel Castelao
  * Proyecto: Teis
  * */
-public class Player extends Entity {
+public class Player extends Entity implements EventListener {
 
     // Propiedades del jugador
     Properties properties;
@@ -144,7 +146,7 @@ public class Player extends Entity {
             interactuarEnemy(enemy);
 
             // Trigger de eventos
-            teisPanel.controller.eventManager.checkEvent();
+            teisPanel.controller.eventManager.checkEvents(this);
 
             movement();
 
@@ -406,5 +408,31 @@ public class Player extends Entity {
         if (invencible) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
         g2.drawImage(image, tempX, tempY, null);
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
+    }
+
+    @Override
+    public void onEvent(GameEvent event) {
+        System.out.println("Evento recibido: " + event.message() + " " + event.type());
+        switch (event.type()) {
+            case DAMAGE:
+                takeDamage(event.value());
+                teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                teisPanel.controller.ui.dialogo = event.message();
+                break;
+
+            case HEAL:
+                applyHeal(event.value());
+                teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                teisPanel.controller.ui.dialogo = event.message();
+                break;
+        }
+    }
+
+    private void takeDamage(int amount) {
+        life = Math.max(0, life - amount);
+    }
+
+    private void applyHeal(int amount) {
+        life = Math.min(maxLife, life + amount);
     }
 }
