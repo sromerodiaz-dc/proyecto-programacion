@@ -1,4 +1,4 @@
-package com.game.entity.npc;
+package com.game.entity.npc.passive;
 
 import com.game.entity.Entity;
 import com.game.data.Properties;
