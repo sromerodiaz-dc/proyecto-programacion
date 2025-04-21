@@ -1,4 +1,4 @@
-package test.editor;
+package com.editor;
 
 import com.editor.utils.SpriteUtils;
 import org.junit.jupiter.api.Test;
