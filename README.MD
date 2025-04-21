@@ -1393,3 +1393,7 @@ https://www.beepbox.co
 
 ---
 ### Migración de la base de datos a un servidor
+
+---
+## Semana del 21/04/2025
+### Implementación del patron Observer en el gestor de eventos
