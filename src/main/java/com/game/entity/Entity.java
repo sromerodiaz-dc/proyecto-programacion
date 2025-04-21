@@ -446,5 +446,216 @@ public class Entity {
         return counters;
     }
 
+    public void resetSolidArea() {
+        solidArea.x = defaultSolidAreaX;
+        solidArea.y = defaultSolidAreaY;
+    }
+
+    public void updateSolidAreaPosition() {
+        solidArea.x = worldX + defaultSolidAreaX;
+        solidArea.y = worldY + defaultSolidAreaY;
+    }
+
     // TODO Implementar comportamientos especificos para cada enemigo
+
+
+    public TeisPanel getTeisPanel() {
+        return teisPanel;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
+    public int getCapEvent() {
+        return capEvent;
+    }
+
+    public int getIntervalo() {
+        return intervalo;
+    }
+
+    public int getMaxLife() {
+        return maxLife;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public int getHpBarCounter() {
+        return hpBarCounter;
+    }
+
+    public boolean isHpBar() {
+        return isHpBar;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public boolean isDying() {
+        return dying;
+    }
+
+    public int getDyingCounter() {
+        return dyingCounter;
+    }
+
+    public boolean isInvencible() {
+        return invencible;
+    }
+
+    public int getTimeInvencible() {
+        return timeInvencible;
+    }
+
+    public int getWho() {
+        return who;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public BufferedImage getImage2() {
+        return image2;
+    }
+
+    public BufferedImage getImage3() {
+        return image3;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCollision() {
+        return collision;
+    }
+
+    public BufferedImage getStop() {
+        return stop;
+    }
+
+    public BufferedImage getStop2() {
+        return stop2;
+    }
+
+    public BufferedImage getUp1() {
+        return up1;
+    }
+
+    public BufferedImage getUp2() {
+        return up2;
+    }
+
+    public BufferedImage getDown1() {
+        return down1;
+    }
+
+    public BufferedImage getDown2() {
+        return down2;
+    }
+
+    public BufferedImage getLeft1() {
+        return left1;
+    }
+
+    public BufferedImage getLeft2() {
+        return left2;
+    }
+
+    public BufferedImage getRight1() {
+        return right1;
+    }
+
+    public BufferedImage getRight2() {
+        return right2;
+    }
+
+    public BufferedImage getAttackUp() {
+        return attackUp;
+    }
+
+    public BufferedImage getAttackLeft() {
+        return attackLeft;
+    }
+
+    public BufferedImage getAttackRight() {
+        return attackRight;
+    }
+
+    public BufferedImage getAttackDown() {
+        return attackDown;
+    }
+
+    public boolean isAttack() {
+        return attack;
+    }
+
+    public Rectangle getAttackArea() {
+        return attackArea;
+    }
+
+    public int getSpriteCounter() {
+        return spriteCounter;
+    }
+
+    public int getStopCounter() {
+        return stopCounter;
+    }
+
+    public int getSpriteNum() {
+        return spriteNum;
+    }
+
+    public String[] getDialogos() {
+        return dialogos;
+    }
+
+    public int getDialogoIndex() {
+        return dialogoIndex;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
+
+    public int getDefaultSolidAreaX() {
+        return defaultSolidAreaX;
+    }
+
+    public int getDefaultSolidAreaY() {
+        return defaultSolidAreaY;
+    }
+
+    public boolean isCollisionOn() {
+        return collisionOn;
+    }
+
+    public char getSentido() {
+        return sentido;
+    }
 }
