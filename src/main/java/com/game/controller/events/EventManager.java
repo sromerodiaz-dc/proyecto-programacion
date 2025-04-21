@@ -1,159 +1,126 @@
 package com.game.controller.events;
 
-import com.game.controller.TeisPanel;
+import com.game.entity.Player;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Clase muy importante, ya que maneja todos los eventos del juego.
- * Gracias a esta clase se pueden manejar cambios de mapa, de puntos de vida, cambios de sprites, etc.
- * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
- * Proyecto: Teis
+ * EventManager implementa el patrón Observer para manejar eventos
+ * del juego de manera desacoplada y extensible.
  */
-public class EventManager { // TODO convertir esta clase a PATRON OBSERVER
-    /**
-     * Referencia al panel de juego.
-     */
-    TeisPanel teisPanel;
+public class EventManager {
+    private final List<EventRectangle> eventRectangles;
+    private final List<EventListener> listeners;
+
+    public EventManager() {
+        this.eventRectangles = new ArrayList<>();
+        this.listeners = new ArrayList<>();
+    }
 
     /**
-     * Matriz de rectángulos de eventos.
+     * Carga una nueva lista de rectángulos de evento.
      */
-    EventRectangle[][] eventRectangle;
+    public void loadEvents(List<EventRectangle> events) {
+        eventRectangles.clear();
+        eventRectangles.addAll(events);
+    }
 
     /**
-     * Constructor de la clase EventManager.
-     *
-     * @param teisPanel panel de juego
+     * Registra un nuevo listener.
      */
-    public EventManager(TeisPanel teisPanel) {
-        this.teisPanel = teisPanel;
+    public void addListener(EventListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
 
-        // Inicializa la matriz de rectángulos de eventos con el tamaño del mundo
-        eventRectangle = new EventRectangle[teisPanel.maxWorldCol][teisPanel.maxWorldRow];
+    /**
+     * Elimina un listener.
+     */
+    public void removeListener(EventListener listener) {
+        listeners.remove(listener);
+    }
 
-        int col = 0;
-        int row = 0;
-        while (col < teisPanel.maxWorldCol && row < teisPanel.maxWorldRow) {
-            // Crea un nuevo rectángulo de evento en la posición (col, row)
-            eventRectangle[col][row] = new EventRectangle();
-            // Define la posición y tamaño del rectángulo de evento
-            eventRectangle[col][row].x = 23;
-            eventRectangle[col][row].y = 23;
-            eventRectangle[col][row].width = 2;
-            eventRectangle[col][row].height = 2;
+    /**
+     * Resetea todos los eventos.
+     */
+    public void resetAllEvents() {
+        for (EventRectangle event : eventRectangles) {
+            event.reset();
+        }
+    }
 
-            // Guarda la posición original del rectángulo de evento
-            eventRectangle[col][row].defaultX = eventRectangle[col][row].x;
-            eventRectangle[col][row].defaultY = eventRectangle[col][row].y;
+    /**
+     * Comprueba si algún evento debe activarse en base a la posición del jugador.
+     */
+    public void checkEvents(Player player) {
+        for (EventRectangle event : eventRectangles) {
+            event.updateCooldown();
 
-            // Incrementa la columna y, si es necesario, la fila
-            col++;
-            if (col == teisPanel.maxWorldCol) {
-                col = 0;
-                row++;
+            // Calcular la posición absoluta del área sólida del jugador
+            int playerSolidX = player.worldX + player.solidArea.x;
+            int playerSolidY = player.worldY + player.solidArea.y;
+
+            // Calcular la posición absoluta del evento
+            int eventX = event.x;
+            int eventY = event.y;
+
+            // Mostrar posiciones
+            /*
+                System.out.println("---- DEPURACIÓN ----");
+                System.out.println("Jugador: solidX = " + playerSolidX + ", solidY = " + playerSolidY);
+                System.out.println("Rectángulo evento: x = " + eventX + ", y = " + eventY);
+                System.out.println("Tamaño jugador: " + player.solidArea.width + "x" + player.solidArea.height);
+                System.out.println("Tamaño evento: " + event.width + "x" + event.height);
+             */
+
+            // Crear clones temporales para la colisión
+            Rectangle playerHitbox = new Rectangle(playerSolidX, playerSolidY, player.solidArea.width, player.solidArea.height);
+            Rectangle eventHitbox = new Rectangle(eventX, eventY, event.width, event.height);
+
+            if (playerHitbox.intersects(eventHitbox)) {
+                //System.out.println("¡COLISIÓN DETECTADA con evento en (" + event.getCol() + ", " + event.getRow() + ")!");
+
+                // Mostrar valores de estado importantes del evento
+                /*
+                System.out.println("DEBUG Evento: done=" + event.isDone() +
+                        ", cooldown=" + event.getCooldown() +
+                        ", dirEvento=" + event.getDirection());
+                 */
+
+                // Filtrar entrada si el tipo de evento lo requiere
+                boolean canCheckInput = (event.getType() != EventType.HEAL || player.keyboardController.isPressed);
+
+                if (canCheckInput && event.canTrigger()) {
+                    //System.out.println("Evento activable. Tipo: " + event.getType() + " | Mensaje: " + event.getMessage());
+
+                    event.trigger();
+
+                    notifyListeners(new GameEvent(
+                            event.getType(),
+                            event.getCol(),
+                            event.getRow(),
+                            event.getDirection(),
+                            event.getMessage(),
+                            event.getValue()
+                    ));
+                } else {
+                    System.out.println("No se puede activar todavía (cooldown o dirección incorrecta).");
+                }
             }
         }
     }
 
-    /**
-     * Verifica si se ha producido un evento en el mapa.
-     */
-    public void checkEvent(){
-        // Verifica si se ha encontrado un periódico en la posición (10, 12) con sentido 'a'
-        if (hit(10, 12, 'a')) {
-            // Si se ha encontrado, aplica daño y muestra un diálogo
-            damage(10, 12, teisPanel.controller.dialogoState, "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende,\nsó entrischécete\"");
-        }
 
-        // Verifica si se ha encontrado un objeto de curación en la posición (14, 13) con sentido ''
-        if (hit(14, 13, 's')) {
-            // Si se ha encontrado, aplica curación
-            heal(14, 13, teisPanel.controller.dialogoState);
-        }
-
-        // Resetea el cooldown del evento en la posición (10, 12) a 30 segundos
-        eventRectangle[10][12].resetCooldowns(30);
-    }
 
     /**
-     * Verifica si el personaje ha golpeado un evento en la posición (col, row) con sentido sentido.
-     *
-     * @param col columna del evento
-     * @param row fila del evento
-     * @param sentido sentido del personaje (a, s, d, w)
-     * @return true si se ha golpeado el evento, false en caso contrario
+     * Notifica a todos los listeners registrados sobre un evento.
      */
-    public boolean hit (int col, int row, char sentido){
-        boolean doesHit = false;
-
-        // Actualiza la posición del área sólida del personaje en el mundo
-        teisPanel.model.solidArea.x = teisPanel.model.worldX + teisPanel.model.solidArea.x;
-        teisPanel.model.solidArea.y = teisPanel.model.worldY + teisPanel.model.solidArea.y;
-
-        // Actualiza la posición del evento en el mundo
-        eventRectangle[col][row].x = col*teisPanel.sizeFinal + eventRectangle[col][row].x;
-        eventRectangle[col][row].y = row*teisPanel.sizeFinal + eventRectangle[col][row].y;
-
-        // Verifica si el área sólida del personaje intersecta con el evento y no se ha realizado antes
-        if (teisPanel.model.solidArea.intersects(eventRectangle[col][row]) &&!eventRectangle[col][row].done){
-            // Verifica si el sentido del personaje coincide con el sentido del evento o si no se especificó sentido
-            if (teisPanel.model.sentido == sentido || sentido!= '0') {
-                doesHit = true;
-            }
-        }
-
-        // Restaura la posición original del área sólida del personaje y del evento
-        teisPanel.model.solidArea.x = teisPanel.model.defaultSolidAreaX;
-        teisPanel.model.solidArea.y = teisPanel.model.defaultSolidAreaY;
-        eventRectangle[col][row].x = eventRectangle[col][row].defaultX;
-        eventRectangle[col][row].y = eventRectangle[col][row].defaultY;
-
-        return doesHit;
-    }
-
-    /**
-     * Metodo que aplica daño al jugador.
-     *
-     * @param col La columna del evento que causa daño.
-     * @param row La fila del evento que causa daño.
-     * @param estado El estado del juego después de aplicar daño.
-     * @param mensaje El mensaje que se muestra al jugador después de aplicar daño.
-     */
-    public void damage(int col, int row, int estado, String mensaje) {
-        // Cambia el estado del juego
-        teisPanel.controller.estado = estado;
-        // Muestra el mensaje al jugador
-        teisPanel.controller.ui.dialogo = mensaje;
-        // Aplica daño al jugador
-        teisPanel.model.life -= 5;
-        // Marca el evento como completado
-        eventRectangle[col][row].done = true;
-    }
-
-    /**
-     * Metodo que cura al jugador.
-     *
-     * @param col La columna del evento que cura al jugador.
-     * @param row La fila del evento que cura al jugador.
-     * @param estado El estado del juego después de curar al jugador.
-     */
-    public void heal(int col, int row, int estado) {
-        // Verifica si se ha presionado una tecla
-        if (teisPanel.model.keyboardController.isPressed) {
-            // Desactiva la animación de ataque del jugador
-            teisPanel.model.attack = false;
-            // Cambia el estado del juego
-            teisPanel.controller.estado = estado;
-            // Muestra el mensaje al jugador
-            teisPanel.controller.ui.dialogo = "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"";
-            // Curar al jugador, pero no más allá de la vida máxima
-            if (teisPanel.model.life <= 7) {
-                teisPanel.model.life += 3;
-            } else {
-                teisPanel.model.life += (teisPanel.model.maxLife - teisPanel.model.life);
-            }
-            // Marca el evento como completado
-            eventRectangle[col][row].done = true;
+    private void notifyListeners(GameEvent event) {
+        for (EventListener listener : listeners) {
+            listener.onEvent(event);
         }
     }
 }
