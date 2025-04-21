@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Esta clase define el algoritmo de mapeo del juego.
@@ -74,7 +75,7 @@ public class PiezaManager {
                 pieza[i] = new Pieza();
             }
             // Lee la imagen desde el recurso especificado por la ruta de la imagen
-            pieza[i].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePaths[i]));
+            pieza[i].image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePaths[i])));
 
             // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el metodo escalado de PiezaUtils
             pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
