@@ -1,5 +1,7 @@
 package com.game.controller;
 
+import com.game.controller.events.EventRectangle;
+import com.game.controller.events.EventType;
 import com.game.data.Properties;
 import com.game.efx.Sound;
 import com.game.gui.UserInterface;
@@ -11,6 +13,7 @@ import com.game.entity.Placer;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mantiene una referencia al jugador y al gestor de piezas del juego.
@@ -73,7 +76,7 @@ public class GameController {
         collisionCheck = new CollisionCheck(teisPanel);
 
         // Inicializa el manejo de eventos
-        eventManager = new EventManager(teisPanel);
+        setupInitialEvents(teisPanel);
     }
 
     /**
@@ -83,6 +86,44 @@ public class GameController {
      */
     public PiezaManager getPiezaManager() {
         return piezaManager;
+    }
+
+    public void setupInitialEvents(TeisPanel teisPanel) {
+        eventManager = new EventManager();
+        List<EventRectangle> events = new ArrayList<>();
+
+        // Evento de daño (periódico)
+        events.add(new EventRectangle(
+                10,
+                12,
+                48,
+                32,
+                32,
+                EventType.DAMAGE,
+                '0',
+                30,
+                "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende,\nsó entrischécete\"",
+                5
+        ));
+
+        // Evento de cura (estrellagalicia)
+        events.add(new EventRectangle(
+                14,
+                13,
+                48,
+                32,
+                32,
+                EventType.HEAL,
+                '0',
+                30,
+                "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"",
+                3
+        ));
+
+        eventManager.loadEvents(events);
+
+        // Verifica que los eventos se cargan correctamente
+        System.out.println("Eventos cargados: " + events.size());
     }
 
     /**
