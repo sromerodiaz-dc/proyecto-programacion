@@ -71,8 +71,11 @@ public class TeisPanel extends JPanel implements Runnable{
         controller = new GameController(piezaM,this);
         model = new Player(this, key, controller.properties);
 
-        // Inicia la mísica del juego
-        // controller.playMusic(0);
+        setListeners();
+    }
+
+    public void setListeners() {
+        controller.eventManager.addListener(model);
     }
 
     public void setUpItems() throws LineUnavailableException {
