@@ -1,4 +1,4 @@
-package com.game.entity.enemy;
+package com.game.entity.npc.aggressive;
 
 import com.game.entity.Entity;
 import com.game.data.Properties;
@@ -36,13 +36,13 @@ public class Dinoseto extends Entity {
         defaultSolidAreaY = solidArea.y;
 
         // Carga las imágenes del enemigo
-        getImage();
+        getDinoImage();
     }
 
     /**
      * Carga las imágenes del enemigo Dinoseto.
      */
-    public void getImage() {
+    public void getDinoImage() {
         // Carga las imágenes para cada dirección y estado del enemigo
         left1 = setEntitySprite("npc/enemies/dinoseto_left1.png", width, height);
         left2 = setEntitySprite("npc/enemies/dinoseto_left2.png", width, height);
