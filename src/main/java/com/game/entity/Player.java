@@ -1,10 +1,14 @@
 package com.game.entity;
 
+import com.game.controller.GameController;
 import com.game.controller.events.EventListener;
 import com.game.controller.events.GameEvent;
 import com.game.data.Properties;
 import com.game.controller.KeyboardController;
 import com.game.controller.TeisPanel;
+import com.game.entity.object.Shield;
+import com.game.entity.object.Weapon;
+
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +25,17 @@ public class Player extends Entity implements EventListener {
 
     // Propiedades del jugador
     Properties properties;
+
+    // Propiedades propias del player
+    int level;
+    int attackVal;
+    int defenseVal;
+    Entity currentWeapon; // TODO falta por crear sprite de arma corporativa
+    Entity currentShield; // TODO falta por crear sprite de nivel de defensa (jeringa fent)
+
+    // Atributos escalables
+    int strength;
+    int dexterity;
 
     public KeyboardController keyboardController;
 
@@ -51,7 +66,7 @@ public class Player extends Entity implements EventListener {
         screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
 
         // Inicializa los valores por defecto del jugador
-        setValoresPorDefecto();
+        setValoresPorDefecto(t, properties);
 
         // Carga las imágenes del jugador
         getPlayerImage();
@@ -63,17 +78,26 @@ public class Player extends Entity implements EventListener {
     /**
      * Metodo que define el estado inicial del jugador
      */
-    public void setValoresPorDefecto() {
+    public void setValoresPorDefecto(TeisPanel t, Properties properties) {
+        // PLAYER STATS
         setPropierties("player");
+        level = 1;
+        strength = 1; // The more strength, the more damage the player deals
+        dexterity = 1; // The more dextery, the less damage he takes
+        currentWeapon = new Weapon(t, properties);
+        currentShield = new Shield(t, properties);
+        attackVal = getAttackVal(); // Multiplica la fuerza por el daño del arma
+        defenseVal = getDefenseVal(); // Multiplica la resistencia por el valor de defensa del escudo
 
+        // PLAYER POS
         worldX = teisPanel.sizeFinal * 18;
         worldY = teisPanel.sizeFinal * 10;
 
-        // Guarda los valores por defecto del área sólida
+        // PLAYER SOLIDAREA
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
-        // Iniciliaza el área de ataque del jugador
+        // PLAYER ATTACK AREA
         attackArea.width = 36;
         attackArea.height = 36;
     }
@@ -150,7 +174,7 @@ public class Player extends Entity implements EventListener {
 
             movement();
 
-            teisPanel.model.keyboardController.isPressed = false;
+            keyboardController.isPressed = false;
         } else {
             // Si no se ha presionado ninguna tecla, incrementa el contador de parada
             sentido = '0';
@@ -174,7 +198,7 @@ public class Player extends Entity implements EventListener {
     /**
      * Devuelve la dirección del movimiento según la tecla presionada.
      *
-     * @param e el objeto KeyboardController que contiene el estado de las teclas
+     * @param e el objeto KeyManager que contiene el estado de las teclas
      * @return la dirección del movimiento como un carácter ('w', 's', 'a', 'd')
      */
     private char getDirection(KeyboardController e) {
@@ -245,11 +269,11 @@ public class Player extends Entity implements EventListener {
      */
     public void interactuarNPC(int i) {
         // Verifica si se ha presionado una tecla
-        if (teisPanel.model.keyboardController.isPressed) {
+        if (keyboardController.isPressed) {
             // Verifica si el índice es válido (no es 999)
             if (i!= 999) {
                 // Cambia el estado del juego a diálogo
-                teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
                 // Hace que el NPC hable
                 teisPanel.controller.npc.get(i).fala();
                 // teisPanel.controller.playSE(); // Efecto de habla
@@ -416,13 +440,15 @@ public class Player extends Entity implements EventListener {
         switch (event.type()) {
             case DAMAGE:
                 takeDamage(event.value());
-                teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
+                attack = true;
                 teisPanel.controller.ui.dialogo = event.message();
                 break;
 
             case HEAL:
                 applyHeal(event.value());
-                teisPanel.controller.estado = teisPanel.controller.dialogoState;
+                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
+                attack = true;
                 teisPanel.controller.ui.dialogo = event.message();
                 break;
         }
@@ -434,5 +460,41 @@ public class Player extends Entity implements EventListener {
 
     private void applyHeal(int amount) {
         life = Math.min(maxLife, life + amount);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getAttackVal() {
+        return strength * currentWeapon.attackVal;
+    }
+
+    public int getDefenseVal() {
+        return dexterity * currentShield.defenseVal;
+    }
+
+    public Entity getCurrentWeapon() {
+        return currentWeapon;
+    }
+
+    public Entity getCurrentShield() {
+        return currentShield;
+    }
+
+    public KeyboardController getKeyboardController() {
+        return keyboardController;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public boolean isTenPass() {
+        return tenPass;
     }
 }
