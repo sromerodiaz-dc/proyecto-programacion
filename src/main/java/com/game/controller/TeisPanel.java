@@ -4,7 +4,7 @@ import com.game.entity.Entity;
 import com.game.entity.Player;
 import com.game.map.MapSelector;
 import com.game.map.MapSize;
-import com.game.gphics.PiezaManager;
+import com.game.maptile.PiezaManager;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
@@ -149,7 +149,7 @@ public class TeisPanel extends JPanel implements Runnable{
      */
     public void update() throws LineUnavailableException {
         // Verificar si el juego está en estado de juego
-        if (controller.estado == controller.playState) {
+        if (controller.currentGameState == GameController.GameState.PLAY) {
             // Actualizar el estado del jugador
             model.actualiza();
 
@@ -193,7 +193,7 @@ public class TeisPanel extends JPanel implements Runnable{
             tDraw = System.nanoTime();
         }
 
-        if (controller.estado == controller.cargaState) {
+        if (controller.currentGameState == GameController.GameState.LOAD) {
             // Dibuja la pantalla de carga.
             controller.ui.draw(g2);
         } else {
@@ -253,5 +253,13 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Limpia la lista de entidades.
         controller.entities.clear();
+    }
+
+    public void setGameState(GameController.GameState newState) {
+        controller.currentGameState = newState;
+    }
+
+    public GameController.GameState getGameState() {
+        return controller.currentGameState;
     }
 }

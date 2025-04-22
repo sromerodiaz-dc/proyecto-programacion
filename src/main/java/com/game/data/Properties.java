@@ -31,7 +31,7 @@ public class Properties implements AutoCloseable {
     }
 
     /**
-     * Método estático para obtener la instancia única de la clase.
+     * Metodo estático para obtener la instancia única de la clase.
      * Si no existe, la crea.
      *
      * @param url La URL de la base de datos.
@@ -47,7 +47,7 @@ public class Properties implements AutoCloseable {
     }
 
     /**
-     * Método estático para obtener la instancia única de la clase.
+     * Metodo estático para obtener la instancia única de la clase.
      * @return La instancia única de Properties.
      * @throws IllegalStateException si la instancia no ha sido inicializada.
      */

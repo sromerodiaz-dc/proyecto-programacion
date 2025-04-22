@@ -1,4 +1,4 @@
-package com.game.gphics;
+package com.game.maptile;
 
 
 import com.game.controller.TeisPanel;
