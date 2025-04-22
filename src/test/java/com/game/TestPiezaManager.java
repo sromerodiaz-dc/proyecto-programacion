@@ -1,8 +1,8 @@
 package com.game;
 
 import com.game.controller.TeisPanel;
-import com.game.gphics.Pieza;
-import com.game.gphics.PiezaManager;
+import com.game.maptile.Pieza;
+import com.game.maptile.PiezaManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
