@@ -1,7 +1,7 @@
 package com.game.entity;
 
 import com.game.controller.TeisPanel;
-import com.game.gphics.PiezaManager;
+import com.game.maptile.PiezaManager;
 
 import java.util.ArrayList;
 

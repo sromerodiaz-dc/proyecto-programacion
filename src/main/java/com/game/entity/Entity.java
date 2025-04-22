@@ -2,7 +2,7 @@ package com.game.entity;
 
 import com.game.controller.TeisPanel;
 import com.game.data.Properties;
-import com.game.gphics.PiezaUtils;
+import com.game.maptile.PiezaUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,6 +38,10 @@ public class Entity {
     public int life;
     int hpBarCounter = 0;
     boolean isHpBar = false;
+
+    // ITEM ATTRIBUTES
+    public int attackVal;
+    public int defenseVal;
 
     // Estados de entidad
     public boolean alive = true;
@@ -457,7 +461,6 @@ public class Entity {
     }
 
     // TODO Implementar comportamientos especificos para cada enemigo
-
 
     public TeisPanel getTeisPanel() {
         return teisPanel;
