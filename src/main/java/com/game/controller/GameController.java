@@ -4,11 +4,11 @@ import com.game.controller.events.EventRectangle;
 import com.game.controller.events.EventType;
 import com.game.data.Properties;
 import com.game.efx.Sound;
-import com.game.gui.UserInterface;
+import com.game.ui.UserInterface;
 import com.game.entity.CollisionCheck;
 import com.game.entity.Entity;
 import com.game.controller.events.EventManager;
-import com.game.gphics.PiezaManager;
+import com.game.maptile.PiezaManager;
 import com.game.entity.Placer;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -44,9 +44,16 @@ public class GameController {
     // Manejo de objetos
     public ArrayList<Entity> obj = new ArrayList<>();
 
+    // Estado del juego
+    public GameState currentGameState = GameController.GameState.LOAD;
     // ESTADO DEL JUEGO
-    public int estado = 3;
-    public int pauseState = 0, dialogoState = 1, playState = 2, cargaState = 3;
+    public enum GameState {
+        LOAD,    // Pantalla de carga
+        PLAY,    // Jugando
+        PAUSE,   // Juego pausado
+        DIALOG,  // Diálogos
+        STATS    // Menú de estadísticas
+    }
 
     // Entidades
     public ArrayList<Entity> npc = new ArrayList<>();
