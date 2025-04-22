@@ -67,7 +67,6 @@ public class EventManager {
             int eventX = event.x;
             int eventY = event.y;
 
-            // Mostrar posiciones
             /*
                 System.out.println("---- DEPURACIÓN ----");
                 System.out.println("Jugador: solidX = " + playerSolidX + ", solidY = " + playerSolidY);
@@ -81,21 +80,10 @@ public class EventManager {
             Rectangle eventHitbox = new Rectangle(eventX, eventY, event.width, event.height);
 
             if (playerHitbox.intersects(eventHitbox)) {
-                //System.out.println("¡COLISIÓN DETECTADA con evento en (" + event.getCol() + ", " + event.getRow() + ")!");
-
-                // Mostrar valores de estado importantes del evento
-                /*
-                System.out.println("DEBUG Evento: done=" + event.isDone() +
-                        ", cooldown=" + event.getCooldown() +
-                        ", dirEvento=" + event.getDirection());
-                 */
-
                 // Filtrar entrada si el tipo de evento lo requiere
                 boolean canCheckInput = (event.getType() != EventType.HEAL || player.keyboardController.isPressed);
 
                 if (canCheckInput && event.canTrigger()) {
-                    //System.out.println("Evento activable. Tipo: " + event.getType() + " | Mensaje: " + event.getMessage());
-
                     event.trigger();
 
                     notifyListeners(new GameEvent(
