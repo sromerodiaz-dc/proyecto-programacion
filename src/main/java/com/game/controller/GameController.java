@@ -83,7 +83,7 @@ public class GameController {
         collisionCheck = new CollisionCheck(teisPanel);
 
         // Inicializa el manejo de eventos
-        setupInitialEvents(teisPanel);
+        setupInitialEvents();
     }
 
     /**
@@ -95,11 +95,11 @@ public class GameController {
         return piezaManager;
     }
 
-    public void setupInitialEvents(TeisPanel teisPanel) {
+    public void setupInitialEvents() {
         eventManager = new EventManager();
         List<EventRectangle> events = new ArrayList<>();
 
-        // Evento de daño (periódico)
+        // Evento de daño (periódico) - UNA SOLA VEZ
         events.add(new EventRectangle(
                 10,
                 12,
@@ -108,12 +108,12 @@ public class GameController {
                 32,
                 EventType.DAMAGE,
                 '0',
-                30,
+                0, // Cooldown irrelevante para eventos de un solo uso
                 "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende,\nsó entrischécete\"",
                 5
         ));
 
-        // Evento de cura (estrellagalicia)
+        // Evento de cura (estrellagalicia) - REPETIBLE CON COOLDOWN
         events.add(new EventRectangle(
                 14,
                 13,
@@ -122,14 +122,12 @@ public class GameController {
                 32,
                 EventType.HEAL,
                 '0',
-                30,
+                30, // 30 segundos de cooldown
                 "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"",
                 3
         ));
 
         eventManager.loadEvents(events);
-
-        // Verifica que los eventos se cargan correctamente
         System.out.println("Eventos cargados: " + events.size());
     }
 
