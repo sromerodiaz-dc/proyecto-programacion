@@ -14,7 +14,7 @@ public class Weapon extends Entity {
         super(teisPanel, properties);
 
         name = "Corporative BarberCut";
-        //down1 = setEntitySprite()
+        down1 = setEntitySprite("objects/sword.png",32,32);
         attackVal = 1;
     }
 }
