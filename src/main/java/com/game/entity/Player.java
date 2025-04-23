@@ -441,15 +441,21 @@ public class Player extends Entity implements EventListener {
             case DAMAGE:
                 takeDamage(event.value());
                 teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
-                attack = true;
                 teisPanel.controller.ui.dialogo = event.message();
                 break;
 
             case HEAL:
                 applyHeal(event.value());
                 teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
-                attack = true;
                 teisPanel.controller.ui.dialogo = event.message();
+                break;
+            case CHECKPOINT:
+                break;
+            case POWER_UP:
+                break;
+            case DIALOG:
+                break;
+            case TELEPORT:
                 break;
         }
     }
