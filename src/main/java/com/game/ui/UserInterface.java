@@ -86,7 +86,6 @@ public class UserInterface {
                 drawDialog();
                 break;
             case GameController.GameState.STATS:
-                drawPlayerLife();
                 drawCharacterScreen();
                 break;
         }
@@ -170,26 +169,20 @@ public class UserInterface {
     }
 
     public void drawCharacterScreen() {
-        final int frameX = teisPanel.sizeFinal * 2;
-        final int frameY = teisPanel.sizeFinal;
-        final int frameWidth = teisPanel.sizeFinal * 4;
-        final int frameHeight = teisPanel.sizeFinal * 8;
-        final int lineHeight = 32;
-        final int textX = frameX + 20;
-        final int valueX = frameX + frameWidth - 30;
-
-        drawWindow(frameX, frameY, frameWidth, frameHeight);
-
-        g2.setFont(pixeledFont.deriveFont(Font.BOLD, 30F));
+        final int frameXY = teisPanel.sizeFinal * 2;
+        final int frameWidth = teisPanel.sizeFinal * 8;
+        final int frameHeight = teisPanel.sizeFinal * 5;
+        final int labelX = frameXY + 40;
+        final int valueX = frameWidth - 40;
+        int labelY = frameXY + 40;
         g2.setColor(Color.WHITE);
 
-        String[] labels = {"Nivel", "Vida", "Herramienta corporativa", "Fentanilo en sangre"};
-        int y = frameY + teisPanel.sizeFinal;
-
-        for (String label : labels) {
-            g2.drawString(label, textX, y);
-            y += lineHeight;
-        }
+        String[] labels = {
+                "Nivel",
+                "Vida",
+                "Herramienta\ncorporativa",
+                "Fentanilo\nen sangre"
+        };
 
         String[] values = {
                 String.valueOf(teisPanel.model.getLevel()),
@@ -198,20 +191,35 @@ public class UserInterface {
                 String.valueOf(teisPanel.model.getDefenseVal())
         };
 
-        y = frameY + teisPanel.sizeFinal + lineHeight;
-        for (String value : values) {
-            g2.drawString(value, valueX - g2.getFontMetrics().stringWidth(value), y);
-            y += lineHeight;
-        }
+        // FRAME
+        drawWindow(frameXY, frameXY, frameWidth, frameHeight);
 
-        drawEquipmentImages(valueX, y);
+        // NAMES
+        drawStringOrdenado(labelX, labelY, labels, 24F);
+
+        // VALUES
+        drawStringOrdenado(valueX, labelY, values, 28F);
+    }
+
+    // Ahora acepta un tamaño de fuente también
+    private void drawStringOrdenado(int x, int y, String[] texts, float fontSize) {
+        g2.setFont(g2.getFont().deriveFont(fontSize));
+
+        for (String text : texts) {
+            String[] lines = text.split("\n");
+
+            for (String line : lines) {
+                g2.drawString(line, x, y);
+                y += 30; // separación entre líneas
+            }
+
+            y += 10; // espacio extra entre bloques
+        }
     }
 
     private void drawEquipmentImages(int x, int y) {
-        y += 32;
-        g2.drawImage(teisPanel.model.getCurrentWeapon().down1, x - teisPanel.sizeFinal, y - 14, null);
-        y += teisPanel.sizeFinal;
-        g2.drawImage(teisPanel.model.getCurrentShield().down1, x - teisPanel.sizeFinal, y - 14, null);
+        g2.drawImage(teisPanel.model.getCurrentWeapon().down1, x, y, null);
+        g2.drawImage(teisPanel.model.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
     }
 
     private void drawWindow(int x, int y, int width, int height) {
@@ -222,6 +230,7 @@ public class UserInterface {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
+
 
     private void drawTextWithShadow(String text, int x, int y) {
         g2.setColor(Color.GRAY);
