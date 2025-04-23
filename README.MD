@@ -1402,3 +1402,7 @@ https://www.beepbox.co
 ### Editor de mapa optimizado
 
 https://chat.deepseek.com/a/chat/s/03c64e7b-a50a-4f08-8e3e-d6f052861f3f
+
+---
+### Rediseño de los objetos
+Cambiarlo de 16x16 a algo mayor para mejorar los gráficos de los sprites.
