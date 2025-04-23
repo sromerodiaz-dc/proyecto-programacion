@@ -17,30 +17,47 @@ public class EventRectangle extends Rectangle {
     public EventRectangle(int col, int row, int tileSize, int width, int height,
                           EventType type, char direction, int cooldownLimit,
                           String message, int value) {
-        // Calcula la posición del rectángulo en el mapa basado en TILE_SIZE_WITH_OFFSET
         super(col * TILE_SIZE, row * TILE_SIZE, width, height);
         this.tileSize = tileSize;
         this.type = type;
         this.direction = direction;
-        this.cooldownLimit = cooldownLimit * 30; // Convertir segundos a frames
+        this.cooldownLimit = cooldownLimit * 30;
         this.message = message;
         this.value = value;
     }
 
+    public boolean isSingleUse() {
+        return cooldownLimit == 0;  // Si cooldown es 0, es de un solo uso
+    }
+
     public void updateCooldown() {
-        if (cooldown > 0) {
-            cooldown--;
-            if (cooldown == 0) {
-                triggered = false;
+        if (!isSingleUse()) {  // Solo actualizar cooldown para eventos repetibles
+            if (cooldown > 0) {
+                cooldown--;
+                if (cooldown == 0) {
+                    triggered = false;
+                }
             }
         }
     }
 
     public void trigger() {
-        if (!done) {
+        if (isSingleUse()) {
+            if (!done) {
+                triggered = true;
+                done = true;
+            }
+        } else {
             triggered = true;
             cooldown = cooldownLimit;
-            done = true; // Marca el evento como completado si no puede repetirse
+        }
+    }
+
+    public boolean canTrigger() {
+        if (isSingleUse()) {
+            return !done;
+        } else {
+            return !isOnCooldown();
         }
     }
 
@@ -52,12 +69,6 @@ public class EventRectangle extends Rectangle {
 
     public boolean isOnCooldown() {
         return cooldown > 0;
-    }
-
-    // Verifica si el evento puede ser activado (no ha sido disparado y no está en cooldown)
-    public boolean canTrigger() {  // Eliminamos el parámetro de dirección
-        System.out.println("DEBUG Evento: done=" + done + ", cooldown=" + cooldown);
-        return !done && !isOnCooldown();  // Eliminamos la verificación de dirección
     }
 
     // Getters

@@ -101,8 +101,6 @@ public class EventManager {
         }
     }
 
-
-
     /**
      * Notifica a todos los listeners registrados sobre un evento.
      */
