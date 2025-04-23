@@ -2,6 +2,10 @@ package com.game.maptile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * La clase PiezaUtils proporciona métodos de utilidad para el procesamiento de imágenes.
@@ -33,5 +37,29 @@ public class PiezaUtils {
 
         // Devuelve la imagen escalada
         return escalado;
+    }
+
+    /**
+     * Obtiene las rutas de las imágenes desde el archivo "c_assets.txt".
+     *
+     * @return un arreglo de cadenas con las rutas de las imágenes
+     */
+    public String[] getImagePaths() {
+        ArrayList<String> imagePaths = new ArrayList<>();
+
+        System.out.println("Directorio actual: " + System.getProperty("user.dir"));
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                imagePaths.add(line.trim());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " !PiezaManager");
+        }
+
+        return imagePaths.toArray(new String[0]);
     }
 }

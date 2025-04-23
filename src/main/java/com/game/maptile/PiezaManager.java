@@ -5,7 +5,6 @@ import com.game.controller.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -19,11 +18,11 @@ public class PiezaManager {
     TeisPanel t;
     public Pieza[] pieza;
     public int[][] mapaPiezaNum;
-    public String[] imagePaths = getImagePaths();
     public String mapName;
 
     // Crea un nuevo objeto PiezaUtils
     public PiezaUtils piezaUtils = new PiezaUtils();
+    public String[] imagePaths = piezaUtils.getImagePaths();
 
     /**
      * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
@@ -85,29 +84,7 @@ public class PiezaManager {
         }
     }
 
-    /**
-     * Obtiene las rutas de las imágenes desde el archivo "c_assets.txt".
-     *
-     * @return un arreglo de cadenas con las rutas de las imágenes
-     */
-    public String[] getImagePaths() {
-        ArrayList<String> imagePaths = new ArrayList<>();
 
-        System.out.println("Directorio actual: " + System.getProperty("user.dir"));
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets.txt");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                imagePaths.add(line.trim());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage() + " !PiezaManager");
-        }
-
-        return imagePaths.toArray(new String[0]);
-    }
 
 
     /**
