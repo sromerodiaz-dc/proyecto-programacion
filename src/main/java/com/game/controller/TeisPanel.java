@@ -254,12 +254,4 @@ public class TeisPanel extends JPanel implements Runnable{
         // Limpia la lista de entidades.
         controller.entities.clear();
     }
-
-    public void setGameState(GameController.GameState newState) {
-        controller.currentGameState = newState;
-    }
-
-    public GameController.GameState getGameState() {
-        return controller.currentGameState;
-    }
 }
