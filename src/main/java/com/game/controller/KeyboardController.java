@@ -18,7 +18,7 @@ public class KeyboardController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (teisPanel.getGameState()) {
+        switch (teisPanel.controller.getGameState()) {
             case LOAD:
                 handleLoadScreenInput(e);
                 break;
@@ -55,7 +55,7 @@ public class KeyboardController implements KeyListener {
                 if (teisPanel.controller.ui.titleCounter == 0) {
                     System.exit(0);
                 } else if (teisPanel.controller.ui.titleCounter == 1) {
-                    teisPanel.setGameState(GameController.GameState.PLAY);
+                    teisPanel.controller.setGameState(GameController.GameState.PLAY);
                 }
                 break;
             default:
@@ -70,27 +70,27 @@ public class KeyboardController implements KeyListener {
             case KeyEvent.VK_A -> left = true;
             case KeyEvent.VK_D -> right = true;
             case KeyEvent.VK_SPACE -> isPressed = true;
-            case KeyEvent.VK_ESCAPE -> teisPanel.setGameState(GameController.GameState.PAUSE);
-            case KeyEvent.VK_TAB -> teisPanel.setGameState(GameController.GameState.STATS);
+            case KeyEvent.VK_ESCAPE -> teisPanel.controller.setGameState(GameController.GameState.PAUSE);
+            case KeyEvent.VK_I -> teisPanel.controller.setGameState(GameController.GameState.STATS);
             case KeyEvent.VK_T -> Time = !Time;
         }
     }
 
     private void handlePauseInput(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            teisPanel.setGameState(GameController.GameState.PLAY);
+            teisPanel.controller.setGameState(GameController.GameState.PLAY);
         }
     }
 
     private void handleDialogInput(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            teisPanel.setGameState(GameController.GameState.PLAY);
+            teisPanel.controller.setGameState(GameController.GameState.PLAY);
         }
     }
 
     private void handleStatsState(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_TAB) {
-            teisPanel.setGameState(GameController.GameState.PLAY);
+        if (e.getKeyCode() == KeyEvent.VK_I) {
+            teisPanel.controller.setGameState(GameController.GameState.PLAY);
         }
     }
 
