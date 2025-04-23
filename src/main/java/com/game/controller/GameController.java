@@ -186,4 +186,11 @@ public class GameController {
         se.setFile(i); // Establece el archivo de sonido de selección según el índice
         se.stop(); // Detiene la reproducción del sonido de selección
     }
+
+    public void setGameState(GameController.GameState newState) {
+        currentGameState = newState;
+    }
+    public GameState getGameState() {
+        return currentGameState;
+    }
 }
