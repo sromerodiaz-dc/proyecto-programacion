@@ -1,7 +1,5 @@
 package com.editorv2.model;
 
-import com.editorv2.view.MapEditorPanel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,5 +55,14 @@ public class MapModel {
 
     public int getTile(int row, int col) {
         return matrix[row][col];
+    }
+
+    // Asegurar que existan estos métodos en MapModel
+    public int getCols() {
+        return matrix[0].length; // O la implementación real
+    }
+
+    public int getRows() {
+        return matrix.length;
     }
 }
