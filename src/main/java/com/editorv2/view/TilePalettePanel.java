@@ -1,28 +1,22 @@
 package com.editorv2.view;
 
 import com.editorv2.controller.TextureController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
-public class TilePalettePanel extends JPanel {
-    private int selectedTextureId = 1;
+public class TilePalettePanel extends JScrollPane {
+    public TilePalettePanel(TextureController textureController, MapEditorPanel editorPanel) {
+        JPanel panel = new JPanel(new GridLayout(0, 5, 2, 2));
 
-    public TilePalettePanel(TextureController textureManager) {
-        setLayout(new GridLayout(0, 5));
-        Map<Integer, BufferedImage> textures = textureManager.getAllTextures();
-
-        for (Map.Entry<Integer, BufferedImage> entry : textures.entrySet()) {
-            JButton btn = new JButton(new ImageIcon(entry.getValue()));
-            final int textureId = entry.getKey();
-            btn.addActionListener(e -> selectedTextureId = textureId);
-            add(btn);
+        for (int id : textureController.getAllTextures().keySet()) {
+            BufferedImage texture = textureController.getTexture(id);
+            JButton btn = new JButton(new ImageIcon(texture.getScaledInstance(64, 64, Image.SCALE_SMOOTH)));
+            btn.addActionListener(e -> editorPanel.setSelectedTexture(id));
+            panel.add(btn);
         }
-    }
 
-    public int getSelectedTextureId() {
-        return selectedTextureId;
+        setViewportView(panel);
+        setPreferredSize(new Dimension(300, 150));
     }
 }
