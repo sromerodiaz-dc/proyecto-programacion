@@ -8,6 +8,7 @@ import com.editorv2.view.TilePalettePanel;
 import javax.swing.*;
 import java.awt.*;
 
+//TODO mejorar la interfaz. Centrar cuadrado del minimapa y remarcar los bordes con blanco. El fondo ha de ser completamente negro. Poner de ejemplo la clase JAR de RyiSnow
 public class GUI extends JFrame {
     public GUI() {
         MapModel model = new MapModel(100, 100);
