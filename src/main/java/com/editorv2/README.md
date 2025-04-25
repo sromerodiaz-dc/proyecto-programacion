@@ -1,4 +1,5 @@
 # Nuevo editor de mapas
+//TODO TERMINAR ESTE README
 Creo que es más fácil empezar de cero que tener que modificar las cosas del editor ya creado.
 
 ## Estructura del nuevo editor
