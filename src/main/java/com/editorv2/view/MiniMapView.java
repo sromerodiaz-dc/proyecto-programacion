@@ -14,14 +14,17 @@ public class MiniMapView extends JPanel implements IModelChangeListener {
     private final JScrollPane mainScrollPane;
     private final TextureController textureController;
     private Rectangle visibleRect;
-    private final float scale = 0.2f;
+    private final float scaleFactor = 0.1f; // Escala única
+    private final int baseTileSize = 32;
 
     public MiniMapView(MapModel model, JScrollPane scrollPane, TextureController textureController) {
         this.model = model;
         this.mainScrollPane = scrollPane;
         this.textureController = textureController;
         model.addListener(this);
-        setPreferredSize(new Dimension(200, 200));
+        setPreferredSize(new Dimension(250, 250));
+        setBackground(Color.BLACK);
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         setupDragListeners();
     }
 
@@ -29,24 +32,34 @@ public class MiniMapView extends JPanel implements IModelChangeListener {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                updateMainView(e.getX(), e.getY());
+                updateMainView(e);
             }
         });
     }
 
-    private void updateMainView(int x, int y) {
+    private void updateMainView(MouseEvent e) {
         JViewport viewport = mainScrollPane.getViewport();
-        int newX = (int)(x / scale) - viewport.getWidth() / 2;
-        int newY = (int)(y / scale) - viewport.getHeight() / 2;
-        viewport.setViewPosition(new Point(newX, newY));
+        int rawX = (int)(e.getX() / scaleFactor);
+        int rawY = (int)(e.getY() / scaleFactor);
+
+        int targetX = rawX - viewport.getWidth() / 2;
+        int targetY = rawY - viewport.getHeight() / 2;
+
+        int maxX = model.getCols() * baseTileSize - viewport.getWidth();
+        int maxY = model.getRows() * baseTileSize - viewport.getHeight();
+
+        viewport.setViewPosition(new Point(
+                Math.max(0, Math.min(targetX, maxX)),
+                Math.max(0, Math.min(targetY, maxY))
+        ));
     }
 
     public void setVisibleRect(Rectangle viewRect) {
         this.visibleRect = new Rectangle(
-                (int)(viewRect.x * scale),
-                (int)(viewRect.y * scale),
-                (int)(viewRect.width * scale),
-                (int)(viewRect.height * scale)
+                (viewRect.x),
+                (viewRect.y),
+                (viewRect.width),
+                (viewRect.height)
         );
         repaint();
     }
@@ -56,20 +69,24 @@ public class MiniMapView extends JPanel implements IModelChangeListener {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // Dibujar mapa
-        g2d.scale(scale, scale);
+        // Fondo
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+
+        // Tiles
+        g2d.scale(scaleFactor, scaleFactor);
         for (int row = 0; row < model.getRows(); row++) {
             for (int col = 0; col < model.getCols(); col++) {
                 BufferedImage texture = textureController.getTexture(model.getTile(row, col));
                 if (texture != null) {
-                    g2d.drawImage(texture, col * 32, row * 32, null);
+                    g2d.drawImage(texture, col * baseTileSize, row * baseTileSize, null);
                 }
             }
         }
 
-        // Dibujar área visible
+        // Rectángulo de vista
         if (visibleRect != null) {
-            g2d.setColor(new Color(255, 0, 0, 100));
+            g2d.setColor(new Color(255, 165, 0, 150));
             g2d.fillRect(visibleRect.x, visibleRect.y, visibleRect.width, visibleRect.height);
         }
         g2d.dispose();
