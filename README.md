@@ -295,8 +295,8 @@ ___
 He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
 y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he logrado algunas imágenes interesantes logradas
 con un programa llamado Pixel Studio.
-1. ![suelos](Assets/background/alcantarilla.png)
-2. ![suelos](Assets/background/sueloEstandarPlaza.png)
+1. ![suelos](background/alcantarilla.png)
+2. ![suelos](background/sueloEstandarPlaza.png)
 ___
 ## Semana del 13/05/2024
 Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
@@ -1406,3 +1406,10 @@ https://chat.deepseek.com/a/chat/s/03c64e7b-a50a-4f08-8e3e-d6f052861f3f
 ---
 ### Rediseño de los objetos
 Cambiarlo de 16x16 a algo mayor para mejorar los gráficos de los sprites.
+
+
+---
+## Semana del 28/04/2025
+### Nuevo editor de mapa
+
+Editor de mapa nuevo inspirado en el típico 2D Tile Editor que se puede encontrar en cualquier parte.
