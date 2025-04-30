@@ -22,10 +22,23 @@ public class MiniMapView extends JPanel implements IModelChangeListener {
         this.mainScrollPane = scrollPane;
         this.textureController = textureController;
         model.addListener(this);
-        setPreferredSize(new Dimension(250, 250));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // Primero el borde
+        updatePreferredSize(); // Luego calcular el tamaño
         setBackground(Color.BLACK);
-        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         setupDragListeners();
+    }
+
+    private void updatePreferredSize() {
+        // Tamaño base del contenido
+        int scaledWidth = (int) (model.getCols() * baseTileSize * scaleFactor);
+        int scaledHeight = (int) (model.getRows() * baseTileSize * scaleFactor);
+
+        // Añadir espacio para el borde (2px en cada lado)
+        Insets insets = getInsets();
+        scaledWidth += insets.left + insets.right;
+        scaledHeight += insets.top + insets.bottom;
+
+        setPreferredSize(new Dimension(scaledWidth, scaledHeight));
     }
 
     private void setupDragListeners() {
