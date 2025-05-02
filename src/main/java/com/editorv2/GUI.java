@@ -5,13 +5,14 @@ import com.editorv2.model.MapModel;
 import com.editorv2.view.MapEditorPanel;
 import com.editorv2.view.MiniMapView;
 import com.editorv2.view.TilePalettePanel;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.io.*;
 
 public class GUI extends JFrame {
 
@@ -93,32 +94,62 @@ public class GUI extends JFrame {
     }
 
     private void saveMap(MapModel model) {
-        File mapsDir = new File("src/main/resources/maps");
-        if (!mapsDir.exists()) mapsDir.mkdirs(); // Crear directorio recursivamente
+        File configFile = new File("src/main/resources/tiles.json");
+        if (!configFile.exists()) {
+            JOptionPane.showMessageDialog(null, "tiles.json no encontrado.");
+            return;
+        }
 
-        // Pedir nombre del mapa
-        String mapName = JOptionPane.showInputDialog(this, "Nombre del mapa:");
+        String mapName = JOptionPane.showInputDialog(null, "Nombre del mapa:");
         if (mapName == null || mapName.trim().isEmpty()) return;
 
-        // Guardar archivo
-        File file = new File(mapsDir, mapName + ".txt");
         try {
-            exportMap(file, model);
-            JOptionPane.showMessageDialog(this, "Mapa guardado en: " + file.getAbsolutePath());
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar: " + ex.getMessage());
-        }
-    }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(configFile);
+            ObjectNode rootObj = (ObjectNode) root;
 
-    public void exportMap(File file, MapModel model) throws IOException {
-        try (PrintWriter pw = new PrintWriter(file)) {
-            int[][] exportMatrix = model.getMatrixForExport(); // Solo celdas modificadas + 9
-            for (int[] row : exportMatrix) {
-                String line = Arrays.stream(row)
-                        .mapToObj(String::valueOf)
-                        .collect(Collectors.joining(" "));
-                pw.println(line);
+            ObjectNode mapsNode = rootObj.with("maps");
+
+            if (mapsNode.has(mapName)) {
+                int option = JOptionPane.showConfirmDialog(null,
+                        "El mapa ya existe. ¿Desea sobreescribirlo?",
+                        "Confirmar sobreescritura",
+                        JOptionPane.YES_NO_OPTION);
+                if (option != JOptionPane.YES_OPTION) return;
             }
+
+            ObjectNode mapData = mapper.createObjectNode();
+            mapData.put("width", model.getCols());
+            mapData.put("height", model.getRows());
+
+            ArrayNode layers = mapper.createArrayNode();
+            ObjectNode groundLayer = mapper.createObjectNode();
+            groundLayer.put("name", "ground");
+
+            ArrayNode dataArray = mapper.createArrayNode();
+            int[][] matrix = model.getMatrixForExport();
+            for (int[] row : matrix) {
+                ArrayNode rowArray = mapper.createArrayNode();
+                for (int val : row) {
+                    rowArray.add(val);
+                }
+                dataArray.add(rowArray);
+            }
+            groundLayer.set("data", dataArray);
+            layers.add(groundLayer);
+
+            mapData.set("layers", layers);
+            mapsNode.set(mapName, mapData);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+                mapper.writerWithDefaultPrettyPrinter().writeValue(writer, rootObj);
+            }
+
+            JOptionPane.showMessageDialog(null, "Mapa guardado correctamente en tiles.json");
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al guardar el mapa: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
