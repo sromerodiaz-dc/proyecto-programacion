@@ -27,7 +27,11 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                paintTile(e);
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    deleteTile(e);
+                } else {
+                    paintTile(e);
+                }
             }
         });
 
@@ -44,6 +48,14 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         int row = e.getY() / tileSize;
         if (col >= 0 && col < model.getCols() && row >= 0 && row < model.getRows()) {
             model.setTile(row, col, selectedTextureId);
+        }
+    }
+
+    private void deleteTile(MouseEvent e) {
+        int col = e.getX() / tileSize;
+        int row = e.getY() / tileSize;
+        if (col >= 0 && col < model.getCols() && row >= 0 && row < model.getRows()) {
+            model.setTile(row, col, 9); // Establecer ID 0 (sprite por defecto)
         }
     }
 
