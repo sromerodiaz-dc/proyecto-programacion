@@ -1,0 +1,144 @@
+{
+  "tiles": [
+    {
+      "id": 0,
+      "path": "AAbloqueNegro.png"
+    },
+    {
+      "id": 1,
+      "path": "alcantarilla.png"
+    },
+    {
+      "id": 2,
+      "path": "bloqueBLLarge.png"
+    },
+    {
+      "id": 3,
+      "path": "bloqueBRLarge.png"
+    },
+    {
+      "id": 4,
+      "path": "bloqueNegroBL.png"
+    },
+    {
+      "id": 5,
+      "path": "bloqueNegroBR.png"
+    },
+    {
+      "id": 6,
+      "path": "bloqueNegroTL.png"
+    },
+    {
+      "id": 7,
+      "path": "bloqueNegroTR.png"
+    },
+    {
+      "id": 8,
+      "path": "bloqueTLLarge.png"
+    },
+    {
+      "id": 9,
+      "path": "bloqueTRLarge.png"
+    },
+    {
+      "id": 10,
+      "path": "oscuroAbajo.png"
+    },
+    {
+      "id": 11,
+      "path": "oscuroArriba.png"
+    },
+    {
+      "id": 12,
+      "path": "oscuroDerecha.png"
+    },
+    {
+      "id": 13,
+      "path": "oscuroIzquierdo.png"
+    },
+    {
+      "id": 14,
+      "path": "paredOscura.png"
+    },
+    {
+      "id": 15,
+      "path": "paredPuerta.png"
+    },
+    {
+      "id": 16,
+      "path": "paredVentanaDerecha.png"
+    },
+    {
+      "id": 17,
+      "path": "paredVentanaIzquierda.png"
+    },
+    {
+      "id": 18,
+      "path": "paredVomito.png"
+    },
+    {
+      "id": 19,
+      "path": "paredVomitoIzquierda.png"
+    },
+    {
+      "id": 20,
+      "path": "road00.png"
+    },
+    {
+      "id": 21,
+      "path": "sueloEstandarPlaza.png"
+    },
+    {
+      "id": 22,
+      "path": "sueloOscuroRegilla.png"
+    },
+    {
+      "id": 23,
+      "path": "sueloOscuroRegillaVertical.png"
+    },
+    {
+      "id": 24,
+      "path": "suelosOscuro.png"
+    },
+    {
+      "id": 25,
+      "path": "table01.png"
+    },
+    {
+      "id": 26,
+      "path": "tree.png"
+    },
+    {
+      "id": 27,
+      "path": "unionRegilla.png"
+    },
+    {
+      "id": 28,
+      "path": "wall.png"
+    },
+    {
+      "id": 29,
+      "path": "water00.png"
+    },
+    {
+      "id": 30,
+      "path": "water01.png"
+    },
+    {
+      "id": 31,
+      "path": "water02.png"
+    },
+    {
+      "id": 32,
+      "path": "water03.png"
+    },
+    {
+      "id": 33,
+      "path": "water04.png"
+    },
+    {
+      "id": 34,
+      "path": "water05.png"
+    }
+  ]
+}
