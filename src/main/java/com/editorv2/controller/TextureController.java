@@ -12,47 +12,46 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.io.input.BOMInputStream;
 
 public class TextureController {
-    private static final String CONFIG_FILE = "src/main/resources/tiles.json";
-    private static final String BACKGROUND_PATH = "src/main/resources/background/";
+    private static final String CONFIG_FILE = "tiles.json";
+    private static final String BACKGROUND_PATH = "background";
     private final Map<Integer, BufferedImage> textures = new HashMap<>();
     private final Map<String, Integer> fileToIdMap = new HashMap<>();
     private int nextId = 1;
-
-    //TODO terminar de implementar por completo el Json
-    //TODO implementar carga de sprites a partir de un unico archivo
-    //TODO cambiar la lógica del juego para cargar el mapa desde una clase propia del juego que acceda al json y al mapa desde resources.
+    private File externalConfigFile;
 
     public TextureController() {
+        externalConfigFile = new File(CONFIG_FILE); // Archivo externo en directorio de trabajo
         loadTexturesWithUserInput();
     }
 
     private void loadTexturesWithUserInput() {
-        File configFile = new File(CONFIG_FILE);
-
-        // Paso 1: Preguntar al usuario si no existe el archivo
-        if (!configFile.exists()) {
+        // Paso 1: Generar o seleccionar archivo de configuración
+        if (!externalConfigFile.exists()) {
             int option = JOptionPane.showConfirmDialog(null,
                     "¿Desea generar un nuevo archivo de configuración?",
                     "Archivo no encontrado",
                     JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
-                generateDefaultConfig(configFile);
+                generateDefaultConfig(externalConfigFile);
             } else {
                 JFileChooser chooser = new JFileChooser();
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    configFile = chooser.getSelectedFile();
+                    externalConfigFile = chooser.getSelectedFile();
                 }
             }
         }
 
         // Paso 2: Cargar texturas y configuración
         loadTexturesFromResources();
-        if (configFile.exists()) {
-            loadConfig();
-            checkForNewTextures(configFile);
+        if (externalConfigFile.exists()) {
+            loadConfig(externalConfigFile);
+            checkForNewTextures(externalConfigFile);
         }
     }
 
@@ -61,12 +60,11 @@ public class TextureController {
             URL resourceDir = getClass().getClassLoader().getResource(BACKGROUND_PATH);
             if (resourceDir == null) throw new IOException("Carpeta 'background' no encontrada");
 
-            File[] files = new File(resourceDir.toURI()).listFiles((dir, name) -> name.endsWith(".png"));
+            File[] files = new File(resourceDir.toURI()).listFiles((_, name) -> name.endsWith(".png"));
             if (files == null || files.length == 0) {
                 throw new IOException("No hay archivos PNG en resources/background");
             }
 
-            // Cargar temporalmente para detección de nuevos archivos
             for (File file : files) {
                 String fileName = file.getName();
                 if (!fileToIdMap.containsKey(fileName)) {
@@ -79,66 +77,67 @@ public class TextureController {
         }
     }
 
-    private void loadConfig() {
+    private void loadConfig(File configFile) {
         ObjectMapper mapper = new ObjectMapper();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("tiles.json")) {
-            if (is == null) throw new FileNotFoundException("tiles.json no encontrado en recursos");
-
-            // Parsear JSON
-            JsonNode root = mapper.readTree(is);
-            JsonNode texturesNode = root.path("textures");
+        try (InputStream is = new FileInputStream(configFile)) {
+            BOMInputStream bomIs = new BOMInputStream(is); // Manejar BOM
+            JsonNode root = mapper.readTree(bomIs);
+            JsonNode texturesNode = root.path("tiles");
 
             for (JsonNode textureNode : texturesNode) {
                 int id = textureNode.path("id").asInt();
                 String path = textureNode.path("path").asText();
 
-                // Cargar textura desde resources/
-                try (InputStream imgStream = getClass().getResourceAsStream("/" + path)) {
+                try (InputStream imgStream = getClass().getResourceAsStream("/" + BACKGROUND_PATH + "/" + path)) {
                     if (imgStream != null) {
                         BufferedImage img = ImageIO.read(imgStream);
                         textures.put(id, img);
                         fileToIdMap.put(new File(path).getName(), id);
                         nextId = Math.max(nextId, id + 1);
                     } else {
-                        System.err.println("⚠️ Textura no encontrada: " + path);
+                        System.err.println("⚠️ Textura no encontrada: " + BACKGROUND_PATH + "/" + path);
                     }
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error cargando tiles.json", e);
+            throw new RuntimeException("Error cargando configuración: " + e.getMessage());
         }
     }
 
     private void generateDefaultConfig(File configFile) {
         try {
-            // Obtener directorio de recursos usando ClassLoader
             URL resourceDir = getClass().getClassLoader().getResource(BACKGROUND_PATH);
             if (resourceDir == null) {
                 throw new IOException("Carpeta 'background' no encontrada en recursos.");
             }
 
-            // Convertir URL a File de manera segura
             File backgroundDir = new File(resourceDir.toURI());
-            File[] files = backgroundDir.listFiles((dir, name) -> name.endsWith(".png"));
+            File[] files = backgroundDir.listFiles((_, name) -> name.endsWith(".png"));
 
             if (files == null || files.length == 0) {
                 System.err.println("No hay archivos PNG en resources/background");
                 return;
             }
 
-            // Ordenar archivos alfabéticamente por nombre
             List<File> sortedFiles = Arrays.stream(files)
                     .sorted(Comparator.comparing(File::getName))
                     .toList();
 
-            // Escribir en formato "ID: filename.png"
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(configFile))) {
-                for (int i = 0; i < sortedFiles.size(); i++) {
-                    String fileName = sortedFiles.get(i).getName();
-                    bw.write(i + ": " + fileName);
-                    bw.newLine();
-                }
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode rootNode = mapper.createObjectNode();
+            ArrayNode tilesArray = rootNode.putArray("tiles");
+
+            for (int i = 0; i < sortedFiles.size(); i++) {
+                ObjectNode tile = mapper.createObjectNode();
+                tile.put("id", i);
+                tile.put("path", sortedFiles.get(i).getName());
+                tilesArray.add(tile);
             }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+                mapper.writerWithDefaultPrettyPrinter().writeValue(writer, rootNode);
+            }
+
         } catch (URISyntaxException | IOException e) {
             System.err.println("Error generando configuración: " + e.getMessage());
             e.printStackTrace();
@@ -151,32 +150,51 @@ public class TextureController {
             assert resourceDir != null;
             File[] currentFiles = new File(resourceDir.toURI()).listFiles((_, name) -> name.endsWith(".png"));
 
-            Set<String> configTextures = fileToIdMap.keySet();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            try (InputStream is = new FileInputStream(configFile)) {
+                BOMInputStream bomIs = new BOMInputStream(is); // Manejar BOM
+                root = mapper.readTree(bomIs);
+            }
+            ArrayNode tilesArray = (ArrayNode) root.path("tiles");
+
+            Set<String> configTextures = new HashSet<>();
+            for (JsonNode node : tilesArray) {
+                configTextures.add(node.path("path").asText());
+            }
+
             boolean hasNewTextures = false;
 
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(configFile, true))) {
-                assert currentFiles != null;
-                for (File file : currentFiles) {
-                    String fileName = file.getName();
-                    if (!configTextures.contains(fileName)) {
-                        bw.write(nextId + " " + fileName);
-                        bw.newLine();
+            for (File file : Objects.requireNonNull(currentFiles)) {
+                String fileName = file.getName();
+                if (!configTextures.contains(fileName)) {
+                    BufferedImage img = ImageIO.read(file);
+                    textures.put(nextId, img);
+                    fileToIdMap.put(fileName, nextId);
 
-                        textures.put(nextId, ImageIO.read(file));
-                        fileToIdMap.put(fileName, nextId++);
-                        hasNewTextures = true;
-                    }
+                    ObjectNode newTile = mapper.createObjectNode();
+                    newTile.put("id", nextId);
+                    newTile.put("path", fileName);
+                    tilesArray.add(newTile);
+
+                    nextId++;
+                    hasNewTextures = true;
                 }
             }
 
             if (hasNewTextures) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+                    mapper.writerWithDefaultPrettyPrinter().writeValue(writer, root);
+                }
                 JOptionPane.showMessageDialog(null, "Se añadieron nuevas texturas al archivo de configuración.");
             }
+
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
     }
 
+    // Resto de métodos sin cambios...
     public BufferedImage getTexture(int id) {
         return textures.getOrDefault(id, createDefaultTexture());
     }
@@ -197,6 +215,4 @@ public class TextureController {
     public Map<Integer, BufferedImage> getAllTextures() {
         return textures;
     }
-
-    public record TextureEntry(int id, String path){}
 }
