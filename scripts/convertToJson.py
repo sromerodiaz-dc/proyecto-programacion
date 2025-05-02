@@ -4,7 +4,7 @@ import os
 # Configura rutas relativas desde la raíz del proyecto
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 INPUT_PATH = os.path.join(PROJECT_ROOT, "proyecto-programacion", "src", "main", "resources", "textures.cfg")
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "proyecto-programacion", "src", "main", "resources", "textures.json")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "proyecto-programacion", "src", "main", "resources", "tiles.json")
 
 def main():
     if not os.path.exists(INPUT_PATH):
