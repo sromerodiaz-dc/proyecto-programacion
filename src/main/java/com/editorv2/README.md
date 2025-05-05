@@ -8,22 +8,40 @@ Se aplica el modelo Observer para mantener los datos sincronizados. La sincroniz
 model      -> datos del mapa. Guarda los listeners y contiene la lógica de notificación de los datos
 view       -> vistas dadas por los componentes de la librería Java Swing.
 controller -> lógica de interacción entre las vistas y los datos.
+
+src/
+├── main/
+│   ├── java/com/editor/
+│   │   ├── controller/
+│   │   │   └── TextureController.java 
+│   │   ├── model/
+│   │   │   ├── MapModel.java
+│   │   │   └── IModelChangeListener.java
+│   │   └── view/
+│   │       ├── MapEditorPanel.java
+│   │       ├── MiniMapView.java
+│   │       └── TilePalettePanel.java
+│   └── resources/
+│       ├── textures.json
+│       └── background/
+└── test/
+    └── java/editor
 ```
 
 ---
-### CONTROLLER/ `TextureController`
+### CONTROLLER/`TextureController`
 
 ---
-### MODEL/ `MapModel`
+### MODEL/`MapModel`
 1. Almacenará la matriz de números que representa el mapa.
 2. Notificará los cambios realizados entre las vistas.
 
-### MODEL/ `IModelChangeListener`
+### MODEL/`IModelChangeListener`
 
 ---
-### VIEW/ `MapEditorPanel`
+### VIEW/`MapEditorPanel`
 
-### VIEW/ `MiniMapView`
+### VIEW/`MiniMapView`
 Flujo de trabajo:
     El MiniMapView no necesita conocer directamente el JScrollPane
 
@@ -31,7 +49,7 @@ Flujo de trabajo:
 
     El JScrollPane detectará automáticamente el cambio
 
-### VIEW/ `TilePalettePanel`
+### VIEW/`TilePalettePanel`
 
 ---
 ### /`GUI`
