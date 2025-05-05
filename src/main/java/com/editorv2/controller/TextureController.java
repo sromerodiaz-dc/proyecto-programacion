@@ -25,7 +25,7 @@ public class TextureController {
     private File externalConfigFile;
 
     public TextureController() {
-        externalConfigFile = new File(CONFIG_FILE); // Archivo externo en directorio de trabajo
+        externalConfigFile = new File("src/main/resources/"+CONFIG_FILE); // Archivo externo en directorio de trabajo
         loadTexturesWithUserInput();
     }
 
