@@ -194,7 +194,6 @@ public class TextureController {
         }
     }
 
-    // Resto de métodos sin cambios...
     public BufferedImage getTexture(int id) {
         return textures.getOrDefault(id, createDefaultTexture());
     }
