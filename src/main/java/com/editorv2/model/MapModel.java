@@ -80,4 +80,13 @@ public class MapModel {
     public int getRows() {
         return matrix.length;
     }
+
+    // Para optimización de renderizado
+    public Set<Point> getModifiedCells() {
+        return new HashSet<>(modifiedCells);
+    }
+
+    public void clearModifiedCells() {
+        modifiedCells.clear();
+    }
 }
