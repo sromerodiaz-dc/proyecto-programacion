@@ -19,8 +19,12 @@
    1. [Optimización del código](#optimización-del-código)
    2. [Pantalla de Carga: GameStates](#pantalla-de-carga)
    3. [Reestructuración del código](#reestructuración-del-código)
-5. [Semana 5](#semana-del-07052025)
+5. [Semana 5](#semana-del-07042025)
    1. [Refactorización e implementación de Maven](#refactorización-del-código-e-implementación-de-maven)
+6. [Semana 6](#semana-del-14042025)
+7. [Semana 7](#semana-del-21042025)
+8. [Semana 8](#semana-del-28042025)
+9. [Semana 9](#semana-del-05052025)
 ___
 # Notas de desarrollo
 
@@ -1146,7 +1150,7 @@ Por otro lado, el _constructor_ carga el driver de PostgreSQL, establece la cone
 - El método obtenerDatosEntidad() devuelve un arreglo de objetos que contiene los datos de la tabla "entidad". El método utiliza un objeto Statement para ejecutar una consulta SQL que selecciona todos los registros de la tabla "entidad". Luego, itera sobre los resultados y almacena los datos en un arreglo de objetos.
 - El método cerrarConexion() cierra la conexión a la base de datos. Este método es importante para liberar recursos y evitar problemas de concurrencia.
 ___
-## Semana del 07/05/2025
+## Semana del 07/04/2025
 ### Refactorización del código e implementación de Maven
 Se ha implementado Maven añadiendo un `pom.xml` y cambiando la estructura del código a:
 ```text
@@ -1168,7 +1172,6 @@ mi-proyecto/
         └── resources/         <-- recursos para pruebas
 
 ```
-
 Con la nueva estructura implementada en el código queda anotar aspectos a mejorar de cada parte.
 
 ### Problemas del `Editor`:
@@ -1188,9 +1191,6 @@ El juego carga sprites desde la carpeta `background/` y los guarda en un array `
 El archivo "`c_assets_user.txt`" no se estaba utilizando al construir el array `sprites[]`.
 
 ---
-### Usar el archivo `c_assets_user.txt` como fuente para construir el array `sprites[]` con el orden correcto.
-
----
 ### ¿Qué debe hacer `loadSprites()`?
 1. Leer el archivo `c_assets_user.txt`
 2. Por cada línea:
@@ -1198,7 +1198,8 @@ El archivo "`c_assets_user.txt`" no se estaba utilizando al construir el array `
    - Cargar la imagen correspondiente
    - Colocarla en la posición correcta dentro de `sprites[]`
 ---
-## Código corregido de `loadSprites()`
+
+### Código corregido de `loadSprites()`
 ```java
 public ImageIcon[] loadSprites() {
   List<ImageIcon> spriteList = new ArrayList<>();
@@ -1232,28 +1233,25 @@ public ImageIcon[] loadSprites() {
   return spriteList.toArray(new ImageIcon[0]);
 }
 ```
+
 ---
-## Semana del 14/07/2025
+## Semana del 14/04/2025
 ### Añadiendo efectos de sonido al juego
 
-Por añadir, sacar los efectos de sonido de aqui:
-https://drive.google.com/drive/folders/1xelhONaiD3G12z9J3N6BqVR6Ts08pRwg
+El flujo de funcionamiento es el siguiente:
 
-La lógica ya está creada, falta por posicionar los objetos aunque sus assets ya están creadas.
+    TeisPanel inicia los recursos gráficos del juego, incluyendo propiedades como la resolución y los controladores principales para el manejo de entidades.
 
-Funciona de la siguiente manera:
+    GameController instancia las clases responsables de la física, mecánicas del juego, interfaz de usuario, gestión de piezas, colisiones, estados, objetos y sonidos.
 
-TeisPanel inicia los recursos gráficos del juego como las propiedades de la resolucion y los controladores necesarios 
-para el manejo de las entidades. Por otro lado, el GameController instancia las clases que llevan la física y las
-diferentes mecánicas del juego como por ejemplo el gestor de las piezas, los efectos de sonido, las entidades, la interfaz
-de usuario, las colisiones, los objetos, los estados de juego, etc...
+Dentro del GameController se encuentra la lógica que maneja los efectos de sonido. Esta lógica se activa desde la clase Player cuando el personaje realiza ciertas acciones, como usar un objeto o abrir una puerta. Se diferencian los sonidos dependiendo de la acción: por ejemplo, un efecto para cuando el jugador intenta abrir una puerta sin llave y otro para cuando sí la posee.
 
-Bien, pues dentro del controller es donde se encuentra el manejo de sonidos del juego, estos metodos luego son empleados
-por la clase de player para cuando tiene que emplear objetos o abrir puertas y demas cosas. Por ejemplo, para cuando
-intenta abrir una puerta sin el objeto adecuado hay un efecto diferente a cuando efectivamente tiene la llave para abrirla.
+La clase Sound (ubicada en com.game.efx.Sound) se encarga de la reproducción de estos efectos. Actualmente contiene:
 
-Luego, la clase Sound contiene las rutas a estos diferentes archivos. HAY QUE CAMBIAR LA LÓGICA DE ESTO YA QUE AL 
-ESTAR CONTENIDO DENTRO DE RESOURCES_ROOT SE MANEJA DE MANERA DIFERENTE.
+    Un arreglo de URL que carga las rutas de los archivos .wav desde la carpeta resources/effects/songs/.
+
+    Métodos para establecer el sonido (setFile(int i)), reproducirlo (play()), repetirlo en bucle (loop()) y detenerlo (stop()).
+
 ---
 ### Añadiendo efectos visuales
 
@@ -1274,6 +1272,7 @@ public void dyingAnimation(Graphics2D g2) {
     }
 }
 ```
+
 1. Contador de animación:
    - Se incrementa dyingCounter en cada llamada para actuar como un temporizador interno.
 2. Control de duración:
@@ -1310,41 +1309,102 @@ Si es 1 (es impar) → usar 1f → completamente visible.
 
 ==> (dyingCounter / 5) % 2 == 0 ? 0f : 1f; <==
 ```
+
 ---
 ### Barra de vida
 
-Falta por explicar como funciona la barra de vida de la clase de Entity y reestructuracion de la clase drawRelativeToPlayer()
+La barra de vida del jugador se renderiza desde la clase UserInterface, dentro del método drawPlayerLife(). Esta clase gestiona el HUD (interfaz gráfica del usuario) y se encarga de representar visualmente los corazones que simbolizan la vida del personaje.
 
-### 1. Eliminación de código repetido
-- Se extrajeron variables como `playerWorldX`, `playerWorldY`, `playerScreenX`, `playerScreenY` y `size` para evitar acceder múltiples veces a las mismas propiedades del objeto `teisPanel`.
+- vidaFull, vidaHalf, vidaEmpty: Son las imágenes correspondientes al corazón lleno, medio y vacío. Se cargan a través de una entidad auxiliar (Vida) en el constructor de UserInterface. 
+- Dibujo escalonado: Primero se dibujan los corazones vacíos en base a la vida máxima (maxLife), y después se dibujan encima los medios y llenos en función de la vida actual (life). 
+- La vida se gestiona como un valor entero, donde cada unidad equivale a medio corazón (es decir, life = 5 equivale a 2.5 corazones).
 
-### 2. Simplificación de condición de visibilidad
-- Se encapsuló la lógica de visibilidad en una variable booleana `isVisible` para mayor claridad y legibilidad.
-- Se agregó un `return` temprano si no es visible, reduciendo indentación innecesaria.
+Las entidades del juego (como el jugador o enemigos) tienen una barra de vida visual compuesta por imágenes de corazones. Esta barra se dibuja en relación con la interfaz de usuario (UserInterface.java) y la clase Entity.java.
+Representación de la vida
 
-### 3. Consolidación de lógica de la barra de vida
-- Se movió el cálculo y renderizado de la barra de vida a una sección específica, eliminando redundancia y mejorando estructura.
-- Se usó `++hpBarCounter` directamente en el `if` para hacer más compacta la lógica.
+La vida total de una entidad se maneja en unidades enteras. Cada corazón representa 2 unidades de vida:
+- ❤ Corazón lleno = 2 unidades
+- 💔 Medio corazón = 1 unidad
+- 🤍 Corazón vacío = 0 unidades
 
-### 4. Mejor legibilidad general
-- Se reordenó y limpió el flujo del método para seguir un orden lógico y fácil de seguir:
-   1. Cálculos iniciales
-   2. Verificación de visibilidad
-   3. Lógica de barra de vida
-   4. Efectos visuales (invencible, dying)
-   5. Dibujo final de la imagen
+Ejemplo:
+```text
+Si el jugador tiene life = 5 y maxLife = 10, el resultado visual será:
+❤ ❤ 💔 🤍 🤍
+```
 
-### 5. Optimización leve en rendimiento
-- Menor cantidad de operaciones redundantes en cada frame (especialmente en accesos a objetos anidados).
-- Uso más eficiente de condiciones para evitar ejecuciones innecesarias.
+El dibujo de la vida del jugador se realiza en el método drawPlayerLife(Graphics2D g2):
+```java
+public void drawPlayerLife(Graphics2D g2) {
+    int x = tileSize / 2;
+    int y = tileSize / 2;
+    int i = 0;
+
+    // Dibuja corazones vacíos según la vida máxima
+    while (i < gp.player.maxLife / 2) {
+        g2.drawImage(heart_blank, x, y, null);
+        i++;
+        x += tileSize;
+    }
+
+    x = tileSize / 2;
+    i = 0;
+
+    // Dibuja corazones llenos y medios según la vida actual
+    while (i < gp.player.life) {
+        g2.drawImage(heart_half, x, y, null);
+        i++;
+        if (i < gp.player.life) {
+            g2.drawImage(heart_full, x, y, null);
+            i++;
+        }
+        x += tileSize;
+    }
+}
+```
+
 ---
 ### Patrones de diseño en videojuegos
 
-1. Implementar Singleton para la base de datos
-2. Desarrollar el Factory de las entidades
-3. Desarrollar el patron Observer de los eventos del juego y el eventListener
+1. Implementar Singleton para la base de datos:
+```java
+public static synchronized Properties getInstance(String url, String usuario, String password) {
+    if (instance == null) {
+        instance = new Properties(url, usuario, password);
+    }
+    return instance;
+}
 
-### Modificacion del controlador de eventos del juego
+private Properties(String url, String usuario, String password) {
+    // Inicialización de conexión
+}
+```
+
+2. Desarrollar el Factory de las entidades
+Sistema para crear entidades de juego (NPCs, enemigos) usando el patrón Factory Method, permitiendo:
+
+- Desacoplamiento entre creación y uso de objetos
+- Extensibilidad para nuevas entidades
+- Centralización de la lógica de instanciación
+- 
+```text
+[Client] --> [IEntityFactory]
+            ▲
+            |
+      [EntityFactory]
+            |
+            ▼
+      [EntityType] (enum)
+```
+
+Arquitectura Clave:
+- - IEntityFactory:	Define contrato para creación de entidades
+- - EntityFactory:	Implementa lógica concreta de creación
+- - EntityType: 	Enumera tipos válidos de entidades
+- - Entity:     	Clase base con funcionalidad común
+
+3. Desarrollar el patron Observer de los eventos del juego y el eventListener:
+#### Modificacion del controlador de eventos del juego
 Algunas ideas para modificar EventManager:
 ````text
 Aplicar el Patrón Observer:
@@ -1369,7 +1429,7 @@ Agregar cooldown centralizado por evento:
 
 1. Crear una clase EventCooldownManager que se encargue de manejar todos los cooldowns y que sea reutilizable.
 ````
-### Problemas actuales del controlador de eventos
+#### Problemas actuales del controlador de eventos
 Problemas de acoplamiento y escalabilidad
    
 1. Responsabilidad única: EventManager sabe de colisiones, de lógica de daño, de lógica de curación, de estados de UI, de control de cooldown…
@@ -1380,33 +1440,142 @@ Problemas de acoplamiento y escalabilidad
 
 4. Difícil de extender: para introducir un nuevo tipo de evento (por ejemplo, un “checkpoint” o un “aumento de fuerza”) hay que tocar checkEvent() y añadir ramas.
 
-Pasos para la refactorización: https://chatgpt.com/c/6802a402-c248-8007-b786-f8e6f6d60593
+### Estructura de manejo de eventos completamente refactorizada
+`1. EventListener` (Interfaz)
+- Define un contrato para manejar eventos.
+- Dicho método es `onEvent(GameEvent event)`
+`2. EvenType` (Enum)
+- Define los tipos de eventos posibles.
+- Dichos valores: `DAMAGE, HEAL, CHECKPOINT, POWER_UP, DIALOG, TELEPORT`.
+`3. GameEvent` (Record)
+- Almacena datos de un evento de forma inmutable / inmodificable.
+- Ejemplo de constructor parametrizado: `new GameEvent(EventType.DAMAGE, 5, 3, 'N', "¡Ataque recibido!", 10);`.
+`4. EventRectangle` (Clase)
+- Extiene de java.awt.Rectangle.
+- Define un área sobre la cual se pueden disparar eventos.
+- Algunos atributos clave son `cooldown, triggered, direction, done`
+`5. EventManager` (Clase)
+- Coordina la detección de eventos y su notificación a los listeners (entidades).
+- Componentes importantes: `eventRectangles` (lista de eventos cargados desde gameController) y `listeners` (suscriptores / entidades).
+
+```sequenceDiagram
+participant Player
+participant EventManager
+participant EventRectangle
+participant GameEvent
+participant EventListener
+
+Player->>EventManager: Mover/Interactuar
+EventManager->>EventRectangle: checkEvents()
+loop Para cada EventRectangle
+    EventRectangle-->>EventManager: ¿Puede activarse? (canTrigger())
+    alt Condiciones cumplidas
+        EventManager->>EventRectangle: trigger()
+        EventManager->>GameEvent: Crear instancia
+        EventManager->>EventListener: notifyListeners(event)
+        EventListener->>EventListener: onEvent(event) (Ej: actualizar salud, mostrar diálogo)
+    else
+        EventManager-->>Player: Ignorar (cooldown o dirección incorrecta)
+    end
+end
+```
 
 ---
 ### Diseño y control de sonido
 
-https://www.beepbox.co
+#### Qué es `https://www.beepbox.co`?
+**BeepBox.co** es una herramienta en línea gratuita y de código abierto diseñada para crear música y efectos de sonido en estilo **chiptune** (8-bit/16-bit), ideal para juegos retro o proyectos que requieran una estética sonora clásica. Su interfaz intuitiva y accesible permite componer melodías, ritmos y efectos sin necesidad de software complejo o conocimientos avanzados de producción musical.
 
 ![img.png](images/songs.png)
 
 ![img.png](images/beepBoxPanel.png)
 
----
-### Migración de la base de datos a un servidor
+1. **Diseño Simplificado**:
+    - **Interfaz basada en pistas**: Permite organizar notas, instrumentos y efectos en una línea de tiempo visual (como se ve en `beepBoxPanel.png`).
+    - **Personalización de instrumentos**: Ajustar tono, onda (pulso, triángulo, ruido), efectos (vibrato, delay) y tempo.
+    - **Modos de repetición**: Define loops para música de fondo o efectos repetitivos.
+
+2. **Exportación Flexible**:
+    - Los proyectos se guardan como enlaces únicos, facilitando el compartir o editar posteriormente.
+    - Permite exportar audios en formato **WAV** para integrarlos directamente en el juego.
+
+3. **Accesibilidad**:
+    - No requiere registro ni instalación: Funciona directamente en el navegador.
+    - Compatible con dispositivos móviles y ordenadores.
+
+- **Efectos de sonido**:
+    - Ejemplo: Sonidos de daño (`DAMAGE`), curación (`HEAL`), o teletransporte (`TELEPORT`) diseñados con ondas de "ruido" para un impacto retro.
+    - Uso de pistas cortas y loops ajustados al tempo del juego.
+- **Música ambiental**:
+    - Melodías en loop para niveles, menús o eventos especiales (ej: `CHECKPOINT`).
+
+### `Ejemplo de implementación de Sound en el código`
+```java
+public class SoundManager implements EventListener {
+   @Override
+   public void onEvent(GameEvent event) {
+       if (event.type() == EventType.DAMAGE) {
+           playSound("damage.wav");
+       } else if (event.type() == EventType.POWER_UP) {
+           playSound("powerup.wav");
+       }
+       // ...
+   }
+}
+```
 
 ---
 ## Semana del 21/04/2025
-### Implementación del patron Observer en el gestor de eventos
+### Conceptualización de los problemas del editor de mapa
+#### 1. **Violación del Principio de Responsabilidad Única (SOLID)**
+- **`PanelVacio`**:
+    - Gestiona el layout, el contenido de celdas, y la lógica de actualización de imágenes.
+    - Métodos como `getFilasYColumnas()` y `iniciarComponente()` mezclan cálculos de datos con configuración de UI.
+- **`GUI`**:
+    - Clase monolítica que maneja:
+        - Creación de paneles.
+        - Carga de sprites.
+        - Eventos de guardado.
+        - Configuración de botones.
+        - Lógica de interacción (ej: modo "pincel").
+    - Esto dificulta el mantenimiento y la escalabilidad.
 
 ---
-### Editor de mapa optimizado
 
-https://chat.deepseek.com/a/chat/s/03c64e7b-a50a-4f08-8e3e-d6f052861f3f
+#### 2. **Encapsulación Deficiente**
+- **Propiedades públicas**:
+    - `PanelVacio.formato` y `PanelVacio.celdaVacias` son accesibles directamente desde otras clases (ej: `GUI` usa `panel.formato`).
+    - `CeldaVacia.buttonSelected` se modifica externamente sin control.
+- **Acceso directo a estructuras internas**:
+    - En `CeldaVacia`:
+      `panelVacio.getFormato()[row][col] = imageIcon; // ¡Modificación directa del array!`
 
 ---
-### Rediseño de los objetos
-Cambiarlo de 16x16 a algo mayor para mejorar los gráficos de los sprites.
 
+#### 3. **Acoplamiento Alto**
+- **`GUI` depende de detalles internos**:
+    - Accede a `menuIzquierda.celdaVacias` para iterar sobre celdas.
+    - Modifica `CeldaVacia.buttonSelected` directamente.
+- **`CeldaVacia` conoce demasiado de `PanelVacio`**:
+    - La celda actualiza el formato del panel padre, creando un ciclo de dependencias.
+
+---
+
+#### 4. **Manejo Inadecuado de Excepciones y Recursos**
+- **Uso de `System.exit(0)`**:
+    - En `GUI.createBotonGuardar()`, se cierra la aplicación abruptamente al guardar.
+   ```java
+  botonGuardar.addActionListener((ActionEvent _) -> {
+      try { ... } catch (IOException ex) { ... }
+      System.exit(0); // ¡No permite recuperación o cierre limpio!
+  });
+   ```
+
+---
+
+### `Ideas para un nuevo editor`
+Teniendo en cuenta todos los problemas que acarrea tener que modificar todas las clases del editor, 
+he decidido que es mejor empezar de cero y con mejores prácticas.
 
 ---
 ## Semana del 28/04/2025
@@ -1518,3 +1687,7 @@ Idea nueva para almacenar mapas:
   }
 }
 ```
+
+---
+## Semana del 05/05/2025
+### Desarrollo editor de mapa
