@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.Set;
 
 public class MapEditorPanel extends JPanel implements IModelChangeListener {
     private final MapModel model;
@@ -114,6 +115,15 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
     @Override
     public void onModelChanged() {
-        repaint();
+        Set<Point> modified = model.getModifiedCells();
+        if (modified.isEmpty()) return;
+
+        // Calcular área afectada y repintar solo esa región
+        modified.forEach(p -> {
+            int x = p.x * tileSize;
+            int y = p.y * tileSize;
+            repaint(x, y, tileSize, tileSize);
+        });
+        model.clearModifiedCells(); // Limpiar después de pintar
     }
 }
