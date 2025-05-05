@@ -41,8 +41,8 @@ public class MapModel {
         int[][] exportMatrix = new int[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                // Solo procesa celdas modificadas, otras se guardan como 9
-                exportMatrix[i][j] = modifiedCells.contains(new Point(j, i)) ? matrix[i][j] : 9;
+                // Solo procesa celdas modificadas, otras se guardan como 0 : bloque negro
+                exportMatrix[i][j] = modifiedCells.contains(new Point(j, i)) ? matrix[i][j] : 0;
             }
         }
         return exportMatrix;
