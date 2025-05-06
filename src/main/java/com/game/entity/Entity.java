@@ -176,14 +176,6 @@ public class Entity {
     }
 
     /**
-     * Metodo que se encarga de establecer eventos específicos para cada entidad.
-     * Debe ser sobreescrito en las clases hijas para implementar la lógica de eventos específica.
-     */
-    public void setEvent() {
-        // Este metodo debe ser implementado en las clases hijas
-    }
-
-    /**
      * Habla el NPC
      * */
     public void fala() {
@@ -212,9 +204,6 @@ public class Entity {
      * Metodo que se encarga de actualizar el estado de la entidad.
      */
     public void update() {
-        // Llama al metodo setEvent() para establecer eventos específicos
-        setEvent();
-
         // Checkea las colisiones de todas las entidades y piezas
         colisiones();
 
@@ -449,18 +438,6 @@ public class Entity {
         counters[1] = spriteCounter;
         return counters;
     }
-
-    public void resetSolidArea() {
-        solidArea.x = defaultSolidAreaX;
-        solidArea.y = defaultSolidAreaY;
-    }
-
-    public void updateSolidAreaPosition() {
-        solidArea.x = worldX + defaultSolidAreaX;
-        solidArea.y = worldY + defaultSolidAreaY;
-    }
-
-    // TODO Implementar comportamientos especificos para cada enemigo
 
     public TeisPanel getTeisPanel() {
         return teisPanel;
