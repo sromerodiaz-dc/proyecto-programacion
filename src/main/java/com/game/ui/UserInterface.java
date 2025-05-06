@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,7 +22,8 @@ public class UserInterface {
             "Bombardeen a\nUVigo",
             "Bombardeen o\nVialia",
             "\"Porriño pertence\na Mos\"",
-            "V de Vitrasa!"
+            "V de Vitrasa!",
+            "\"Sonido de Teis\""
     );
 
     private final TeisPanel teisPanel;
@@ -169,58 +169,54 @@ public class UserInterface {
     }
 
     public void drawCharacterScreen() {
-        final int frameXY = teisPanel.sizeFinal * 2;
-        final int frameWidth = teisPanel.sizeFinal * 8;
+        final int frameXY     = teisPanel.sizeFinal * 2;
+        final int frameWidth  = teisPanel.sizeFinal * 8;
         final int frameHeight = teisPanel.sizeFinal * 5;
-        final int labelX = frameXY + 40;
-        final int valueX = frameWidth - 40;
-        int labelY = frameXY + 40;
-        g2.setColor(Color.WHITE);
+        final int labelX      = frameXY + 40;
+        final int valueX      = frameWidth - 40;
+        int y                 = frameXY + 40;
 
-        String[] labels = {
-                "Nivel",
-                "Vida",
-                "Herramienta\ncorporativa",
-                "Fentanilo\nen sangre"
-        };
-
-        String[] values = {
-                String.valueOf(teisPanel.model.getLevel()),
-                String.valueOf(teisPanel.model.getLife()),
-                String.valueOf(teisPanel.model.getAttackVal()),
-                String.valueOf(teisPanel.model.getDefenseVal())
-        };
-
-        // FRAME
+        // Dibuja el fondo
         drawWindow(frameXY, frameXY, frameWidth, frameHeight);
 
-        // NAMES
-        drawStringOrdenado(labelX, labelY, labels, 24F);
+        g2.setColor(Color.WHITE);
+        y = drawTextBlock("Nivel", labelX, y, 24f, 10);
+        y = drawTextBlock("Vida", labelX, y, 24f, 10);
+        y = drawTextBlock("Herramienta\ncorporativa", labelX, y, 24f, 15);
+        drawTextBlock("Fentanilo\nen sangre", labelX, y, 24f, 0);
 
-        // VALUES
-        drawStringOrdenado(valueX, labelY, values, 28F);
+        // Ahora los valores, reiniciamos y o los desplazamos igual que etiquetas
+        y = frameXY + 40;
+        g2.setColor(Color.WHITE);
+        y = drawTextBlock(String.valueOf(teisPanel.model.getLevel()), valueX, y, 28f, 10);
+        y = drawTextBlock(String.valueOf(teisPanel.model.getLife()), valueX, y, 28f, 20);
+        y = drawTextBlock(String.valueOf(teisPanel.model.getAttackVal()), valueX, y, 28f, 30);
+        drawTextBlock(String.valueOf(teisPanel.model.getDefenseVal()), valueX, y, 28f, 0);
     }
 
-    // Ahora acepta un tamaño de fuente también
-    private void drawStringOrdenado(int x, int y, String[] texts, float fontSize) {
+    /**
+     * Dibuja un bloque de texto (posible multilínea) y devuelve
+     * la nueva posición Y, aplicando el espacio extra pasado.
+     *
+     * @param text           texto a dibujar (puede llevar '\n')
+     * @param x              coordenada X
+     * @param startY         coordenada Y inicial
+     * @param fontSize       tamaño de fuente
+     * @param spacingAfter   píxeles extra tras el bloque
+     * @return               nueva coordenada Y tras dibujar y el spacing
+     */
+    private int drawTextBlock(String text, int x, int startY, float fontSize, int spacingAfter) {
         g2.setFont(g2.getFont().deriveFont(fontSize));
+        FontMetrics fm = g2.getFontMetrics();
+        int y = startY;
 
-        for (String text : texts) {
-            String[] lines = text.split("\n");
-
-            for (String line : lines) {
-                g2.drawString(line, x, y);
-                y += 30; // separación entre líneas
-            }
-
-            y += 10; // espacio extra entre bloques
+        for (String line : text.split("\n")) {
+            g2.drawString(line, x, y);
+            y += fm.getHeight();      // saltamos la altura de la línea
         }
+        return y + spacingAfter;      // añadimos el espacio extra
     }
 
-    private void drawEquipmentImages(int x, int y) {
-        g2.drawImage(teisPanel.model.getCurrentWeapon().down1, x, y, null);
-        g2.drawImage(teisPanel.model.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
-    }
 
     private void drawWindow(int x, int y, int width, int height) {
         g2.setColor(new Color(0, 0, 0, 200));
@@ -231,6 +227,10 @@ public class UserInterface {
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
 
+    private void drawEquipmentImages(int x, int y) {
+        g2.drawImage(teisPanel.model.getCurrentWeapon().down1, x, y, null);
+        g2.drawImage(teisPanel.model.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
+    }
 
     private void drawTextWithShadow(String text, int x, int y) {
         g2.setColor(Color.GRAY);
