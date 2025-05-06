@@ -74,13 +74,9 @@ public class GameController {
      */
     public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
-        properties.crearTablaEntidad();
+        initializeDatabase();
 
-        ui = new UserInterface(teisPanel, properties);
-        placer = new Placer(teisPanel, properties);
-
-        // Inicializa el controlador de colisiones
-        collisionCheck = new CollisionCheck(teisPanel);
+        initializeComponents(teisPanel);
 
         // Inicializa el manejo de eventos
         setupInitialEvents();
@@ -95,7 +91,18 @@ public class GameController {
         return piezaManager;
     }
 
-    public void setupInitialEvents() {
+    private void initializeComponents(TeisPanel teisPanel) {
+        ui = new UserInterface(teisPanel, properties);
+        placer = new Placer(teisPanel, properties);
+        collisionCheck = new CollisionCheck(teisPanel);
+    }
+
+    // Delegar a un metodo explícito
+    public void initializeDatabase() {
+        properties.crearTablaEntidad();
+    }
+
+    public void setupInitialEvents() { //TODO cargar eventos desde un JSON
         eventManager = new EventManager();
         List<EventRectangle> events = new ArrayList<>();
 
@@ -135,26 +142,18 @@ public class GameController {
      * Reproduce la música del juego según el índice proporcionado.
      *
      * @param i índice de la música a reproducir
-     * @throws LineUnavailableException si no se puede reproducir la música
      */
-    public void playMusic(int i) throws LineUnavailableException {
-        // Si ya está sonando la música que queremos, no hacemos nada
-        if (currentMusicIndex == i) {
-            return;
+    public void playMusic(int i) {
+        try {
+            if (currentMusicIndex == i) return;
+            if (currentMusicIndex != -1) stopMusic();
+            sound.setFile(i);
+            sound.play();
+            sound.loop();
+            currentMusicIndex = i;
+        } catch (LineUnavailableException e) {
+            System.err.println("Error de audio: " + e.getMessage());
         }
-
-        // Si hay música previa, la detenemos
-        if (currentMusicIndex != -1) {
-            stopMusic();
-        }
-
-        // Reproducimos la nueva música
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
-
-        // Guardamos el índice de la música actual
-        currentMusicIndex = i;
     }
 
     /**
@@ -190,7 +189,26 @@ public class GameController {
     public void setGameState(GameController.GameState newState) {
         currentGameState = newState;
     }
+
     public GameState getGameState() {
         return currentGameState;
+    }
+    public void decrementTitleCounter() {
+        ui.titleCounter--;
+        if (ui.titleCounter < 0) ui.titleCounter = 2;
+    }
+
+    public void incrementTitleCounter() {
+        ui.titleCounter++;
+        if (ui.titleCounter > 2) ui.titleCounter = 0;
+    }
+
+    public void exitGame() {
+        // Lógica de limpieza previa a salir
+        System.exit(0);
+    }
+
+    public int getTitleCounter() {
+        return ui.titleCounter;
     }
 }
