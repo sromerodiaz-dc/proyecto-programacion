@@ -1,6 +1,5 @@
 package com.game.maptile;
 
-
 import com.game.controller.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
