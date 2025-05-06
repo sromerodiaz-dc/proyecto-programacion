@@ -13,7 +13,7 @@ import java.io.*;
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
-public class SpriteUtils {
+public class SpriteUtils {  // ! Clase por ser eliminada
     // Selector de mapa
     MapSelector mapSelector = new MapSelector();
 
@@ -21,8 +21,6 @@ public class SpriteUtils {
     /**
      * Genera un mapa de sprites escrito en un archivo de texto a modo de matriz de números.
      * Cada número corresponde a un sprite!
-     * TODO EL editor debería ser flexible en cuanto a la creación o edición de un mapa de la siguiente manera:
-     * ? Deberían poder añadirse más filas y columnas dentro del modo de edición sin necesidad de crear otro archivo.
      *
      * @param sprites La lista de ImageIcon que representan los sprites.
      * @param formato El formato del mapa de sprites.
