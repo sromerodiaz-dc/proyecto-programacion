@@ -1681,7 +1681,12 @@ Idea nueva para almacenar mapas:
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]
+        ],
+         "metadata": {
+            "playerSpawn": [15, 15],
+            "bossSpawn": [20, 20],
+            "teleportEvent": [25, 10]
+         }
       }
     ]
   }
@@ -1690,4 +1695,10 @@ Idea nueva para almacenar mapas:
 
 ---
 ## Semana del 05/05/2025
-### Desarrollo editor de mapa
+### Mejoras de la interfaz de usuario
+
+---
+### Inventario y objetos equipables
+
+---
+### Desarrollo de proyectiles
