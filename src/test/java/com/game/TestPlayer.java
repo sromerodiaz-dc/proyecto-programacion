@@ -30,7 +30,7 @@ class TestPlayer {
     }
 
     @Test
-    void testActualiza() {
+    void testUpdate() {
         Entity entity = new Entity(new TeisPanel(),Properties.getInstance("asf","as","123"));
     }
 }
