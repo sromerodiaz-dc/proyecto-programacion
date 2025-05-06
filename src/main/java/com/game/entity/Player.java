@@ -9,7 +9,6 @@ import com.game.controller.TeisPanel;
 import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
 
-import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -141,7 +140,7 @@ public class Player extends Entity implements EventListener {
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además, controla los sprites por movimiento usados.
      */
-    public void move(KeyboardController e, TeisPanel teisPanel) throws LineUnavailableException {
+    public void move(KeyboardController e, TeisPanel teisPanel) {
         if (attack) {
             attack();
         } else if (e.up || e.down || e.left || e.right || e.isPressed) {
@@ -224,7 +223,8 @@ public class Player extends Entity implements EventListener {
     /**
      * Metodo que actualiza la posición del jugador mediante una llamada a otro metodo heredado de Entity
      */
-    public void actualiza() throws LineUnavailableException {
+    @Override
+    public void update() {
         move(keyboardController, teisPanel);
     }
 
@@ -371,28 +371,6 @@ public class Player extends Entity implements EventListener {
                 }
             }
         }
-    }
-
-    /**
-     * Metodo que se encarga de establecer eventos específicos para cada entidad.
-     * Debe ser sobreescrito en las clases hijas para implementar la lógica de eventos específica.
-     */
-    public void setEvent() {
-        // Este metodo debe ser implementado en las clases hijas
-    }
-
-    /**
-     * Metodo que se encarga de actualizar el estado de la entidad.
-     */
-    public void update() {
-        // Llama al metodo setEvent() para establecer eventos específicos
-        setEvent();
-
-        // Checkea las colisiones de todas las entidades y piezas
-        colisiones();
-
-        // Actualiza el movimiento de la entidad
-        movement();
     }
 
     /**
