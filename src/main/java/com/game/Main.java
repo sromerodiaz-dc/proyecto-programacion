@@ -1,7 +1,6 @@
 package com.game;
 
 import com.game.controller.ventana;
-
 import javax.sound.sampled.LineUnavailableException;
 
 /**

@@ -24,7 +24,7 @@ public class GUI extends JFrame {
 
         // Botón de guardado
         JButton saveButton = new JButton("Guardar Mapa");
-        saveButton.addActionListener(e -> saveMap(model));
+        saveButton.addActionListener(_ -> saveMap(model));
         add(saveButton, BorderLayout.NORTH);
 
         // Componentes
@@ -106,9 +106,13 @@ public class GUI extends JFrame {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(configFile);
-            ObjectNode rootObj = (ObjectNode) root;
 
-            ObjectNode mapsNode = rootObj.with("maps");
+            if (!(root instanceof ObjectNode rootObj)) {
+                JOptionPane.showMessageDialog(null, "Estructura JSON inválida.");
+                return;
+            }
+
+            ObjectNode mapsNode = rootObj.withObject("maps");
 
             if (mapsNode.has(mapName)) {
                 int option = JOptionPane.showConfirmDialog(null,
