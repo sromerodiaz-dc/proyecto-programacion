@@ -9,6 +9,7 @@ import com.game.maptile.PiezaManager;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Objects;
@@ -151,7 +152,7 @@ public class TeisPanel extends JPanel implements Runnable{
         // Verificar si el juego está en estado de juego
         if (controller.currentGameState == GameController.GameState.PLAY) {
             // Actualizar el estado del jugador
-            model.actualiza();
+            model.update();
 
             // Actualizar NPCs
             for (Entity npc : controller.npc) {
@@ -234,24 +235,16 @@ public class TeisPanel extends JPanel implements Runnable{
      * @param g2 Objeto Graphics2D para dibujar las entidades.
      */
     private void drawEntities(Graphics2D g2) {
-        // Limpia la lista de entidades.
-        controller.entities.clear();
+        ArrayList<Entity> entitiesToDraw = new ArrayList<>(); // Lista local
 
-        // Agrega las entidades no nulas a la lista de entidades.
-        controller.entities.addAll(controller.npc.stream().filter(Objects::nonNull).toList());
-        controller.entities.addAll(controller.obj.stream().filter(Objects::nonNull).toList());
-        controller.entities.addAll(controller.enemy.stream().filter(Objects::nonNull).toList());
-        controller.entities.add(model);
+        // Filtra y añade entidades a la lista LOCAL
+        entitiesToDraw.addAll(controller.npc.stream().filter(Objects::nonNull).toList());
+        entitiesToDraw.addAll(controller.obj.stream().filter(Objects::nonNull).toList());
+        entitiesToDraw.addAll(controller.enemy.stream().filter(Objects::nonNull).toList());
+        entitiesToDraw.add(model);
 
-        // Ordena las entidades por su posición en Y.
-        controller.entities.sort(Comparator.comparingInt(e -> e.worldY));
-
-        // Dibuja cada entidad en la lista.
-        for (Entity entity : controller.entities) {
-            entity.draw(g2);
-        }
-
-        // Limpia la lista de entidades.
-        controller.entities.clear();
+        // Ordena y dibuja
+        entitiesToDraw.sort(Comparator.comparingInt(e -> e.worldY));
+        entitiesToDraw.forEach(entity -> entity.draw(g2));
     }
 }
