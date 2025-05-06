@@ -24,7 +24,7 @@ public class Sound {
     /**
      * Constructor de la clase Sound.
      */
-    public Sound(String type) {
+    public Sound(String type) { //TODO emplear un archivo de configuracion para no tener nada hardcodeado
         if  (type.equals("sound")) {
             // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
             soundPath[0] = getClass().getClassLoader().getResource("effects/songs/introGame.wav");
