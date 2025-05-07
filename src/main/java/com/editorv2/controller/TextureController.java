@@ -40,6 +40,7 @@ public class TextureController {
             if (option == JOptionPane.YES_OPTION) {
                 generateDefaultConfig(externalConfigFile);
             } else {
+                JOptionPane.showConfirmDialog(null, "Indica donde se encuentra el archivo de configuración");
                 JFileChooser chooser = new JFileChooser();
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     externalConfigFile = chooser.getSelectedFile();
@@ -80,7 +81,10 @@ public class TextureController {
     private void loadConfig(File configFile) {
         ObjectMapper mapper = new ObjectMapper();
         try (InputStream is = new FileInputStream(configFile)) {
-            BOMInputStream bomIs = new BOMInputStream(is); // Manejar BOM
+            BOMInputStream bomIs = new BOMInputStream.Builder()
+                    .setInputStream(is)
+                    .get();
+
             JsonNode root = mapper.readTree(bomIs);
             JsonNode texturesNode = root.path("tiles");
 
@@ -153,7 +157,9 @@ public class TextureController {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             try (InputStream is = new FileInputStream(configFile)) {
-                BOMInputStream bomIs = new BOMInputStream(is); // Manejar BOM
+                BOMInputStream bomIs = new BOMInputStream.Builder()
+                        .setInputStream(is)
+                        .get();
                 root = mapper.readTree(bomIs);
             }
             ArrayNode tilesArray = (ArrayNode) root.path("tiles");
