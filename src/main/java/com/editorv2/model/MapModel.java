@@ -10,7 +10,7 @@ public class MapModel {
     private int row;
     private int col;
 
-    private Set<Point> modifiedCells = new HashSet<>(); // Rastrea celdas modificadas
+    private final Set<Point> modifiedCells = new HashSet<>(); // Rastrea celdas modificadas
 
     public MapModel(int rows, int cols) {
         this.matrix = new int[rows][cols];
