@@ -1572,7 +1572,6 @@ public class SoundManager implements EventListener {
    ```
 
 ---
-
 ### `Ideas para un nuevo editor`
 Teniendo en cuenta todos los problemas que acarrea tener que modificar todas las clases del editor, 
 he decidido que es mejor empezar de cero y con mejores prácticas.
@@ -1626,32 +1625,7 @@ Idea nueva para almacenar mapas:
   "tiles": [
     { "id": 0, "path": "tile_0.png", "collidable": false },
     { "id": 1, "path": "tile_1.png", "collidable": false },
-    { "id": 2, "path": "tile_2.png", "collidable": true },
-    { "id": 3, "path": "tile_3.png", "collidable": true },
-    { "id": 4, "path": "tile_4.png", "collidable": true },
-    { "id": 5, "path": "tile_5.png", "collidable": true },
-    { "id": 6, "path": "tile_6.png", "collidable": true },
-    { "id": 7, "path": "tile_7.png", "collidable": true },
-    { "id": 8, "path": "tile_8.png", "collidable": true },
-    { "id": 9, "path": "tile_9.png", "collidable": true },
-    { "id": 10, "path": "tile_10.png", "collidable": true },
-    { "id": 11, "path": "tile_11.png", "collidable": true },
-    { "id": 12, "path": "tile_12.png", "collidable": false },
-    { "id": 13, "path": "tile_13.png", "collidable": false },
-    { "id": 14, "path": "tile_14.png", "collidable": true },
-    { "id": 15, "path": "tile_15.png", "collidable": true },
-    { "id": 16, "path": "tile_16.png", "collidable": true },
-    { "id": 17, "path": "tile_17.png", "collidable": true },
-    { "id": 18, "path": "tile_18.png", "collidable": true },
-    { "id": 19, "path": "tile_19.png", "collidable": true },
-    { "id": 20, "path": "tile_20.png", "collidable": true },
-    { "id": 21, "path": "tile_21.png", "collidable": false },
-    { "id": 22, "path": "tile_22.png", "collidable": false },
-    { "id": 23, "path": "tile_23.png", "collidable": false },
-    { "id": 24, "path": "tile_24.png", "collidable": false },
-    { "id": 25, "path": "tile_25.png", "collidable": false },
-    { "id": 26, "path": "tile_26.png", "collidable": false },
-    { "id": 27, "path": "tile_27.png", "collidable": false }
+    { "id": 2, "path": "tile_2.png", "collidable": true }
   ],
   "map": {
     "width": 25,
@@ -1667,25 +1641,12 @@ Idea nueva para almacenar mapas:
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14, 14, 14, 14, 12, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 16, 14, 17, 14, 12, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 15, 14, 15, 19, 12, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 23, 24, 23, 24, 12, 0, 0, 0],
-          [0, 5, 11, 11, 11, 11, 11, 11, 4, 0, 0, 0, 0, 0, 0, 0, 13, 23, 1, 23, 24, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 12, 0, 0, 0, 0, 5, 11, 11, 3, 23, 24, 23, 24, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 2, 11, 11, 11, 11, 3, 15, 19, 18, 23, 24, 23, 24, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 21, 21, 22, 22, 22, 22, 22, 22, 22, 27, 22, 27, 22, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 21, 21, 22, 22, 22, 22, 22, 22, 22, 27, 22, 27, 22, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 8, 10, 10, 10, 10, 9, 24, 1, 24, 23, 24, 23, 24, 12, 0, 0, 0],
-          [0, 13, 24, 24, 24, 24, 24, 24, 12, 0, 0, 0, 0, 7, 10, 10, 10, 10, 10, 10, 10, 6, 0, 0, 0],
-          [0, 7, 10, 10, 10, 10, 10, 10, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ],
          "metadata": {
-            "playerSpawn": [15, 15],
-            "bossSpawn": [20, 20],
-            "teleportEvent": [25, 10]
+            "playerSpawn": [5, 1],
+            "bossSpawn": [0, 10],
+            "teleportEvent": [1, 10]
          }
       }
     ]
