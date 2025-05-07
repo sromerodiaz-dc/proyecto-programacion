@@ -1,7 +1,4 @@
 # Nuevo editor de mapas
-//TODO TERMINAR ESTE README
-Creo que es más fácil empezar de cero que tener que modificar las cosas del editor ya creado.
-
 ## Estructura del nuevo editor
 Se aplica el modelo Observer para mantener los datos sincronizados. La sincronización de los datos es lo más importante.
 ```text
