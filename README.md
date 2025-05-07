@@ -25,9 +25,9 @@
 7. [Semana 7](#semana-del-21042025)
 8. [Semana 8](#semana-del-28042025)
 9. [Semana 9](#semana-del-05052025)
+
 ___
 # Notas de desarrollo
-
 ### En este documento estaré escribiendo los avances y registrandolos en una linea de tiempo
 
 De esta manera tendré una visión más clara de como está avanzando el proyecto, intentaré estilizar este documento de la mejor manera posible para que sea comprensible, útil y simple.
@@ -42,12 +42,14 @@ Dicho esto, los objetivos de estas primeras semanas de desarrollo será investig
 7. Implementar una base de datos
 ```
 Para esto emplearé ***assets ya creados*** y, de ser necesario, modificaré los assets para adaptarlos a mi juego.
+
 ___
 ### ¿De qué va el juego (Teis)?
 
 Mi idea es intentar desarrollar un juego en el que se pueda interactuar con varios objetos y personajes de un mismo mapa, dependiendo de como vaya el desarrollo,
 implementaré otro mapa más allá del básico de inicio.
 Este juego quiero que esté en Gallego y satirice un poco de los **"memes"** gallegos y de Vigo.
+
 ___
 # Registro semanal
 ## Semana del 06/05/2024
@@ -109,6 +111,7 @@ Es fundamental por varias razones:
 *Optimización**: El bucle permite optimizar el rendimiento del juego, ejecutando solo las tareas necesarias en cada ciclo y evitando procesos innecesarios.
 
 En resumen, ``el bucle de juego`` es el corazón de un *videojuego, controlando la jugabilidad, la fluidez y la experiencia general del jugador*. Es un concepto fundamental para el diseño y desarrollo de videojuegos exitosos.
+
 ___
 #### Definición de Game Loop:
 Este metodo es llamado por el _GameLoop_ despues de otro llamado *"Actualiza"* (aun por definir).
@@ -174,10 +177,12 @@ La explicación es la siguiente:
 El GameLoop llama al metodo actualiza() que contiene el metodo move() lo *más rápido* que puede y **por ello** al actualizar el valor de la posicion
 y luego hacer repaint, este valor se ve modificado todas las veces que el ordenador **es capaz de llamar a la función por segundo**.
 Lo que haré para solucionar esto es ``CAPEARLO`` a _60 frames por segundo o menos_
+
 ___
 ### Definiendo el GameLoop a 30 fps...
 El tiempo de ejecución es necesario capearlo para tener una sensación de fluidez y tener control sobre como se ejecutan los movimientos del juego.
 Al buscar información sobre esto encontré un método popular sobre el **Game Loop llamado Delta Iterator**:
+
 ````java
 @Override
 public void run() {
@@ -221,6 +226,7 @@ Estos son los **sprites** creados:
 _Este es el resultado de su **implementación**:_
 
 ![moveGif](images/moveTemprano.gif)
+
 ___
 ### Animación mejorada
 _Metodo move() de la clase GAME.ENTITY_
@@ -239,6 +245,7 @@ public void update() {
         controller.update();
     }
 ````
+
 Dentro de Player *(es llamado por GameModel)*:
 ````java
 public void move(KeyManager e) {
@@ -294,6 +301,7 @@ public void move(KeyManager e) {
     }
 }
 ````
+
 ___
 ### Implementación de Sprites hechos con Pixel Studio
 He usado Google Maps para ver cosas caracteristicas como las baldosas del suelo o como son las tapas de las alcantarillas
@@ -301,6 +309,7 @@ y basandome en eso y en la ayuda de un IA que pasa imagenes a PixelArt he lograd
 con un programa llamado Pixel Studio.
 1. ![suelos](background/alcantarilla.png)
 2. ![suelos](background/sueloEstandarPlaza.png)
+
 ___
 ## Semana del 13/05/2024
 Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores:
@@ -309,6 +318,7 @@ Esta semana ha sido complicada debido a que _decidí_ pornerme un reto a mayores
    - *Que el editor pudiese guardar mapas*
    - *Que te permitiese decidir el tamaño del mapa*
    - *Que te permitiese cambiar el fondo por el sprite que quisieras*
+
 ___
 ### Editor de mapas con sprites
 El editor funciona de la siguiente manera:
@@ -325,7 +335,6 @@ Luego, pasa a la *interfaz gráfica* como tal en la que hay 2 paneles y dos boto
 - ``El panel de abajo:`` ***sirve como seleccionador de sprites.***
 - Y, por último, los *botones* sirven para guardar el mapa o para poner un fondo con el bloque que esté seleccionado.
 
-
 **Ejemplo de guardado:**
 
 ![moveGif](images/editorGuardar.gif)
@@ -338,6 +347,7 @@ Para que el mapa pueda ser interpretado como una ``matriz de números`` hacen fa
 **Ejemplo de diccionario:**
 
 ![moveGif](images/editorCorresp.gif)
+
 ___
 ### Mejoras generales
 Ahora al iniciar el juego podrás seleccionar el mapa que quieres cargar y, además, las animaciones se han mejorado.
@@ -346,6 +356,7 @@ Ahora hay dos Sprites de movimiento, proximamente añadiré otros dos y el movim
 **Ejemplo mapa de prueba:**
 
 ![moveGif](images/iniciarGame.gif)
+
 ___
 ### Interpretador de mapa
 Para que el código pueda interpretar la matriz de números y traducirla a un mapa de Sprites hace uso del archivo generado
@@ -401,6 +412,7 @@ public void loadMap(String mapName) {
         }
     }
 ````
+
 ___
 ## Semana del 20/05/2024
 ### Desarrollo de centrado de cámara
@@ -423,6 +435,7 @@ public class MapSize {
     }
 }
 ````
+
 Esta clase es empleado por un metodo de la clase **MapSelector** que devuelve una clase de tipo MapSize:
 ````java
 public MapSize getMapSize() {
@@ -453,6 +466,7 @@ public MapSize getMapSize() {
         return new MapSize(maxCol, maxRow, fileName);
     }
 ````
+
 Este método es empleado en TeisPanel para determinar de primeras las dimensiones del mapa y pasar esos datos
 a las subclases que emplean estos datos de ``largo y ancho``:
 ````java
@@ -474,6 +488,7 @@ a las subclases que emplean estos datos de ``largo y ancho``:
         this.controller = new GameController(model,piezaM);
     }
 ````
+
 ___
 #### Varios arreglos realizados:
 - Posicionamiento de los paneles de editor de mapa
@@ -482,6 +497,7 @@ ___
 - Más securización y encapsulación del código
 - Realizado código más limpio
 - Arreglado bug de botones con el modo pincel
+
 ___
 #### Implementación de nuevos Sprites
 Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo todos de 16x16:
@@ -489,6 +505,7 @@ Para ir haciendo el mapa del juego principal, he creado varios sprites no siendo
 * ![passvigo](Assets/objects/passvigo.png) ![passvigo](Assets/objects/passvigoPlus.png)
 
 Próximamente, estaré creando assets para el suelo y demás cosas...
+
 ___
 ### Implementación de colisiones
 Para que el juego tenga un sentido hacen falta ***INTERACCIONES*** ya sea con el entorno, con otros NPCs o con el propio
@@ -545,7 +562,6 @@ public List<ImageIcon> loadSprites(String folderPath) {
 ````
 
 Por otro lado, ``PiezaManager`` ya no realiza ningún filtrado de String:
-
 ````java
 public String[] getImagePaths() {
    ArrayList<String> imagePaths = new ArrayList<>();
@@ -561,6 +577,7 @@ public String[] getImagePaths() {
    return imagePaths.toArray(new String[0]);
 }
 ````
+
 Además, ``PiezaManager`` distingue entre ``Piezas`` colisionables y no colisionables gracias a una nueva implementación
 en el método ***getPiezaImage()***:
 ````java
@@ -581,6 +598,7 @@ public void getPiezaImage() {
    }
 }
 ````
+
 Cabe mencionar que estos asteriscos *DE MOMENTO* se ponen a mano al ``COMIENZO`` de aquellos sprites que tengan que
 ser colisionables en el diccionario de correspondencia "c_assets.txt".
 El método ``getPiezaImage()`` realiza una instanciación de Piezas colisionables pasando un boolean por parametro al
@@ -622,6 +640,7 @@ public Rectangle solidArea;
 public int defaultSolidAreaX, defaultSolidAreaY;
 public boolean collisionOn = false;
 ````
+
 Estos atributos definen el área de colisión de las entidades. Para comprobar las colisiones entre objetos, piezas y
 demás cosas colisionables se crea una clase llamada ``CollisionCheck`` cuyo método más importante es el siguiente:
 ````java
@@ -679,6 +698,7 @@ Si no hay colisión, el jugador se puede mover en ese *sentido*.
 Resultado de la implementación en un mapa de prueba:
 
 ![colisionajusta](images/ejemploColision.gif)
+
 ___
 ### Creación de Objetos (Sprites) y posicionamiento
 Ahora existen 3 tipos de clases: ``ObjectGame, ObjectPlacer y Objects`` como tal:
@@ -722,6 +742,7 @@ public void setObject() {
         teisPanel.obj[3].worldY = 10 * teisPanel.sizeFinal;
 }
 ````
+
 Como se ve en el ejemplo, cada objeto se instancia sobre una lista de TeisPanel de tipo ObjectGame.
 Esto es gracias a que cada objeto (BusVitrasa, Container, etc) se extienden de una clase padre
 siendo esta ``ObjectGame``.
@@ -747,6 +768,7 @@ public class BusVitrasa extends ObjectGame {
     }
 }
 ````
+
 En este caso, la clase Bus se identifica de las demas por tener un id llamado "Bus" y también modifica su tamaño.
 Los objetos son creados en el juego de la siguiente manera:
 ````java
@@ -768,9 +790,9 @@ public ventana() {
 }
 ````
 Se llama a un método que llama a setUpItems() el cual se encarga de inicializar la Lista de Objetos.
+
 ___
 ### Implementación de efectos de sonido
-
 Nueva clase: Sound y nuevos assets/effect ademas de cambios setUpItems y GameController.
 
 Falta por añadir algún tipo de menu que controle el nivel de volumen del juego. Es decir, un menú.
@@ -804,6 +826,7 @@ public class Sound {
     // Setters y getters...
 }
 ````
+
 Esta clase luego se emplea en el ``GameController`` que instancia 2 clases Sound, una para controlar la música de fondo
 y otra para controlar efectos de sonido especificos como por ejemplo el de recoger objetos o abrir puertas:
 ````java
@@ -838,6 +861,7 @@ public class GameController {
     }
 }
 ````
+
 La implementación de este método con las interacciones del jugador con los objetos se ven en el método de Player
 en el que dependiendo de que objeto toque el jugador, una acción será ejecutada:
 ````java
@@ -868,6 +892,7 @@ public void pickUpItem(int id) throws LineUnavailableException {
     }
 }
 ````
+
 ___
 ## Semana del 27/05/2024
 ### Optimización del código
@@ -892,6 +917,7 @@ public void paintComponent(Graphics g){
     //...
 }
 ````
+
 Creo una ``nueva clase: PiezaUtils`` con la idea de re-escalar las imágenes antes de dibujarlas por pantalla,
 de esta manera, el loop de juego no tendrá que re-escalar la imágen cada vez que llama a la variable **imágen**:
 ````java
@@ -914,6 +940,7 @@ public class PiezaUtils {
     }
 }
 ````
+
 Otro cambio realizado ha sido el de como se generan las Piezas. Antes, estas eran instanciadas y luego escaladas,
 ahora todo se hace desde un metodo llamado ``setEscaled()``. Este método se encarga de la generación de Piezas
 y del reescalado de las imágenes para adaptarlas a la resolución por defecto de los sprites que es de **48x48px**.
@@ -948,6 +975,7 @@ public void setEscaled(int i) {
     }
 }
 ````
+
 #### Por otro lado...
 Las clases ``Entity y Player`` están más diferenciadas que antes, ya que el método encargado del dibujado de los sprites
 del jugador ahora están en ``Player`` como debería haber estado desde un principio.
@@ -977,12 +1005,14 @@ public BufferedImage setPlayerSprite(String path) {
     return image;
 }
 ````
+
 #### Además...
 La clase que maneja los objetos (`ObjectGame`) ahora instancia también la clase de `PiezaUtils` para que las clases
 heredadas como `Container` y las demás hereden esta misma. De esta manera, la imágen de cada objeto es escalada antes
 de ser pintada mediante un paintComponent.
 
 **Después de todas estas modificaciones el tiempo de carga ha bajado a: ~200000 nanosegundos**.
+
 ___
 ### Diálogos
 Para la implementación de mensajes de texto en el juego se agregan varias cosas en forma de atributos y métodos al juego:
@@ -1020,6 +1050,7 @@ public void drawDialogo() {
    }
 }
 ````
+
 #### Dependencia de fuente de texto
 El problema principal con las fuentes de texto es que **no todos los usuarios** tienen
 las mismas en el ordenador por lo que ``si un usuario no tiene la fuente de texto empleada``
@@ -1028,6 +1059,7 @@ por el videojuego en su sistema operativo, los dialogos no se podrán mostrar.
 La solución es la siguiente: ***instalar una fuente de texto e implementarla para el juego***.
 Esta fuente de texto se encuentra en la carpeta ``Assets/font/`` donde luego se instancia como
 Font en las clases que empleen display de texto.
+
 ___
 ### Pantalla de carga
 En el código de mi juego hay una variable que **hace que haya un display u otro de lo que el jugador ve por pantalla**.
@@ -1061,6 +1093,7 @@ public void draw(Graphics2D g2) {
         }
     }
 ````
+
 ___
 ### Eventos complejos y Cooldowns de los mismos
 Se crean dos nuevas clases: ``EventManager`` y `EventRectangle`:
@@ -1070,6 +1103,7 @@ Se crean dos nuevas clases: ``EventManager`` y `EventRectangle`:
 La clase Manager contiene métodos como ``heal()``, ``damage()`` o ``hit`` con una funcionalidad diferente cada uno.
 El método ``hit`` se encarga de detectar si ha habido colisión entre el evento y alguna entidad y si es así entonces
 lanza otro método que activa el evento. Hay eventos que quitan vida, otros que curan y otros meramente informativos.
+
 ___
 ### Reestructuración del código
 ObjectGame ya no existe, ahora todos los objetos son clases heredadas de Entity.
@@ -1137,6 +1171,7 @@ Explicación:
 3. toList() convierte el flujo de datos en una lista y se agrega a la lista controller.entities utilizando el método addAll().
 4. Se repite el proceso para el array controller.obj.
 5. Finalmente, se agrega la entidad model a la lista controller.entities utilizando el método add().
+
 ___
 ### Implementación de PostgreSQL
 Se crea la clase `Propierties` que se encarga de interactuar con una base de datos PostgreSQL.
@@ -1149,6 +1184,7 @@ Por otro lado, el _constructor_ carga el driver de PostgreSQL, establece la cone
 - El método crearTablaEntidad() crea la tabla "entidad" en la base de datos. Primero, borra la tabla anterior si existe. Luego, crea la tabla con las columnas especificadas y inserta tres registros iniciales.
 - El método obtenerDatosEntidad() devuelve un arreglo de objetos que contiene los datos de la tabla "entidad". El método utiliza un objeto Statement para ejecutar una consulta SQL que selecciona todos los registros de la tabla "entidad". Luego, itera sobre los resultados y almacena los datos en un arreglo de objetos.
 - El método cerrarConexion() cierra la conexión a la base de datos. Este método es importante para liberar recursos y evitar problemas de concurrencia.
+
 ___
 ## Semana del 07/04/2025
 ### Refactorización del código e implementación de Maven
