@@ -31,6 +31,10 @@ public class Dinoseto extends Entity {
         // Establece las propiedades específicas del enemigo Dinoseto
         setPropierties("Dinoseto_elegante");
 
+        // Valores de ataque y defensa
+        attackVal = 5;
+        defenseVal = 10;
+
         // Guarda la posición del área sólida por defecto
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
@@ -59,7 +63,7 @@ public class Dinoseto extends Entity {
     /**
      * Establece el evento de movimiento aleatorio del enemigo.
      */
-    public void setEvent() {
+    public void randomMovement() {
         // Incrementa el contador de eventos
         capEvent++;
         //System.out.println("Posicion del dinoseto:" + worldX +" :" + worldY);

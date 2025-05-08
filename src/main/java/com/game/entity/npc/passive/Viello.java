@@ -71,7 +71,7 @@ public class Viello extends Entity {
     /**
      * Establece el evento de movimiento aleatorio del enemigo.
      */
-    public void setEvent() {
+    public void randomMovement() {
         // Incrementa el contador de eventos
         capEvent++;
 
