@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
-public class UserInterface {
+public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, etc. Implementar niveles de experiencia
     private static final List<String> DEFAULT_TITLES = List.of(
             "Teis non\né Chapela.",
             "\"É Vigo\nmáis ca\nun dinoseto?\"",
