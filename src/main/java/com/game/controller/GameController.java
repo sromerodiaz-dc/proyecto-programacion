@@ -5,7 +5,7 @@ import com.game.controller.events.EventType;
 import com.game.data.Properties;
 import com.game.efx.Sound;
 import com.game.ui.UserInterface;
-import com.game.entity.CollisionCheck;
+import com.game.entity.collision.CollisionCheck;
 import com.game.entity.Entity;
 import com.game.controller.events.EventManager;
 import com.game.maptile.PiezaManager;
