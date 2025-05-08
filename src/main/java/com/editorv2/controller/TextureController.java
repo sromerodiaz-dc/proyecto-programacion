@@ -25,12 +25,11 @@ public class TextureController {
     private File externalConfigFile;
 
     public TextureController() {
-        externalConfigFile = new File("src/main/resources/"+CONFIG_FILE); // Archivo externo en directorio de trabajo
+        externalConfigFile = new File("src/main/resources/"+CONFIG_FILE);
         loadTexturesWithUserInput();
     }
 
     private void loadTexturesWithUserInput() {
-        // Paso 1: Generar o seleccionar archivo de configuración
         if (!externalConfigFile.exists()) {
             int option = JOptionPane.showConfirmDialog(null,
                     "¿Desea generar un nuevo archivo de configuración?",
@@ -48,33 +47,9 @@ public class TextureController {
             }
         }
 
-        // Paso 2: Cargar texturas y configuración
-        loadTexturesFromResources();
         if (externalConfigFile.exists()) {
             loadConfig(externalConfigFile);
             checkForNewTextures(externalConfigFile);
-        }
-    }
-
-    private void loadTexturesFromResources() {
-        try {
-            URL resourceDir = getClass().getClassLoader().getResource(BACKGROUND_PATH);
-            if (resourceDir == null) throw new IOException("Carpeta 'background' no encontrada");
-
-            File[] files = new File(resourceDir.toURI()).listFiles((_, name) -> name.endsWith(".png"));
-            if (files == null || files.length == 0) {
-                throw new IOException("No hay archivos PNG en resources/background");
-            }
-
-            for (File file : files) {
-                String fileName = file.getName();
-                if (!fileToIdMap.containsKey(fileName)) {
-                    textures.put(nextId, ImageIO.read(file));
-                    fileToIdMap.put(fileName, nextId++);
-                }
-            }
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException("Error cargando texturas: " + e.getMessage());
         }
     }
 
@@ -142,6 +117,9 @@ public class TextureController {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(writer, rootNode);
             }
 
+            // Cargar el JSON recién generado
+            loadConfig(configFile);
+
         } catch (URISyntaxException | IOException e) {
             System.err.println("Error generando configuración: " + e.getMessage());
             e.printStackTrace();
@@ -151,7 +129,8 @@ public class TextureController {
     private void checkForNewTextures(File configFile) {
         try {
             URL resourceDir = getClass().getClassLoader().getResource(BACKGROUND_PATH);
-            assert resourceDir != null;
+            if (resourceDir == null) return;
+
             File[] currentFiles = new File(resourceDir.toURI()).listFiles((_, name) -> name.endsWith(".png"));
 
             ObjectMapper mapper = new ObjectMapper();
@@ -173,7 +152,7 @@ public class TextureController {
 
             for (File file : Objects.requireNonNull(currentFiles)) {
                 String fileName = file.getName();
-                if (!configTextures.contains(fileName)) {
+                if (!configTextures.contains(fileName) && !fileToIdMap.containsKey(fileName)) {
                     BufferedImage img = ImageIO.read(file);
                     textures.put(nextId, img);
                     fileToIdMap.put(fileName, nextId);
