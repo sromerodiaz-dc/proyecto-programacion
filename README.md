@@ -1699,3 +1699,6 @@ Idea nueva para almacenar mapas:
 
 ---
 ### Desarrollo de proyectiles
+
+---
+### Mejoras sobre el formato del guardado y procesado del mapa
