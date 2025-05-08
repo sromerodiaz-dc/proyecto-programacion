@@ -21,7 +21,7 @@ import java.util.Random;
  * Proyecto: Teis
  * */
 
-public class Entity {
+public class Entity { //TODO Hacer la clase abstracta, seguir con los principios SOLID
     TeisPanel teisPanel;
     Properties properties;
 
@@ -209,6 +209,9 @@ public class Entity {
 
         // Actualiza el movimiento de la entidad
         movement();
+
+        // Actualiza el movimiento aleatorio de los NPCs
+        randomMovement();
     }
 
     public void colisiones() {
@@ -260,6 +263,8 @@ public class Entity {
         spriteNum = spritesCount[0];
         spriteCounter = spritesCount[1];
     }
+
+    public void randomMovement(){}
 
     /**
      * Dibuja la entidad en el panel utilizando los métodos de dibujo proporcionados.
