@@ -215,3 +215,67 @@ El `json` generado por el método `saveMap()` está formado por la siguiente est
   }
 }
 ````
+
+---
+## Mejoras
+```text
+Fase 1: Mejoras Iniciales (Tamaño del Mapa y Carga)
+
+    - Seleccionar SI cargar o crear mapa:
+ 
+    1. Selección del Tamaño del Mapa:
+                - Modificar el constructor de GUI para aceptar rows y cols.
+                - Crear un metodo showNewMapDialog() para mostrar la interfaz de selección de tamaño (usar JOptionPane o un JPanel personalizado).
+                - Llamar a showNewMapDialog() al inicio del constructor de GUI y usar los valores devueltos para crear el MapModel.
+    2. Cargar un Mapa Existente:
+                - Añadir un botón "Cargar Mapa" a la interfaz.
+                - Crear un metodo loadMap() para manejar la lógica de carga.
+                Dentro de loadMap():
+                        - Usar JButtons con el nombre de los mapas que haya dentro del JSON.
+                        - Leer el archivo JSON con ObjectMapper.
+                        - Extraer las dimensiones del mapa y los datos de las capas del JSON.
+                        - Crear un nuevo MapModel con los datos cargados.
+                        - Actualizar el MapEditorPanel (y posiblemente MiniMapView, TilePalettePanel) para mostrar el mapa cargado.
+                Añadir manejo de errores (usar try-catch y JOptionPane).
+
+Fase 2: Modo de Edición Unificado
+
+    1. Botón de "Edición Interactiva":
+                - Añadir botón "Edición Interactiva".
+                - Añadir una variable currentEditMode (un enum) a MapEditorPanel para rastrear el modo de edición.
+                - El ActionListener del botón "Edición Interactiva" debe cambiar el valor de currentEditMode.
+                
+    2. Paleta de Herramientas Contextual:
+                - Modificar la interfaz para mostrar diferentes herramientas en la paleta según el valor de currentEditMode.
+                Implementar las herramientas de colisión:
+                        - "Colisión": Para dibujar áreas de colisión.
+                        - "Borrador de Colisión": Para eliminar áreas de colisión.
+                Implementar las herramientas de evento:
+                        - "Punto de Spawn": Para colocar el punto de inicio del jugador.
+                        - "Teleport": Para colocar puntos de teletransporte (requiere lógica para dos clics).
+                        - "Activador": Para colocar áreas que activan eventos.
+                        - "Borrador de Evento": Para eliminar eventos.
+                Implementar un panel de guardado de propiedades de Evento": Para eventos como Teleport se necesita saber el destino, para activador se necesitan saber el tipo de eventos (heal, damage, message, pick up hided obj...).
+                
+    3. Representación Visual Diferenciada:
+                Modificar el metodo paintComponent de MapEditorPanel para dibujar:
+                        - Rectángulos rojos transparentes para colisiones.
+                        - Iconos distintivos para puntos de spawn, teleports y activadores.
+                        
+    4. Estructura de Datos en el Editor:
+                Añadir List<Rectangle> collisionRects y List<Event> events a MapEditorPanel para almacenar la información de colisiones y eventos.
+                Modificar los métodos de captura de eventos del ratón (mousePressed, mouseDragged, mouseReleased) en MapEditorPanel para crear y modificar rectángulos y eventos según el modo de edición y la herramienta seleccionada.
+                
+    5. Almacenamiento en el JSON (Refinado):
+                Modificar el metodo saveMap para guardar las colisiones como un objeto JSON donde las claves son las coordenadas y los valores son las dimensiones.
+                Modificar saveMap para guardar los eventos como un array de objetos JSON con propiedades como tipo, posición y propiedades específicas del evento.
+
+Fase 3: Refinamiento y Opcional
+
+    1. Zoom y Scroll:
+                Asegurarse de que todas las herramientas de edición y la representación visual funcionan correctamente con el zoom y el scroll del mapa.
+    2. Deshacer/Rehacer: (Opcional pero muy recomendable)
+                Implementar funcionalidades de deshacer y rehacer para mejorar la experiencia del usuario.
+    3. Optimización del Rendimiento:
+                Optimizar el dibujo de rectángulos e iconos para mantener un buen rendimiento, especialmente en mapas grandes.
+```
