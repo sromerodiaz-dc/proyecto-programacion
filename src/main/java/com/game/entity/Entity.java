@@ -20,8 +20,7 @@ import java.util.Random;
  * CFP Daniel Castelao
  * Proyecto: Teis
  * */
-
-public class Entity { //TODO Hacer la clase abstracta, seguir con los principios SOLID
+public class Entity { 
     TeisPanel teisPanel;
     Properties properties;
 
