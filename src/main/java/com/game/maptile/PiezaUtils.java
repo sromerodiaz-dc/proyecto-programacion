@@ -48,12 +48,14 @@ public class PiezaUtils {
         ArrayList<String> imagePaths = new ArrayList<>();
 
         System.out.println("Directorio actual: " + System.getProperty("user.dir"));
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets.txt");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets.txt")) {
+            assert is != null;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                imagePaths.add(line.trim());
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    imagePaths.add(line.trim());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
