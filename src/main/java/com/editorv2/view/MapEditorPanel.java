@@ -125,8 +125,8 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
         // Calcular área afectada y repintar solo esa región
         modified.forEach(p -> {
-            int x = p.col() * tileSize;
-            int y = p.row() * tileSize;
+            int x = p.col() * tileSize; // X es Col porque las filas se desplazan hacia abajo (Vertical)
+            int y = p.row() * tileSize; // Y es Row porque las columnas se desplazan hacia la derecha (Horizontal)
             repaint(x, y, tileSize, tileSize);
         });
         model.clearModifiedCells(); // Limpiar después de pintar
