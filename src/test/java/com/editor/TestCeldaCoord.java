@@ -8,11 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestCelda {
+class TestCeldaCoord {
 
     @Test
     public void testCelda() {
-        // Crea una nueva instancia de la clase Celda
+        // Crea una nueva instancia de la clase CeldaCoord
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda = new Celda(imageIcon);
 
@@ -25,7 +25,7 @@ class TestCelda {
 
     @Test
     public void testSeleccionar() {
-        // Crea una nueva instancia de la clase Celda
+        // Crea una nueva instancia de la clase CeldaCoord
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda = new Celda(imageIcon);
 
@@ -40,7 +40,7 @@ class TestCelda {
 
     @Test
     public void testDeseleccionar() {
-        // Crea una nueva instancia de la clase Celda
+        // Crea una nueva instancia de la clase CeldaCoord
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda = new Celda(imageIcon);
 
@@ -58,7 +58,7 @@ class TestCelda {
 
     @Test
     public void testDeseleccionarTodas() {
-        // Crea una nueva instancia de la clase Celda
+        // Crea una nueva instancia de la clase CeldaCoord
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
         Celda celda1 = new Celda(imageIcon);
         Celda celda2 = new Celda(imageIcon);
@@ -80,7 +80,7 @@ class TestCelda {
 
     @Test
     public void testEscaladoImage() {
-        // Crea una nueva instancia de la clase Celda
+        // Crea una nueva instancia de la clase CeldaCoord
         ImageIcon imageIcon = new ImageIcon("path/to/image.png");
 
         // Llama al metodo escaladoImage()
