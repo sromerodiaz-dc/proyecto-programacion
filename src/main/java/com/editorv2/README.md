@@ -223,22 +223,21 @@ Fase 1: Mejoras Iniciales (Tamaño del Mapa y Carga)
 
     - Seleccionar SI cargar o crear mapa:
  
-    1. Selección del Tamaño del Mapa:
-                - Modificar el constructor de GUI para aceptar rows y cols.
-                - Crear un metodo showNewMapDialog() para mostrar la interfaz de selección de tamaño (usar JOptionPane o un JPanel personalizado).
-                - Llamar a showNewMapDialog() al inicio del constructor de GUI y usar los valores devueltos para crear el MapModel.
-    2. Cargar un Mapa Existente:
-                - Añadir un botón "Cargar Mapa" a la interfaz.
-                - Crear un metodo loadMap() para manejar la lógica de carga.
+    1. Selección del Tamaño del Mapa: 
+                - Modificar el constructor de GUI para aceptar rows y cols. [DONE]
+                - Crear un metodo showNewMapDialog() para mostrar la interfaz de selección de tamaño (usar JOptionPane o un JPanel personalizado). [DONE]
+                - Llamar a showNewMapDialog() al inicio del constructor de GUI y usar los valores devueltos para crear el MapModel. [DONE]
+    2. Cargar un Mapa Existente: 
+                - Añadir un botón "Cargar Mapa" a la interfaz. [DONE]
+                - Crear un metodo loadMap() para manejar la lógica de carga. [DONE]
                 Dentro de loadMap():
-                        - Usar JButtons con el nombre de los mapas que haya dentro del JSON.
-                        - Leer el archivo JSON con ObjectMapper.
-                        - Extraer las dimensiones del mapa y los datos de las capas del JSON.
-                        - Crear un nuevo MapModel con los datos cargados.
+                        - Recoger y mostrar nombre de los mapas que haya dentro del JSON. [DONE]
+                        - Extraer las dimensiones del mapa y los datos de las capas del JSON. [DONE]
+                        - Crear un nuevo MapModel con los datos cargados. [DONE]
                         - Actualizar el MapEditorPanel (y posiblemente MiniMapView, TilePalettePanel) para mostrar el mapa cargado.
-                Añadir manejo de errores (usar try-catch y JOptionPane).
+                Añadir manejo de errores (usar try-catch y JOptionPane). [DONE]
 
-Fase 2: Modo de Edición Unificado
+Fase 2: Modo de Edición Unificado //TODO POR HACER
 
     1. Botón de "Edición Interactiva":
                 - Añadir botón "Edición Interactiva".
