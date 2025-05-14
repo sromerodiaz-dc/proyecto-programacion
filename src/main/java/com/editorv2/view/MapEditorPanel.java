@@ -1,6 +1,7 @@
 package com.editorv2.view;
 
 import com.editorv2.controller.TextureController;
+import com.editorv2.model.CeldaCoord;
 import com.editorv2.model.IModelChangeListener;
 import com.editorv2.model.MapModel;
 import javax.swing.*;
@@ -48,9 +49,13 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
         if (col >= 0 && col < model.getCols() && row >= 0 && row < model.getRows()) {
-            model.setTile(row, col, selectedTextureId);
+            if (model.getTile(row, col) != selectedTextureId) {
+                model.setTile(row, col, selectedTextureId);
+                System.out.println("Row:" + row + " Col:" + col + " selectedTextureId:" + selectedTextureId);
+            }
         }
     }
+
 
     private void deleteTile(MouseEvent e) {
         int col = e.getX() / tileSize;
@@ -115,13 +120,13 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
     @Override
     public void onModelChanged() {
-        Set<Point> modified = model.getModifiedCells();
+        Set<CeldaCoord> modified = model.getModifiedCells();
         if (modified.isEmpty()) return;
 
         // Calcular área afectada y repintar solo esa región
         modified.forEach(p -> {
-            int x = p.x * tileSize;
-            int y = p.y * tileSize;
+            int x = p.col() * tileSize;
+            int y = p.row() * tileSize;
             repaint(x, y, tileSize, tileSize);
         });
         model.clearModifiedCells(); // Limpiar después de pintar
