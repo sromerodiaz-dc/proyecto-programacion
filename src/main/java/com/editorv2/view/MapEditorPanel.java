@@ -110,6 +110,24 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         }
     }
 
+    public void loadMapData(int[][] data) {
+        int rows = model.getRows();
+        int cols = model.getCols();
+
+        if (data.length != rows || (data.length > 0 && data[0].length != cols)) {
+            throw new IllegalArgumentException("Dimensiones de los datos cargados (" + data.length + "x" + (data.length > 0 ? data[0].length : 0) + ") no coinciden con las dimensiones del mapa (" + rows + "x" + cols + ")");
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                model.setTile(row, col, data[row][col]);
+            }
+        }
+        setPreferredSize(new Dimension(cols * tileSize, rows * tileSize));
+        revalidate();
+        repaint();
+    }
+
     public int getTileSize() {
         return tileSize;
     }
