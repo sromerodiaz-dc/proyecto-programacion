@@ -5,6 +5,8 @@ import com.editorv2.model.MapModel;
 import com.editorv2.view.MapEditorPanel;
 import com.editorv2.view.MiniMapView;
 import com.editorv2.view.TilePalettePanel;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -13,6 +15,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GUI extends JFrame {
 
@@ -145,8 +149,24 @@ public class GUI extends JFrame {
             mapData.set("layers", layers);
             mapsNode.set(mapName, mapData);
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
-                mapper.writerWithDefaultPrettyPrinter().writeValue(writer, rootObj);
+            // Configurar el pretty printer para formatear the JSON
+            DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+            prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            prettyPrinter.indentObjectsWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+
+            // Escribir el JSON formateado
+            try (FileWriter fileWriter = new FileWriter(configFile)) {
+                String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootObj);
+
+                // Use regex to replace newlines within the "data" array elements
+                Pattern pattern = Pattern.compile("\\[\\s*(\\d+\\s*,\\s*\\d+.*?)\\s*]", Pattern.DOTALL);
+                Matcher matcher = pattern.matcher(jsonString);
+                while (matcher.find()) {
+                    String rowData = matcher.group(1).replaceAll("\\s*,\\s*", ","); // Remove extra spaces
+                    jsonString = jsonString.replace(matcher.group(0), "[" + rowData + "]");
+                }
+
+                fileWriter.write(jsonString);
             }
 
             JOptionPane.showMessageDialog(null, "Mapa guardado correctamente en tiles.json");
