@@ -1,26 +1,49 @@
 package com.editorv2.model;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class MapModel {
-    private final int[][] matrix;
+    private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
+    private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
-    private int row;
-    private int col;
-
-    private final Set<Point> modifiedCells = new HashSet<>(); // Rastrea celdas modificadas
+    private final int rows;
+    private final int cols;
 
     public MapModel(int rows, int cols) {
-        this.matrix = new int[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
     }
 
-    // Métodos para modificar la matriz (setTile, getTile, etc.)
     public void setTile(int row, int col, int value) {
-        matrix[row][col] = value;
-        modifiedCells.add(new Point(col, row)); // Registrar celda modificada
+        CeldaCoord coord = new CeldaCoord(row, col);
+        Integer current = matrix.get(coord);
+        if (Objects.equals(current, value)) return; // evita actualizaciones redundantes
+
+        matrix.put(coord, value);
+        modifiedCells.put(coord, value);
         notifyListeners();
+    }
+
+    public int getTile(int row, int col) {
+        return matrix.getOrDefault(new CeldaCoord(row, col), 0);
+    }
+
+    public int[][] getMatrixForExport() {
+        int[][] exportMatrix = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                exportMatrix[i][j] = matrix.getOrDefault(new CeldaCoord(i, j), 0);
+            }
+        }
+        return exportMatrix;
+    }
+
+    public Set<CeldaCoord> getModifiedCells() {
+        return new HashSet<>(modifiedCells.keySet());
+    }
+
+    public void clearModifiedCells() {
+        modifiedCells.clear();
     }
 
     public void addListener(IModelChangeListener listener) {
@@ -33,60 +56,12 @@ public class MapModel {
         }
     }
 
-    public int[][] getMatrix() {
-        return matrix;
-    }
-
-    public int[][] getMatrixForExport() {
-        int[][] exportMatrix = new int[matrix.length][matrix[0].length];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                // Solo procesa celdas modificadas, otras se guardan como 0 : bloque negro
-                exportMatrix[i][j] = modifiedCells.contains(new Point(j, i)) ? matrix[i][j] : 0;
-            }
-        }
-        return exportMatrix;
-    }
-
-    public List<IModelChangeListener> getListeners() {
-        return listeners;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getTile(int row, int col) {
-        return matrix[row][col];
-    }
-
-    // Asegurar que existan estos métodos en MapModel
     public int getCols() {
-        return matrix[0].length; // O la implementación real
+        return cols;
     }
 
     public int getRows() {
-        return matrix.length;
-    }
-
-    // Para optimización de renderizado
-    public Set<Point> getModifiedCells() {
-        return new HashSet<>(modifiedCells);
-    }
-
-    public void clearModifiedCells() {
-        modifiedCells.clear();
+        return rows;
     }
 }
+
