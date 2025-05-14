@@ -30,7 +30,7 @@ public class Player extends Entity implements EventListener {
     int attackVal;
     int defenseVal;
     Entity currentWeapon; // TODO falta por crear sprite de arma corporativa
-    Entity currentShield; // TODO falta por crear sprite de nivel de defensa (jeringa fent)
+    Entity currentShield; // TODO falta por crear sprite de nivel de defensa
 
     // Atributos escalables
     int strength;
