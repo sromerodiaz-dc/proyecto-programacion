@@ -23,7 +23,7 @@ public class MiniMapView extends JPanel implements IModelChangeListener {
         this.textureController = textureController;
         model.addListener(this);
         setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // Primero el borde
-        updatePreferredSize(); // Luego calcular el tamaño
+        updatePreferredSize();
         setBackground(Color.BLACK);
         setupDragListeners();
     }

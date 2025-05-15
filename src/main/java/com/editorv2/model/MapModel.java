@@ -6,6 +6,7 @@ public class MapModel {
     private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
+    private List<MapEvent> events = new ArrayList<>();
     private final int rows;
     private final int cols;
 
@@ -63,5 +64,12 @@ public class MapModel {
     public int getRows() {
         return rows;
     }
-}
 
+    public List<MapEvent> getEvents() {
+        return events;
+    }
+
+    public void addEvent(MapEvent event) {
+        events.add(event);
+    }
+}
