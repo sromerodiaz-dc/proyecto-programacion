@@ -237,12 +237,14 @@ Fase 1: Mejoras Iniciales (Tamaño del Mapa y Carga)
                         - Actualizar el MapEditorPanel (y posiblemente MiniMapView, TilePalettePanel) para mostrar el mapa cargado.
                 Añadir manejo de errores (usar try-catch y JOptionPane). [DONE]
 
-Fase 2: Modo de Edición Unificado //TODO POR HACER
+Fase 2: Modo de Edición Unificado 
 
     1. Botón de "Edición Interactiva":
                 - Añadir botón "Edición Interactiva".
                 - Añadir una variable currentEditMode (un enum) a MapEditorPanel para rastrear el modo de edición.
                 - El ActionListener del botón "Edición Interactiva" debe cambiar el valor de currentEditMode.
+                - Dependiendo del valor de currentEditMode se mostrarán unos botones u otros. El mapa y el minimapa seguirán iguales pero el panel que contiene la paleta de texturas ya no contendrá la paleta sino botones como "Colision" o "Evento".
+                - Si se selecciona "Evento" habrá que escoger el tipo de evento.
                 
     2. Paleta de Herramientas Contextual:
                 - Modificar la interfaz para mostrar diferentes herramientas en la paleta según el valor de currentEditMode.
