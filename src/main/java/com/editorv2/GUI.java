@@ -2,27 +2,26 @@ package com.editorv2;
 
 import com.editorv2.controller.TextureController;
 import com.editorv2.model.MapModel;
+import com.editorv2.util.MapData;
+import com.editorv2.util.MapJsonHandler;
+import com.editorv2.util.StartAction;
 import com.editorv2.view.MapEditorPanel;
 import com.editorv2.view.MiniMapView;
 import com.editorv2.view.TilePalettePanel;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+
+import static com.editorv2.util.MapJsonHandler.showError;
+import static com.editorv2.util.MapJsonHandler.showInformation;
 
 public class GUI extends JFrame {
 
@@ -45,11 +44,8 @@ public class GUI extends JFrame {
     public GUI() {
         initUI();
         StartAction action = showStartDialog();
-        if (action != null) {
-            setupMap(action);
-        } else {
-            dispose();
-        }
+        if (action != null) setupMap(action);
+        else dispose();
     }
 
     private void initUI() {
@@ -61,68 +57,50 @@ public class GUI extends JFrame {
     }
 
     private void setupMap(StartAction action) {
+        getContentPane().removeAll();
         if (action.type == StartAction.ActionType.CREATE) {
-            createMap(action.rows, action.cols);
-        } else if (action.type == StartAction.ActionType.LOAD) {
-            loadMap(action.mapName);
+            initMapComponents(action.rows, action.cols);
+        } else {
+            try {
+                MapData data = MapJsonHandler.loadMapData(action.mapName);
+                initMapComponents(data.rows(), data.cols());
+                editorPanel.loadMapData(data.matrix());
+            } catch (IOException | IllegalArgumentException e) {
+                handleMapError("Error al cargar el mapa", e);
+                return;
+            }
         }
+        initCommonComponents();
+        layoutMainUI();
+        refreshUI();
     }
 
-    private void createMap(int rows, int cols) {
-        if (model != null) {
-            // Clear existing components
-            getContentPane().removeAll();
-        }
+    private GridBagConstraints createConstraints(int x, int y, double weightx, double weighty) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.weightx = weightx;
+        gbc.weighty = weighty;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(2, 2, 2, 2);
+        return gbc;
+    }
 
+    private void initMapComponents(int rows, int cols) {
         model = new MapModel(rows, cols);
         textureController = new TextureController();
         editorPanel = new MapEditorPanel(model, textureController);
         editorScroll = new JScrollPane(editorPanel);
-        initCommonComponents();
-        layoutMainUI();
-        revalidate();
-        repaint();
-        setVisible(true);
     }
 
-    private void loadMap(String mapName) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(new File(CONFIG_PATH));
-            JsonNode mapNode = root.path("maps").path(mapName);
-            validateMapNode(mapNode, mapName);
-
-            int width = mapNode.path("width").asInt();
-            int height = mapNode.path("height").asInt();
-            int[][] data = extractMapData(mapNode, height, width);
-
-            if (model != null) {
-                // Clear existing components
-                getContentPane().removeAll();
-            }
-
-            model = new MapModel(width, height);
-            textureController = new TextureController();
-            editorPanel = new MapEditorPanel(model, textureController);
-            editorScroll = new JScrollPane(editorPanel);
-            editorPanel.loadMapData(data);
-            initCommonComponents();
-            layoutMainUI();
-            revalidate();
-            repaint();
-            setVisible(true);
-
-        } catch (IOException e) {
-            showError("Error al cargar el mapa: " + e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            showError(e.getMessage());
-        }
+    private void layoutMainUI() {
+        add(createLeftPanel(), createConstraints(0, 1, LEFT_PANEL_WEIGHT, 0.75));
+        add(createRightPanel(), createConstraints(1, 1, RIGHT_PANEL_WEIGHT, 0.25));
     }
 
     private void initCommonComponents() {
         JButton saveButton = new JButton("Guardar Mapa");
-        saveButton.addActionListener(_ -> saveMap(model));
+        saveButton.addActionListener(_ -> MapJsonHandler.saveMapData(model));
 
         // Agregar el botón con GridBagConstraints
         GridBagConstraints gbc = new GridBagConstraints();
@@ -140,33 +118,6 @@ public class GUI extends JFrame {
             Rectangle viewRect = editorScroll.getViewport().getViewRect();
             miniMap.setVisibleRect(viewRect);
         });
-    }
-
-    private void layoutMainUI() {
-        leftPanel = createLeftPanel();
-        rightPanel = createRightPanel();
-
-        // Restricciones para leftPanel
-        GridBagConstraints leftConstraints = new GridBagConstraints();
-        leftConstraints.gridx = 0;
-        leftConstraints.gridy = 1; // gridy = 1 para estar debajo del botón
-        leftConstraints.gridwidth = 1;
-        leftConstraints.gridheight = 1;
-        leftConstraints.weightx = LEFT_PANEL_WEIGHT;
-        leftConstraints.weighty = 0.75;
-        leftConstraints.fill = GridBagConstraints.BOTH;
-        add(leftPanel, leftConstraints);
-
-        // Restricciones para rightPanel
-        GridBagConstraints rightConstraints = new GridBagConstraints();
-        rightConstraints.gridx = 1;
-        rightConstraints.gridy = 1; // gridy = 1 para estar debajo del botón
-        rightConstraints.gridwidth = 1;
-        rightConstraints.gridheight = 1;
-        rightConstraints.weightx = RIGHT_PANEL_WEIGHT;
-        rightConstraints.weighty = 0.25;
-        rightConstraints.fill = GridBagConstraints.BOTH;
-        add(rightPanel, rightConstraints);
     }
 
     private JPanel createLeftPanel() {
@@ -197,75 +148,10 @@ public class GUI extends JFrame {
         ));
     }
 
-    private void saveMap(MapModel model) {
-        String mapName = JOptionPane.showInputDialog(this, "Ingrese el nombre del mapa:");
-        if (mapName == null || mapName.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nombre de mapa inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        File configFile = new File(CONFIG_PATH);
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootObj = mapper.readTree(configFile);
-            ObjectNode mapsNode = (ObjectNode) rootObj.path("maps");
-
-            // Crear el nodo del mapa
-            ObjectNode mapData = mapper.createObjectNode();
-            mapData.put("width", model.getCols());
-            mapData.put("height", model.getRows());
-
-            // Crear el nodo de capas (por ahora, solo "ground")
-            ArrayNode layers = mapper.createArrayNode();
-            ObjectNode groundLayer = mapper.createObjectNode();
-            groundLayer.put("name", "ground");
-            groundLayer.put("type", "tilelayer");
-            groundLayer.put("width", model.getCols());
-            groundLayer.put("height", model.getRows());
-
-            // Convertir la matriz del modelo a un ArrayNode
-            ArrayNode dataArray = mapper.createArrayNode();
-            int[][] matrix = model.getMatrixForExport();
-            for (int[] row : matrix) {
-                ArrayNode rowArray = mapper.createArrayNode();
-                for (int val : row) {
-                    rowArray.add(val);
-                }
-                dataArray.add(rowArray);
-            }
-            groundLayer.set("data", dataArray);
-            layers.add(groundLayer);
-
-            mapData.set("layers", layers);
-            mapsNode.set(mapName, mapData);
-
-            // Configurar el pretty printer para formatear el JSON
-            DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-            prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-            prettyPrinter.indentObjectsWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-
-            // Escribir el JSON formateado
-            try (FileWriter fileWriter = new FileWriter(configFile)) {
-                String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootObj);
-
-                // Use regex to replace newlines within the "data" array elements
-                Pattern pattern = Pattern.compile("\\[\\s*(\\d+\\s*,\\s*\\d+.*?)\\s*\\]", Pattern.DOTALL);
-                Matcher matcher = pattern.matcher(jsonString);
-                while (matcher.find()) {
-                    String rowData = matcher.group(1).replaceAll("\\s*,\\s*", ", "); // Remove extra spaces
-                    jsonString = jsonString.replace(matcher.group(0), "[" + rowData + "]");
-                }
-
-                fileWriter.write(jsonString);
-            }
-
-            JOptionPane.showMessageDialog(null, "Mapa guardado correctamente en tiles.json");
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al guardar el mapa: " + e.getMessage());
-            e.printStackTrace();
-        }
+    private void refreshUI() {
+        revalidate();
+        repaint();
+        setVisible(true);
     }
 
     private StartAction showStartDialog() {
@@ -359,61 +245,12 @@ public class GUI extends JFrame {
         e.printStackTrace();
     }
 
-    private void validateMapNode(JsonNode mapNode, String mapName) {
-        if (mapNode.isMissingNode()) {
-            throw new IllegalArgumentException("Mapa no encontrado: " + mapName);
-        }
-    }
-
-    private int[][] extractMapData(JsonNode mapNode, int rows, int cols) {
-        return StreamSupport.stream(mapNode.path("layers").spliterator(), false)
-                .findFirst()
-                .map(layer -> layer.path("data"))
-                .map(dataNode -> parseDataMatrix(dataNode, rows, cols))
-                .orElseThrow(() -> new IllegalArgumentException("Estructura de mapa inválida"));
-    }
-
-    private int[][] parseDataMatrix(JsonNode dataNode, int rows, int cols) {
-        return IntStream.range(0, rows)
-                .mapToObj(row -> parseRow(dataNode.get(row), cols))
-                .toArray(int[][]::new);
-    }
-
-    private int[] parseRow(JsonNode rowNode, int cols) {
-        return IntStream.range(0, cols)
-                .map(col -> rowNode.get(col).asInt())
-                .toArray();
-    }
-
-    private void showInformation(String message) {
-        JOptionPane.showMessageDialog(null, message, "Información", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    private void handleMapError(String context, Exception e) {
+        showError(context + ": " + e.getMessage());
+        e.printStackTrace();
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GUI::new);
-    }
-
-    private static class StartAction {
-        enum ActionType {CREATE, LOAD}
-
-        ActionType type;
-        int rows;
-        int cols;
-        String mapName;
-
-        StartAction(ActionType type, int rows, int cols) {
-            this.type = type;
-            this.rows = rows;
-            this.cols = cols;
-        }
-
-        StartAction(ActionType type, String mapName) {
-            this.type = type;
-            this.mapName = mapName;
-        }
     }
 }
