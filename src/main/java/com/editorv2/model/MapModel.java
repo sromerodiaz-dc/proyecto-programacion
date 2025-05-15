@@ -1,12 +1,18 @@
 package com.editorv2.model;
 
+import com.editorv2.model.event.MapEvent;
+import com.editorv2.model.event.SpawnEvent;
+import com.editorv2.model.event.TeleportEvent;
+
 import java.util.*;
 
 public class MapModel {
     private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
-    private List<MapEvent> events = new ArrayList<>();
+    private List<int[]> collisions = new ArrayList<>();
+    private SpawnEvent spawn; //TODO terminar de implementar el punto de spawn
+    private List<TeleportEvent> teleports = new ArrayList<>();
     private final int rows;
     private final int cols;
 
@@ -57,6 +63,14 @@ public class MapModel {
         }
     }
 
+    public List<int[]> getCollisions() {
+        return collisions;
+    }
+
+    public void addCollision(int x, int y) {
+        collisions.add(new int[]{x, y});
+    }
+
     public int getCols() {
         return cols;
     }
@@ -65,11 +79,11 @@ public class MapModel {
         return rows;
     }
 
-    public List<MapEvent> getEvents() {
-        return events;
+    public List<TeleportEvent> getTeleports() {
+        return teleports;
     }
 
-    public void addEvent(MapEvent event) {
-        events.add(event);
+    public void addTeleport(TeleportEvent teleport) {
+        teleports.add(teleport);
     }
 }
