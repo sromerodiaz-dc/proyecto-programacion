@@ -1,7 +1,9 @@
 package com.editorv2.util;
 
-import com.editorv2.model.MapEvent;
+import com.editorv2.model.event.MapEvent;
 import com.editorv2.model.MapModel;
+import com.editorv2.model.event.SpawnEvent;
+import com.editorv2.model.event.TeleportEvent;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,7 +32,7 @@ public class MapJsonHandler {
         return new MapData(rows, cols, matrix);
     }
 
-    public static void saveMapData(MapModel model) { // Eliminar CONFIG_PATH
+    public static void saveMapData(MapModel model) {
         String mapName = JOptionPane.showInputDialog(null, "Ingrese el nombre del mapa:");
 
         if (mapName == null || mapName.trim().isEmpty()) {
@@ -44,8 +46,11 @@ public class MapJsonHandler {
             mapData.put("width", model.getCols());
             mapData.put("height", model.getRows());
             mapData.set("layers", createLayersArray(model));
-            // mapData.set("events", createEventsArray(model));
+            mapData.set("events", createEventsArray(model));
 
+            // Crear nodo raíz que contiene el mapa con el nombre como clave
+            ObjectNode rootNode = mapper.createObjectNode();
+            rootNode.set(mapName, mapData);
 
             // Crear directorio si no existe
             new File(MAPS_PATH).mkdirs();
@@ -58,14 +63,7 @@ public class MapJsonHandler {
             prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
 
             try (FileWriter fileWriter = new FileWriter(mapFile)) {
-                String jsonString = mapper.writer(prettyPrinter).writeValueAsString(mapData);
-
-                // Optimizar arrays "data"
-                jsonString = jsonString
-                        .replaceAll("(?<=\\[)\\s+", "")   // Eliminar espacios después de [
-                        .replaceAll("\\s+(?=])", "")    // Eliminar espacios antes de ]
-                        .replaceAll("\\s*,\\s*", ",");    // Eliminar espacios alrededor de comas
-
+                String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootNode);
                 fileWriter.write(jsonString);
             }
 
@@ -77,49 +75,49 @@ public class MapJsonHandler {
         }
     }
 
-    private static ArrayNode createEventsArray(MapModel model) {
-        ArrayNode eventsArray = mapper.createArrayNode();
-
-        // Obtener los eventos del modelo (ajusta según tu implementación)
-        List<MapEvent> events = model.getEvents(); // Asegúrate que MapModel tenga este metodo
-
-        for (MapEvent event : events) {
-            ObjectNode eventNode = mapper.createObjectNode();
-            eventNode.put("type", event.type());
-            eventNode.put("x", event.row());
-            eventNode.put("y", event.col());
-
-            // Campos adicionales para tipos específicos (ej: Teleport)
-            if ("Teleport".equals(event.type())) {
-                eventNode.put("targetX", event.targetX());
-                eventNode.put("targetY", event.targetY());
-            }
-
-            eventsArray.add(eventNode);
-        }
-
-        return eventsArray;
-    }
-
-    private static ArrayNode createLayersArray(MapModel model) {
-        return mapper.createArrayNode().add(
-                mapper.createObjectNode()
-                        .put("name", "ground")
-                        .put("type", "tilelayer")
-                        .put("width", model.getCols())
-                        .put("height", model.getRows())
-                        .set("data", createDataArray(model.getMatrixForExport()))
-        );
-    }
-
-    private static ArrayNode createDataArray(int[][] matrix) {
+    private static ArrayNode createGroundDataArray(int[][] matrix) {
         ArrayNode dataArray = mapper.createArrayNode();
         for (int[] row : matrix) {
             ArrayNode rowArray = mapper.createArrayNode();
             for (int val : row) rowArray.add(val);
-            dataArray.add(rowArray);
+            dataArray.add(rowArray); // Cada fila como sub-array
         }
         return dataArray;
+    }
+
+    private static ArrayNode createLayersArray(MapModel model) {
+        ArrayNode layers = mapper.createArrayNode();
+
+        layers.add(mapper.createObjectNode()
+                .put("name", "ground")
+                .put("type", "tilelayer")
+                .set("data", createGroundDataArray(model.getMatrixForExport())) // Cambio de método
+        );
+
+        return layers;
+    }
+
+    private static ArrayNode createEventsArray(MapModel model) { // TODO terminar de crear este metodo
+        // Cosas a tener en cuenta, este es el formato:
+        /*
+            "events": {
+              "playerSpawn": [10, 20],
+              "teleport": [
+                [10, 2],
+                [2, 10]
+              ]
+            }
+         */
+        ArrayNode events = mapper.createArrayNode();
+
+        if (model.getSpawns() != null && model.getTeleports() != null) {
+            events.add(mapper.createArrayNode().add(model.getSpawns().getFirst().getRow()).add(point[1]));
+        }
+        return events;
+    }
+
+    private static ObjectNode createEventsData(MapModel model) {
+        //TODO terminar el metodo
     }
 
     private static void validateMapNode(JsonNode mapNode, String mapName) {
