@@ -15,6 +15,7 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
     private final TextureController textureController;
     private final int tileSize = 32;
     private int selectedTextureId = 1;
+    private boolean collisionMode = false;
 
     public MapEditorPanel(MapModel model, TextureController textureController) {
         this.model = model;
@@ -48,10 +49,37 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
     private void paintTile(MouseEvent e) {
         int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
-        if (col >= 0 && col < model.getCols() && row >= 0 && row < model.getRows()) {
-            if (model.getTile(row, col) != selectedTextureId) {
+
+        if (col < 0 || col >= model.getCols() || row < 0 || row >= model.getRows()) return;
+
+        CeldaCoord coord = new CeldaCoord(row, col);
+
+        if (collisionMode) {
+            // Modo Colisión: Solo gestionar colisiones
+            boolean leftClick = SwingUtilities.isLeftMouseButton(e);
+            boolean rightClick = SwingUtilities.isRightMouseButton(e);
+
+            if (leftClick && !model.getCollisions().contains(coord)) {
+                model.addCollision(row, col); // Añadir colisión
+            } else if (rightClick && model.getCollisions().contains(coord)) {
+                model.removeCollision(row, col); // Eliminar colisión
+            }
+        } else {
+            int currentTileId = model.getTile(row, col);
+            boolean isSelectedCollision = textureController.isTextureCollision(selectedTextureId);
+            boolean currentCollision = model.getCollisions().contains(coord);
+
+            if (currentTileId != selectedTextureId) {
                 model.setTile(row, col, selectedTextureId);
-                System.out.println("Row:" + row + " Col:" + col + " selectedTextureId:" + selectedTextureId);
+            }
+
+            // Forzar actualización de colisión
+            if (isSelectedCollision != currentCollision) {
+                if (isSelectedCollision) {
+                    model.addCollision(row, col);
+                } else {
+                    model.removeCollision(row, col);
+                }
             }
         }
     }
@@ -74,6 +102,10 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        // Configurar antialiasing para líneas nítidas
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
         // Dibujar celdas con bordes
         for (int row = 0; row < model.getRows(); row++) {
             for (int col = 0; col < model.getCols(); col++) {
@@ -91,26 +123,26 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
                     g2d.drawImage(texture, x, y, tileSize, tileSize, null);
                 }
 
-                // Borde blanco
+                // Borde blanco nitido
                 g2d.setColor(Color.WHITE);
-                g2d.drawRect(x, y, tileSize, tileSize);
+                g2d.drawRect(x, y, tileSize - 1, tileSize - 1);
             }
         }
+
+        // En paintComponent(), después de dibujar los bordes rojos
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f)); // 50% transparencia
+        g2d.setColor(Color.RED);
+        for (CeldaCoord coord : model.getCollisions()) {
+            int x = coord.col() * tileSize;
+            int y = coord.row() * tileSize;
+            g2d.fillRect(x, y, tileSize, tileSize);
+        }
+        g2d.setComposite(AlphaComposite.SrcOver); // Restaurar opacidad
+
         g2d.dispose();
     }
 
-    static void textureForTile(Graphics g, MapModel model, TextureController textureController, int tileSize) {
-        for (int row = 0; row < model.getRows(); row++) {
-            for (int col = 0; col < model.getCols(); col++) {
-                BufferedImage texture = textureController.getTexture(model.getTile(row, col));
-                if (texture != null) {
-                    g.drawImage(texture, col * tileSize, row * tileSize, tileSize, tileSize, null);
-                }
-            }
-        }
-    }
-
-    public void loadMapData(int[][] data) {
+    public void loadMapData(int[][] data, Set<CeldaCoord> collisions) {
         int rows = model.getRows();
         int cols = model.getCols();
 
@@ -123,13 +155,12 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
                 model.setTile(row, col, data[row][col]);
             }
         }
+
+        collisions.forEach(coord -> model.addCollision(coord.row(), coord.col()));
+
         setPreferredSize(new Dimension(cols * tileSize, rows * tileSize));
         revalidate();
         repaint();
-    }
-
-    public int getTileSize() {
-        return tileSize;
     }
 
     public void setSelectedTexture(int textureId) {
@@ -148,5 +179,13 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
             repaint(x, y, tileSize, tileSize);
         });
         model.clearModifiedCells(); // Limpiar después de pintar
+    }
+
+    public void setCollisionMode(boolean active) {
+        collisionMode = active;
+    }
+
+    public boolean isCollisionMode() {
+        return collisionMode;
     }
 }
