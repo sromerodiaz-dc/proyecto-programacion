@@ -52,34 +52,22 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
         if (col < 0 || col >= model.getCols() || row < 0 || row >= model.getRows()) return;
 
-        CeldaCoord coord = new CeldaCoord(row, col);
-
         if (collisionMode) {
-            // Modo Colisión: Solo gestionar colisiones
-            boolean leftClick = SwingUtilities.isLeftMouseButton(e);
-            boolean rightClick = SwingUtilities.isRightMouseButton(e);
-
-            if (leftClick && !model.getCollisions().contains(coord)) {
-                model.addCollision(row, col); // Añadir colisión
-            } else if (rightClick && model.getCollisions().contains(coord)) {
-                model.removeCollision(row, col); // Eliminar colisión
+            // Modo colisión manual (sin cambios)
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                model.addCollision(row, col);
+            } else if (SwingUtilities.isRightMouseButton(e)) {
+                model.removeCollision(row, col);
             }
         } else {
+            // Modo normal: verificar ID y estado de colisión
             int currentTileId = model.getTile(row, col);
-            boolean isSelectedCollision = textureController.isTextureCollision(selectedTextureId);
-            boolean currentCollision = model.getCollisions().contains(coord);
+            boolean currentCollision = textureController.isTextureCollision(currentTileId);
+            boolean newCollision = textureController.isTextureCollision(selectedTextureId);
 
-            if (currentTileId != selectedTextureId) {
-                model.setTile(row, col, selectedTextureId);
-            }
-
-            // Forzar actualización de colisión
-            if (isSelectedCollision != currentCollision) {
-                if (isSelectedCollision) {
-                    model.addCollision(row, col);
-                } else {
-                    model.removeCollision(row, col);
-                }
+            // Actualizar si hay cambio en ID o en estado de colisión
+            if (currentTileId != selectedTextureId || currentCollision != newCollision) {
+                model.setTile(row, col, selectedTextureId); // Forzar actualización
             }
         }
     }
@@ -165,6 +153,7 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
     public void setSelectedTexture(int textureId) {
         this.selectedTextureId = textureId;
+        repaint();
     }
 
     @Override
@@ -172,17 +161,20 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         Set<CeldaCoord> modified = model.getModifiedCells();
         if (modified.isEmpty()) return;
 
-        // Calcular área afectada y repintar solo esa región
+        // Repintar todas las celdas modificadas
         modified.forEach(p -> {
-            int x = p.col() * tileSize; // X es Col porque las filas se desplazan hacia abajo (Vertical)
-            int y = p.row() * tileSize; // Y es Row porque las columnas se desplazan hacia la derecha (Horizontal)
+            int x = p.col() * tileSize;
+            int y = p.row() * tileSize;
             repaint(x, y, tileSize, tileSize);
         });
-        model.clearModifiedCells(); // Limpiar después de pintar
+        model.clearModifiedCells();
     }
 
     public void setCollisionMode(boolean active) {
         collisionMode = active;
+        if (collisionMode) {
+            selectedTextureId = -1; // Deseleccionar textura al activar modo colisión
+        }
     }
 
     public boolean isCollisionMode() {
