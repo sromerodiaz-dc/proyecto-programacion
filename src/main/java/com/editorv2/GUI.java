@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import static com.editorv2.util.MapJsonHandler.showError;
@@ -38,8 +37,6 @@ public class GUI extends JFrame {
     private MiniMapView miniMap;
     private TilePalettePanel palette;
     private TextureController textureController;
-    private JPanel leftPanel; // Declare leftPanel as a class member
-    private JPanel rightPanel; // Declare rightPanel as a class member
 
     public GUI() {
         initUI();
@@ -64,7 +61,10 @@ public class GUI extends JFrame {
             try {
                 MapData data = MapJsonHandler.loadMapData(action.mapName);
                 initMapComponents(data.rows(), data.cols());
-                editorPanel.loadMapData(data.matrix());
+                editorPanel.loadMapData(data.matrix(), data.collisions());
+                model.getCollisions().addAll(data.collisions()); // Añadir colisiones
+                model.setSpawn(data.spawnEvent()); // Añadir spawn
+                model.getTeleports().addAll(data.teleports()); // Añadir teleports
             } catch (IOException | IllegalArgumentException e) {
                 handleMapError("Error al cargar el mapa", e);
                 return;
@@ -75,10 +75,10 @@ public class GUI extends JFrame {
         refreshUI();
     }
 
-    private GridBagConstraints createConstraints(int x, int y, double weightx, double weighty) {
+    private GridBagConstraints createConstraints(int x, double weightx, double weighty) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x;
-        gbc.gridy = y;
+        gbc.gridy = 1;
         gbc.weightx = weightx;
         gbc.weighty = weighty;
         gbc.fill = GridBagConstraints.BOTH;
@@ -94,25 +94,26 @@ public class GUI extends JFrame {
     }
 
     private void layoutMainUI() {
-        add(createLeftPanel(), createConstraints(0, 1, LEFT_PANEL_WEIGHT, 0.75));
-        add(createRightPanel(), createConstraints(1, 1, RIGHT_PANEL_WEIGHT, 0.25));
+        add(createLeftPanel(), createConstraints(0, LEFT_PANEL_WEIGHT, 0.75));
+        add(createRightPanel(), createConstraints(1, RIGHT_PANEL_WEIGHT, 0.25));
     }
 
     private void initCommonComponents() {
-        JButton saveButton = new JButton("Guardar Mapa");
-        saveButton.addActionListener(_ -> MapJsonHandler.saveMapData(model));
-
-        // Agregar el botón con GridBagConstraints
+        // Agregar el panel de botones al contenedor principal
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2; // Ocupa ambas columnas
-        gbc.insets = new Insets(5, 5, 5, 5); // Márgenes
-        gbc.anchor = GridBagConstraints.NORTHWEST; // Posición
-        add(saveButton, gbc); // Agregar al contenedor principal
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
 
         miniMap = new MiniMapView(model, editorScroll, textureController);
         palette = new TilePalettePanel(textureController, editorPanel);
+
+        // Panel para botones (Guardar, Colisión, Eventos)
+        JPanel buttonPanel = getButtonPanel(palette);
+        add(buttonPanel, gbc);
 
         editorScroll.getViewport().addChangeListener(_ -> {
             Rectangle viewRect = editorScroll.getViewport().getViewRect();
@@ -120,15 +121,46 @@ public class GUI extends JFrame {
         });
     }
 
+    private JPanel getButtonPanel(TilePalettePanel tilePalettePanel) {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        buttonPanel.setOpaque(false); // Mantiene el fondo del panel transparente
+
+        JButton saveButton = new JButton("Guardar Mapa");
+        JButton collisionButton = new JButton("Colisión");
+        JButton eventButton = new JButton("Eventos");
+
+        saveButton.addActionListener(_ -> MapJsonHandler.saveMapData(model));
+        collisionButton.addActionListener(_ -> handleCollisionAction(collisionButton, tilePalettePanel));
+        eventButton.addActionListener(_ -> handleEventAction());
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(collisionButton);
+        buttonPanel.add(eventButton);
+        return buttonPanel;
+    }
+
+    private void handleCollisionAction(JButton collisionButton, TilePalettePanel tilePalettePanel) {
+        editorPanel.setCollisionMode(!editorPanel.isCollisionMode());
+        collisionButton.setBackground(editorPanel.isCollisionMode() ? Color.RED : null);
+        editorPanel.setSelectedTexture(-1); // Deseleccionar textura
+        tilePalettePanel.actualizarBordesColisionables(textureController);
+    }
+
+    private void handleEventAction(){
+        System.out.println("event clicked");
+    }
+
     private JPanel createLeftPanel() {
-        leftPanel = new JPanel(new BorderLayout());
+        // Declare leftPanel as a class member
+        JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(editorScroll, BorderLayout.CENTER);
         setPanelStyle(leftPanel);
         return leftPanel;
     }
 
     private JPanel createRightPanel() {
-        rightPanel = new JPanel(new BorderLayout(0, 10));
+        // Declare rightPanel as a class member
+        JPanel rightPanel = new JPanel(new BorderLayout(0, 10));
         JPanel miniMapWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         miniMapWrapper.setOpaque(false);
         miniMapWrapper.add(miniMap);
@@ -242,12 +274,10 @@ public class GUI extends JFrame {
     private void handleLoadError(IOException e) {
         String errorMessage = "Error al leer tiles.json: " + e.getMessage();
         showError(errorMessage);
-        e.printStackTrace();
     }
 
     private void handleMapError(String context, Exception e) {
         showError(context + ": " + e.getMessage());
-        e.printStackTrace();
     }
 
     public static void main(String[] args) {
