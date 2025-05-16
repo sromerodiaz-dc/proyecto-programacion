@@ -255,7 +255,17 @@ Fase 2: Modo de Edición Unificado
         Desmarcas el tile 25 como colisionable en la paleta.
 
         Vuelves a pintar sobre el mismo tile: El área roja desaparece.
-
+        
+    Posibles Fallos Detectables:
+        El estado de colisión no se actualiza en TextureController:
+        Si toggleCollisionTexture no modifica collisionTextures, los logs mostrarán valores inconsistentes en isTextureCollision.
+    
+        setTile no detecta cambios:
+        Si collisionChanged es false cuando debería ser true, revisar la lógica de comparación en setTile.
+    
+        Las celdas no se repintan:
+        Si onModelChanged no se dispara o modifiedCells está vacío, revisar cómo se manejan las modificaciones.
+    
     1. Almacenamiento en el JSON (Refinado):
                 Modificar el metodo saveMap para guardar las colisiones como un objeto JSON donde las claves son las coordenadas y los valores son las dimensiones.
                 Modificar saveMap para guardar los eventos como un array de objetos JSON con propiedades como tipo, posición y propiedades específicas del evento.

@@ -181,12 +181,14 @@ public class TextureController {
         }
     }
 
-    // En TextureController.java
     public void toggleCollisionTexture(int textureId) {
+        System.out.println("[DEBUG] toggleCollisionTexture() - textureId: " + textureId);
         if (collisionTextures.contains(textureId)) {
-            collisionTextures.remove(textureId); // Desmarcar como colisionable
+            collisionTextures.remove(textureId);
+            System.out.println("[DEBUG]   - Texture " + textureId + " marcada como NO colisionable.");
         } else {
-            collisionTextures.add(textureId);    // Marcar como colisionable
+            collisionTextures.add(textureId);
+            System.out.println("[DEBUG]   - Texture " + textureId + " marcada como colisionable.");
         }
     }
 

@@ -50,7 +50,13 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
 
-        if (col < 0 || col >= model.getCols() || row < 0 || row >= model.getRows()) return;
+        System.out.println("[DEBUG] paintTile() - row: " + row + ", col: " + col);
+        System.out.println("[DEBUG]   - collisionMode: " + collisionMode);
+
+        if (col < 0 || col >= model.getCols() || row < 0 || row >= model.getRows()) {
+            System.out.println("[DEBUG]   - Coordenadas fuera de rango.");
+            return;
+        }
 
         if (collisionMode) {
             // Modo colisión manual (sin cambios)
@@ -60,14 +66,20 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
                 model.removeCollision(row, col);
             }
         } else {
-            // Modo normal: verificar ID y estado de colisión
             int currentTileId = model.getTile(row, col);
-            boolean currentCollision = textureController.isTextureCollision(currentTileId);
-            boolean newCollision = textureController.isTextureCollision(selectedTextureId);
+            boolean isCurrentCollision = textureController.isTextureCollision(currentTileId);
+            boolean isNewCollision = textureController.isTextureCollision(selectedTextureId);
 
-            // Actualizar si hay cambio en ID o en estado de colisión
-            if (currentTileId != selectedTextureId || currentCollision != newCollision) {
-                model.setTile(row, col, selectedTextureId); // Forzar actualización
+            System.out.println("[DEBUG]   - currentTileId: " + currentTileId);
+            System.out.println("[DEBUG]   - selectedTextureId: " + selectedTextureId);
+            System.out.println("[DEBUG]   - isCurrentCollision: " + isCurrentCollision);
+            System.out.println("[DEBUG]   - isNewCollision: " + isNewCollision);
+
+            if (currentTileId != selectedTextureId || isCurrentCollision != isNewCollision) {
+                System.out.println("[DEBUG]   - Actualizando tile (ID o colisión cambiaron).");
+                model.setTile(row, col, selectedTextureId);
+            } else {
+                System.out.println("[DEBUG]   - No se requiere actualización (mismo ID y colisión).");
             }
         }
     }
@@ -159,12 +171,17 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
     @Override
     public void onModelChanged() {
         Set<CeldaCoord> modified = model.getModifiedCells();
-        if (modified.isEmpty()) return;
+        System.out.println("[DEBUG] onModelChanged() - Celdas modificadas: " + modified.size());
 
-        // Repintar todas las celdas modificadas
+        if (modified.isEmpty()) {
+            System.out.println("[DEBUG]   - No hay celdas modificadas.");
+            return;
+        }
+
         modified.forEach(p -> {
             int x = p.col() * tileSize;
             int y = p.row() * tileSize;
+            System.out.println("[DEBUG]   - Repintando celda: " + p);
             repaint(x, y, tileSize, tileSize);
         });
         model.clearModifiedCells();

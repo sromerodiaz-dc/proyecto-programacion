@@ -28,12 +28,17 @@ public class MapModel {
         CeldaCoord coord = new CeldaCoord(row, col);
         Integer currentValue = matrix.get(coord);
 
-        // Calcular si el estado de colisión ha cambiado
+        // Calcular estado de colisión actual y nuevo
         boolean currentCollision = (currentValue != null)
                 ? textureController.isTextureCollision(currentValue)
                 : false;
         boolean newCollision = textureController.isTextureCollision(value);
         boolean collisionChanged = (currentCollision != newCollision);
+
+        System.out.println("[DEBUG] setTile() - row: " + row + ", col: " + col);
+        System.out.println("[DEBUG]   - currentValue: " + currentValue + ", newValue: " + value);
+        System.out.println("[DEBUG]   - currentCollision: " + currentCollision + ", newCollision: " + newCollision);
+        System.out.println("[DEBUG]   - collisionChanged: " + collisionChanged);
 
         // Actualizar si el ID o el estado de colisión cambian
         if (currentValue == null || currentValue != value || collisionChanged) {
@@ -43,11 +48,16 @@ public class MapModel {
             // Actualizar autoCollisions
             if (newCollision) {
                 autoCollisions.add(coord);
+                System.out.println("[DEBUG]   - Añadido a autoCollisions: " + coord);
             } else {
                 autoCollisions.remove(coord);
+                System.out.println("[DEBUG]   - Eliminado de autoCollisions: " + coord);
             }
 
             notifyListeners();
+            System.out.println("[DEBUG]   - Listeners notificados.");
+        } else {
+            System.out.println("[DEBUG]   - No se requieren cambios (mismo ID y estado).");
         }
     }
 
