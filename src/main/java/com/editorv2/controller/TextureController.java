@@ -22,6 +22,7 @@ public class TextureController {
     private final Map<Integer, BufferedImage> textures = new HashMap<>();
     private final Map<String, Integer> fileToIdMap = new HashMap<>();
     private final Set<Integer> collisionTextures = new HashSet<>();
+
     private int nextId = 1;
     private File externalConfigFile;
 
@@ -180,12 +181,17 @@ public class TextureController {
         }
     }
 
+    // En TextureController.java
     public void toggleCollisionTexture(int textureId) {
         if (collisionTextures.contains(textureId)) {
-            collisionTextures.remove(textureId);
+            collisionTextures.remove(textureId); // Desmarcar como colisionable
         } else {
-            collisionTextures.add(textureId);
+            collisionTextures.add(textureId);    // Marcar como colisionable
         }
+    }
+
+    public boolean isTextureCollision(int textureId) {
+        return collisionTextures.contains(textureId);
     }
 
     public BufferedImage getTexture(int id) {
@@ -211,9 +217,5 @@ public class TextureController {
 
     public void setTextureCollision(int textureId) {
         collisionTextures.add(textureId);
-    }
-
-    public boolean isTextureCollision(int textureId) {
-        return collisionTextures.contains(textureId);
     }
 }

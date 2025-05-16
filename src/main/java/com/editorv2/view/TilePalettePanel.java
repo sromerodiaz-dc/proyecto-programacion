@@ -1,6 +1,8 @@
 package com.editorv2.view;
 
 import com.editorv2.controller.TextureController;
+import com.editorv2.model.MapModel;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -15,7 +17,7 @@ public class TilePalettePanel extends JScrollPane {
 
     private final Map<JButton, Integer> buttonIdMap = new HashMap<>();
 
-    public TilePalettePanel(TextureController textureController, MapEditorPanel editorPanel) {
+    public TilePalettePanel(TextureController textureController, MapEditorPanel editorPanel, MapModel model) {
         JPanel gridPanel = new JPanel(new GridBagLayout());
         gridPanel.setBackground(Color.BLACK);
 
@@ -25,7 +27,7 @@ public class TilePalettePanel extends JScrollPane {
 
         int x = 0, y = 0;
         for (int id : textureController.getAllTextures().keySet()) {
-            JButton btn = crearBotonTextura(textureController.getTexture(id), id, editorPanel, textureController);
+            JButton btn = crearBotonTextura(textureController.getTexture(id), id, editorPanel, textureController, model);
             gbc.gridx = x;
             gbc.gridy = y;
             gridPanel.add(btn, gbc);
@@ -45,7 +47,7 @@ public class TilePalettePanel extends JScrollPane {
         actualizarBordesColisionables(textureController);
     }
 
-    private JButton crearBotonTextura(BufferedImage texture, int textureId, MapEditorPanel editorPanel, TextureController textureController) {
+    private JButton crearBotonTextura(BufferedImage texture, int textureId, MapEditorPanel editorPanel, TextureController textureController, MapModel model) {
         JButton btn = new JButton();
         btn.setOpaque(false);
         btn.setContentAreaFilled(false);
@@ -67,7 +69,7 @@ public class TilePalettePanel extends JScrollPane {
 
         btn.addActionListener(_ -> {
             if (editorPanel.isCollisionMode()) {
-                textureController.toggleCollisionTexture(textureId);
+                textureController.toggleCollisionTexture(textureId); // Sin pasar el modelo
                 actualizarBordesColisionables(textureController);
             } else {
                 editorPanel.setSelectedTexture(textureId);
