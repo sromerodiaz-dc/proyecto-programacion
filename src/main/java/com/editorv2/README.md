@@ -239,35 +239,24 @@ Fase 1: Mejoras Iniciales (Tamaño del Mapa y Carga)
 
 Fase 2: Modo de Edición Unificado 
 
-    1. Botón de "Edición Interactiva":
-                - Añadir botón "Edición Interactiva".
-                - Añadir una variable currentEditMode (un enum) a MapEditorPanel para rastrear el modo de edición.
-                - El ActionListener del botón "Edición Interactiva" debe cambiar el valor de currentEditMode.
-                - Dependiendo del valor de currentEditMode se mostrarán unos botones u otros. El mapa y el minimapa seguirán iguales pero el panel que contiene la paleta de texturas ya no contendrá la paleta sino botones como "Colision" o "Evento".
-                - Si se selecciona "Evento" habrá que escoger el tipo de evento.
-                
-    2. Paleta de Herramientas Contextual:
-                - Modificar la interfaz para mostrar diferentes herramientas en la paleta según el valor de currentEditMode.
-                Implementar las herramientas de colisión:
-                        - "Colisión": Para dibujar áreas de colisión.
-                        - "Borrador de Colisión": Para eliminar áreas de colisión.
-                Implementar las herramientas de evento:
-                        - "Punto de Spawn": Para colocar el punto de inicio del jugador.
-                        - "Teleport": Para colocar puntos de teletransporte (requiere lógica para dos clics).
-                        - "Activador": Para colocar áreas que activan eventos.
-                        - "Borrador de Evento": Para eliminar eventos.
-                Implementar un panel de guardado de propiedades de Evento": Para eventos como Teleport se necesita saber el destino, para activador se necesitan saber el tipo de eventos (heal, damage, message, pick up hided obj...).
-                
-    3. Representación Visual Diferenciada:
-                Modificar el metodo paintComponent de MapEditorPanel para dibujar:
-                        - Rectángulos rojos transparentes para colisiones.
-                        - Iconos distintivos para puntos de spawn, teleports y activadores.
-                        
-    4. Estructura de Datos en el Editor:
-                Añadir List<Rectangle> collisionRects y List<Event> events a MapEditorPanel para almacenar la información de colisiones y eventos.
-                Modificar los métodos de captura de eventos del ratón (mousePressed, mouseDragged, mouseReleased) en MapEditorPanel para crear y modificar rectángulos y eventos según el modo de edición y la herramienta seleccionada.
-                
-    5. Almacenamiento en el JSON (Refinado):
+    //TODO ERRORES QUE CORREGIR:
+    Escenario ESPERADO 1:
+
+        Pintas un tile no colisionable (ID: 25).
+
+        Marcas el tile 25 como colisionable en la paleta.
+
+        Vuelves a pintar sobre el mismo tile: El área se actualiza y muestra el área roja de colisión.
+
+    Escenario ESPERADO 2:
+
+        Pintas un tile colisionable (ID: 25).
+
+        Desmarcas el tile 25 como colisionable en la paleta.
+
+        Vuelves a pintar sobre el mismo tile: El área roja desaparece.
+
+    1. Almacenamiento en el JSON (Refinado):
                 Modificar el metodo saveMap para guardar las colisiones como un objeto JSON donde las claves son las coordenadas y los valores son las dimensiones.
                 Modificar saveMap para guardar los eventos como un array de objetos JSON con propiedades como tipo, posición y propiedades específicas del evento.
 
