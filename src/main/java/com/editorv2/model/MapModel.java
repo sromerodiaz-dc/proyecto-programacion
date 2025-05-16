@@ -1,6 +1,5 @@
 package com.editorv2.model;
 
-import com.editorv2.model.event.MapEvent;
 import com.editorv2.model.event.SpawnEvent;
 import com.editorv2.model.event.TeleportEvent;
 
@@ -10,9 +9,9 @@ public class MapModel {
     private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
-    private List<int[]> collisions = new ArrayList<>();
-    private SpawnEvent spawn; //TODO terminar de implementar el punto de spawn
-    private List<TeleportEvent> teleports = new ArrayList<>();
+    private final Set<CeldaCoord> collisions = new HashSet<>();
+    private SpawnEvent spawn;
+    private final List<TeleportEvent> teleports = new ArrayList<>();
     private final int rows;
     private final int cols;
 
@@ -63,13 +62,24 @@ public class MapModel {
         }
     }
 
-    public List<int[]> getCollisions() {
-        return collisions;
+    public void removeCollision(int row, int col) {
+        collisions.remove(new CeldaCoord(row, col));
+        notifyListeners();
     }
 
-    public void addCollision(int x, int y) {
-        collisions.add(new int[]{x, y});
+    public void addCollision(int row, int col) {
+        collisions.add(new CeldaCoord(row, col));
+        notifyListeners();
     }
+
+    public Set<CeldaCoord> getCollisions() {
+        return new HashSet<>(collisions);
+    }
+
+    // Getters/Setters para spawn y teleports
+    public SpawnEvent getSpawn() { return spawn; }
+    public void setSpawn(SpawnEvent spawn) { this.spawn = spawn; }
+    public List<TeleportEvent> getTeleports() { return teleports; }
 
     public int getCols() {
         return cols;
@@ -77,13 +87,5 @@ public class MapModel {
 
     public int getRows() {
         return rows;
-    }
-
-    public List<TeleportEvent> getTeleports() {
-        return teleports;
-    }
-
-    public void addTeleport(TeleportEvent teleport) {
-        teleports.add(teleport);
     }
 }
