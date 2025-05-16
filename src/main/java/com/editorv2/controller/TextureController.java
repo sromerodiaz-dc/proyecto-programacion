@@ -21,6 +21,7 @@ public class TextureController {
     private static final String BACKGROUND_PATH = "background";
     private final Map<Integer, BufferedImage> textures = new HashMap<>();
     private final Map<String, Integer> fileToIdMap = new HashMap<>();
+    private final Set<Integer> collisionTextures = new HashSet<>();
     private int nextId = 1;
     private File externalConfigFile;
 
@@ -122,7 +123,7 @@ public class TextureController {
 
         } catch (URISyntaxException | IOException e) {
             System.err.println("Error generando configuración: " + e.getMessage());
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
@@ -175,7 +176,15 @@ public class TextureController {
             }
 
         } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    public void toggleCollisionTexture(int textureId) {
+        if (collisionTextures.contains(textureId)) {
+            collisionTextures.remove(textureId);
+        } else {
+            collisionTextures.add(textureId);
         }
     }
 
@@ -198,5 +207,13 @@ public class TextureController {
 
     public Map<Integer, BufferedImage> getAllTextures() {
         return textures;
+    }
+
+    public void setTextureCollision(int textureId) {
+        collisionTextures.add(textureId);
+    }
+
+    public boolean isTextureCollision(int textureId) {
+        return collisionTextures.contains(textureId);
     }
 }
