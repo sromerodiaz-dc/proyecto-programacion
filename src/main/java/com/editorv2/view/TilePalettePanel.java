@@ -110,7 +110,7 @@ public class TilePalettePanel extends JScrollPane {
 
                     if (id == selectedId) {
                         borde = editorPanel.isCollisionMode()
-                                ? BorderFactory.createLineBorder(new Color(255, 165, 0), 2)
+                                ? BorderFactory.createLineBorder(new Color(255, 50, 0), 2)
                                 : BorderFactory.createLineBorder(Color.YELLOW, 2);
                     } else {
                         borde = esColision
