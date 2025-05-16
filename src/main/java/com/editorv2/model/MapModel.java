@@ -1,5 +1,6 @@
 package com.editorv2.model;
 
+import com.editorv2.controller.TextureController;
 import com.editorv2.model.event.SpawnEvent;
 import com.editorv2.model.event.TeleportEvent;
 
@@ -9,25 +10,45 @@ public class MapModel {
     private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
-    private final Set<CeldaCoord> collisions = new HashSet<>();
+    private final Set<CeldaCoord> manualCollisions = new HashSet<>(); // Colisiones manuales
+    private final Set<CeldaCoord> autoCollisions = new HashSet<>(); // Colisiones por textura
     private SpawnEvent spawn;
     private final List<TeleportEvent> teleports = new ArrayList<>();
     private final int rows;
     private final int cols;
+    private final TextureController textureController;
 
-    public MapModel(int rows, int cols) {
+    public MapModel(int rows, int cols, TextureController textureController) {
         this.rows = rows;
         this.cols = cols;
+        this.textureController = textureController;
     }
 
     public void setTile(int row, int col, int value) {
         CeldaCoord coord = new CeldaCoord(row, col);
-        Integer current = matrix.get(coord);
-        if (Objects.equals(current, value)) return; // evita actualizaciones redundantes
+        Integer currentValue = matrix.get(coord);
 
-        matrix.put(coord, value);
-        modifiedCells.put(coord, value);
-        notifyListeners();
+        // Calcular si el estado de colisión ha cambiado
+        boolean currentCollision = (currentValue != null)
+                ? textureController.isTextureCollision(currentValue)
+                : false;
+        boolean newCollision = textureController.isTextureCollision(value);
+        boolean collisionChanged = (currentCollision != newCollision);
+
+        // Actualizar si el ID o el estado de colisión cambian
+        if (currentValue == null || currentValue != value || collisionChanged) {
+            matrix.put(coord, value);
+            modifiedCells.put(coord, value);
+
+            // Actualizar autoCollisions
+            if (newCollision) {
+                autoCollisions.add(coord);
+            } else {
+                autoCollisions.remove(coord);
+            }
+
+            notifyListeners();
+        }
     }
 
     public int getTile(int row, int col) {
@@ -62,18 +83,25 @@ public class MapModel {
         }
     }
 
-    public void removeCollision(int row, int col) {
-        collisions.remove(new CeldaCoord(row, col));
-        notifyListeners();
+    public void addCollision(int row, int col) {
+        CeldaCoord coord = new CeldaCoord(row, col);
+        manualCollisions.add(coord);
+        modifiedCells.put(coord, matrix.get(coord)); // Añadir a modificadas
+        notifyListeners(); // Notificar para repintar
     }
 
-    public void addCollision(int row, int col) {
-        collisions.add(new CeldaCoord(row, col));
-        notifyListeners();
+    public void removeCollision(int row, int col) {
+        CeldaCoord coord = new CeldaCoord(row, col);
+        manualCollisions.remove(coord);
+        modifiedCells.put(coord, matrix.get(coord)); // Añadir a modificadas
+        notifyListeners(); // Notificar para repintar
     }
 
     public Set<CeldaCoord> getCollisions() {
-        return new HashSet<>(collisions);
+        Set<CeldaCoord> allCollisions = new HashSet<>();
+        allCollisions.addAll(manualCollisions);
+        allCollisions.addAll(autoCollisions);
+        return allCollisions;
     }
 
     // Getters/Setters para spawn y teleports
