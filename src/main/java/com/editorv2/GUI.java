@@ -87,8 +87,8 @@ public class GUI extends JFrame {
     }
 
     private void initMapComponents(int rows, int cols) {
-        model = new MapModel(rows, cols);
         textureController = new TextureController();
+        model = new MapModel(rows, cols, textureController);
         editorPanel = new MapEditorPanel(model, textureController);
         editorScroll = new JScrollPane(editorPanel);
     }
@@ -109,7 +109,7 @@ public class GUI extends JFrame {
 
 
         miniMap = new MiniMapView(model, editorScroll, textureController);
-        palette = new TilePalettePanel(textureController, editorPanel);
+        palette = new TilePalettePanel(textureController, editorPanel, model);
 
         // Panel para botones (Guardar, Colisión, Eventos)
         JPanel buttonPanel = getButtonPanel(palette);
