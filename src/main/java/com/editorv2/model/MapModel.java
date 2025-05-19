@@ -7,11 +7,12 @@ import com.editorv2.model.event.TeleportEvent;
 import java.util.*;
 
 public class MapModel {
-    private final Map<CeldaCoord, Integer> matrix = new HashMap<>();
+    private final Map<CeldaCoord, TileData> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
     private final Set<CeldaCoord> manualCollisions = new HashSet<>(); // Colisiones manuales
     private final Set<CeldaCoord> autoCollisions = new HashSet<>(); // Colisiones por textura
+    private final TileData DEFAULT_TILE = new TileData(0, false);
     private SpawnEvent spawn;
     private final List<TeleportEvent> teleports = new ArrayList<>();
     private final int rows;
@@ -24,55 +25,46 @@ public class MapModel {
         this.textureController = textureController;
     }
 
-    public void setTile(int row, int col, int value) {
+    public void setTile(int row, int col, int textureId) {
         CeldaCoord coord = new CeldaCoord(row, col);
-        Integer currentValue = matrix.get(coord);
+        boolean isCollision = textureController.isTextureCollision(textureId)
+                || manualCollisions.contains(coord);
 
-        // Calcular estado de colisión actual y nuevo
-        boolean currentCollision = (currentValue != null)
-                ? textureController.isTextureCollision(currentValue)
-                : false;
-        boolean newCollision = textureController.isTextureCollision(value);
-        boolean collisionChanged = (currentCollision != newCollision);
-
-        System.out.println("[DEBUG] setTile() - row: " + row + ", col: " + col);
-        System.out.println("[DEBUG]   - currentValue: " + currentValue + ", newValue: " + value);
-        System.out.println("[DEBUG]   - currentCollision: " + currentCollision + ", newCollision: " + newCollision);
-        System.out.println("[DEBUG]   - collisionChanged: " + collisionChanged);
-
-        // Actualizar si el ID o el estado de colisión cambian
-        if (currentValue == null || currentValue != value || collisionChanged) {
-            matrix.put(coord, value);
-            modifiedCells.put(coord, value);
-
-            // Actualizar autoCollisions
-            if (newCollision) {
-                autoCollisions.add(coord);
-                System.out.println("[DEBUG]   - Añadido a autoCollisions: " + coord);
-            } else {
-                autoCollisions.remove(coord);
-                System.out.println("[DEBUG]   - Eliminado de autoCollisions: " + coord);
-            }
-
-            notifyListeners();
-            System.out.println("[DEBUG]   - Listeners notificados.");
-        } else {
-            System.out.println("[DEBUG]   - No se requieren cambios (mismo ID y estado).");
-        }
+        // Forzar actualización incluso si el textureId es el mismo
+        matrix.put(coord, new TileData(textureId, isCollision));
+        modifiedCells.put(coord, textureId);
+        notifyListeners();
     }
 
     public int getTile(int row, int col) {
-        return matrix.getOrDefault(new CeldaCoord(row, col), 0);
+        return matrix.getOrDefault(new CeldaCoord(row, col), DEFAULT_TILE).getTextureId();
+    }
+
+    public void refreshTilesWithTexture(int textureId) {
+        matrix.entrySet().stream()
+                .filter(entry -> entry.getValue().getTextureId() == textureId)
+                .forEach(entry -> {
+                    CeldaCoord coord = entry.getKey();
+                    boolean isCollision = textureController.isTextureCollision(textureId)
+                            || manualCollisions.contains(coord);
+                    matrix.put(coord, new TileData(textureId, isCollision));
+                    modifiedCells.put(coord, textureId);
+                });
+        notifyListeners();
     }
 
     public int[][] getMatrixForExport() {
         int[][] exportMatrix = new int[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                exportMatrix[i][j] = matrix.getOrDefault(new CeldaCoord(i, j), 0);
+                exportMatrix[i][j] = matrix.getOrDefault(new CeldaCoord(i, j), new TileData(0, false)).getTextureId();
             }
         }
         return exportMatrix;
+    }
+
+    public boolean isTileCollision(CeldaCoord coord) {
+        return matrix.containsKey(coord) && matrix.get(coord).isCollision();
     }
 
     public Set<CeldaCoord> getModifiedCells() {
@@ -96,15 +88,22 @@ public class MapModel {
     public void addCollision(int row, int col) {
         CeldaCoord coord = new CeldaCoord(row, col);
         manualCollisions.add(coord);
-        modifiedCells.put(coord, matrix.get(coord)); // Añadir a modificadas
-        notifyListeners(); // Notificar para repintar
+
+        TileData tile = matrix.getOrDefault(coord, DEFAULT_TILE);
+        matrix.put(coord, new TileData(tile.getTextureId(), true)); // Forzar colisión
+        modifiedCells.put(coord, tile.getTextureId());
+        notifyListeners();
     }
 
     public void removeCollision(int row, int col) {
         CeldaCoord coord = new CeldaCoord(row, col);
         manualCollisions.remove(coord);
-        modifiedCells.put(coord, matrix.get(coord)); // Añadir a modificadas
-        notifyListeners(); // Notificar para repintar
+
+        TileData tile = matrix.getOrDefault(coord, DEFAULT_TILE);
+        boolean isAutoCollision = textureController.isTextureCollision(tile.getTextureId());
+        matrix.put(coord, new TileData(tile.getTextureId(), isAutoCollision)); // Restaurar colisión automática
+        modifiedCells.put(coord, tile.getTextureId());
+        notifyListeners();
     }
 
     public Set<CeldaCoord> getCollisions() {
