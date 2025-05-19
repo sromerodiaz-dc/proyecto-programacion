@@ -37,12 +37,12 @@ public class MapModel {
     }
 
     public int getTile(int row, int col) {
-        return matrix.getOrDefault(new CeldaCoord(row, col), DEFAULT_TILE).getTextureId();
+        return matrix.getOrDefault(new CeldaCoord(row, col), DEFAULT_TILE).textureId();
     }
 
     public void refreshTilesWithTexture(int textureId) {
         matrix.entrySet().stream()
-                .filter(entry -> entry.getValue().getTextureId() == textureId)
+                .filter(entry -> entry.getValue().textureId() == textureId)
                 .forEach(entry -> {
                     CeldaCoord coord = entry.getKey();
                     boolean isCollision = textureController.isTextureCollision(textureId)
@@ -57,7 +57,7 @@ public class MapModel {
         int[][] exportMatrix = new int[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                exportMatrix[i][j] = matrix.getOrDefault(new CeldaCoord(i, j), new TileData(0, false)).getTextureId();
+                exportMatrix[i][j] = matrix.getOrDefault(new CeldaCoord(i, j), new TileData(0, false)).textureId();
             }
         }
         return exportMatrix;
@@ -90,8 +90,8 @@ public class MapModel {
         manualCollisions.add(coord);
 
         TileData tile = matrix.getOrDefault(coord, DEFAULT_TILE);
-        matrix.put(coord, new TileData(tile.getTextureId(), true)); // Forzar colisión
-        modifiedCells.put(coord, tile.getTextureId());
+        matrix.put(coord, new TileData(tile.textureId(), true)); // Forzar colisión
+        modifiedCells.put(coord, tile.textureId());
         notifyListeners();
     }
 
@@ -100,9 +100,9 @@ public class MapModel {
         manualCollisions.remove(coord);
 
         TileData tile = matrix.getOrDefault(coord, DEFAULT_TILE);
-        boolean isAutoCollision = textureController.isTextureCollision(tile.getTextureId());
-        matrix.put(coord, new TileData(tile.getTextureId(), isAutoCollision)); // Restaurar colisión automática
-        modifiedCells.put(coord, tile.getTextureId());
+        boolean isAutoCollision = textureController.isTextureCollision(tile.textureId());
+        matrix.put(coord, new TileData(tile.textureId(), isAutoCollision)); // Restaurar colisión automática
+        modifiedCells.put(coord, tile.textureId());
         notifyListeners();
     }
 
