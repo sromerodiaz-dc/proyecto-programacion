@@ -69,7 +69,7 @@ public class TilePalettePanel extends JScrollPane {
 
         btn.addActionListener(_ -> {
             if (editorPanel.isCollisionMode()) {
-                textureController.toggleCollisionTexture(textureId); // Sin pasar el modelo
+                textureController.toggleCollisionTexture(textureId, model); // Sin pasar el modelo
                 actualizarBordesColisionables(textureController);
             } else {
                 editorPanel.setSelectedTexture(textureId);
