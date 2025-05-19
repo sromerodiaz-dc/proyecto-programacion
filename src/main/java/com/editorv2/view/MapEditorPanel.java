@@ -67,23 +67,11 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
             }
         } else {
             int currentTileId = model.getTile(row, col);
-            boolean isCurrentCollision = textureController.isTextureCollision(currentTileId);
-            boolean isNewCollision = textureController.isTextureCollision(selectedTextureId);
-
-            System.out.println("[DEBUG]   - currentTileId: " + currentTileId);
-            System.out.println("[DEBUG]   - selectedTextureId: " + selectedTextureId);
-            System.out.println("[DEBUG]   - isCurrentCollision: " + isCurrentCollision);
-            System.out.println("[DEBUG]   - isNewCollision: " + isNewCollision);
-
-            if (currentTileId != selectedTextureId || isCurrentCollision != isNewCollision) {
-                System.out.println("[DEBUG]   - Actualizando tile (ID o colisión cambiaron).");
-                model.setTile(row, col, selectedTextureId);
-            } else {
-                System.out.println("[DEBUG]   - No se requiere actualización (mismo ID y colisión).");
+            if (currentTileId != selectedTextureId) {
+                model.setTile(row, col, selectedTextureId); // Actualizar directamente
             }
         }
     }
-
 
     private void deleteTile(MouseEvent e) {
         int col = e.getX() / tileSize;
@@ -129,15 +117,20 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
             }
         }
 
-        // En paintComponent(), después de dibujar los bordes rojos
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f)); // 50% transparencia
+        // Dibujar colisiones (manuales + automáticas)
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         g2d.setColor(Color.RED);
-        for (CeldaCoord coord : model.getCollisions()) {
-            int x = coord.col() * tileSize;
-            int y = coord.row() * tileSize;
-            g2d.fillRect(x, y, tileSize, tileSize);
+        for (int row = 0; row < model.getRows(); row++) {
+            for (int col = 0; col < model.getCols(); col++) {
+                CeldaCoord coord = new CeldaCoord(row, col);
+                if (model.isTileCollision(coord)) {
+                    int x = col * tileSize;
+                    int y = row * tileSize;
+                    g2d.fillRect(x, y, tileSize, tileSize);
+                }
+            }
         }
-        g2d.setComposite(AlphaComposite.SrcOver); // Restaurar opacidad
+        g2d.setComposite(AlphaComposite.SrcOver);
 
         g2d.dispose();
     }
@@ -189,9 +182,6 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
     public void setCollisionMode(boolean active) {
         collisionMode = active;
-        if (collisionMode) {
-            selectedTextureId = -1; // Deseleccionar textura al activar modo colisión
-        }
     }
 
     public boolean isCollisionMode() {
