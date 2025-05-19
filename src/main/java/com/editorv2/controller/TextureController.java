@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
+import com.editorv2.model.MapModel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -181,15 +182,13 @@ public class TextureController {
         }
     }
 
-    public void toggleCollisionTexture(int textureId) {
-        System.out.println("[DEBUG] toggleCollisionTexture() - textureId: " + textureId);
+    public void toggleCollisionTexture(int textureId, MapModel model) {
         if (collisionTextures.contains(textureId)) {
             collisionTextures.remove(textureId);
-            System.out.println("[DEBUG]   - Texture " + textureId + " marcada como NO colisionable.");
         } else {
             collisionTextures.add(textureId);
-            System.out.println("[DEBUG]   - Texture " + textureId + " marcada como colisionable.");
         }
+        model.refreshTilesWithTexture(textureId); // Notificar al modelo
     }
 
     public boolean isTextureCollision(int textureId) {
