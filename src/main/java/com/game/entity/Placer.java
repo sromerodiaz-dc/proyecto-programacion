@@ -30,4 +30,8 @@ public class Placer {
         Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.sizeFinal * 5, teisPanel.sizeFinal * 12);
         teisPanel.controller.enemy.add(enemy);
     }
+
+    private Entity generateEntity(int x, int y) {
+        return entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.sizeFinal * x, teisPanel.sizeFinal * y);
+    }
 }

@@ -1,13 +1,14 @@
 package com.game.entity;
 
-import com.game.controller.GameController;
 import com.game.controller.events.EventListener;
 import com.game.controller.events.GameEvent;
+import com.game.data.GameState;
 import com.game.data.Properties;
 import com.game.controller.KeyboardController;
 import com.game.controller.TeisPanel;
 import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
+import com.game.entity.stats.EntityStats;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,85 +22,50 @@ import java.util.Map;
  * Proyecto: Teis
  * */
 public class Player extends Entity implements EventListener {
+    private static final int NO_VALID_INDEX = 999;
+    private static final int BASE_ATTACK_AREA_SIZE = 36;
+    private static final int DEFAULT_WORLD_X = 18;
+    private static final int DEFAULT_WORLD_Y = 10;
 
-    // Propiedades del jugador
-    Properties properties;
+    private final EntityStats stats;
+    private final KeyboardController keyboardController;
+    private final Weapon currentWeapon;
+    private final Shield currentShield;
+    private boolean tenPass = false;
+    private final int screenX;
+    private final int screenY;
 
-    // Propiedades propias del player
-    int level;
-    int attackVal;
-    int defenseVal;
-    Entity currentWeapon; // TODO falta por crear sprite de arma corporativa
-    Entity currentShield; // TODO falta por crear sprite de nivel de defensa
-
-    // Atributos escalables
-    int strength;
-    int dexterity;
-
-    public KeyboardController keyboardController;
-
-    public int screenX;
-    public int screenY;
-
-    // Checkea si tienes una VigoPass
-    public boolean tenPass = false;
-
-    // Constructor
-    /**
-     * Constructor de la clase Player, que representa al jugador en el juego.
-     *
-     * @param t instancia de TeisPanel, que es el panel donde se dibujará el jugador
-     * @param k instancia de KeyboardController, que maneja las entradas del teclado
-     */
     public Player(TeisPanel t, KeyboardController k, Properties properties) {
-        // Llama al constructor de la clase padre (Entity) y pasa la instancia de TeisPanel
         super(t, properties);
-
-        // Asigna la instancia de KeyboardController para manejar las entradas del teclado
         this.keyboardController = k;
 
-        this.properties = properties;
+        this.screenX = t.screenWidth / 2 - (t.sizeFinal / 2);
+        this.screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
 
-        // Inicializa la posición del jugador en la pantalla
-        screenX = t.screenWidth / 2 - (t.sizeFinal / 2);
-        screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
+        this.currentWeapon = new Weapon(t, properties);
+        this.currentShield = new Shield(t, properties);
+        this.stats = new EntityStats.Builder()
+                .strength(2)
+                .dexterity(2)
+                .baseAttack(currentWeapon.getAttackVal())
+                .baseDefense(currentShield.getDefenseVal())
+                .build();
 
-        // Inicializa los valores por defecto del jugador
-        setValoresPorDefecto(t, properties);
-
-        // Carga las imágenes del jugador
+        setValoresPorDefecto(t);
         getPlayerImage();
-
-        // Carga las imágenes de ataque del jugador
         getPlayerAttackImage();
     }
 
-    /**
-     * Metodo que define el estado inicial del jugador
-     */
-    public void setValoresPorDefecto(TeisPanel t, Properties properties) {
-        // PLAYER STATS
+    public void setValoresPorDefecto(TeisPanel t) {
         setPropierties("player");
-        level = 1;
-        strength = 1; // The more strength, the more damage the player deals
-        dexterity = 1; // The more dextery, the less damage he takes
-        currentWeapon = new Weapon(t, properties);
-        currentShield = new Shield(t, properties);
-        attackVal = getAttackVal(); // Multiplica la fuerza por el daño del arma
-        defenseVal = getDefenseVal(); // Multiplica la resistencia por el valor de defensa del escudo
-
-        // PLAYER POS
-        worldX = teisPanel.sizeFinal * 18;
-        worldY = teisPanel.sizeFinal * 10;
-
-        // PLAYER SOLIDAREA
+        worldX = t.sizeFinal * DEFAULT_WORLD_X;
+        worldY = t.sizeFinal * DEFAULT_WORLD_Y;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
-
-        // PLAYER ATTACK AREA
-        attackArea.width = 36;
-        attackArea.height = 36;
+        attackArea.width = BASE_ATTACK_AREA_SIZE;
+        attackArea.height = BASE_ATTACK_AREA_SIZE;
     }
+
 
     /**
      * Carga las imágenes del jugador y las establece en las variables correspondientes.
@@ -234,30 +200,25 @@ public class Player extends Entity implements EventListener {
      * @param id el índice del objeto que se va a recoger
      */
     public void pickUpItem(int id) {
-        if (id != 999) { // Verifica si el objeto existe
+        if (id != NO_VALID_INDEX) { // Verifica si el objeto existe
             String item = teisPanel.controller.obj.get(id).name;
 
             switch (item) {
-                case "passvigo":
-                    //teisPanel.controller.playSE(1);
-                    tenPass = !tenPass;
-                    System.out.println("Passvigo recogida");
-                    break;
-                case "door":
-                    //teisPanel.controller.playSE(1);
+                case "passvigo" -> tenPass = !tenPass;
+                case "door" -> {
                     if (tenPass) {
-                        teisPanel.controller.obj.remove(id);
-                        tenPass = false;
-                        System.out.println("puerta abierta");
-                    }
-                    System.out.println("puerta");
-                    break;
-                case "estrellagalicia":
+                            teisPanel.controller.obj.remove(id);
+                            tenPass = false;
+                            System.out.println("puerta abierta");
+                        }
+                }
+                case "estrellagalicia" -> {
                     //teisPanel.controller.playSE(1);
                     speed -= 2;
                     teisPanel.controller.obj.remove(id);
+                    stats.addExp(teisPanel.controller.obj.get(id).exp);
                     System.out.println("Estrella Galicia debuf");
-                    break;
+                }
             }
         }
     }
@@ -271,9 +232,9 @@ public class Player extends Entity implements EventListener {
         // Verifica si se ha presionado una tecla
         if (keyboardController.isPressed) {
             // Verifica si el índice es válido (no es 999)
-            if (i!= 999) {
+            if (i!= NO_VALID_INDEX) {
                 // Cambia el estado del juego a diálogo
-                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
+                teisPanel.controller.currentGameState = GameState.DIALOG;
                 // Hace que el NPC hable
                 teisPanel.controller.npc.get(i).fala();
                 // teisPanel.controller.playSE(); // Efecto de habla
@@ -292,12 +253,18 @@ public class Player extends Entity implements EventListener {
      */
     public void interactuarEnemy(int i) {
         // Verifica si el índice es válido (no es 999)
-        if (i!= 999) {
+        if (i!= NO_VALID_INDEX) {
             // Verifica si el enemigo no es invencible
             if (!invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
+
                 // Aplica daño al enemigo
-                life -= 1;
+                int realDamage = teisPanel.controller.enemy.get(i).attackVal - defenseVal;
+                if (realDamage < 0) {
+                    realDamage = 0;
+                }
+                life -= realDamage;
+
                 // Hace que el enemigo sea invencible temporalmente
                 invencible = true;
             }
@@ -328,6 +295,7 @@ public class Player extends Entity implements EventListener {
             // Transforma el área sólida del ataque
             solidArea.width = attackArea.width;
             solidArea.height = attackArea.height;
+
             // Checkea la colisión con enemigos
             int enemy = teisPanel.controller.collisionCheck.checkEntity(this,teisPanel.controller.enemy);
             dealDamage(enemy);
@@ -350,26 +318,46 @@ public class Player extends Entity implements EventListener {
      */
     public void dealDamage(int i) {
         // Verifica si el índice es válido (no es 999)
-        if (i!= 999) {
+        if (i!= NO_VALID_INDEX) {
 
+            Entity enemy = teisPanel.controller.enemy.get(i);
             // Verifica si el enemigo no es invencible
-            if (!teisPanel.controller.enemy.get(i).invencible) {
+            if (!enemy.invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
+                int realDamage = attackVal - enemy.defenseVal;
+                if (realDamage < 0) {
+                    realDamage = 0;
+                }
 
                 // Aplica daño al enemigo
-                teisPanel.controller.enemy.get(i).life -= 1;
+                enemy.life -= realDamage;
+                teisPanel.controller.ui.addMessage(realDamage + " damage!");
 
                 // Hace que el enemigo sea invencible temporalmente
-                teisPanel.controller.enemy.get(i).invencible = true;
+                enemy.invencible = true;
 
                 // Verifica si la vida del enemigo ha llegado a cero
-                if (teisPanel.controller.enemy.get(i).life <= 0) {
+                if (enemy.life <= 0) {
 
                     // Elimina al enemigo (lo marca como nulo)
-                    teisPanel.controller.enemy.get(i).dying = true;
+                    enemy.dying = true;
+                    teisPanel.controller.ui.addMessage(enemy.name + "'s killed!");
+                    exp += enemy.exp;
+                    teisPanel.controller.ui.addMessage(exp + "+!");
 
+                    checkLvlUp();
                 }
             }
+        }
+    }
+
+    private void checkLvlUp() {
+        if (stats.getExp() >= stats.getNextLevelThreshold()) {
+            stats.levelUp();
+            maxLife += 2;
+            teisPanel.controller.setGameState(GameState.DIALOG);
+            teisPanel.controller.ui.dialogo = "Subiches de level manin ao nivel " + stats.getLevel();
+            // teisPanel.controller.ui.dialogo = "Subiches de level manin ao nivel " + level + "\n Síntese coma se o Celta lle ganara ó Rayo (cagho en deus)";
         }
     }
 
@@ -418,13 +406,13 @@ public class Player extends Entity implements EventListener {
         switch (event.type()) {
             case DAMAGE:
                 takeDamage(event.value());
-                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
+                teisPanel.controller.currentGameState = GameState.DIALOG;
                 teisPanel.controller.ui.dialogo = event.message();
                 break;
 
             case HEAL:
                 applyHeal(event.value());
-                teisPanel.controller.currentGameState = GameController.GameState.DIALOG;
+                teisPanel.controller.currentGameState = GameState.DIALOG;
                 teisPanel.controller.ui.dialogo = event.message();
                 break;
             case CHECKPOINT:
@@ -447,15 +435,19 @@ public class Player extends Entity implements EventListener {
     }
 
     public int getLevel() {
-        return level;
+        return stats.getLevel();
+    }
+
+    public int getExp() {
+        return stats.getExp();
     }
 
     public int getAttackVal() {
-        return strength * currentWeapon.attackVal;
+        return stats.calculateAttack();
     }
 
     public int getDefenseVal() {
-        return dexterity * currentShield.defenseVal;
+        return stats.calculateDefense();
     }
 
     public Entity getCurrentWeapon() {
@@ -476,6 +468,10 @@ public class Player extends Entity implements EventListener {
 
     public int getScreenY() {
         return screenY;
+    }
+
+    public EntityStats getStats() {
+        return stats;
     }
 
     public boolean isTenPass() {

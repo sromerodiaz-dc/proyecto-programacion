@@ -1702,3 +1702,60 @@ Idea nueva para almacenar mapas:
 
 ---
 ### Mejoras sobre el formato del guardado y procesado del mapa
+
+---
+## Semana del 12 al 26 de 05/2025
+### Eliminación de la base de datos
+
+### Implementación de EntityStats
+
+### Nuevas clases ENUM GameState y Sentido
+
+### PiezaManager adaptado
+
+### Estructura de guardado de stats de entidades
+```json
+{
+  "id": "player",
+   // Falta por añadir coordenadas
+  "who": 0,
+  "speed": 6,
+  "width": 48,
+  "height": 48,
+  "solidArea": [10, 22, 32, 20],
+  "baseStats": {
+    "strength": 2,
+    "dexterity": 2,
+    "vitality": 3,
+    "baseAttack": 5,
+    "baseDefense": 5
+  },
+  "maxLife": 10,
+  "sprites": {
+    "up1": "player/upWalkingBehind1.png",
+    "up2": "player/upWalkingBehind2.png"
+  }
+}
+```
+Cuando se carga una partida entonces primero se lee un archivo de guardado en el que se sabe 
+el mapa en el que se encuentra el jugador, su posicion, etc.
+El mapa tiene su propio json y entonces a partir de eso se carga el mapa, eventos, etc.
+El jugador y entidades se cargan despues del mapa.
+El json de las entidades contiene las stats de vida, ataque, defensa, fuerza, destreza, coordenadas 
+del jugador y objetos del inventario.
+
+La estructura de los json podría ser:
+``text
+/resources/
+  ├── data/
+      ├── entities/
+          ├── player.json
+          ├── dinoseto.json
+          └── items/
+              ├── sword.json
+              └── shield.json
+      └── saves/
+          └── (guardados automáticamente)
+```
+
+//TODO implementar nuevas clases DATA, eliminar la clase Properties y el docker-compose.yml, terminar de desarrollar el editor de mapas, implementar el nuevo formato a la carga de mapas del juego.

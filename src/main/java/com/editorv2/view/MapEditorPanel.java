@@ -59,16 +59,17 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         }
 
         if (collisionMode) {
-            // Modo colisión manual (sin cambios)
+            // Modo colisión manual (se guarda en manualCollisions)
             if (SwingUtilities.isLeftMouseButton(e)) {
                 model.addCollision(row, col);
             } else if (SwingUtilities.isRightMouseButton(e)) {
                 model.removeCollision(row, col);
             }
         } else {
+            // Al pintar, se aplica colisión automática de la textura actual
             int currentTileId = model.getTile(row, col);
             if (currentTileId != selectedTextureId) {
-                model.setTile(row, col, selectedTextureId); // Actualizar directamente
+                model.setTile(row, col, selectedTextureId);
             }
         }
     }

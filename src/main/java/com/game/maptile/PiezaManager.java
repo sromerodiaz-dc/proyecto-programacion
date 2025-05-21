@@ -150,10 +150,10 @@ public class PiezaManager {
             int id = mapaPiezaNum[worldCol][worldFil];
 
             // Coordenadas relativas al jugador
-            int playerWorldX = t.model.worldX;
-            int playerWorldY = t.model.worldY;
-            int playerScreenX = t.model.screenX;
-            int playerScreenY = t.model.screenY;
+            int playerWorldX = t.player.getWorldX();
+            int playerWorldY = t.player.getWorldY();
+            int playerScreenX = t.player.getScreenX();
+            int playerScreenY = t.player.getScreenY();
 
             // Coordenadas de pantalla relativas al jugador
             int worldX = worldCol * t.sizeFinal;

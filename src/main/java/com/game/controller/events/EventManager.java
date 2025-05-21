@@ -81,7 +81,7 @@ public class EventManager {
 
             if (playerHitbox.intersects(eventHitbox)) {
                 // Filtrar entrada si el tipo de evento lo requiere
-                boolean canCheckInput = (event.getType() != EventType.HEAL || player.keyboardController.isPressed);
+                boolean canCheckInput = (event.getType() != EventType.HEAL || player.getKeyboardController().isPressed);
 
                 if (canCheckInput && event.canTrigger()) {
                     event.trigger();

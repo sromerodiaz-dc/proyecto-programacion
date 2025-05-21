@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.entity.Player;
 import com.game.map.MapSelector;
@@ -44,7 +45,7 @@ public class TeisPanel extends JPanel implements Runnable{
     public Thread teisThread;
 
     // GameModel y Game Controller
-    public final Player model;
+    public final Player player;
     public final GameController controller;
 
     // Selector de mapa
@@ -70,13 +71,13 @@ public class TeisPanel extends JPanel implements Runnable{
 
         // Inicializa el modelo y el controlador
         controller = new GameController(piezaM,this);
-        model = new Player(this, key, controller.properties);
+        player = new Player(this, key, controller.properties);
 
         setListeners();
     }
 
     public void setListeners() {
-        controller.eventManager.addListener(model);
+        controller.eventManager.addListener(player);
     }
 
     public void setUpItems() throws LineUnavailableException {
@@ -150,9 +151,9 @@ public class TeisPanel extends JPanel implements Runnable{
      */
     public void update() throws LineUnavailableException {
         // Verificar si el juego está en estado de juego
-        if (controller.currentGameState == GameController.GameState.PLAY) {
+        if (controller.currentGameState == GameState.PLAY) {
             // Actualizar el estado del jugador
-            model.update();
+            player.update();
 
             // Actualizar NPCs
             for (Entity npc : controller.npc) {
@@ -189,12 +190,12 @@ public class TeisPanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         long tDraw = 0;
-        if (model.keyboardController.Time) {
+        if (player.getKeyboardController().Time) {
             // Medición del tiempo de dibujado.
             tDraw = System.nanoTime();
         }
 
-        if (controller.currentGameState == GameController.GameState.LOAD) {
+        if (controller.currentGameState == GameState.LOAD) {
             // Dibuja la pantalla de carga.
             controller.ui.draw(g2);
         } else {
@@ -208,7 +209,7 @@ public class TeisPanel extends JPanel implements Runnable{
             controller.ui.draw(g2);
         }
 
-        if (model.keyboardController.Time) {
+        if (player.getKeyboardController().Time) {
             // Calcula el tiempo de dibujado.
             long tDrawEnd = System.nanoTime();
             long tiempoRestante = tDrawEnd - tDraw;
@@ -241,7 +242,7 @@ public class TeisPanel extends JPanel implements Runnable{
         entitiesToDraw.addAll(controller.npc.stream().filter(Objects::nonNull).toList());
         entitiesToDraw.addAll(controller.obj.stream().filter(Objects::nonNull).toList());
         entitiesToDraw.addAll(controller.enemy.stream().filter(Objects::nonNull).toList());
-        entitiesToDraw.add(model);
+        entitiesToDraw.add(player);
 
         // Ordena y dibuja
         entitiesToDraw.sort(Comparator.comparingInt(e -> e.worldY));

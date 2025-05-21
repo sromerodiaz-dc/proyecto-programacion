@@ -1,6 +1,7 @@
 package com.game.ui;
 
 import com.game.controller.GameController;
+import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.controller.TeisPanel;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +37,10 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     public String dialogo;
     private int messageTime = 0;
     private boolean isFinished = false;
+    private final ArrayList<String> messages = new ArrayList<>();
+    private final ArrayList<Integer> messageCounter = new ArrayList<>();
     public int titleCounter = 1;
+
 
     public UserInterface(TeisPanel teisPanel, Properties properties) {
         this.teisPanel = teisPanel;
@@ -46,6 +51,11 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         this.vidaFull = vida.image;
         this.vidaHalf = vida.image2;
         this.vidaEmpty = vida.image3;
+    }
+
+    public void addMessage(String message) {
+        messages.add(message);
+        messageCounter.add(1);
     }
 
     private Font loadFont() {
@@ -71,21 +81,22 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         g2.setColor(Color.WHITE);
 
         switch (teisPanel.controller.currentGameState) {
-            case GameController.GameState.LOAD:
+            case GameState.LOAD:
                 drawLoadingScreen();
                 break;
-            case GameController.GameState.PLAY:
+            case GameState.PLAY:
                 drawPlayerLife();
+                drawMessages();
                 break;
-            case GameController.GameState.PAUSE:
+            case GameState.PAUSE:
                 drawPlayerLife();
                 drawPauseScreen();
                 break;
-            case GameController.GameState.DIALOG:
+            case GameState.DIALOG:
                 drawPlayerLife();
                 drawDialog();
                 break;
-            case GameController.GameState.STATS:
+            case GameState.STATS:
                 drawCharacterScreen();
                 break;
         }
@@ -96,16 +107,42 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         int y = teisPanel.sizeFinal / 2;
 
         // Draw empty hearts for max life
-        for (int i = 0; i < teisPanel.model.maxLife / 2; i++) {
+        for (int i = 0; i < teisPanel.player.maxLife / 2; i++) {
             g2.drawImage(vidaEmpty, x, y, null);
             x += teisPanel.sizeFinal;
         }
 
         // Draw current life
         x = teisPanel.sizeFinal / 2;
-        for (int i = 0; i < teisPanel.model.life; i++) {
+        for (int i = 0; i < teisPanel.player.life; i++) {
             g2.drawImage((i % 2 == 0) ? vidaHalf : vidaFull, x, y, null);
             if (i % 2 != 0) x += teisPanel.sizeFinal;
+        }
+    }
+
+    private void drawMessages() {
+        int messageX = teisPanel.sizeFinal;
+        int messageY = teisPanel.sizeFinal*4;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
+
+        for(int i = 0; i < messages.size(); i++) {
+
+            if (messages.get(i) != null) {
+
+                g2.setColor(Color.black);
+                g2.drawString(messages.get(i), messageX+2, messageY+2);
+                g2.setColor(Color.white);
+                g2.drawString(messages.get(i), messageX, messageY);
+
+                int counter = messageCounter.get(i) + 1;
+                messageCounter.set(i, counter);
+                messageY += 50;
+
+                if (messageCounter.get(i) > 45) {
+                    messages.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
         }
     }
 
@@ -188,10 +225,10 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         // Ahora los valores, reiniciamos y o los desplazamos igual que etiquetas
         y = frameXY + 40;
         g2.setColor(Color.WHITE);
-        y = drawTextBlock(String.valueOf(teisPanel.model.getLevel()), valueX, y, 28f, 10);
-        y = drawTextBlock(String.valueOf(teisPanel.model.getLife()), valueX, y, 28f, 20);
-        y = drawTextBlock(String.valueOf(teisPanel.model.getAttackVal()), valueX, y, 28f, 30);
-        drawTextBlock(String.valueOf(teisPanel.model.getDefenseVal()), valueX, y, 28f, 0);
+        y = drawTextBlock(String.valueOf(teisPanel.player.getLevel()), valueX, y, 28f, 10);
+        y = drawTextBlock(String.valueOf(teisPanel.player.getLife()), valueX, y, 28f, 20);
+        y = drawTextBlock(String.valueOf(teisPanel.player.getAttackVal()), valueX, y, 28f, 30);
+        drawTextBlock(String.valueOf(teisPanel.player.getDefenseVal()), valueX, y, 28f, 0);
     }
 
     /**
@@ -228,8 +265,8 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     }
 
     private void drawEquipmentImages(int x, int y) {
-        g2.drawImage(teisPanel.model.getCurrentWeapon().down1, x, y, null);
-        g2.drawImage(teisPanel.model.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
+        g2.drawImage(teisPanel.player.getCurrentWeapon().down1, x, y, null);
+        g2.drawImage(teisPanel.player.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
     }
 
     private void drawTextWithShadow(String text, int x, int y) {

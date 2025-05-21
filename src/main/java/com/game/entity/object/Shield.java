@@ -15,6 +15,6 @@ public class Shield extends Entity {
 
         name = "Fent";
         down1 = setEntitySprite("objects/shield.png",32,32);
-        defenseVal = 1;
+        defenseVal = 5;
     }
 }

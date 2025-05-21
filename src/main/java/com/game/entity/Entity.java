@@ -38,8 +38,11 @@ public class Entity {
     int hpBarCounter = 0;
     boolean isHpBar = false;
 
+    // Experiencia / nivel de la entidad
+    protected int exp;
+
     // ITEM ATTRIBUTES
-    public int attackVal;
+    public int attackVal; //TODO implementar en las entidades EntityStats y dejar de usar estos atributos
     public int defenseVal;
 
     // Estados de entidad
@@ -190,7 +193,7 @@ public class Entity {
      * Redirecciona al NPC en tu sentido para que te mire cuando te hable
      * */
     public char sentidoHablar () {
-        return switch (teisPanel.model.sentido) {
+        return switch (teisPanel.player.sentido) {
             case 'w' -> 's';
             case 's' -> 'w';
             case 'a' -> 'd';
@@ -225,9 +228,15 @@ public class Entity {
         boolean hitPlayer = teisPanel.controller.collisionCheck.checkPlayer(this);
 
         if (this.who == 2 && hitPlayer) {
-            if (!teisPanel.model.invencible) {
-                teisPanel.model.life -= 1;
-                teisPanel.model.invencible = true;
+            if (!teisPanel.player.invencible) {
+                //playSE()
+                int realDamage = attackVal - teisPanel.player.defenseVal;
+                if (realDamage < 0) {
+                    realDamage = 0;
+                }
+                teisPanel.player.life -= realDamage;
+
+                teisPanel.player.invencible = true;
             }
         }
 
@@ -246,7 +255,7 @@ public class Entity {
      */
     public void movement() {
         // Si no hay colisión, mueve al jugador
-        if (!collisionOn && !teisPanel.model.keyboardController.isPressed) {
+        if (!collisionOn && !teisPanel.player.getKeyboardController().isPressed) {
             // Calcula la nueva posición del jugador según la dirección y velocidad
             int[] moveEnt = moveEntity(speed);
 
@@ -308,10 +317,10 @@ public class Entity {
      * @param invencible  Indica si el objeto está en estado de invencibilidad (con transparencia).
      */
     public void drawRelativeToPlayer(int worldX, int worldY, TeisPanel teisPanel, Graphics2D g2, BufferedImage image, boolean invencible) {
-        int playerWorldX = teisPanel.model.worldX;
-        int playerWorldY = teisPanel.model.worldY;
-        int playerScreenX = teisPanel.model.screenX;
-        int playerScreenY = teisPanel.model.screenY;
+        int playerWorldX = teisPanel.player.worldX;
+        int playerWorldY = teisPanel.player.worldY;
+        int playerScreenX = teisPanel.player.getScreenX();
+        int playerScreenY = teisPanel.player.getScreenY();
         int size = teisPanel.sizeFinal;
 
         // Coordenadas en pantalla relativas al jugador
@@ -641,5 +650,21 @@ public class Entity {
 
     public char getSentido() {
         return sentido;
+    }
+
+    public int getAttackVal() {
+        return attackVal;
+    }
+
+    public void setAttackVal(int attackVal) {
+        this.attackVal = attackVal;
+    }
+
+    public int getDefenseVal() {
+        return defenseVal;
+    }
+
+    public void setDefenseVal(int defenseVal) {
+        this.defenseVal = defenseVal;
     }
 }

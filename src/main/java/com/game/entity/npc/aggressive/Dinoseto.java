@@ -33,7 +33,8 @@ public class Dinoseto extends Entity {
 
         // Valores de ataque y defensa
         attackVal = 5;
-        defenseVal = 10;
+        defenseVal = 5;
+        exp = 5;
 
         // Guarda la posición del área sólida por defecto
         defaultSolidAreaX = solidArea.x;

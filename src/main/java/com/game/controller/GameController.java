@@ -2,6 +2,7 @@ package com.game.controller;
 
 import com.game.controller.events.EventRectangle;
 import com.game.controller.events.EventType;
+import com.game.data.GameState;
 import com.game.data.Properties;
 import com.game.efx.Sound;
 import com.game.ui.UserInterface;
@@ -45,15 +46,7 @@ public class GameController {
     public ArrayList<Entity> obj = new ArrayList<>();
 
     // Estado del juego
-    public GameState currentGameState = GameController.GameState.LOAD;
-    // ESTADO DEL JUEGO
-    public enum GameState {
-        LOAD,    // Pantalla de carga
-        PLAY,    // Jugando
-        PAUSE,   // Juego pausado
-        DIALOG,  // Diálogos
-        STATS    // Menú de estadísticas
-    }
+    public GameState currentGameState = GameState.LOAD;
 
     // Entidades
     public ArrayList<Entity> npc = new ArrayList<>();
@@ -110,7 +103,6 @@ public class GameController {
         events.add(new EventRectangle(
                 10,
                 12,
-                48,
                 32,
                 32,
                 EventType.DAMAGE,
@@ -124,7 +116,6 @@ public class GameController {
         events.add(new EventRectangle(
                 14,
                 13,
-                48,
                 32,
                 32,
                 EventType.HEAL,
@@ -186,10 +177,6 @@ public class GameController {
         se.stop(); // Detiene la reproducción del sonido de selección
     }
 
-    public void setGameState(GameController.GameState newState) {
-        currentGameState = newState;
-    }
-
     public GameState getGameState() {
         return currentGameState;
     }
@@ -210,5 +197,9 @@ public class GameController {
 
     public int getTitleCounter() {
         return ui.titleCounter;
+    }
+
+    public void setGameState(GameState gameState) {
+        currentGameState = gameState;
     }
 }

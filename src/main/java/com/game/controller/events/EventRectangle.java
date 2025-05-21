@@ -12,13 +12,11 @@ public class EventRectangle extends Rectangle {
     private final String message;
     private final int value;
     private boolean done = false; // Marca si el evento es de una sola vez
-    private final int tileSize;
 
-    public EventRectangle(int col, int row, int tileSize, int width, int height,
+    public EventRectangle(int col, int row, int width, int height,
                           EventType type, char direction, int cooldownLimit,
                           String message, int value) {
         super(col * TILE_SIZE, row * TILE_SIZE, width, height);
-        this.tileSize = tileSize;
         this.type = type;
         this.direction = direction;
         this.cooldownLimit = cooldownLimit * 30;
@@ -87,18 +85,14 @@ public class EventRectangle extends Rectangle {
         return cooldownLimit;
     }
 
-    public int getTileSize() {
-        return tileSize;
-    }
-
     // Metodo para obtener la columna donde se encuentra el evento
     public int getCol() {
-        return (x - 23) / tileSize;
+        return (x - 23) / TILE_SIZE;
     }
 
     // Metodo para obtener la fila donde se encuentra el evento
     public int getRow() {
-        return (y - 23) / tileSize;
+        return (y - 23) / TILE_SIZE;
     }
 }
 

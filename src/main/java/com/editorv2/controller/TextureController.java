@@ -183,12 +183,10 @@ public class TextureController {
     }
 
     public void toggleCollisionTexture(int textureId, MapModel model) {
-        if (collisionTextures.contains(textureId)) {
-            collisionTextures.remove(textureId);
-        } else {
-            collisionTextures.add(textureId);
-        }
-        model.refreshTilesWithTexture(textureId); // Notificar al modelo
+        // Suponiendo que hay un metodo para alternar el estado de colisión
+        boolean current = isTextureCollision(textureId);
+        setTextureCollision(textureId, !current);
+        model.refreshTilesWithTexture(textureId); // Actualizar tiles existentes
     }
 
     public boolean isTextureCollision(int textureId) {
@@ -216,7 +214,11 @@ public class TextureController {
         return textures;
     }
 
-    public void setTextureCollision(int textureId) {
-        collisionTextures.add(textureId);
+    public void setTextureCollision(int textureId, boolean isCollision) {
+        if (isCollision) {
+            collisionTextures.add(textureId);
+        } else {
+            collisionTextures.remove(textureId);
+        }
     }
 }

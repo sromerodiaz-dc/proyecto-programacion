@@ -164,9 +164,9 @@ public class CollisionCheck {
      * @return True si la entidad colisiona con el jugador, false en caso contrario.
      */
     public boolean checkPlayer(Entity entity) {
-        boolean collision = checkCollisionBetween(entity, teisPanel.model);
+        boolean collision = checkCollisionBetween(entity, teisPanel.player);
 
-        if (collision && teisPanel.model != entity) {
+        if (collision && teisPanel.player != entity) {
             entity.collisionOn = true;
             return true;
         }
