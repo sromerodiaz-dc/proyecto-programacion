@@ -1693,27 +1693,89 @@ Idea nueva para almacenar mapas:
 ---
 ## Semana del 05/05/2025
 ### Mejoras de la interfaz de usuario
+Antes se encargaba de:
+- Pantallas de carga con títulos aleatorios y animaciones de texto.
+- Visualización de la vida del jugador mediante corazones (llenos, medios y vacíos).
+   
+Ahora incluye también: 
+- Diálogos en ventanas emergentes con formato multilínea.
+- Soporte para múltiples estados del juego: PLAY, PAUSE, DIALOG, STATS, LOAD.
+- Estadísticas del jugador (nivel, vida, ataque, defensa) en una pantalla dedicada.
+- Sistema de mensajes temporales para daño, experiencia y eventos.
+
 
 ---
-### Inventario y objetos equipables
+### Objetos equipables
+Clase `Shield.java`
+Representa un escudo equipable:
 
----
-### Desarrollo de proyectiles
+    Hereda de Entity y define atributos de defensa (defenseVal = 5).
+
+    Carga su sprite desde objects/shield.png.
+
+    Nombre identificativo: "Fent".
+
+Clase `Weapon.java`
+Representa un arma equipable:
+
+    Hereda de Entity y define atributos de ataque (attackVal = 5).
+
+    Carga su sprite desde objects/sword.png.
+
+    Nombre identificativo: "Corporative BarberCut".
 
 ---
 ### Mejoras sobre el formato del guardado y procesado del mapa
+Editor de mapas con las siguientes funcionalidades:
+
+    Interfaz gráfica para crear/cargar mapas (tamaños personalizables: 25x25, 50x50, 75x75).
+
+    Panel de edición con desplazamiento y vista en miniatura (MiniMapView).
+
+    Paleta de texturas seleccionables (TilePalettePanel).
+
+    Gestión de colisiones y eventos (spawn, teletransportes).
+
+    Guardado/carga de mapas en formato JSON mediante MapJsonHandler.
+
+    Integración con TextureController para manejo de sprites y recursos gráficos.
 
 ---
-## Semana del 12 al 26 de 05/2025
+## Semana del 12 a la semana del 26 de 05/2025
 ### Eliminación de la base de datos
+Como el proyecto es pequeño y hay que cumplir con ciertas marcas de tiempo he decidido prescindir de ella para menos complejidas y mayor eficiencia.
 
 ### Implementación de EntityStats
+Maneja las estadísticas base y progresión de entidades (jugador/enemigos):
+
+    Atributos: nivel, fuerza, destreza, experiencia, umbral para subir de nivel.
+
+    Sistema de nivelación exponencial (nextLevelThreshold * 1.5).
+
+    Métodos para calcular ataque/defensa total usando fórmulas basadas en atributos.
+
+    Patrón Builder para construcción flexible de estadísticas iniciales.
+
+    Lógica de ganancia de experiencia y subida de nivel automática (addExp() y checkLevelUp()).
 
 ### Nuevas clases ENUM GameState y Sentido
+Clase GameState.java (ENUM)
+Define los estados principales del juego:
 
-### PiezaManager adaptado
+    LOAD (carga), PLAY (jugando), PAUSE (pausado), DIALOG (diálogos), STATS (menú de estadísticas).
 
-### Estructura de guardado de stats de entidades
+    Utilizado en UserInterface.java para controlar qué elementos de la UI se renderizan.
+
+Clase Sentido.java (ENUM)
+Representa direcciones de movimiento:
+
+    Valores: UP, DOWN, LEFT, RIGHT, NONE (sin movimiento).
+
+    Usado para controlar animaciones y colisiones de entidades.
+
+### PiezaManager adaptado al nuevo sistema de mapeado
+
+### Estructura de **guardado** de stats de entidades
 ```json
 {
   "id": "player",
