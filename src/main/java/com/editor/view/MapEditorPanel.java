@@ -1,9 +1,13 @@
 package com.editor.view;
 
 import com.editor.controller.TextureController;
-import com.editor.model.CeldaCoord;
+import com.editor.model.record.CeldaCoord;
 import com.editor.model.IModelChangeListener;
 import com.editor.model.MapModel;
+import com.editor.model.event.EntitySpawnEvent;
+import com.editor.model.event.EventMode;
+import com.editor.model.event.TeleportEvent;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,6 +20,10 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
     private final int tileSize = 32;
     private int selectedTextureId = 1;
     private boolean collisionMode = false;
+
+    // Nuevos campos para gestión de eventos
+    private EventMode eventMode = EventMode.NONE;
+    private String selectedEntityId;
 
     public MapEditorPanel(MapModel model, TextureController textureController) {
         this.model = model;
@@ -30,6 +38,22 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                int col = e.getX() / tileSize;
+                int row = e.getY() / tileSize;
+                CeldaCoord coord = new CeldaCoord(row, col);
+
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    eventMode = EventMode.NONE; // Cancelar modo evento con clic derecho
+                    model.clearTeleportSource();
+                    repaint();
+                    return;
+                }
+
+                if (eventMode != EventMode.NONE) {
+                    handleEventAction(row, col);
+                    return;
+                }
+
                 if (SwingUtilities.isRightMouseButton(e)) {
                     deleteTile(e);
                 } else {
@@ -44,6 +68,48 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
                 paintTile(e);
             }
         });
+    }
+
+    private void handleEventAction(int row, int col) {
+        CeldaCoord coord = new CeldaCoord(row, col);
+
+        // Verificar si la celda es colisionable
+        if (model.isTileCollision(coord)) {
+            JOptionPane.showMessageDialog(this, "No se puede colocar eventos en celdas con colisión",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        switch (eventMode) {
+            case PLAYER_SPAWN:
+                model.setPlayerSpawn(coord);
+                eventMode = EventMode.NONE;
+                break;
+
+            case ENTITY_SPAWN:
+                model.addEntitySpawn(new EntitySpawnEvent(selectedEntityId, row, col));
+                // Permanece en modo para añadir múltiples entidades
+                break;
+
+            case TELEPORT_SOURCE:
+                model.setTeleportSource(coord);
+                eventMode = EventMode.TELEPORT_DEST;
+                break;
+
+            case TELEPORT_DEST:
+                if (model.getTeleportSource() != null) {
+                    model.addTeleport(new TeleportEvent(
+                            model.getTeleportSource().row(),
+                            model.getTeleportSource().col(),
+                            row,
+                            col
+                    ));
+                    model.clearTeleportSource();
+                    eventMode = EventMode.NONE;
+                }
+                break;
+        }
+        repaint();
     }
 
     private void paintTile(MouseEvent e) {
@@ -82,6 +148,20 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         }
     }
 
+    // Metodo para establecer el modo de evento
+    public void setEventMode(EventMode mode) {
+        this.eventMode = mode;
+        this.collisionMode = false; // Desactivar modo colisión
+        repaint();
+    }
+
+    public void setEventMode(EventMode mode, String entityId) {
+        this.eventMode = mode;
+        this.selectedEntityId = entityId;
+        this.collisionMode = false; // Desactivar modo colisión
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -118,6 +198,8 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
             }
         }
 
+        drawEvents(g2d);
+
         // Dibujar colisiones (manuales + automáticas)
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         g2d.setColor(Color.RED);
@@ -134,6 +216,48 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         g2d.setComposite(AlphaComposite.SrcOver);
 
         g2d.dispose();
+    }
+
+    private void drawEvents(Graphics2D g2d) {
+        // Dibujar spawn del jugador (azul)
+        if (model.getPlayerSpawn() != null) {
+            drawEvent(g2d, model.getPlayerSpawn(), Color.BLUE);
+        }
+
+        // Dibujar spawns de entidades (verde)
+        for (EntitySpawnEvent spawn : model.getEntitySpawns()) {
+            drawEvent(g2d, new CeldaCoord(spawn.getRow(), spawn.getCol()), Color.GREEN);
+        }
+
+        // Dibujar teleports
+        for (TeleportEvent teleport : model.getTeleports()) {
+            // Origen (naranja)
+            drawEvent(g2d, new CeldaCoord(teleport.getRow(), teleport.getCol()), Color.ORANGE);
+
+            // Destino (cian)
+            drawEvent(g2d, new CeldaCoord(teleport.getTargetRow(), teleport.getTargetCol()), Color.CYAN);
+
+            // Línea conectando
+            g2d.setColor(Color.YELLOW);
+            g2d.drawLine(
+                    teleport.getCol() * tileSize + tileSize / 2,
+                    teleport.getRow() * tileSize + tileSize / 2,
+                    teleport.getTargetCol() * tileSize + tileSize / 2,
+                    teleport.getTargetRow() * tileSize + tileSize / 2
+            );
+        }
+
+        // Dibujar origen temporal para teleport
+        if (model.getTeleportSource() != null) {
+            drawEvent(g2d, model.getTeleportSource(), Color.ORANGE);
+        }
+    }
+
+    private void drawEvent(Graphics2D g2d, CeldaCoord coord, Color color) {
+        g2d.setColor(color);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+        g2d.fillRect(coord.col() * tileSize, coord.row() * tileSize, tileSize, tileSize);
+        g2d.setComposite(AlphaComposite.SrcOver);
     }
 
     public void loadMapData(int[][] data, Set<CeldaCoord> collisions) {
