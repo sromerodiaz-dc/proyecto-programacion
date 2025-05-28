@@ -27,6 +27,8 @@ public class Player extends Entity implements EventListener {
     private static final int DEFAULT_WORLD_X = 18;
     private static final int DEFAULT_WORLD_Y = 10;
     private static final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
+    private static final int SCREEN_WIDTH = TeisPanel.WIDTH;
+    private static final int SCREEN_HEIGHT = TeisPanel.HEIGHT;
 
     private final EntityStats stats;
     private final KeyboardController keyboardController;
@@ -40,8 +42,8 @@ public class Player extends Entity implements EventListener {
         super(t, properties);
         this.keyboardController = k;
 
-        this.screenX = t.screenWidth / 2 - (SIZE_FINAL / 2);
-        this.screenY = t.screenHeight / 2 - (SIZE_FINAL / 2);
+        this.screenX = SCREEN_WIDTH / 2 - (SIZE_FINAL / 2);
+        this.screenY = SCREEN_HEIGHT / 2 - (SIZE_FINAL / 2);
 
         this.currentWeapon = new Weapon(t, properties);
         this.currentShield = new Shield(t, properties);
