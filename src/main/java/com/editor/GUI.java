@@ -2,7 +2,8 @@ package com.editor;
 
 import com.editor.controller.TextureController;
 import com.editor.model.MapModel;
-import com.editor.util.MapData;
+import com.editor.model.event.EventMode;
+import com.editor.model.record.MapData;
 import com.editor.util.MapJsonHandler;
 import com.editor.util.StartAction;
 import com.editor.view.MapEditorPanel;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
@@ -63,7 +65,8 @@ public class GUI extends JFrame {
                 initMapComponents(data.rows(), data.cols());
                 editorPanel.loadMapData(data.matrix(), data.collisions());
                 model.getCollisions().addAll(data.collisions()); // Añadir colisiones
-                model.setSpawn(data.spawnEvent()); // Añadir spawn
+                model.setPlayerSpawn(data.playerSpawn()); // Añadir spawn de jugador
+                model.addAllEntitySpawn(data.spawnEvent()); // Añadir spawn de entidades
                 model.getTeleports().addAll(data.teleports()); // Añadir teleports
             } catch (IOException | IllegalArgumentException e) {
                 handleMapError("Error al cargar el mapa", e);
@@ -146,8 +149,78 @@ public class GUI extends JFrame {
         tilePalettePanel.actualizarBordesColisionables(textureController);
     }
 
-    private void handleEventAction(){
-        System.out.println("event clicked");
+    private void handleEventAction() {
+        // Cargar IDs de entidades desde JSON
+        ArrayList<String> entityIds = loadEntityIds();
+        entityIds.remove("player"); // Excluir jugador
+
+        // Crear diálogo de eventos
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Seleccione tipo de evento:"));
+
+        JButton playerSpawnBtn = new JButton("Spawn del jugador");
+        JButton entitySpawnBtn = new JButton("Spawn de entidades");
+        JButton teleportBtn = new JButton("Teleport");
+
+        panel.add(playerSpawnBtn);
+        panel.add(entitySpawnBtn);
+        panel.add(teleportBtn);
+
+        JDialog dialog = new JDialog(this, "Eventos", true);
+        dialog.setContentPane(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+
+        // Manejar acciones
+        playerSpawnBtn.addActionListener(e -> {
+            editorPanel.setEventMode(EventMode.PLAYER_SPAWN);
+            dialog.dispose();
+        });
+
+        entitySpawnBtn.addActionListener(e -> {
+            if (entityIds.isEmpty()) {
+                showInformation("No hay entidades disponibles");
+                return;
+            }
+
+            String selected = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Seleccione entidad:",
+                    "Spawn de entidades",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    entityIds.toArray(),
+                    entityIds.get(0)
+            );
+
+            if (selected != null) {
+                editorPanel.setEventMode(EventMode.ENTITY_SPAWN, selected);
+                dialog.dispose();
+            }
+        });
+
+        teleportBtn.addActionListener(e -> {
+            editorPanel.setEventMode(EventMode.TELEPORT_SOURCE);
+            dialog.dispose();
+        });
+
+        dialog.setVisible(true);
+    }
+
+    private ArrayList<String> loadEntityIds() {
+        ArrayList<String> ids = new ArrayList<>();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(new File("src/main/resources/data/entity/entity.json"));
+            JsonNode entities = root.path("entities");
+
+            for (JsonNode entity : entities) {
+                ids.add(entity.path("id").asText());
+            }
+        } catch (IOException e) {
+            showError("Error cargando entidades: " + e.getMessage());
+        }
+        return ids;
     }
 
     private JPanel createLeftPanel() {
@@ -232,7 +305,7 @@ public class GUI extends JFrame {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(new File(CONFIG_PATH));
-            JsonNode mapsNode = root.path("graphic/maps");
+            JsonNode mapsNode = root.path("data/maps");
 
             if (!mapsNode.isObject() || mapsNode.isEmpty()) {
                 showInformation("No hay mapas guardados para cargar.");
