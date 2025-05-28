@@ -215,7 +215,9 @@ public class GUI extends JFrame {
 
             if (root.isArray()) {
                 for (JsonNode entity : root) {
-                    ids.add(entity.path("id").asText());
+                    if (!entity.path("id").asText().equals("player")) {
+                        ids.add(entity.path("id").asText());
+                    }
                 }
             } else {
                 showError("El archivo JSON no contiene un array de entidades.");
