@@ -190,7 +190,7 @@ public class GUI extends JFrame {
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     entityIds.toArray(),
-                    entityIds.get(0)
+                    entityIds.getFirst()
             );
 
             if (selected != null) {
@@ -212,10 +212,13 @@ public class GUI extends JFrame {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(new File("src/main/resources/data/entity/entity.json"));
-            JsonNode entities = root.path("entities");
 
-            for (JsonNode entity : entities) {
-                ids.add(entity.path("id").asText());
+            if (root.isArray()) {
+                for (JsonNode entity : root) {
+                    ids.add(entity.path("id").asText());
+                }
+            } else {
+                showError("El archivo JSON no contiene un array de entidades.");
             }
         } catch (IOException e) {
             showError("Error cargando entidades: " + e.getMessage());
