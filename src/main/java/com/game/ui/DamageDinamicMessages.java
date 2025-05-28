@@ -38,7 +38,7 @@ public class DamageDinamicMessages {
             "manin?",
             "Ya si eso haces algo cuando\nrespawnees, no te rayes bro",
             "Prueba con otra build que\nno sea inútil, primo",
-            "gg",
+            "GG",
             "[**gg**]",
             "Abusadol",
             "Uno es pila bakano con to' y\nal final le hacen pila\n'e palomerias, sabes?",
