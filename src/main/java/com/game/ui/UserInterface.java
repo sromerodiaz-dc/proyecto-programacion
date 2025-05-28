@@ -1,6 +1,5 @@
 package com.game.ui;
 
-import com.game.controller.GameController;
 import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
@@ -14,6 +13,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Iterator;
 
 public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, etc. Implementar niveles de experiencia
     private static final List<String> DEFAULT_TITLES = List.of(
@@ -32,6 +32,8 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private final Font pixeledFont;
     private final BufferedImage vidaFull, vidaHalf, vidaEmpty;
 
+    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
+
     private Graphics2D g2;
     private String title;
     public String dialogo;
@@ -39,6 +41,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private boolean isFinished = false;
     private final ArrayList<String> messages = new ArrayList<>();
     private final ArrayList<Integer> messageCounter = new ArrayList<>();
+    private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
 
 
@@ -58,8 +61,12 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         messageCounter.add(1);
     }
 
+    public void addMessage(int damage, int enemyX, int enemyY, int playerX, int playerY, int screenX, int screenY) {
+        damageMessages.add(new DamageDinamicMessages(damage, enemyX, enemyY, playerX, playerY, screenX, screenY));
+    }
+
     private Font loadFont() {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("font/newPixeledFont.ttf")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("graphic/font/newPixeledFont.ttf")) {
             if (is == null) throw new IOException("Font resource not found");
             return Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (IOException | FontFormatException e) {
@@ -103,45 +110,34 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     }
 
     public void drawPlayerLife() {
-        int x = teisPanel.sizeFinal / 2;
-        int y = teisPanel.sizeFinal / 2;
+        int x = SIZE_FINAL / 2;
+        int y = SIZE_FINAL / 2;
 
         // Draw empty hearts for max life
         for (int i = 0; i < teisPanel.player.maxLife / 2; i++) {
             g2.drawImage(vidaEmpty, x, y, null);
-            x += teisPanel.sizeFinal;
+            x += SIZE_FINAL;
         }
 
         // Draw current life
-        x = teisPanel.sizeFinal / 2;
+        x = SIZE_FINAL / 2;
         for (int i = 0; i < teisPanel.player.life; i++) {
             g2.drawImage((i % 2 == 0) ? vidaHalf : vidaFull, x, y, null);
-            if (i % 2 != 0) x += teisPanel.sizeFinal;
+            if (i % 2 != 0) x += SIZE_FINAL;
         }
     }
 
     private void drawMessages() {
-        int messageX = teisPanel.sizeFinal;
-        int messageY = teisPanel.sizeFinal*4;
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
+        Iterator<DamageDinamicMessages> iterator = damageMessages.iterator();
 
-        for(int i = 0; i < messages.size(); i++) {
+        while (iterator.hasNext()) {
+            DamageDinamicMessages msg = iterator.next();
+            msg.update(); // Actualiza la posición, lifetime, etc.
 
-            if (messages.get(i) != null) {
-
-                g2.setColor(Color.black);
-                g2.drawString(messages.get(i), messageX+2, messageY+2);
-                g2.setColor(Color.white);
-                g2.drawString(messages.get(i), messageX, messageY);
-
-                int counter = messageCounter.get(i) + 1;
-                messageCounter.set(i, counter);
-                messageY += 50;
-
-                if (messageCounter.get(i) > 45) {
-                    messages.remove(i);
-                    messageCounter.remove(i);
-                }
+            if (msg.isAlive()) {
+                msg.draw(g2); // Dibuja el mensaje
+            } else {
+                iterator.remove(); // Elimina el mensaje si ha expirado
             }
         }
     }
@@ -177,7 +173,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private void drawMenuOption(String text, int x, int y, int optionIndex) {
         g2.drawString(text, x, y);
         if (titleCounter == optionIndex) {
-            g2.drawString(">>", x - teisPanel.sizeFinal, y);
+            g2.drawString(">>", x - SIZE_FINAL, y);
         }
     }
 
@@ -188,16 +184,16 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     }
 
     private void drawDialog() {
-        int x = teisPanel.sizeFinal * 2;
-        int y = teisPanel.sizeFinal / 2;
-        int width = teisPanel.screenWidth - teisPanel.sizeFinal * 4;
-        int height = teisPanel.sizeFinal * 5;
+        int x = SIZE_FINAL * 2;
+        int y = SIZE_FINAL / 2;
+        int width = teisPanel.screenWidth - SIZE_FINAL * 4;
+        int height = SIZE_FINAL * 5;
 
         drawWindow(x, y, width, height);
 
         g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22));
-        x += teisPanel.sizeFinal;
-        y += teisPanel.sizeFinal;
+        x += SIZE_FINAL;
+        y += SIZE_FINAL;
 
         for (String line : dialogo.split("\n")) {
             g2.drawString(line, x, y);
@@ -206,9 +202,9 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     }
 
     public void drawCharacterScreen() {
-        final int frameXY     = teisPanel.sizeFinal * 2;
-        final int frameWidth  = teisPanel.sizeFinal * 8;
-        final int frameHeight = teisPanel.sizeFinal * 5;
+        final int frameXY     = SIZE_FINAL * 2;
+        final int frameWidth  = SIZE_FINAL * 8;
+        final int frameHeight = SIZE_FINAL * 5;
         final int labelX      = frameXY + 40;
         final int valueX      = frameWidth - 40;
         int y                 = frameXY + 40;
@@ -266,7 +262,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
 
     private void drawEquipmentImages(int x, int y) {
         g2.drawImage(teisPanel.player.getCurrentWeapon().down1, x, y, null);
-        g2.drawImage(teisPanel.player.getCurrentShield().down1, x + teisPanel.sizeFinal, y + 10, null);
+        g2.drawImage(teisPanel.player.getCurrentShield().down1, x + SIZE_FINAL, y + 10, null);
     }
 
     private void drawTextWithShadow(String text, int x, int y) {

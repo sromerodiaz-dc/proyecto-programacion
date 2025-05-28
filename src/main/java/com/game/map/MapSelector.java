@@ -62,7 +62,7 @@ public class MapSelector {
      */
     public File[] getFiles() {
         // Crea un objeto File para la carpeta "Assets/maps"
-        File mapsFolder = new File("maps");
+        File mapsFolder = new File("graphic/maps");
 
         // Verifica si la carpeta existe y es una carpeta
         if (!mapsFolder.exists() || !mapsFolder.isDirectory()) {
@@ -91,7 +91,7 @@ public class MapSelector {
     public MapSize getMapSize() {
         //String fileName = selectMap(); // Selecciona el nombre del archivo del mapa
 
-        String fileName = "maps/base.txt";
+        String fileName = "graphic/maps/base.txt";
 
         InputStream is; // Flujo de entrada para leer el archivo
         BufferedReader br; // Lector de búfer para leer el archivo línea por línea

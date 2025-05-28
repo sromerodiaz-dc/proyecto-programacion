@@ -14,7 +14,7 @@ public class Shield extends Entity {
         super(teisPanel, properties);
 
         name = "Fent";
-        down1 = setEntitySprite("objects/shield.png",32,32);
+        down1 = setEntitySprite("graphic/objects/shield.png",32,32);
         defenseVal = 5;
     }
 }

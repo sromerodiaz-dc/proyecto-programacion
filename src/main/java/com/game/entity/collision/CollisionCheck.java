@@ -38,7 +38,7 @@ public class CollisionCheck {
         int entityTop = entity.worldY + entity.solidArea.y;
         int entityBottom = entityTop + entity.solidArea.height;
 
-        int sizeFinal = teisPanel.sizeFinal;
+        int sizeFinal = teisPanel.SIZE_FINAL;
         PiezaManager pm = teisPanel.controller.getPiezaManager();
 
         switch (entity.sentido) {
@@ -101,6 +101,7 @@ public class CollisionCheck {
                 row1 < 0 || row1 >= pm.mapaPiezaNum[0].length ||
                 row2 < 0 || row2 >= pm.mapaPiezaNum[0].length) {
             entity.collisionOn = true; // Bloquear movimiento si está fuera del mapa
+            System.out.println("Collision Detected");
             return;
         }
 
@@ -150,6 +151,7 @@ public class CollisionCheck {
             if (currentTarget != null && currentTarget != entity) {
                 if (checkCollisionBetween(entity, currentTarget)) {
                     entity.collisionOn = true;
+                    System.out.println("Colision");
                     index = x;
                 }
             }

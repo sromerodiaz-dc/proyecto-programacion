@@ -42,7 +42,7 @@ public class Entity {
     protected int exp;
 
     // ITEM ATTRIBUTES
-    public int attackVal; //TODO implementar en las entidades EntityStats y dejar de usar estos atributos
+    public int attackVal;
     public int defenseVal;
 
     // Estados de entidad
@@ -321,7 +321,7 @@ public class Entity {
         int playerWorldY = teisPanel.player.worldY;
         int playerScreenX = teisPanel.player.getScreenX();
         int playerScreenY = teisPanel.player.getScreenY();
-        int size = teisPanel.sizeFinal;
+        int size = teisPanel.SIZE_FINAL;
 
         // Coordenadas en pantalla relativas al jugador
         int screenX = worldX - playerWorldX + playerScreenX;

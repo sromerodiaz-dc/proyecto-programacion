@@ -27,13 +27,13 @@ public class Sound {
     public Sound(String type) { //TODO emplear un archivo de configuracion para no tener nada hardcodeado
         if  (type.equals("sound")) {
             // Se establecen los paths de los archivos de sonido en el arreglo soundPath.
-            soundPath[0] = getClass().getClassLoader().getResource("effects/songs/introGame.wav");
-            soundPath[1] = getClass().getClassLoader().getResource("effects/songs/bassDrumsGame.wav");
-            soundPath[2] = getClass().getClassLoader().getResource("effects/songs/bridgeGame.wav");
-            soundPath[3] = getClass().getClassLoader().getResource("effects/songs/chorusGame.wav");
-            soundPath[4] = getClass().getClassLoader().getResource("effects/songs/generalMysteriousGame.wav");
-            soundPath[5] = getClass().getClassLoader().getResource("effects/songs/generalPartGame.wav");
-            soundPath[6] = getClass().getClassLoader().getResource("effects/songs/melodicPartGame.wav");
+            soundPath[0] = getClass().getClassLoader().getResource("graphic/songs/introGame.wav");
+            soundPath[1] = getClass().getClassLoader().getResource("graphic/songs/bassDrumsGame.wav");
+            soundPath[2] = getClass().getClassLoader().getResource("graphic/songs/bridgeGame.wav");
+            soundPath[3] = getClass().getClassLoader().getResource("graphic/songs/chorusGame.wav");
+            soundPath[4] = getClass().getClassLoader().getResource("graphic/songs/generalMysteriousGame.wav");
+            soundPath[5] = getClass().getClassLoader().getResource("graphic/songs/generalPartGame.wav");
+            soundPath[6] = getClass().getClassLoader().getResource("graphic/songs/melodicPartGame.wav");
         } else  if  (type.equals("se")) {
             // sePath[0] = getClass().getClassLoader().getResource("effects/soundEffects/combat/");
         }

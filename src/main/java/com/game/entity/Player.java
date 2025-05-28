@@ -26,6 +26,7 @@ public class Player extends Entity implements EventListener {
     private static final int BASE_ATTACK_AREA_SIZE = 36;
     private static final int DEFAULT_WORLD_X = 18;
     private static final int DEFAULT_WORLD_Y = 10;
+    private static final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
     private final EntityStats stats;
     private final KeyboardController keyboardController;
@@ -39,8 +40,8 @@ public class Player extends Entity implements EventListener {
         super(t, properties);
         this.keyboardController = k;
 
-        this.screenX = t.screenWidth / 2 - (t.sizeFinal / 2);
-        this.screenY = t.screenHeight / 2 - (t.sizeFinal / 2);
+        this.screenX = t.screenWidth / 2 - (SIZE_FINAL / 2);
+        this.screenY = t.screenHeight / 2 - (SIZE_FINAL / 2);
 
         this.currentWeapon = new Weapon(t, properties);
         this.currentShield = new Shield(t, properties);
@@ -49,6 +50,7 @@ public class Player extends Entity implements EventListener {
                 .dexterity(2)
                 .baseAttack(currentWeapon.getAttackVal())
                 .baseDefense(currentShield.getDefenseVal())
+                .baseSpeed(5)
                 .build();
 
         setValoresPorDefecto(t);
@@ -58,12 +60,15 @@ public class Player extends Entity implements EventListener {
 
     public void setValoresPorDefecto(TeisPanel t) {
         setPropierties("player");
-        worldX = t.sizeFinal * DEFAULT_WORLD_X;
-        worldY = t.sizeFinal * DEFAULT_WORLD_Y;
+        worldX = SIZE_FINAL * DEFAULT_WORLD_X;
+        worldY = SIZE_FINAL * DEFAULT_WORLD_Y;
         defaultSolidAreaX = solidArea.x;
+        System.out.println("defaultSolidAreaX: " + defaultSolidAreaX);
         defaultSolidAreaY = solidArea.y;
+        System.out.println("defaultSolidAreaY: " + defaultSolidAreaY);
         attackArea.width = BASE_ATTACK_AREA_SIZE;
         attackArea.height = BASE_ATTACK_AREA_SIZE;
+        speed = getSpeed();
     }
 
 
@@ -72,31 +77,31 @@ public class Player extends Entity implements EventListener {
      */
     public void getPlayerImage() {
         // Carga las imágenes del jugador caminando hacia arriba y las establece en las variables correspondientes
-        up1 = setEntitySprite("player/upWalkingBehind1.png", 48, 48);
-        up2 = setEntitySprite("player/upWalkingBehind2.png", 48, 48);
+        up1 = setEntitySprite("graphic/player/upWalkingBehind1.png", 48, 48);
+        up2 = setEntitySprite("graphic/player/upWalkingBehind2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia abajo y las establece en las variables correspondientes
-        down1 = setEntitySprite("player/downWalking1.png", 48, 48);
-        down2 = setEntitySprite("player/downWalking2.png", 48, 48);
+        down1 = setEntitySprite("graphic/player/downWalking1.png", 48, 48);
+        down2 = setEntitySprite("graphic/player/downWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia la izquierda y las establece en las variables correspondientes
-        left1 = setEntitySprite("player/leftWalking1.png", 48, 48);
-        left2 = setEntitySprite("player/leftWalking2.png", 48, 48);
+        left1 = setEntitySprite("graphic/player/leftWalking1.png", 48, 48);
+        left2 = setEntitySprite("graphic/player/leftWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador caminando hacia la derecha y las establece en las variables correspondientes
-        right1 = setEntitySprite("player/rightWalking1.png", 48, 48);
-        right2 = setEntitySprite("player/rightWalking2.png", 48, 48);
+        right1 = setEntitySprite("graphic/player/rightWalking1.png", 48, 48);
+        right2 = setEntitySprite("graphic/player/rightWalking2.png", 48, 48);
 
         // Carga las imágenes del jugador detenido y las establece en las variables correspondientes
-        stop = setEntitySprite("player/frontStanding.png", 48, 48);
-        stop2 = setEntitySprite("player/stop2.png", 48, 48);
+        stop = setEntitySprite("graphic/player/frontStanding.png", 48, 48);
+        stop2 = setEntitySprite("graphic/player/stop2.png", 48, 48);
     }
 
     public void getPlayerAttackImage() {
-        attackUp = setEntitySprite("player/player_attack_up.png", 48, 96);
-        attackRight = setEntitySprite("player/player_attack_right.png", 96, 48);
-        attackLeft = setEntitySprite("player/player_attack_left.png", 96, 48);
-        attackDown = setEntitySprite("player/player_attack_down.png", 48, 96);
+        attackUp = setEntitySprite("graphic/player/player_attack_up.png", 48, 96);
+        attackRight = setEntitySprite("graphic/player/player_attack_right.png", 96, 48);
+        attackLeft = setEntitySprite("graphic/player/player_attack_left.png", 96, 48);
+        attackDown = setEntitySprite("graphic/player/player_attack_down.png", 48, 96);
     }
 
     /**
@@ -331,20 +336,29 @@ public class Player extends Entity implements EventListener {
 
                 // Aplica daño al enemigo
                 enemy.life -= realDamage;
-                teisPanel.controller.ui.addMessage(realDamage + " damage!");
+                // Llamamos al nuevo addMessage con el daño y la posición del enemigo
+                teisPanel.controller.ui.addMessage(realDamage, enemy.worldX, enemy.worldY, worldX, worldY, screenX, screenY);
 
                 // Hace que el enemigo sea invencible temporalmente
                 enemy.invencible = true;
+                enemy.timeInvencible = 0; // Reinicia el contador de invencibilidad si lo usas
 
                 // Verifica si la vida del enemigo ha llegado a cero
                 if (enemy.life <= 0) {
-
-                    // Elimina al enemigo (lo marca como nulo)
                     enemy.dying = true;
-                    teisPanel.controller.ui.addMessage(enemy.name + "'s killed!");
-                    exp += enemy.exp;
-                    teisPanel.controller.ui.addMessage(exp + "+!");
 
+                    // *** NOTA SOBRE ESTOS MENSAJES ***
+                    // Estos mensajes ("killed" y "exp") no son de daño.
+                    // Deberás decidir si quieres:
+                    // 1. Mantener un sistema antiguo de mensajes para estos (si aún existe).
+                    // 2. Crear un sistema de mensajes de texto diferente (quizás más estático).
+                    // 3. Adaptar DamageMessage para manejar también texto (menos recomendado
+                    //    si quieres que se vean diferentes a los números de daño).
+                    // Por ahora, los comentaré o asumiré que tienes otra forma de mostrarlos.
+                    // teisPanel.controller.ui.addMessage(enemy.name + "'s killed!");
+                    // teisPanel.controller.ui.addMessage(exp + "+!");
+
+                    exp += enemy.exp;
                     checkLvlUp();
                 }
             }
@@ -440,6 +454,10 @@ public class Player extends Entity implements EventListener {
 
     public int getExp() {
         return stats.getExp();
+    }
+
+    public int getSpeed() {
+        return stats.getBaseSpeed();
     }
 
     public int getAttackVal() {

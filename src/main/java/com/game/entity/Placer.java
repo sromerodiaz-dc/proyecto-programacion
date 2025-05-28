@@ -22,16 +22,16 @@ public class Placer {
     }
 
     public void setNPC() {
-        Entity npc = entityFactory.createEntity(EntityType.VIELLO, teisPanel, propierties, teisPanel.sizeFinal * 19,teisPanel.sizeFinal * 12);
+        Entity npc = entityFactory.createEntity(EntityType.VIELLO, teisPanel, propierties, teisPanel.SIZE_FINAL * 19,teisPanel.SIZE_FINAL * 12);
         teisPanel.controller.npc.add(npc);
     }
 
     public void setEnemy() {
-        Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.sizeFinal * 5, teisPanel.sizeFinal * 12);
+        Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.SIZE_FINAL * 5, teisPanel.SIZE_FINAL * 12);
         teisPanel.controller.enemy.add(enemy);
     }
 
     private Entity generateEntity(int x, int y) {
-        return entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.sizeFinal * x, teisPanel.sizeFinal * y);
+        return entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.SIZE_FINAL * x, teisPanel.SIZE_FINAL * y);
     }
 }

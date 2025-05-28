@@ -49,16 +49,16 @@ public class Dinoseto extends Entity {
      */
     public void getDinoImage() {
         // Carga las imágenes para cada dirección y estado del enemigo
-        left1 = setEntitySprite("npc/enemies/dinoseto_left1.png", width, height);
-        left2 = setEntitySprite("npc/enemies/dinoseto_left2.png", width, height);
-        right1 = setEntitySprite("npc/enemies/dinoseto_right1.png", width, height);
-        right2 = setEntitySprite("npc/enemies/dinoseto_right2.png", width, height);
-        up1 = setEntitySprite("npc/enemies/dinoseto_right1.png", width, height);
-        up2 = setEntitySprite("npc/enemies/dinoseto_right2.png", width, height);
-        down1 = setEntitySprite("npc/enemies/dinoseto_right1.png", width, height);
-        down2 = setEntitySprite("npc/enemies/dinoseto_right2.png", width, height);
-        stop = setEntitySprite("npc/enemies/dinoseto_stop1.png", width, height);
-        stop2 = setEntitySprite("npc/enemies/dinoseto_stop2.png", width, height);
+        left1 = setEntitySprite("graphic/npc/enemies/dinoseto_left1.png", width, height);
+        left2 = setEntitySprite("graphic/npc/enemies/dinoseto_left2.png", width, height);
+        right1 = setEntitySprite("graphic/npc/enemies/dinoseto_right1.png", width, height);
+        right2 = setEntitySprite("graphic/npc/enemies/dinoseto_right2.png", width, height);
+        up1 = setEntitySprite("graphic/npc/enemies/dinoseto_right1.png", width, height);
+        up2 = setEntitySprite("graphic/npc/enemies/dinoseto_right2.png", width, height);
+        down1 = setEntitySprite("graphic/npc/enemies/dinoseto_right1.png", width, height);
+        down2 = setEntitySprite("graphic/npc/enemies/dinoseto_right2.png", width, height);
+        stop = setEntitySprite("graphic/npc/enemies/dinoseto_stop1.png", width, height);
+        stop2 = setEntitySprite("graphic/npc/enemies/dinoseto_stop2.png", width, height);
     }
 
     /**

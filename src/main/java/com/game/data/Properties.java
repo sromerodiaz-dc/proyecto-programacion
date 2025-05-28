@@ -1,131 +1,91 @@
 package com.game.data;
 
-import java.sql.*;
+import java.io.InputStream;
+import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Clase que maneja las propiedades de la base de datos.
+ * Clase que maneja las propiedades de las entidades desde un JSON.
  * Autor: Santiago Agustin Romero Diaz
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
 public class Properties implements AutoCloseable {
     private static Properties instance;
-    private Connection conexion;
+    private List<Entidad> entidades;
+
+    // Clase interna para mapear el JSON
+    private static class Entidad {
+        public String id;
+        public int who;
+        public String sentido;
+        public int speed;
+        public int intervalo;
+        public int width;
+        public int height;
+        public int solidArea_x;
+        public int solidArea_y;
+        public int solidArea_width;
+        public int solidArea_height;
+        public int maxlife;
+        public int life;
+    }
 
     /**
      * Constructor privado para evitar instanciación externa.
-     *
-     * @param url La URL de la base de datos.
-     * @param usuario El usuario de la base de datos.
-     * @param password La contraseña de la base de datos.
      */
-    private Properties(String url, String usuario, String password) {
-        try {
-            Class.forName("org.postgresql.Driver");
-            conexion = DriverManager.getConnection(url, usuario, password);
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error al cargar el driver: " + e.getMessage());
-        } catch (SQLException e) {
-            System.out.println("Error al conectar a la base de datos: " + e.getMessage());
+    private Properties() {
+        cargarDatosDesdeJSON();
+    }
+
+    /**
+     * Carga los datos desde el archivo JSON.
+     */
+    private void cargarDatosDesdeJSON() {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data/entity/entity.json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            entidades = mapper.readValue(inputStream, mapper.getTypeFactory().constructCollectionType(List.class, Entidad.class));
+        } catch (Exception e) {
+            System.out.println("Error al cargar el JSON: " + e.getMessage());
         }
     }
 
     /**
-     * Metodo estático para obtener la instancia única de la clase.
-     * Si no existe, la crea.
-     *
-     * @param url La URL de la base de datos.
-     * @param usuario El usuario de la base de datos.
-     * @param password La contraseña de la base de datos.
-     * @return La instancia única de Properties.
+     * Obtiene la instancia única de Properties.
      */
-    public static synchronized Properties getInstance(String url, String usuario, String password) {
+    public static synchronized Properties getInstance() {
         if (instance == null) {
-            instance = new Properties(url, usuario, password);
+            instance = new Properties();
         }
         return instance;
     }
 
     /**
-     * Metodo estático para obtener la instancia única de la clase.
-     * @return La instancia única de Properties.
-     * @throws IllegalStateException si la instancia no ha sido inicializada.
+     * Obtiene los datos de las entidades en formato Object[][].
      */
-    public static Properties getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("Properties no ha sido inicializado. Llame primero a getInstance(url, usuario, password)");
-        }
-        return instance;
-    }
-
-    // Resto de los métodos permanecen igual...
-    public void crearTablaEntidad() {
-        try (Statement stmt = conexion.createStatement()) {
-            stmt.executeUpdate("DROP TABLE IF EXISTS public.entidad");
-
-            String sql = "CREATE TABLE public.entidad (" +
-                    "id VARCHAR(255) PRIMARY KEY, " +
-                    "who INTEGER NOT NULL, " +
-                    "sentido CHAR(1) NOT NULL DEFAULT '0', " +
-                    "speed INTEGER NOT NULL, " +
-                    "intervalo INTEGER NOT NULL, " +
-                    "width INTEGER NOT NULL, " +
-                    "height INTEGER NOT NULL, " +
-                    "solidArea_x INTEGER NOT NULL, " +
-                    "solidArea_y INTEGER NOT NULL, " +
-                    "solidArea_width INTEGER NOT NULL, " +
-                    "solidArea_height INTEGER NOT NULL," +
-                    "maxlife INTEGER NOT NULL," +
-                    "life INTEGER NOT NULL)";
-            stmt.executeUpdate(sql);
-
-            stmt.executeUpdate("INSERT INTO public.entidad (id, who, sentido, speed, intervalo, width, height, solidArea_x, solidArea_y, solidArea_width, solidArea_height, maxlife, life)" +
-                    "VALUES ('player', 0, '0', 6, 7, 48, 48, 10, 22, 32, 20, 10, 10)");
-            stmt.executeUpdate("INSERT INTO public.entidad (id, who, sentido, speed, intervalo, width, height, solidArea_x, solidArea_y, solidArea_width, solidArea_height, maxlife, life)" +
-                    "VALUES ('Viello', 1, '0', 1, 14, 54, 72, 10, 25, 30, 38, 300, 300)");
-            stmt.executeUpdate("INSERT INTO public.entidad (id, who, sentido, speed, intervalo, width, height, solidArea_x, solidArea_y, solidArea_width, solidArea_height, maxlife, life)" +
-                    "VALUES ('Dinoseto_elegante', 2, '0', 2, 15, 92, 96, 10, 25, 66, 60, 10, 8)");
-        } catch (SQLException e) {
-            System.out.println("Error al crear la tabla entidad: " + e.getMessage());
-        }
-    }
-
     public Object[][] obtenerDatosEntidad() {
-        Object[][] datos = new Object[3][13];
-        try (Statement stmt = conexion.createStatement()) {
-            ResultSet resultSet = stmt.executeQuery("SELECT * FROM public.entidad");
-            int i = 0;
-            while (resultSet.next()) {
-                datos[i][0] = resultSet.getString("id");
-                datos[i][1] = resultSet.getInt("who");
-                datos[i][2] = resultSet.getString("sentido").charAt(0);
-                datos[i][3] = resultSet.getInt("speed");
-                datos[i][4] = resultSet.getInt("intervalo");
-                datos[i][5] = resultSet.getInt("width");
-                datos[i][6] = resultSet.getInt("height");
-                datos[i][7] = resultSet.getInt("solidArea_x");
-                datos[i][8] = resultSet.getInt("solidArea_y");
-                datos[i][9] = resultSet.getInt("solidArea_width");
-                datos[i][10] = resultSet.getInt("solidArea_height");
-                datos[i][11] = resultSet.getInt("maxlife");
-                datos[i][12] = resultSet.getInt("life");
-                i++;
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener datos de la tabla entidad: " + e.getMessage());
+        Object[][] datos = new Object[entidades.size()][13];
+        for (int i = 0; i < entidades.size(); i++) {
+            Entidad e = entidades.get(i);
+            datos[i][0] = e.id;
+            datos[i][1] = e.who;
+            datos[i][2] = e.sentido.charAt(0);
+            datos[i][3] = e.speed;
+            datos[i][4] = e.intervalo;
+            datos[i][5] = e.width;
+            datos[i][6] = e.height;
+            datos[i][7] = e.solidArea_x;
+            datos[i][8] = e.solidArea_y;
+            datos[i][9] = e.solidArea_width;
+            datos[i][10] = e.solidArea_height;
+            datos[i][11] = e.maxlife;
+            datos[i][12] = e.life;
         }
         return datos;
     }
 
     @Override
     public void close() {
-        if (conexion != null) {
-            try {
-                conexion.close();
-                instance = null; // Permitir que se cree una nueva instancia si se vuelve a llamar a getInstance
-            } catch (SQLException e) {
-                System.out.println("Error al cerrar la conexión: " + e.getMessage());
-            }
-        }
+        instance = null; // Limpiar instancia al cerrar
     }
 }

@@ -40,7 +40,7 @@ public class GameController {
     public Placer placer;
 
     // Propiedades de cada entidad
-    public Properties properties = Properties.getInstance("jdbc:postgresql://localhost:5432/proyecto", "postgres", "123");
+    public Properties properties = Properties.getInstance();
 
     // Manejo de objetos
     public ArrayList<Entity> obj = new ArrayList<>();
@@ -67,7 +67,6 @@ public class GameController {
      */
     public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
-        initializeDatabase();
 
         initializeComponents(teisPanel);
 
@@ -88,11 +87,6 @@ public class GameController {
         ui = new UserInterface(teisPanel, properties);
         placer = new Placer(teisPanel, properties);
         collisionCheck = new CollisionCheck(teisPanel);
-    }
-
-    // Delegar a un metodo explícito
-    public void initializeDatabase() {
-        properties.crearTablaEntidad();
     }
 
     public void setupInitialEvents() { //TODO cargar eventos desde un JSON

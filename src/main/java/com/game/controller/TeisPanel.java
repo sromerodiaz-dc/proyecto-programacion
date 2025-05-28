@@ -25,13 +25,13 @@ public class TeisPanel extends JPanel implements Runnable{
     //-> RESOLUCION
     private static final int ResolucionPorDefecto = 16; // 16x16 (el más común)
     private static final int EscaladoPorDefecto = 3; // 3x16 (el más comun)
-    public final int sizeFinal = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
+    public static final int SIZE_FINAL = ResolucionPorDefecto * EscaladoPorDefecto; // Esto equivale a un 48x48
 
     //-> PROPIEDADES DE LA (VENTANA) PANTALLA
-    public final int maxScreenColumnas = 18;
-    public final int maxScreenFilas = 12;
-    public final int screenWidth = sizeFinal * maxScreenColumnas;
-    public final int screenHeight =  sizeFinal * maxScreenFilas;
+    public static final int maxScreenColumnas = 18;
+    public static final int maxScreenFilas = 12;
+    public static final int screenWidth = SIZE_FINAL * maxScreenColumnas;
+    public static final int screenHeight =  SIZE_FINAL * maxScreenFilas;
 
     //-> FPS
     final int fps = 30;

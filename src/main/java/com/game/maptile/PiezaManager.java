@@ -156,15 +156,15 @@ public class PiezaManager {
             int playerScreenY = t.player.getScreenY();
 
             // Coordenadas de pantalla relativas al jugador
-            int worldX = worldCol * t.sizeFinal;
-            int worldY = worldFil * t.sizeFinal;
+            int worldX = worldCol * t.SIZE_FINAL;
+            int worldY = worldFil * t.SIZE_FINAL;
             int screenX = worldX - playerWorldX + playerScreenX;
             int screenY = worldY - playerWorldY + playerScreenY;
 
             // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
             // empleando las coordenadas absolutas y las relativas al jugador.
-            if (worldX + t.sizeFinal > playerWorldX - playerScreenX && worldX - t.sizeFinal < playerWorldX + playerScreenX &&
-                worldY + t.sizeFinal > playerWorldY - playerScreenY && worldY - t.sizeFinal < playerWorldY + playerScreenY) {
+            if (worldX + t.SIZE_FINAL > playerWorldX - playerScreenX && worldX - t.SIZE_FINAL < playerWorldX + playerScreenX &&
+                worldY + t.SIZE_FINAL > playerWorldY - playerScreenY && worldY - t.SIZE_FINAL < playerWorldY + playerScreenY) {
                 // Dibuja la imagen de la Pieza correspondiente en la posición actual.
                 g2.drawImage(pieza[id].image, screenX, screenY, null);
             }

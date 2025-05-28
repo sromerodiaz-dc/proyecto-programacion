@@ -28,8 +28,8 @@ public class Vida extends Entity {
         collision = true;
 
         // Establece las imágenes para la entidad de vida
-        image = setEntitySprite("npc/heart_full.png", 48, 48); // Imagen de corazón completo
-        image2 = setEntitySprite("npc/heart_half.png", 48, 48); // Imagen de corazón medio
-        image3 = setEntitySprite("npc/heart_blank.png", 48, 48); // Imagen de corazón vacío
+        image = setEntitySprite("graphic/npc/heart_full.png", 48, 48); // Imagen de corazón completo
+        image2 = setEntitySprite("graphic/npc/heart_half.png", 48, 48); // Imagen de corazón medio
+        image3 = setEntitySprite("graphic/npc/heart_blank.png", 48, 48); // Imagen de corazón vacío
     }
 }

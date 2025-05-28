@@ -531,50 +531,51 @@ Esta es la clase SpriteLoader de EditorMap:
 
 ````java
 public List<ImageIcon> loadSprites(String folderPath) {
-   //...
+    //...
 
-   // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
-   File file = new File("maps_correspondencia/c_assets_user.txt");
-   if (!file.exists()) {
-      try {
-         file.createNewFile();
-         // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
-         writeToFile(sprites, imagePaths, file);
-      } catch (IOException e) {
-         // Ignorar la excepción
-      }
-   }
+    // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
+    File file = new File("graphic/maps_correspondencia/c_assets_user.txt");
+    if (!file.exists()) {
+        try {
+            file.createNewFile();
+            // Escribir en el archivo de texto la correspondencia entre el índice y la ruta de los sprites
+            writeToFile(sprites, imagePaths, file);
+        } catch (IOException e) {
+            // Ignorar la excepción
+        }
+    }
 
-   file = new File("maps_correspondencia/c_assets.txt");
-   if (!file.exists()) {
-      try {
-         file.createNewFile();
-         // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
-         writeToFileReal(sprites, imagePaths, file);
-      } catch (IOException e) {
-         // Ignorar la excepción
-      }
-   }
+    file = new File("graphic/maps_correspondencia/c_assets.txt");
+    if (!file.exists()) {
+        try {
+            file.createNewFile();
+            // Escribir en el archivo de texto los sprites filtrados en orden para que luego el Juego no tenga que filtrar nombres
+            writeToFileReal(sprites, imagePaths, file);
+        } catch (IOException e) {
+            // Ignorar la excepción
+        }
+    }
 
-   //...
-   return sprites;
+    //...
+    return sprites;
 }
 ````
 
 Por otro lado, ``PiezaManager`` ya no realiza ningún filtrado de String:
+
 ````java
 public String[] getImagePaths() {
-   ArrayList<String> imagePaths = new ArrayList<>();
+    ArrayList<String> imagePaths = new ArrayList<>();
 
-   try (BufferedReader reader = new BufferedReader(new FileReader("maps_correspondencia/c_assets.txt"))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-         imagePaths.add(line.trim());
-      }
-   } catch (Exception e) {
-      System.out.println(e.getMessage());
-   }
-   return imagePaths.toArray(new String[0]);
+    try (BufferedReader reader = new BufferedReader(new FileReader("graphic/maps_correspondencia/c_assets.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            imagePaths.add(line.trim());
+        }
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+    return imagePaths.toArray(new String[0]);
 }
 ````
 
@@ -748,6 +749,7 @@ Esto es gracias a que cada objeto (BusVitrasa, Container, etc) se extienden de u
 siendo esta ``ObjectGame``.
 
 Cada objeto sigue un tipo de clase similar:
+
 ````java
 public class BusVitrasa extends ObjectGame {
 
@@ -756,7 +758,7 @@ public class BusVitrasa extends ObjectGame {
         id = "Bus";
         // Carga la imagen del Passvigo desde un archivo de recursos
         try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("objects/busVitrasa.png"));
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("graphic/objects/busVitrasa.png"));
             height = image.getHeight() * 7;
             width = image.getWidth() * 7;
             solidArea.width = width;
@@ -979,26 +981,28 @@ public void setEscaled(int i) {
 #### Por otro lado...
 Las clases ``Entity y Player`` están más diferenciadas que antes, ya que el método encargado del dibujado de los sprites
 del jugador ahora están en ``Player`` como debería haber estado desde un principio.
+
 ````java
 public void getPlayerImage() {
-    up1 = setPlayerSprite("player/upWalkingBehind1.png");
-    up2 = setPlayerSprite("player/upWalkingBehind2.png");
-    down1 = setPlayerSprite("player/downWalking1.png");
-    down2 = setPlayerSprite("player/downWalking2.png");
-    left1 = setPlayerSprite("player/leftWalking1.png");
-    left2 = setPlayerSprite("player/leftWalking2.png");
-    right1 = setPlayerSprite("player/rightWalking1.png");
-    right2 = setPlayerSprite("player/rightWalking2.png");
-    stop = setPlayerSprite("player/frontStanding.png");
-    stop2 = setPlayerSprite("player/stop2.png");
+    up1 = setPlayerSprite("graphic/player/upWalkingBehind1.png");
+    up2 = setPlayerSprite("graphic/player/upWalkingBehind2.png");
+    down1 = setPlayerSprite("graphic/player/downWalking1.png");
+    down2 = setPlayerSprite("graphic/player/downWalking2.png");
+    left1 = setPlayerSprite("graphic/player/leftWalking1.png");
+    left2 = setPlayerSprite("graphic/player/leftWalking2.png");
+    right1 = setPlayerSprite("graphic/player/rightWalking1.png");
+    right2 = setPlayerSprite("graphic/player/rightWalking2.png");
+    stop = setPlayerSprite("graphic/player/frontStanding.png");
+    stop2 = setPlayerSprite("graphic/player/stop2.png");
 }
+
 public BufferedImage setPlayerSprite(String path) {
 
     PiezaUtils piezaUtils = new PiezaUtils();
     BufferedImage image;
     try {
         image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
-        image = piezaUtils.escalado(image,48,48);
+        image = piezaUtils.escalado(image, 48, 48);
     } catch (IOException e) {
         throw new RuntimeException(e);
     }
@@ -1236,37 +1240,38 @@ El archivo "`c_assets_user.txt`" no se estaba utilizando al construir el array `
 ---
 
 ### Código corregido de `loadSprites()`
+
 ```java
 public ImageIcon[] loadSprites() {
-  List<ImageIcon> spriteList = new ArrayList<>();
+    List<ImageIcon> spriteList = new ArrayList<>();
 
-  try (BufferedReader br = new BufferedReader(
-          new InputStreamReader(getClass().getClassLoader().getResourceAsStream("maps_correspondencia/c_assets_user.txt")))) {
+    try (BufferedReader br = new BufferedReader(
+            new InputStreamReader(getClass().getClassLoader().getResourceAsStream("graphic/maps_correspondencia/c_assets_user.txt")))) {
 
-      String line;
-      while ((line = br.readLine()) != null) {
-          String[] parts = line.split(":");
-          if (parts.length != 2) continue;
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(":");
+            if (parts.length != 2) continue;
 
-          int index = Integer.parseInt(parts[0].trim());
-          String path = parts[1].trim();
+            int index = Integer.parseInt(parts[0].trim());
+            String path = parts[1].trim();
 
-          URL resourceUrl = getClass().getClassLoader().getResource(path);
-          if (resourceUrl != null) {
-              while (spriteList.size() <= index) spriteList.add(null);
-              spriteList.set(index, new ImageIcon(resourceUrl));
-          } else {
-              System.err.println("No se encontró imagen: " + path);
-              while (spriteList.size() <= index) spriteList.add(null);
-          }
-      }
+            URL resourceUrl = getClass().getClassLoader().getResource(path);
+            if (resourceUrl != null) {
+                while (spriteList.size() <= index) spriteList.add(null);
+                spriteList.set(index, new ImageIcon(resourceUrl));
+            } else {
+                System.err.println("No se encontró imagen: " + path);
+                while (spriteList.size() <= index) spriteList.add(null);
+            }
+        }
 
-  } catch (IOException | NullPointerException e) {
-      System.err.println("Error al cargar sprites desde c_assets_user.txt");
-      e.printStackTrace();
-  }
+    } catch (IOException | NullPointerException e) {
+        System.err.println("Error al cargar sprites desde c_assets_user.txt");
+        e.printStackTrace();
+    }
 
-  return spriteList.toArray(new ImageIcon[0]);
+    return spriteList.toArray(new ImageIcon[0]);
 }
 ```
 
