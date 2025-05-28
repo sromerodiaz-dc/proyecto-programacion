@@ -2,7 +2,7 @@ package com.game.data;
 
 import com.game.entity.stats.EntityStats;
 
-public class SaveState {
+public class SaveState { //TODO guardado
     public String map;
     public int playerX;
     public int playerY;
