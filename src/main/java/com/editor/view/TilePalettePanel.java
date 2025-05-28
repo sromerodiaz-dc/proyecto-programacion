@@ -1,7 +1,7 @@
-package com.editorv2.view;
+package com.editor.view;
 
-import com.editorv2.controller.TextureController;
-import com.editorv2.model.MapModel;
+import com.editor.controller.TextureController;
+import com.editor.model.MapModel;
 
 import javax.swing.*;
 import javax.swing.border.Border;

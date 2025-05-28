@@ -1,5 +1,5 @@
 // StartAction.java (nuevo archivo)
-package com.editorv2.util;
+package com.editor.util;
 
 public class StartAction {
     public enum ActionType {CREATE, LOAD}

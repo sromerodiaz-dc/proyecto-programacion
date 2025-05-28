@@ -1,4 +1,4 @@
-package com.editorv2.model.event;
+package com.editor.model.event;
 
 public class SpawnEvent extends MapEvent {
     private final int row;

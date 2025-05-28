@@ -1,4 +1,4 @@
-package com.editorv2.controller;
+package com.editor.controller;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-import com.editorv2.model.MapModel;
+import com.editor.model.MapModel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.input.BOMInputStream;
 
 public class TextureController {
-    private static final String CONFIG_FILE = "tiles.json";
-    private static final String BACKGROUND_PATH = "background";
+    private static final String CONFIG_FILE = "graphic/tiles.json";
+    private static final String BACKGROUND_PATH = "graphic/background";
     private final Map<Integer, BufferedImage> textures = new HashMap<>();
     private final Map<String, Integer> fileToIdMap = new HashMap<>();
     private final Set<Integer> collisionTextures = new HashSet<>();

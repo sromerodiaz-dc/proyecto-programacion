@@ -1,3 +1,3 @@
-package com.editorv2.model;
+package com.editor.model;
 
 public record CeldaCoord(int row, int col) {}

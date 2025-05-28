@@ -1,13 +1,13 @@
-package com.editorv2;
+package com.editor;
 
-import com.editorv2.controller.TextureController;
-import com.editorv2.model.MapModel;
-import com.editorv2.util.MapData;
-import com.editorv2.util.MapJsonHandler;
-import com.editorv2.util.StartAction;
-import com.editorv2.view.MapEditorPanel;
-import com.editorv2.view.MiniMapView;
-import com.editorv2.view.TilePalettePanel;
+import com.editor.controller.TextureController;
+import com.editor.model.MapModel;
+import com.editor.util.MapData;
+import com.editor.util.MapJsonHandler;
+import com.editor.util.StartAction;
+import com.editor.view.MapEditorPanel;
+import com.editor.view.MiniMapView;
+import com.editor.view.TilePalettePanel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,8 +19,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
-import static com.editorv2.util.MapJsonHandler.showError;
-import static com.editorv2.util.MapJsonHandler.showInformation;
+import static com.editor.util.MapJsonHandler.showError;
+import static com.editor.util.MapJsonHandler.showInformation;
 
 public class GUI extends JFrame {
 
@@ -232,7 +232,7 @@ public class GUI extends JFrame {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(new File(CONFIG_PATH));
-            JsonNode mapsNode = root.path("maps");
+            JsonNode mapsNode = root.path("graphic/maps");
 
             if (!mapsNode.isObject() || mapsNode.isEmpty()) {
                 showInformation("No hay mapas guardados para cargar.");

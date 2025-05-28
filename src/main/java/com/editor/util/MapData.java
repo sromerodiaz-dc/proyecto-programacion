@@ -1,8 +1,8 @@
-package com.editorv2.util;
+package com.editor.util;
 
-import com.editorv2.model.CeldaCoord;
-import com.editorv2.model.event.SpawnEvent;
-import com.editorv2.model.event.TeleportEvent;
+import com.editor.model.CeldaCoord;
+import com.editor.model.event.SpawnEvent;
+import com.editor.model.event.TeleportEvent;
 
 import java.util.List;
 import java.util.Set;

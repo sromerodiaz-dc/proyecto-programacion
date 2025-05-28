@@ -1,4 +1,4 @@
-package com.editorv2.model.event;
+package com.editor.model.event;
 
 public abstract class MapEvent {
 

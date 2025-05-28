@@ -1,8 +1,8 @@
-package com.editorv2.model;
+package com.editor.model;
 
-import com.editorv2.controller.TextureController;
-import com.editorv2.model.event.SpawnEvent;
-import com.editorv2.model.event.TeleportEvent;
+import com.editor.controller.TextureController;
+import com.editor.model.event.SpawnEvent;
+import com.editor.model.event.TeleportEvent;
 
 import java.util.*;
 
