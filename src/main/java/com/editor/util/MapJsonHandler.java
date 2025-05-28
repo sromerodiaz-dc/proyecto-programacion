@@ -99,19 +99,7 @@ public class MapJsonHandler {
             mapData.put("height", model.getRows());
 
             // Serializar matriz manualmente en formato compacto con espaciado correcto
-            StringBuilder matrixJson = new StringBuilder("[\n");
-            int[][] matrix = model.getMatrixForExport();
-            for (int i = 0; i < matrix.length; i++) {
-                matrixJson.append("      [");
-                for (int j = 0; j < matrix[i].length; j++) {
-                    if (j > 0) matrixJson.append(",");
-                    matrixJson.append(matrix[i][j]);
-                }
-                matrixJson.append("]");
-                if (i < matrix.length - 1) matrixJson.append(",");
-                matrixJson.append("\n");
-            }
-            matrixJson.append("    ]");
+            StringBuilder matrixJson = getStringBuilder(model);
             mapData.put("data", new RawValue(matrixJson.toString()));
 
             // Sección "colisiones"
@@ -196,6 +184,23 @@ public class MapJsonHandler {
             showError("Error al guardar: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static StringBuilder getStringBuilder(MapModel model) {
+        StringBuilder matrixJson = new StringBuilder("[\n");
+        int[][] matrix = model.getMatrixForExport();
+        for (int i = 0; i < matrix.length; i++) {
+            matrixJson.append("      [");
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (j > 0) matrixJson.append(",");
+                matrixJson.append(matrix[i][j]);
+            }
+            matrixJson.append("]");
+            if (i < matrix.length - 1) matrixJson.append(",");
+            matrixJson.append("\n");
+        }
+        matrixJson.append("    ]");
+        return matrixJson;
     }
 
     private static int[][] parseDataMatrix(JsonNode dataNode, int rows, int cols) {
