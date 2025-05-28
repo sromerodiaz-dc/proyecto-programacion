@@ -8,7 +8,7 @@ import com.editor.model.record.TileData;
 
 import java.util.*;
 
-public class MapModel {
+public class MapModel { //TODO Arreglar modo de colision. Cuando se hace clic en modo colision sin seleccionar texturas y se vuelve a modo normal. Las texturas se pintan y no hay manera de que vuelvan al estado normal
     private final Map<CeldaCoord, TileData> matrix = new HashMap<>();
     private final Map<CeldaCoord, Integer> modifiedCells = new HashMap<>();
     private final List<IModelChangeListener> listeners = new ArrayList<>();
