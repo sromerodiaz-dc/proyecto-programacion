@@ -1,26 +1,26 @@
 package com.editor.util;
 
-import com.editor.model.CeldaCoord;
+import com.editor.model.record.CeldaCoord;
+import com.editor.model.record.MapData;
 import com.editor.model.MapModel;
-import com.editor.model.event.SpawnEvent;
+import com.editor.model.event.EntitySpawnEvent;
 import com.editor.model.event.TeleportEvent;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
+import com.fasterxml.jackson.databind.util.RawValue;
 import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static com.fasterxml.jackson.core.util.DefaultIndenter.SYSTEM_LINEFEED_INSTANCE;
 
 public class MapJsonHandler {
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String MAPS_PATH = "src/main/resources/maps/";
+    private static final String MAPS_PATH = "src/main/resources/data/maps/";
 
     public static MapData loadMapData(String mapName) throws IOException {
         File mapFile = new File(MAPS_PATH + mapName + ".json");
@@ -29,7 +29,7 @@ public class MapJsonHandler {
 
         int cols = mapNode.path("width").asInt();
         int rows = mapNode.path("height").asInt();
-        int[][] matrix = parseDataMatrix(mapNode.path("datos"), rows, cols);
+        int[][] matrix = parseDataMatrix(mapNode.path("data"), rows, cols);
 
         // Cargar colisiones
         Set<CeldaCoord> collisions = new HashSet<>();
@@ -40,28 +40,49 @@ public class MapJsonHandler {
             collisions.add(new CeldaCoord(row, col));
         }
 
-        // Cargar eventos
-        SpawnEvent spawn = null;
+        // Cargar eventos desde el objeto "eventos"
+        CeldaCoord playerSpawn = null;
+        List<EntitySpawnEvent> entitySpawns = new ArrayList<>();
         List<TeleportEvent> teleports = new ArrayList<>();
-        JsonNode eventsNode = mapNode.path("eventos");
-        if (eventsNode.has("spawn")) {
-            JsonNode spawnNode = eventsNode.path("spawn");
-            spawn = new SpawnEvent(spawnNode.get(0).asInt(), spawnNode.get(1).asInt());
-        }
-        if (eventsNode.has("teleport")) {
-            for (JsonNode tpNode : eventsNode.path("teleport")) {
-                teleports.add(new TeleportEvent(
-                        tpNode.get(0).asInt(),
-                        tpNode.get(1).asInt(),
-                        tpNode.get(2).asInt(),
-                        tpNode.get(3).asInt()
-                ));
+
+        JsonNode eventosNode = mapNode.path("eventos");
+        if (!eventosNode.isMissingNode()) {
+            // Cargar spawn del jugador
+            JsonNode spawnNode = eventosNode.path("spawn");
+            if (spawnNode.isArray() && spawnNode.size() == 2) {
+                int spawnRow = spawnNode.get(0).asInt();
+                int spawnCol = spawnNode.get(1).asInt();
+                playerSpawn = new CeldaCoord(spawnRow, spawnCol);
+            }
+
+            // Cargar spawns de entidades
+            JsonNode entitiesNode = eventosNode.path("entities");
+            if (entitiesNode.isArray()) {
+                for (JsonNode entityNode : entitiesNode) {
+                    String entityId = entityNode.path("entityId").asText();
+                    int row = entityNode.path("row").asInt();
+                    int col = entityNode.path("col").asInt();
+                    entitySpawns.add(new EntitySpawnEvent(entityId, row, col));
+                }
+            }
+
+            // Cargar teleports
+            JsonNode teleportsNode = eventosNode.path("teleports");
+            if (teleportsNode.isArray()) {
+                for (JsonNode teleportNode : teleportsNode) {
+                    if (teleportNode.isArray() && teleportNode.size() == 4) {
+                        int fromRow = teleportNode.get(0).asInt();
+                        int fromCol = teleportNode.get(1).asInt();
+                        int toRow = teleportNode.get(2).asInt();
+                        int toCol = teleportNode.get(3).asInt();
+                        teleports.add(new TeleportEvent(fromRow, fromCol, toRow, toCol));
+                    }
+                }
             }
         }
 
-        return new MapData(rows, cols, matrix, collisions, spawn, teleports);
+        return new MapData(rows, cols, matrix, collisions, playerSpawn, entitySpawns, teleports);
     }
-
 
     public static void saveMapData(MapModel model) {
         String mapName = JOptionPane.showInputDialog(null, "Ingrese el nombre del mapa:");
@@ -73,30 +94,87 @@ public class MapJsonHandler {
 
         try {
             // Crear estructura del mapa
-            ObjectNode mapData = mapper.createObjectNode();
+            Map<String, Object> mapData = new LinkedHashMap<>();
             mapData.put("width", model.getCols());
             mapData.put("height", model.getRows());
-            mapData.set("data", createDataArray(model.getMatrixForExport()));
+
+            // Serializar matriz manualmente en formato compacto
+            StringBuilder matrixJson = new StringBuilder("[");
+            int[][] matrix = model.getMatrixForExport();
+            for (int i = 0; i < matrix.length; i++) {
+                if (i > 0) matrixJson.append(",");
+                matrixJson.append("\n  [");
+                for (int j = 0; j < matrix[i].length; j++) {
+                    if (j > 0) matrixJson.append(",");
+                    matrixJson.append(matrix[i][j]);
+                }
+                matrixJson.append("]");
+            }
+            matrixJson.append("\n]");
+            mapData.put("data", new RawValue(matrixJson.toString()));
 
             // Sección "colisiones"
-            mapData.set("colisiones", createCollisionsArray(model.getCollisions()));
+            List<Map<String, Integer>> colisionesList = new ArrayList<>();
+            for (CeldaCoord coord : model.getCollisions()) {
+                Map<String, Integer> colision = new HashMap<>();
+                colision.put("row", coord.row());
+                colision.put("col", coord.col());
+                colisionesList.add(colision);
+            }
+            mapData.put("colisiones", colisionesList);
 
-            // Sección "eventos"
-            mapData.set("eventos", createEventsObject(model));
+            // Crear objeto "eventos"
+            Map<String, Object> eventos = new LinkedHashMap<>();
 
-            // Crear nodo raíz que contiene el mapa con el nombre como clave
-            ObjectNode rootNode = mapper.createObjectNode();
-            rootNode.set(mapName, mapData);
+            // Spawn del jugador (solo si existe)
+            if (model.getPlayerSpawn() != null) {
+                eventos.put("spawn", Arrays.asList(
+                        model.getPlayerSpawn().row(),
+                        model.getPlayerSpawn().col()
+                ));
+            }
+
+            // Spawns de entidades
+            List<Map<String, Object>> entities = new ArrayList<>();
+            for (EntitySpawnEvent entity : model.getEntitySpawns()) {
+                Map<String, Object> entityMap = new HashMap<>();
+                entityMap.put("entityId", entity.getId());
+                entityMap.put("row", entity.getRow());
+                entityMap.put("col", entity.getCol());
+                entities.add(entityMap);
+            }
+            eventos.put("entities", entities);
+
+            // Teleports
+            List<List<Integer>> teleports = new ArrayList<>();
+            for (TeleportEvent teleport : model.getTeleports()) {
+                teleports.add(Arrays.asList(
+                        teleport.getRow(),
+                        teleport.getCol(),
+                        teleport.getTargetRow(),
+                        teleport.getTargetCol()
+                ));
+            }
+            eventos.put("teleports", teleports);
+
+            mapData.put("eventos", eventos);
+
+            // Nodo raíz con nombre de mapa
+            Map<String, Object> rootNode = new LinkedHashMap<>();
+            rootNode.put(mapName, mapData);
 
             // Crear directorio si no existe
-            if (new File(MAPS_PATH).mkdirs()) System.out.println("MAPS_PATH CREATED");
+            File mapsDir = new File(MAPS_PATH);
+            if (!mapsDir.exists()) {
+                mapsDir.mkdirs();
+            }
 
             // Guardar en archivo individual
             File mapFile = new File(MAPS_PATH + mapName + ".json");
 
             // Configurar formato
             DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-            prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            prettyPrinter.indentArraysWith(SYSTEM_LINEFEED_INSTANCE);
 
             try (FileWriter fileWriter = new FileWriter(mapFile)) {
                 String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootNode);
@@ -107,54 +185,8 @@ public class MapJsonHandler {
 
         } catch (IOException e) {
             showError("Error al guardar: " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    private static ArrayNode createCollisionsArray(Set<CeldaCoord> collisions) {
-        ArrayNode collisionsNode = mapper.createArrayNode();
-        for (CeldaCoord coord : collisions) {
-            ObjectNode collision = mapper.createObjectNode();
-            collision.put("row", coord.row());
-            collision.put("col", coord.col());
-            collisionsNode.add(collision);
-        }
-        return collisionsNode;
-    }
-
-    private static ArrayNode createDataArray(int[][] matrix) {
-        ArrayNode dataNode = mapper.createArrayNode();
-        for (int[] row : matrix) {
-            ArrayNode rowNode = mapper.createArrayNode();
-            for (int val : row) rowNode.add(val);
-            dataNode.add(rowNode);
-        }
-        return dataNode;
-    }
-
-    private static ObjectNode createEventsObject(MapModel model) {
-        ObjectNode eventsNode = mapper.createObjectNode();
-
-        // Spawn
-        if (model.getSpawn() != null) {
-            ArrayNode spawnNode = mapper.createArrayNode()
-                    .add(model.getSpawn().getRow())
-                    .add(model.getSpawn().getCol());
-            eventsNode.set("spawn", spawnNode);
-        }
-
-        // Teleports
-        ArrayNode teleportNode = mapper.createArrayNode();
-        for (TeleportEvent teleport : model.getTeleports()) {
-            ArrayNode tpData = mapper.createArrayNode()
-                    .add(teleport.getRow())
-                    .add(teleport.getCol())
-                    .add(teleport.getTargetRow())
-                    .add(teleport.getTargetCol());
-            teleportNode.add(tpData);
-        }
-        eventsNode.set("teleport", teleportNode);
-
-        return eventsNode;
     }
 
     private static int[][] parseDataMatrix(JsonNode dataNode, int rows, int cols) {
@@ -177,6 +209,7 @@ public class MapJsonHandler {
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
+
     public static void showInformation(String message) {
         JOptionPane.showMessageDialog(null, message, "Información", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -185,4 +218,3 @@ public class MapJsonHandler {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
-
