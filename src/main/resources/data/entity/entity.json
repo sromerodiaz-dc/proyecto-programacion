@@ -1,0 +1,47 @@
+[
+  {
+    "id": "player",
+    "who": 0,
+    "sentido": "0",
+    "speed": 6,
+    "intervalo": 7,
+    "width": 48,
+    "height": 48,
+    "solidArea_x": 10,
+    "solidArea_y": 22,
+    "solidArea_width": 32,
+    "solidArea_height": 20,
+    "maxlife": 10,
+    "life": 10
+  },
+  {
+    "id": "Viello",
+    "who": 1,
+    "sentido": "0",
+    "speed": 1,
+    "intervalo": 14,
+    "width": 54,
+    "height": 72,
+    "solidArea_x": 10,
+    "solidArea_y": 25,
+    "solidArea_width": 30,
+    "solidArea_height": 38,
+    "maxlife": 300,
+    "life": 300
+  },
+  {
+    "id": "Dinoseto_elegante",
+    "who": 2,
+    "sentido": "0",
+    "speed": 2,
+    "intervalo": 15,
+    "width": 92,
+    "height": 96,
+    "solidArea_x": 10,
+    "solidArea_y": 25,
+    "solidArea_width": 66,
+    "solidArea_height": 60,
+    "maxlife": 10,
+    "life": 8
+  }
+]

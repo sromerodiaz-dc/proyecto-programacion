@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestPlayer {
     @Test
     void testGetPlayerImage() {
-        Entity entity = new Entity(new TeisPanel(),Properties.getInstance("asf","as","123"));
+        Entity entity = new Entity(new TeisPanel(),Properties.getInstance());
 
         try {
             assertNotNull(entity.up1);
@@ -31,6 +31,6 @@ class TestPlayer {
 
     @Test
     void testUpdate() {
-        Entity entity = new Entity(new TeisPanel(),Properties.getInstance("asf","as","123"));
+        Entity entity = new Entity(new TeisPanel(),Properties.getInstance());
     }
 }

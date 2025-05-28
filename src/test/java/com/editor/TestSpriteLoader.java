@@ -30,7 +30,7 @@ class TestSpriteLoader {
         }
 
         // Test the writeToFile method
-        File file = new File("maps_correspondencia/c_assets.txt");
+        File file = new File("graphic/maps_correspondencia/c_assets.txt");
         assertTrue(file.exists());
 
         List<String> imagePaths = new ArrayList<>();

@@ -36,7 +36,7 @@ public class TestSpriteUtils {
         spriteUtils.generateSpriteMap(sprites, formato);
 
         // Check that the map file was created
-        File mapFile = new File("maps/map.txt");
+        File mapFile = new File("graphic/maps/map.txt");
         assertTrue(mapFile.exists());
 
         // Check the contents of the map file
