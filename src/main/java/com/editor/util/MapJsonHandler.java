@@ -98,19 +98,20 @@ public class MapJsonHandler {
             mapData.put("width", model.getCols());
             mapData.put("height", model.getRows());
 
-            // Serializar matriz manualmente en formato compacto
-            StringBuilder matrixJson = new StringBuilder("[");
+            // Serializar matriz manualmente en formato compacto con espaciado correcto
+            StringBuilder matrixJson = new StringBuilder("[\n");
             int[][] matrix = model.getMatrixForExport();
             for (int i = 0; i < matrix.length; i++) {
-                if (i > 0) matrixJson.append(",");
-                matrixJson.append("\n  [");
+                matrixJson.append("      [");
                 for (int j = 0; j < matrix[i].length; j++) {
                     if (j > 0) matrixJson.append(",");
                     matrixJson.append(matrix[i][j]);
                 }
                 matrixJson.append("]");
+                if (i < matrix.length - 1) matrixJson.append(",");
+                matrixJson.append("\n");
             }
-            matrixJson.append("\n]");
+            matrixJson.append("    ]");
             mapData.put("data", new RawValue(matrixJson.toString()));
 
             // Sección "colisiones"
@@ -172,12 +173,20 @@ public class MapJsonHandler {
             // Guardar en archivo individual
             File mapFile = new File(MAPS_PATH + mapName + ".json");
 
-            // Configurar formato
+            // Configurar formato con indentación personalizada
             DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-            prettyPrinter.indentArraysWith(SYSTEM_LINEFEED_INSTANCE);
+            prettyPrinter.indentArraysWith(new DefaultIndenter("  ", "\n"));
+            prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\n"));
 
             try (FileWriter fileWriter = new FileWriter(mapFile)) {
                 String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootNode);
+
+                // Ajustar el formato para coincidir exactamente con el ejemplo
+                jsonString = jsonString
+                        .replaceAll("\"data\" : \\[", "\"data\" : [")
+                        .replaceAll("\"colisiones\" : \\[", "\"colisiones\" : [")
+                        .replaceAll("\"eventos\" : \\{", "\"eventos\" : {");
+
                 fileWriter.write(jsonString);
             }
 
