@@ -1,4 +1,4 @@
-package com.editor.model;
+package com.editor.model.record;
 
 public record TileData(int textureId, boolean isCollision) {
 }
