@@ -9,6 +9,7 @@ public class EntityStats {
     private int exp;
     private int nextLevelThreshold;
     private int baseSpeed;
+    private int speedDebuf;
 
     private EntityStats(Builder builder) {
         this.strength = builder.strength;
