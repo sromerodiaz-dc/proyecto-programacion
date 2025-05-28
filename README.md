@@ -1812,7 +1812,7 @@ El json de las entidades contiene las stats de vida, ataque, defensa, fuerza, de
 del jugador y objetos del inventario.
 
 La estructura de los json podría ser:
-``text
+```text
 /resources/
   ├── data/
       ├── entities/
@@ -1825,4 +1825,8 @@ La estructura de los json podría ser:
           └── (guardados automáticamente)
 ```
 
-//TODO implementar nuevas clases DATA, eliminar la clase Properties y el docker-compose.yml, terminar de desarrollar el editor de mapas, implementar el nuevo formato a la carga de mapas del juego.
+### Mejoras del HUD
+
+### Eventos implementados al editor de mapas
+
+### Nueva estructura de carpeta recursos
