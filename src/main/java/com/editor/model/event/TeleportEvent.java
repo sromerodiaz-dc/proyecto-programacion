@@ -10,8 +10,8 @@ public class TeleportEvent extends MapEvent {
         super("teleport");
         this.row = row;
         this.col = col;
-        this.targetRow = targetY;
-        this.targetCol = targetX;
+        this.targetRow = targetX;
+        this.targetCol = targetY;
     }
 
     public int getRow() { return row; }

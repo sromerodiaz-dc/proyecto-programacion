@@ -1,8 +1,10 @@
 package com.editor.model;
 
 import com.editor.controller.TextureController;
-import com.editor.model.event.SpawnEvent;
+import com.editor.model.event.EntitySpawnEvent;
 import com.editor.model.event.TeleportEvent;
+import com.editor.model.record.CeldaCoord;
+import com.editor.model.record.TileData;
 
 import java.util.*;
 
@@ -13,11 +15,15 @@ public class MapModel {
     private final Set<CeldaCoord> manualCollisions = new HashSet<>(); // Colisiones manuales
     private final Set<CeldaCoord> autoCollisions = new HashSet<>(); // Colisiones por textura
     private final TileData DEFAULT_TILE = new TileData(0, false);
-    private SpawnEvent spawn;
-    private final List<TeleportEvent> teleports = new ArrayList<>();
     private final int rows;
     private final int cols;
     private final TextureController textureController;
+
+    // Nuevos campos para eventos
+    private CeldaCoord playerSpawn;
+    private final List<EntitySpawnEvent> entitySpawns = new ArrayList<>();
+    private final List<TeleportEvent> teleports = new ArrayList<>();
+    private CeldaCoord teleportSource; // Temporal para construcción de teleport
 
     public MapModel(int rows, int cols, TextureController textureController) {
         this.rows = rows;
@@ -111,16 +117,52 @@ public class MapModel {
         return allCollisions;
     }
 
-    // Getters/Setters para spawn y teleports
-    public SpawnEvent getSpawn() { return spawn; }
-    public void setSpawn(SpawnEvent spawn) { this.spawn = spawn; }
-    public List<TeleportEvent> getTeleports() { return teleports; }
-
     public int getCols() {
         return cols;
     }
 
     public int getRows() {
         return rows;
+    }
+
+    // Métodos para eventos
+    public void setPlayerSpawn(CeldaCoord coord) {
+        this.playerSpawn = coord;
+    }
+
+    public CeldaCoord getPlayerSpawn() {
+        return playerSpawn;
+    }
+
+    public void addEntitySpawn(EntitySpawnEvent event) {
+        entitySpawns.add(event);
+    }
+
+    public void addAllEntitySpawn(List<EntitySpawnEvent> event) {
+        entitySpawns.addAll(event);
+    }
+
+    public List<EntitySpawnEvent> getEntitySpawns() {
+        return entitySpawns;
+    }
+
+    public void addTeleport(TeleportEvent teleport) {
+        teleports.add(teleport);
+    }
+
+    public List<TeleportEvent> getTeleports() {
+        return teleports;
+    }
+
+    public void setTeleportSource(CeldaCoord source) {
+        this.teleportSource = source;
+    }
+
+    public CeldaCoord getTeleportSource() {
+        return teleportSource;
+    }
+
+    public void clearTeleportSource() {
+        this.teleportSource = null;
     }
 }
