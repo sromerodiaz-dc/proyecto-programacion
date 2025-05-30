@@ -10,6 +10,8 @@ public class EntityPlacer {
     private final Properties propierties;
     private final EntityFactory entityFactory;
 
+    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
+
     public EntityPlacer(TeisPanel teisPanel, Properties propierties) {
         this.teisPanel = teisPanel;
         this.propierties = propierties;
@@ -22,16 +24,16 @@ public class EntityPlacer {
     }
 
     public void setNPC() {
-        Entity npc = entityFactory.createEntity(EntityType.VIELLO, teisPanel, propierties, teisPanel.SIZE_FINAL * 19,teisPanel.SIZE_FINAL * 12);
+        Entity npc = entityFactory.createEntity(EntityType.VIELLO, teisPanel, propierties, SIZE_FINAL * 19,SIZE_FINAL * 12);
         teisPanel.controller.npc.add(npc);
     }
 
     public void setEnemy() {
-        Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.SIZE_FINAL * 5, teisPanel.SIZE_FINAL * 12);
+        Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, SIZE_FINAL * 5, SIZE_FINAL * 12);
         teisPanel.controller.enemy.add(enemy);
     }
 
     private Entity generateEntity(int x, int y) {
-        return entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, teisPanel.SIZE_FINAL * x, teisPanel.SIZE_FINAL * y);
+        return entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, SIZE_FINAL * x, SIZE_FINAL * y);
     }
 }

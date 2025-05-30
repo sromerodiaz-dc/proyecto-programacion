@@ -35,7 +35,7 @@ public class Player extends Entity implements EventListener {
     private final KeyboardController keyboardController;
     private final Weapon currentWeapon;
     private final Shield currentShield;
-    private Random random = new Random();
+    private final Random random = new Random();
     private boolean tenPass = false;
     private final int screenX;
     private final int screenY;
@@ -57,12 +57,12 @@ public class Player extends Entity implements EventListener {
                 .baseSpeed(5)
                 .build();
 
-        setValoresPorDefecto(t);
+        setValoresPorDefecto();
         getPlayerImage();
         getPlayerAttackImage();
     }
 
-    public void setValoresPorDefecto(TeisPanel t) {
+    public void setValoresPorDefecto() {
         setPropierties("player");
         worldX = SIZE_FINAL * DEFAULT_WORLD_X;
         worldY = SIZE_FINAL * DEFAULT_WORLD_Y;

@@ -20,7 +20,6 @@ public class Viello extends Entity {
     // TODO patron Observer para los eventos
     // ! Aplicar el patron para que cuando el jugador lance un evento este llegue a este npc
 
-
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
      *
