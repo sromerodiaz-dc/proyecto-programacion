@@ -149,7 +149,8 @@ public class CollisionCheck {
             Entity currentTarget = target.get(x);
 
             if (currentTarget != null && currentTarget != entity) {
-                if (checkCollisionBetween(entity, currentTarget)) {
+                // Solo verificar colisión si la entidad objetivo no está en estado de invencibilidad
+                if (!currentTarget.invencible && checkCollisionBetween(entity, currentTarget)) {
                     entity.collisionOn = true;
                     System.out.println("Colision");
                     index = x;
