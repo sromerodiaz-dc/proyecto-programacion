@@ -4,6 +4,8 @@ public enum GameState {
     LOAD,    // Pantalla de carga
     PLAY,    // Jugando
     PAUSE,   // Juego pausado
-    DIALOG,  // Diálogos
-    STATS    // Menú de estadísticas
+    DIALOG,   // Diálogo
+    DIALOG_OPTION,   // Conversación
+    STATS,    // Menú de estadísticas
+    GAME_OVER   // Jugador 0 HP
 }

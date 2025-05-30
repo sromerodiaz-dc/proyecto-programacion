@@ -1,10 +1,13 @@
 package com.game.controller;
 
 import com.game.data.GameState;
+import com.game.entity.Entity;
+import com.game.ui.Dialogable;
 import com.game.ui.TeisPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 public class KeyboardController implements KeyListener {
     public boolean up, down, left, right;
@@ -85,15 +88,55 @@ public class KeyboardController implements KeyListener {
         }
     }
 
-    private void handleDialogInput(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+    private void handleStatsState(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_I) {
             teisPanel.controller.setGameState(GameState.PLAY);
         }
     }
 
-    private void handleStatsState(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_I) {
-            teisPanel.controller.setGameState(GameState.PLAY);
+    private void handleDialogInput(KeyEvent e) {
+        Entity npc = teisPanel.controller.currentTalkingNpc;
+        if (npc == null) return;
+
+        // Si el NPC está escribiendo, al presionar SPACE se completa el texto
+        if (npc.isTyping) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                npc.isTyping = false;
+                npc.typingIndex = npc.currentDialog.length();
+            }
+            return;
+        }
+
+        // Manejar navegación y selección usando la interfaz Dialogable
+        if (npc instanceof Dialogable dialogable) {
+            List<String> options = dialogable.getCurrentOptions();
+
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    npc.selectedOption--;
+                    if (npc.selectedOption < 0) {
+                        npc.selectedOption = options.size() - 1;
+                    }
+                    break;
+
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                    npc.selectedOption++;
+                    if (npc.selectedOption >= options.size()) {
+                        npc.selectedOption = 0;
+                    }
+                    break;
+
+                case KeyEvent.VK_SPACE:
+                    dialogable.selectOption(npc.selectedOption);
+                    break;
+
+                case KeyEvent.VK_ESCAPE:
+                    // Permitir salir del diálogo con ESC
+                    teisPanel.controller.setGameState(GameState.PLAY);
+                    break;
+            }
         }
     }
 

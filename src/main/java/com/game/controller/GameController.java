@@ -50,12 +50,10 @@ public class GameController {
 
     // Entidades
     public ArrayList<Entity> npc = new ArrayList<>();
+    public Entity currentTalkingNpc;
 
     // Entidades no amistosas
     public ArrayList<Entity> enemy = new ArrayList<>();
-
-    // Orden de renderizado
-    ArrayList<Entity> entities = new ArrayList<>();
 
     // Manejo de eventos del juego
     public EventManager eventManager;

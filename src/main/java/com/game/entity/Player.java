@@ -33,8 +33,8 @@ public class Player extends Entity implements EventListener {
 
     private final EntityStats stats;
     private final KeyboardController keyboardController;
-    private final Weapon currentWeapon;
-    private final Shield currentShield;
+    private Weapon currentWeapon = null;
+    private Shield currentShield = null;
     private final Random random = new Random();
     private boolean tenPass = false;
     private final int screenX;
@@ -47,13 +47,11 @@ public class Player extends Entity implements EventListener {
         this.screenX = SCREEN_WIDTH / 2 - (SIZE_FINAL / 2);
         this.screenY = SCREEN_HEIGHT / 2 - (SIZE_FINAL / 2);
 
-        this.currentWeapon = new Weapon(t, properties);
-        this.currentShield = new Shield(t, properties);
         this.stats = new EntityStats.Builder()
                 .strength(2)
                 .dexterity(2)
-                .baseAttack(currentWeapon.getAttackVal())
-                .baseDefense(currentShield.getDefenseVal())
+                .baseAttack(0) // Inicialmente sin ataque
+                .baseDefense(0) // Inicialmente sin defensa
                 .baseSpeed(5)
                 .build();
 
@@ -238,18 +236,17 @@ public class Player extends Entity implements EventListener {
      * @param i El índice del NPC con el que se interactúa.
      */
     public void interactuarNPC(int i) {
-        // Verifica si se ha presionado una tecla
         if (keyboardController.isPressed) {
-            // Verifica si el índice es válido (no es 999)
-            if (i!= NO_VALID_INDEX) {
-                // Cambia el estado del juego a diálogo
+            if (i != NO_VALID_INDEX) {
                 teisPanel.controller.currentGameState = GameState.DIALOG;
-                // Hace que el NPC hable
-                teisPanel.controller.npc.get(i).fala();
-                // teisPanel.controller.playSE(); // Efecto de habla
+                teisPanel.controller.currentTalkingNpc = teisPanel.controller.npc.get(i);
+
+                if (teisPanel.controller.currentTalkingNpc != null) {
+                    teisPanel.controller.currentTalkingNpc.fala();
+                } else {
+                    teisPanel.controller.npc.get(i).fala();
+                }
             } else {
-                // teisPanel.controller.playSE(); // Efecto de ataque
-                // Activa el ataque
                 attack = true;
             }
         }
@@ -350,7 +347,8 @@ public class Player extends Entity implements EventListener {
             // Verifica si el enemigo no es invencible
             if (!enemy.invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
-                int realDamage = attackVal - enemy.defenseVal;
+                int realDamage = this.getAttackVal() - enemy.defenseVal;
+                System.out.println("Ataque");
                 if (realDamage < 0) {
                     realDamage = 0;
                 }
@@ -370,18 +368,6 @@ public class Player extends Entity implements EventListener {
                 // Verifica si la vida del enemigo ha llegado a cero
                 if (enemy.life <= 0) {
                     enemy.dying = true;
-
-                    // *** NOTA SOBRE ESTOS MENSAJES ***
-                    // Estos mensajes ("killed" y "exp") no son de daño.
-                    // Deberás decidir si quieres:
-                    // 1. Mantener un sistema antiguo de mensajes para estos (si aún existe).
-                    // 2. Crear un sistema de mensajes de texto diferente (quizás más estático).
-                    // 3. Adaptar DamageMessage para manejar también texto (menos recomendado
-                    //    si quieres que se vean diferentes a los números de daño).
-                    // Por ahora, los comentaré o asumiré que tienes otra forma de mostrarlos.
-                    // teisPanel.controller.ui.addMessage(enemy.name + "'s killed!");
-                    // teisPanel.controller.ui.addMessage(exp + "+!");
-
                     exp += enemy.exp;
                     checkLvlUp();
                 }
@@ -395,7 +381,6 @@ public class Player extends Entity implements EventListener {
             maxLife += 2;
             teisPanel.controller.setGameState(GameState.DIALOG);
             teisPanel.controller.ui.dialogo = "Subiches de level manin ao nivel " + stats.getLevel();
-            // teisPanel.controller.ui.dialogo = "Subiches de level manin ao nivel " + level + "\n Síntese coma se o Celta lle ganara ó Rayo (cagho en deus)";
         }
     }
 
@@ -492,6 +477,17 @@ public class Player extends Entity implements EventListener {
         return stats.calculateDefense();
     }
 
+    public void setWeapon(Weapon weapon) {
+        currentWeapon = weapon;
+        stats.setBaseAttack(weapon.attackVal);
+    }
+
+    public void setShield(Shield shield) {
+        currentShield = shield;
+        stats.setBaseDefense(shield.defenseVal);
+    }
+
+    // Modificar getters para evitar NullPointerException
     public Entity getCurrentWeapon() {
         return currentWeapon;
     }

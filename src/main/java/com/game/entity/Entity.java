@@ -1,5 +1,7 @@
 package com.game.entity;
 
+import com.game.data.GameState;
+import com.game.ui.Dialogable;
 import com.game.ui.TeisPanel;
 import com.game.data.Properties;
 import com.game.maptile.PiezaUtils;
@@ -44,6 +46,12 @@ public class Entity {
     // ITEM ATTRIBUTES
     public int attackVal;
     public int defenseVal;
+
+    public int selectedOption = 0;
+    public boolean isTyping = false;
+    public int typingIndex = 0;
+    public int typingCounter = 0;
+    public String currentDialog = "";
 
     // Estados de entidad
     public boolean alive = true;
@@ -98,6 +106,8 @@ public class Entity {
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido = '0';
+
+    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
     /**
      * Constructor parametrizado
@@ -206,7 +216,9 @@ public class Entity {
      * Metodo que se encarga de actualizar el estado de la entidad.
      */
     public void update() {
-        // Checkea las colisiones de todas las entidades y piezas
+        if (teisPanel.controller.currentGameState != GameState.PLAY) return;
+
+        // Comprueba las colisiones
         colisiones();
 
         // Actualiza el movimiento de la entidad
@@ -274,6 +286,8 @@ public class Entity {
 
     public void randomMovement(){}
 
+    public void processOptionSelection(int index, Player player) {}
+
     /**
      * Dibuja la entidad en el panel utilizando los métodos de dibujo proporcionados.
      *
@@ -321,7 +335,7 @@ public class Entity {
         int playerWorldY = teisPanel.player.worldY;
         int playerScreenX = teisPanel.player.getScreenX();
         int playerScreenY = teisPanel.player.getScreenY();
-        int size = teisPanel.SIZE_FINAL;
+        int size = SIZE_FINAL ;
 
         // Coordenadas en pantalla relativas al jugador
         int screenX = worldX - playerWorldX + playerScreenX;

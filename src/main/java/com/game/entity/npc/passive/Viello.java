@@ -1,8 +1,15 @@
 package com.game.entity.npc.passive;
 
+import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
+import com.game.entity.Player;
+import com.game.entity.object.Shield;
+import com.game.entity.object.Weapon;
+import com.game.ui.Dialogable;
 import com.game.ui.TeisPanel;
+
+import java.util.*;
 
 /**
  * Define al NPC: Viello
@@ -13,9 +20,19 @@ import com.game.ui.TeisPanel;
  * CFP Daniel Castelao
  * Proyecto: Teis
  * */
-public class Viello extends Entity {
+public class Viello extends Entity implements Dialogable {
     TeisPanel teisPanel;
     Properties properties;
+
+    // Estados de conversación
+    private boolean offended = false; // Si el jugador ofendió a Viello
+    private boolean knowsTeis = false; // Si el jugador respondió positivamente sobre Teis
+    private boolean hasWeapons = false; // Si ya se dieron las armas
+    private boolean dialogInProgress = false; // Si hay una conversación activa
+    private DialogNode currentNode;
+
+    // Nodos de diálogo
+    private final Map<String, DialogNode> dialogNodes = new HashMap<>();
 
     // TODO patron Observer para los eventos
     // ! Aplicar el patron para que cuando el jugador lance un evento este llegue a este npc
@@ -83,21 +100,200 @@ public class Viello extends Entity {
         }
     }
 
-    /**
-     * Establece los diálogos del enemigo Dinoseto.
-     */
     public void setDialogo() {
-        // Establece los diálogos del enemigo
-        dialogos[0] = "mozo... \nsabes o que din dos pimentitos de padrón...?";
-        dialogos[1] = "\"uns pican... e outros non\" \n*risa jodidamente incontenible*";
-        dialogos[2] = "Deus deume o peor dos destinos deste mundo, \nser do Celta.";
+        // Crear nodos de diálogo
+        dialogNodes.put("start", new DialogNode(
+                "mozo... \nsabes o que din dos pimentitos de padrón...?",
+                Arrays.asList("qúe dices?", "AJJAJAJAJAJAJJAJAJA", "?"),
+                null
+        ));
+
+        dialogNodes.put("que_dices", new DialogNode(
+                "Deus deume o peor dos destinos deste mundo, \nser do Celta.",
+                Arrays.asList("Hueles raro", "la verdad que el celta es el amor de mi vida"),
+                null
+        ));
+
+        dialogNodes.put("offended", new DialogNode(
+                "Vete de aquí, mocoso malcriado!",
+                Collections.emptyList(),
+                (_) -> {
+                    offended = true;
+                    return true; // Cierra diálogo
+                }
+        ));
+
+        dialogNodes.put("celtalove", new DialogNode(
+                "unha cousa mi tigre, qué opinas de Teis",
+                Arrays.asList("Qué desagradable", "Nací en Teis, muero en Teis"),
+                null
+        ));
+
+        dialogNodes.put("teis_dislike", new DialogNode(
+                "...",
+                Collections.emptyList(),
+                (_) -> {
+                    knowsTeis = true; // Marcar como ya preguntado
+                    return true; // Cierra diálogo
+                }
+        ));
+
+        dialogNodes.put("teis_like", new DialogNode(
+                "te falta Teis bro",
+                Collections.emptyList(),
+                (_) -> {
+                    knowsTeis = true;
+                    return false; // Continúa diálogo
+                }
+        ));
+
+        dialogNodes.put("final_question", new DialogNode(
+                "sabes teis? diselo manin, diselo manin, la profe me dijo que iba a...?",
+                Arrays.asList("qué?", "la profe me dijo que iba a repetir, fuck Coia", "me tengo que ir bro"),
+                null
+        ));
+
+        dialogNodes.put("weapons_given", new DialogNode(
+                "tú eres mi hermano, tú eres mi colega",
+                Collections.emptyList(),
+                (player) -> {
+                    if (!hasWeapons) {
+                        player.setWeapon(new Weapon(player.getTeisPanel(), player.getProperties()));
+                        player.setShield(new Shield(player.getTeisPanel(), player.getProperties()));
+                        hasWeapons = true;
+                    }
+                    return true; // Cierra diálogo
+                }
+        ));
+
+        // Resetear al estado inicial
+        resetDialog();
     }
 
-    /**
-     * Metodo para que el enemigo hable.
-     */
+    public void resetDialog() {
+        DialogNode node;
+        if (offended) {
+            node = dialogNodes.get("offended");
+        } else if (knowsTeis) {
+            if (!hasWeapons) {
+                node = dialogNodes.get("final_question");
+            } else {
+                List<String> keys = new ArrayList<>(dialogNodes.keySet());
+                node = dialogNodes.get(keys.get(new Random().nextInt(keys.size())));
+            }
+        } else {
+            node = dialogNodes.get("start");
+        }
+
+        dialogInProgress = true;
+        selectedOption = 0;
+        isTyping = true;
+        typingIndex = 0;
+
+        if (node != null) {
+            currentNode = node; // FIJAR EL NODO ACTUAL
+            currentDialog = node.message();
+        } else {
+            currentDialog = "";
+        }
+    }
+
+    @Override
     public void fala() {
-        // Llama al metodo fala() de la clase padre (Entity) para futuras modificaciones
-        super.fala();
+        if (!dialogInProgress) {
+            resetDialog();
+        } else {
+            // Solo reiniciar si no hay opciones disponibles
+            if (currentNode != null && currentNode.options().isEmpty()) {
+                resetDialog();
+            }
+        }
+
+        // Iniciar efecto de escritura
+        isTyping = true;
+        typingIndex = 0;
+        typingCounter = 0;
+        sentido = sentidoHablar();
+    }
+
+    public void processOptionSelection(int selectedOption, Player player) {
+        if (currentNode == null) return;
+
+        // Guardar el nodo actual para transición
+        DialogNode previousNode = currentNode;
+
+        // Actualizar el nodo actual basado en la selección
+        switch (currentNode.message()) {
+            case "mozo... \nsabes o que din dos pimentitos de padrón...?":
+                if (selectedOption == 0) currentNode = dialogNodes.get("que_dices");
+                else if (selectedOption == 1) currentNode = dialogNodes.get("celtalove");
+                break;
+
+            case "Deus deume o peor dos destinos deste mundo, \nser do Celta.":
+                if (selectedOption == 0) currentNode = dialogNodes.get("offended");
+                else if (selectedOption == 1) currentNode = dialogNodes.get("celtalove");
+                break;
+
+            case "unha cousa mi tigre, qué opinas de Teis":
+                if (selectedOption == 0) currentNode = dialogNodes.get("teis_dislike");
+                else if (selectedOption == 1) currentNode = dialogNodes.get("teis_like");
+                break;
+
+            case "sabes teis? diselo manin, diselo manin, la profe me dijo que iba a...?":
+                if (selectedOption == 1) currentNode = dialogNodes.get("weapons_given");
+                else {
+                    // Cerrar diálogo para respuestas incorrectas
+                    teisPanel.controller.currentGameState = GameState.PLAY;
+                    dialogInProgress = false;
+                    return;
+                }
+                break;
+        }
+
+        // Verificar si realmente cambiamos de nodo
+        if (currentNode != null && currentNode != previousNode) {
+            currentDialog = currentNode.message();
+            isTyping = true;
+            typingIndex = 0;
+
+            // Ejecutar acción asociada si existe
+            if (currentNode.action() != null) {
+                boolean shouldClose = currentNode.action().execute(player);
+                if (shouldClose) {
+                    teisPanel.controller.currentGameState = GameState.PLAY;
+                    dialogInProgress = false;
+                }
+            }
+        } else {
+            // Si no hay cambio, cerrar el diálogo
+            teisPanel.controller.currentGameState = GameState.PLAY;
+            dialogInProgress = false;
+        }
+    }
+
+    @Override
+    public List<String> getCurrentOptions() {
+        return (currentNode != null) ? currentNode.options() : Collections.emptyList();
+    }
+
+    @Override
+    public String getCurrentMessage() {
+        return currentDialog;
+    }
+
+    @Override
+    public void selectOption(int index) {
+        processOptionSelection(index, teisPanel.player);
+    }
+
+    // Fix record access
+    public record DialogNode(
+            String message,
+            List<String> options, // Make public
+            DialogAction action
+    ) {}
+
+    private interface DialogAction {
+        boolean execute(Player player);
     }
 }

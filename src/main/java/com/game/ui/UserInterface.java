@@ -4,6 +4,7 @@ import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.entity.Player;
+import com.game.entity.npc.passive.Viello;
 import com.game.entity.stats.Vida;
 
 import java.awt.*;
@@ -16,6 +17,9 @@ import java.util.Random;
 import java.util.Iterator;
 
 public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, etc. Implementar niveles de experiencia
+    private final int SCREEN_WIDTH = TeisPanel.screenWidth;
+    private final int SCREEN_HEIGHT = TeisPanel.screenHeight;
+
     private static final List<String> DEFAULT_TITLES = List.of(
             "Teis non\né Chapela.",
             "\"É Vigo\nmáis ca\nun dinoseto?\"",
@@ -43,6 +47,9 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private ArrayList<Integer> messageCounter = new ArrayList<>();
     private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
+
+    public String[] dialogOptions = new String[0];
+    public int selectedOption = 0;
 
 
     public UserInterface(TeisPanel teisPanel, Properties properties) {
@@ -144,7 +151,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
 
     private void drawLoadingScreen() {
         g2.setFont(pixeledFont.deriveFont(Font.BOLD, 75F));
-        int y = teisPanel.screenHeight / 3;
+        int y = SCREEN_HEIGHT / 3;
 
         for (String line : title.split("\n")) {
             int x = getCenteredX(line);
@@ -160,11 +167,11 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         g2.setColor(Color.YELLOW);
 
         String[] options = {"SAÍR", "DALLE", "CARGAR PARTIDA"};
-        int y = teisPanel.screenHeight - 100;
+        int y = SCREEN_HEIGHT - 100;
 
         // Draw first two options on same line
-        drawMenuOption(options[0], (int)(teisPanel.screenWidth * 0.87), y, 0);
-        drawMenuOption(options[1], (int)(teisPanel.screenWidth * 0.15), y, 1);
+        drawMenuOption(options[0], (int)(SCREEN_WIDTH * 0.87), y, 0);
+        drawMenuOption(options[1], (int)(SCREEN_WIDTH * 0.15), y, 1);
 
         // Draw third option below
         drawMenuOption(options[2], getCenteredX(options[2]), y + 50, 2);
@@ -180,24 +187,79 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private void drawPauseScreen() {
         g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 80));
         String text = "PAUSA";
-        g2.drawString(text, getCenteredX(text), teisPanel.screenHeight / 2);
+        g2.drawString(text, getCenteredX(text), SCREEN_HEIGHT / 2);
     }
 
+    // Actualizar drawDialog()
     private void drawDialog() {
+        // Dibujar ventana de diálogo en la parte inferior
         int x = SIZE_FINAL * 2;
-        int y = SIZE_FINAL / 2;
-        int width = teisPanel.screenWidth - SIZE_FINAL * 4;
+        int y = SCREEN_HEIGHT - SIZE_FINAL * 6;
+        int width = SCREEN_WIDTH - SIZE_FINAL * 4;
         int height = SIZE_FINAL * 5;
 
         drawWindow(x, y, width, height);
 
         g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22));
-        x += SIZE_FINAL;
-        y += SIZE_FINAL;
+        g2.setColor(Color.WHITE);
 
-        for (String line : dialogo.split("\n")) {
-            g2.drawString(line, x, y);
-            y += 40;
+        Entity npc = teisPanel.controller.currentTalkingNpc;
+        if (npc == null) return;
+
+        // Manejo seguro de currentDialog
+        String dialogText = npc.currentDialog != null ? npc.currentDialog : "";
+
+        // Dibujar texto del diálogo con efecto de escritura
+        int textY = y + SIZE_FINAL;
+
+        // Manejo del efecto de escritura
+        if (npc.isTyping) {
+            npc.typingCounter++;
+            if (npc.typingCounter >= 0.5f) { // Velocidad de escritura
+                npc.typingCounter = 0;
+                if (npc.typingIndex < dialogText.length()) {
+                    npc.typingIndex++;
+                } else {
+                    npc.isTyping = false;
+                }
+            }
+
+            // Mostrar texto parcial
+            String partialText = dialogText.substring(0, npc.typingIndex);
+            for (String line : partialText.split("\n")) {
+                g2.drawString(line, x + SIZE_FINAL, textY);
+                textY += g2.getFontMetrics().getHeight();
+            }
+        } else {
+            // Mostrar texto completo
+            for (String line : dialogText.split("\n")) {
+                g2.drawString(line, x + SIZE_FINAL, textY);
+                textY += g2.getFontMetrics().getHeight();
+            }
+        }
+
+        // Dibujar opciones solo si no está escribiendo y hay opciones disponibles
+        if (!npc.isTyping && npc instanceof Dialogable dialogableNpc) {
+            List<String> options = dialogableNpc.getCurrentOptions();
+
+            if (!options.isEmpty() && teisPanel.controller.currentGameState == GameState.DIALOG) {
+                int optionY = textY + SIZE_FINAL;
+
+                // Asegurarse de que hay opciones para mostrar
+                for (int i = 0; i < options.size(); i++) {
+                    String option = options.get(i);
+                    if (option != null) {
+                        if (i == npc.selectedOption) {
+                            g2.setColor(Color.YELLOW);
+                            g2.drawString("> " + option, x + SIZE_FINAL, optionY);
+                        } else {
+                            g2.setColor(Color.WHITE);
+                            g2.drawString(option, x + SIZE_FINAL, optionY);
+                        }
+                        optionY += g2.getFontMetrics().getHeight();
+                    }
+                }
+            }
         }
     }
 
@@ -273,7 +335,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     }
 
     private int getCenteredX(String text) {
-        return teisPanel.screenWidth / 2 - g2.getFontMetrics().stringWidth(text) / 2;
+        return SCREEN_WIDTH / 2 - g2.getFontMetrics().stringWidth(text) / 2;
     }
 
     public int getMessageTime() {

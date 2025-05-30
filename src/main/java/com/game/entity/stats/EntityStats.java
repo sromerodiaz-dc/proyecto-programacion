@@ -5,8 +5,8 @@ public class EntityStats {
     private int strength;
     private int dexterity;
     private int vitality;
-    private final int baseAttack;
-    private final int baseDefense;
+    private int baseAttack;
+    private int baseDefense;
     private int exp;
     private int nextLevelThreshold;
     private int baseSpeed;
@@ -118,6 +118,14 @@ public class EntityStats {
 
     public int calculateMaxHealth() {
         return 100 + (level * 20) + (vitality * 10);
+    }
+
+    public void setBaseAttack(int baseAttack) {
+        this.baseAttack = baseAttack;
+    }
+
+    public void setBaseDefense(int baseDefense) {
+        this.baseDefense = baseDefense;
     }
 
     public int getCurrentSpeed() {
