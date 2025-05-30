@@ -481,7 +481,7 @@ public class Player extends Entity implements EventListener {
     }
 
     public int getSpeed() {
-        return stats.getBaseSpeed();
+        return stats.getCurrentSpeed();
     }
 
     public int getAttackVal() {
