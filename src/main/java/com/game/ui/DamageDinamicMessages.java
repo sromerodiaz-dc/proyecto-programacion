@@ -160,9 +160,13 @@ public class DamageDinamicMessages {
             this.msgX = screenWidth / 2 - 100;
             this.msgY = screenHeight / 2;
         } else {
-            // Posición relativa al enemigo
-            int screenX = enemy.worldX - player.worldX + player.getScreenX();
-            int screenY = enemy.worldY - player.worldY + player.getScreenY();
+            // Obtener el centro del enemigo
+            int enemyCenterX = enemy.worldX + (enemy.width / 2);
+            int enemyCenterY = enemy.worldY + (enemy.height / 2);
+
+            // Posición relativa al centro del enemigo
+            int screenX = enemyCenterX - player.worldX + player.getScreenX();
+            int screenY = enemyCenterY - player.worldY + player.getScreenY();
 
             this.msgX = clamp(screenX + offsetX, margin, screenWidth - margin);
             this.msgY = clamp(screenY + offsetY, margin, screenHeight - margin);
