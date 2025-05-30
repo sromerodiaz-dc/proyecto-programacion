@@ -3,7 +3,7 @@ package com.game.ui;
 import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
-import com.game.controller.TeisPanel;
+import com.game.entity.Player;
 import com.game.entity.stats.Vida;
 
 import java.awt.*;
@@ -39,8 +39,8 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     public String dialogo;
     private int messageTime = 0;
     private boolean isFinished = false;
-    private final ArrayList<String> messages = new ArrayList<>();
-    private final ArrayList<Integer> messageCounter = new ArrayList<>();
+    private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<Integer> messageCounter = new ArrayList<>();
     private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
 
@@ -61,8 +61,8 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         messageCounter.add(1);
     }
 
-    public void addMessage(int damage, int enemyX, int enemyY, int playerX, int playerY, int screenX, int screenY) {
-        damageMessages.add(new DamageDinamicMessages(damage, enemyX, enemyY, playerX, playerY, screenX, screenY));
+    public void addMessage(int damage, Entity enemy, Player player) {
+        damageMessages.add(new DamageDinamicMessages(damage, enemy, player));
     }
 
     private Font loadFont() {

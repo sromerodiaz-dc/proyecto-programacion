@@ -1,6 +1,6 @@
 package com.game.entity.factory;
 
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.data.Properties;
 import com.game.entity.Entity;
 import com.game.entity.npc.aggressive.Dinoseto;

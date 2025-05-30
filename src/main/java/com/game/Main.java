@@ -1,6 +1,6 @@
 package com.game;
 
-import com.game.controller.ventana;
+import com.game.ui.MainWindow;
 import javax.sound.sampled.LineUnavailableException;
 
 /**
@@ -12,6 +12,6 @@ import javax.sound.sampled.LineUnavailableException;
  * */
 public class Main {
     public static void main(String[] args) throws LineUnavailableException {
-        new ventana();
+        new MainWindow();
     }
 }

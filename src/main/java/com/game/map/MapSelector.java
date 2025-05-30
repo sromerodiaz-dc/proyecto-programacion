@@ -34,7 +34,7 @@ public class MapSelector {
         int choice = JOptionPane.showOptionDialog(
                 null,
                 "Select a map:", // Título del diálogo
-                "Map Selector", // Título de la ventana
+                "Map Selector", // Título de la MainWindow
                 JOptionPane.DEFAULT_OPTION, // Opción predeterminada
                 JOptionPane.PLAIN_MESSAGE, // Tipo de mensaje
                 null, // Icono (ninguno)

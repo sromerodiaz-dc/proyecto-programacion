@@ -2,7 +2,7 @@ package com.game;
 
 import com.game.entity.Entity;
 import com.game.data.Properties;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

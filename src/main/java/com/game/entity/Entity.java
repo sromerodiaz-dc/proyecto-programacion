@@ -1,6 +1,6 @@
 package com.game.entity;
 
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.data.Properties;
 import com.game.maptile.PiezaUtils;
 

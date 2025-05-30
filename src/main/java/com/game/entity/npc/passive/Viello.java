@@ -2,7 +2,7 @@ package com.game.entity.npc.passive;
 
 import com.game.entity.Entity;
 import com.game.data.Properties;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 
 /**
  * Define al NPC: Viello

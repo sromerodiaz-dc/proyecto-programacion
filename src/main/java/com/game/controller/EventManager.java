@@ -1,5 +1,9 @@
-package com.game.controller.events;
+package com.game.controller;
 
+import com.game.controller.eventData.EventListener;
+import com.game.controller.eventData.EventRectangle;
+import com.game.controller.eventData.EventType;
+import com.game.controller.eventData.GameEvent;
 import com.game.entity.Player;
 
 import java.awt.*;

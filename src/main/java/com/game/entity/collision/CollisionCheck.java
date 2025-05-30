@@ -1,6 +1,6 @@
 package com.game.entity.collision;
 
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.entity.Entity;
 import com.game.maptile.PiezaManager;
 

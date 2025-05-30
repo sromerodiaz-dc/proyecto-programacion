@@ -1,6 +1,6 @@
 package com.game.maptile;
 
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
@@ -18,6 +18,7 @@ public class PiezaManager {
     public Pieza[] pieza;
     public int[][] mapaPiezaNum;
     public String mapName;
+    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
     // Crea un nuevo objeto PiezaUtils
     public PiezaUtils piezaUtils = new PiezaUtils();
@@ -156,15 +157,15 @@ public class PiezaManager {
             int playerScreenY = t.player.getScreenY();
 
             // Coordenadas de pantalla relativas al jugador
-            int worldX = worldCol * t.SIZE_FINAL;
-            int worldY = worldFil * t.SIZE_FINAL;
+            int worldX = worldCol * SIZE_FINAL;
+            int worldY = worldFil * SIZE_FINAL;
             int screenX = worldX - playerWorldX + playerScreenX;
             int screenY = worldY - playerWorldY + playerScreenY;
 
             // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
             // empleando las coordenadas absolutas y las relativas al jugador.
-            if (worldX + t.SIZE_FINAL > playerWorldX - playerScreenX && worldX - t.SIZE_FINAL < playerWorldX + playerScreenX &&
-                worldY + t.SIZE_FINAL > playerWorldY - playerScreenY && worldY - t.SIZE_FINAL < playerWorldY + playerScreenY) {
+            if (worldX + SIZE_FINAL > playerWorldX - playerScreenX && worldX - SIZE_FINAL < playerWorldX + playerScreenX &&
+                worldY + SIZE_FINAL > playerWorldY - playerScreenY && worldY - SIZE_FINAL < playerWorldY + playerScreenY) {
                 // Dibuja la imagen de la Pieza correspondiente en la posición actual.
                 g2.drawImage(pieza[id].image, screenX, screenY, null);
             }

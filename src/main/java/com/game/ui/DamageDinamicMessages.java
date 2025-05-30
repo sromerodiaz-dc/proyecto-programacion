@@ -1,6 +1,7 @@
 package com.game.ui;
 
-import com.game.controller.TeisPanel;
+import com.game.entity.Entity;
+import com.game.entity.Player;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,20 +14,28 @@ public class DamageDinamicMessages {
     String[] lines;
     int damageAmount;
     int msgX, msgY;
-    int initialY;
     int lifetime;
     int maxLifetime;
     Color color;
     float currentSize;
     Random random = new Random();
-    boolean isZeroDamage = false;
+    boolean isZeroDamage;
     boolean isIronicalMessage = false;
-    boolean useRainbowEffect = false;
+    boolean useRainbowEffect;
     float initialSize = 20F;
     float maxSize = 60F;
     int margin = 40;
     int screenWidth = TeisPanel.screenWidth;
     int screenHeight = TeisPanel.screenHeight;
+
+    // Referencias al enemigo y al jugador
+    private final Entity enemy;
+    private final Player player;
+
+    // Offset radial para posición alrededor del enemigo
+    private final int offsetX;
+    private final int offsetY;
+
 
     // Lista de mensajes irónicos
     private static final String[] ZERO_DAMAGE_MESSAGES = {
@@ -50,15 +59,17 @@ public class DamageDinamicMessages {
             "0 DMG, -100000000 aura, 0 InfoJobs,\n0 curriculums, 0 skill, 0 hoes,\n0 nómina, 0 kills, 0 racks"
     };
 
-    public DamageDinamicMessages(int damageAmount, int enemyX, int enemyY, int playerX, int playerY, int screenX, int screenY) {
+    public DamageDinamicMessages(int damageAmount, Entity enemy, Player player) {
         this.damageAmount = damageAmount;
         this.lifetime = 0;
+        this.enemy = enemy;
+        this.player = player;
 
         if (damageAmount == 0) {
             this.isZeroDamage = true;
 
             if (random.nextFloat() < 0.25f) {
-                // 🎯 Mensaje irónico - aparece en HUD (posición fija)
+                // Mensaje irónico (posición fija)
                 int messageIndex = random.nextInt(ZERO_DAMAGE_MESSAGES.length);
                 String rawText = ZERO_DAMAGE_MESSAGES[messageIndex];
                 this.lines = rawText.split("\n");
@@ -67,22 +78,25 @@ public class DamageDinamicMessages {
                 this.color = Color.LIGHT_GRAY;
                 this.maxLifetime = 150;
                 this.useRainbowEffect = random.nextFloat() < 0.3f;
-                this.isIronicalMessage = true; // ✅ <- esto faltaba
+                this.isIronicalMessage = true;
 
+                // Offset cero para mensajes fijos
+                this.offsetX = 0;
+                this.offsetY = 0;
             } else {
-                // 🎯 Daño 0 sin mensaje - solo "0", debe salir cerca del enemigo
+                // Daño 0 normal
                 this.lines = new String[]{"0"};
                 this.currentSize = 30F;
                 this.color = Color.LIGHT_GRAY;
                 this.maxLifetime = 80;
                 this.useRainbowEffect = false;
 
-                // ✅ POSICIÓN CERCA DEL ENEMIGO
+                // Generar offset radial
+                this.offsetX = generateRadialOffsetX();
+                this.offsetY = generateRadialOffsetY();
             }
-            this.msgX = clamp(enemyX - playerX + screenX + random.nextInt(40) - 20, margin, screenWidth - margin);
-            this.msgY = clamp(enemyY - playerY + screenY + random.nextInt(20) - 10, margin, screenHeight - margin);
         } else {
-            // 🎯 Daño normal - aparece cerca del enemigo
+            // Daño normal
             this.isZeroDamage = false;
             this.lines = new String[]{String.valueOf(damageAmount)};
             this.color = Color.WHITE;
@@ -92,17 +106,11 @@ public class DamageDinamicMessages {
             this.maxLifetime = 60;
             this.useRainbowEffect = false;
 
-            // ✅ POSICIÓN CERCA DEL ENEMIGO
-            this.msgX = clamp(enemyX - playerX + screenX + random.nextInt(40) - 20, margin, screenWidth - margin);
-            this.msgY = clamp(enemyY - playerY + screenY + random.nextInt(20) - 10, margin, screenHeight - margin);
+            // Generar offset radial
+            this.offsetX = generateRadialOffsetX();
+            this.offsetY = generateRadialOffsetY();
         }
-        this.initialY = msgY;
-    }
-
-    public void update() {
-        lifetime++;
-        int speed = (isZeroDamage && !isIronicalMessage) ? 4 : 2; // Los mensajes "0" cerca enemigo suben más lento
-        msgY = initialY - (lifetime / speed);
+        updatePosition();
     }
 
     public void draw(Graphics2D g2) {
@@ -132,6 +140,40 @@ public class DamageDinamicMessages {
             g2.setColor(drawColor);
             g2.drawString(lines[i], msgX, lineY);
         }
+    }
+
+    private int generateRadialOffsetX() {
+        double angle = random.nextDouble() * 2 * Math.PI;
+        double distance = 30 + random.nextDouble() * 30;
+        return (int) (Math.cos(angle) * distance);
+    }
+
+    private int generateRadialOffsetY() {
+        double angle = random.nextDouble() * 2 * Math.PI;
+        double distance = 30 + random.nextDouble() * 30;
+        return (int) (Math.sin(angle) * distance);
+    }
+
+    private void updatePosition() {
+        if (isIronicalMessage) {
+            // Posición fija centrada
+            this.msgX = screenWidth / 2 - 100;
+            this.msgY = screenHeight / 2;
+        } else {
+            // Posición relativa al enemigo
+            int screenX = enemy.worldX - player.worldX + player.getScreenX();
+            int screenY = enemy.worldY - player.worldY + player.getScreenY();
+
+            this.msgX = clamp(screenX + offsetX, margin, screenWidth - margin);
+            this.msgY = clamp(screenY + offsetY, margin, screenHeight - margin);
+        }
+    }
+
+    public void update() {
+        lifetime++;
+        updatePosition();
+        int speed = (isZeroDamage && !isIronicalMessage) ? 4 : 2;
+        msgY -= (lifetime / speed);
     }
 
     public boolean isAlive() {

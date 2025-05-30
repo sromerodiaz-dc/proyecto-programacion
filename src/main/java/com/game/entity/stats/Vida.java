@@ -2,7 +2,7 @@ package com.game.entity.stats;
 
 import com.game.data.Properties;
 import com.game.entity.Entity;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 
 /**
  * Clase que representa una entidad de vida en el juego.

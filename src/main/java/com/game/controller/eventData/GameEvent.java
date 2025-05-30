@@ -1,4 +1,4 @@
-package com.game.controller.events;
+package com.game.controller.eventData;
 
 /**
  * Clase inmutable y concisa que se usa para representar datos sin necesidad de escribir

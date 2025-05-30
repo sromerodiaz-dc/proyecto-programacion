@@ -776,13 +776,13 @@ Los objetos son creados en el juego de la siguiente manera:
 ````java
 public ventana() {
     teisPanel = new TeisPanel(); // Crea un nuevo panel principal
-    setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la ventana
-    setResizable(false); // Impide que la ventana sea redimensionable
-    setTitle("Teis"); // Establece el título de la ventana
-    add(teisPanel); // Agrega el panel principal a la ventana
-    pack(); // Ajusta el tamaño de la ventana para que quepa el panel principal
-    setLocationRelativeTo(null); // Centra la ventana en la pantalla
-    setVisible(true); // Hace visible la ventana
+    setDefaultCloseOperation(EXIT_ON_CLOSE); // Establece la operación por defecto al cerrar la MainWindow
+    setResizable(false); // Impide que la MainWindow sea redimensionable
+    setTitle("Teis"); // Establece el título de la MainWindow
+    add(teisPanel); // Agrega el panel principal a la MainWindow
+    pack(); // Ajusta el tamaño de la MainWindow para que quepa el panel principal
+    setLocationRelativeTo(null); // Centra la MainWindow en la pantalla
+    setVisible(true); // Hace visible la MainWindow
 
     // Inicializa los items del mapa
     teisPanel.setUpItems();
@@ -1031,13 +1031,13 @@ varias situaciones como:
 - Mensajes propios del juego a modo en el _título_.
 ````java
 public void drawDialogo() {
-   // Calcula la posición y tamaño de la ventana de diálogo
+   // Calcula la posición y tamaño de la MainWindow de diálogo
    int x = teisPanel.sizeFinal * 2; // Posición horizontal X
    int y = teisPanel.sizeFinal / 2; // Posición vertical Y
-   int width = teisPanel.screenWidth - teisPanel.sizeFinal * 4; // Ancho de la ventana
-   int height = teisPanel.sizeFinal * 5; // Alto de la ventana
+   int width = teisPanel.screenWidth - teisPanel.sizeFinal * 4; // Ancho de la MainWindow
+   int height = teisPanel.sizeFinal * 5; // Alto de la MainWindow
    
-   // Dibuja la ventana de diálogo
+   // Dibuja la MainWindow de diálogo
    drawVentana(x, y, width, height);
    
    // Establece la fuente para el texto del diálogo

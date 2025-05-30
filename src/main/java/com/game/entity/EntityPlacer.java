@@ -1,16 +1,16 @@
 package com.game.entity;
 
 import com.game.data.Properties;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.entity.factory.EntityFactory;
 import com.game.entity.factory.EntityType;
 
-public class Placer {
+public class EntityPlacer {
     private final TeisPanel teisPanel;
     private final Properties propierties;
     private final EntityFactory entityFactory;
 
-    public Placer(TeisPanel teisPanel, Properties propierties) {
+    public EntityPlacer(TeisPanel teisPanel, Properties propierties) {
         this.teisPanel = teisPanel;
         this.propierties = propierties;
         this.entityFactory = new EntityFactory();

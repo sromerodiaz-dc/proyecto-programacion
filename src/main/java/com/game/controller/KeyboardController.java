@@ -1,6 +1,7 @@
 package com.game.controller;
 
 import com.game.data.GameState;
+import com.game.ui.TeisPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

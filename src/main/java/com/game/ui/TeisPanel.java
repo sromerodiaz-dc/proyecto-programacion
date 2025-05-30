@@ -1,5 +1,7 @@
-package com.game.controller;
+package com.game.ui;
 
+import com.game.controller.GameController;
+import com.game.controller.KeyboardController;
 import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.entity.Player;
@@ -81,7 +83,7 @@ public class TeisPanel extends JPanel implements Runnable{
     }
 
     public void setUpItems() throws LineUnavailableException {
-        controller.placer.setRecursos();
+        controller.entityPlacer.setRecursos();
         controller.playMusic(1);
     }
 

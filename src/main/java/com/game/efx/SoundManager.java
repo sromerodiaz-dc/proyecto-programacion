@@ -1,7 +1,7 @@
 package com.game.efx;
 
-import com.game.controller.events.EventListener;
-import com.game.controller.events.GameEvent;
+import com.game.controller.eventData.EventListener;
+import com.game.controller.eventData.GameEvent;
 
 public class SoundManager implements EventListener {
     @Override

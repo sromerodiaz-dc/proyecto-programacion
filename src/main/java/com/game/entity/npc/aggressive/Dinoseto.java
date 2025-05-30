@@ -2,7 +2,7 @@ package com.game.entity.npc.aggressive;
 
 import com.game.entity.Entity;
 import com.game.data.Properties;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 
 /**
  * Clase que representa al enemigo "Dinoseto" en el juego.

@@ -1,6 +1,6 @@
 package com.game;
 
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.maptile.Pieza;
 import com.game.maptile.PiezaManager;
 import org.junit.jupiter.api.BeforeEach;

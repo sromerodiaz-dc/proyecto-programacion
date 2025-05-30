@@ -1,4 +1,4 @@
-package com.game.controller.events;
+package com.game.controller.eventData;
 
 public enum EventType {
     DAMAGE,

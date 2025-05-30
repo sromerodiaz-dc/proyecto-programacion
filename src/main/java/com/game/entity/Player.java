@@ -1,11 +1,11 @@
 package com.game.entity;
 
-import com.game.controller.events.EventListener;
-import com.game.controller.events.GameEvent;
+import com.game.controller.eventData.EventListener;
+import com.game.controller.eventData.GameEvent;
 import com.game.data.GameState;
 import com.game.data.Properties;
 import com.game.controller.KeyboardController;
-import com.game.controller.TeisPanel;
+import com.game.ui.TeisPanel;
 import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
 import com.game.entity.stats.EntityStats;
@@ -27,8 +27,8 @@ public class Player extends Entity implements EventListener {
     private static final int DEFAULT_WORLD_X = 18;
     private static final int DEFAULT_WORLD_Y = 10;
     private static final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
-    private static final int SCREEN_WIDTH = TeisPanel.WIDTH;
-    private static final int SCREEN_HEIGHT = TeisPanel.HEIGHT;
+    private static final int SCREEN_WIDTH = TeisPanel.screenWidth;
+    private static final int SCREEN_HEIGHT = TeisPanel.screenHeight;
 
     private final EntityStats stats;
     private final KeyboardController keyboardController;
@@ -339,7 +339,7 @@ public class Player extends Entity implements EventListener {
                 // Aplica daño al enemigo
                 enemy.life -= realDamage;
                 // Llamamos al nuevo addMessage con el daño y la posición del enemigo
-                teisPanel.controller.ui.addMessage(realDamage, enemy.worldX, enemy.worldY, worldX, worldY, screenX, screenY);
+                teisPanel.controller.ui.addMessage(realDamage, enemy, this);
 
                 // Hace que el enemigo sea invencible temporalmente
                 enemy.invencible = true;

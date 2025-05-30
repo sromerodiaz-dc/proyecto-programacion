@@ -1,16 +1,16 @@
 package com.game.controller;
 
-import com.game.controller.events.EventRectangle;
-import com.game.controller.events.EventType;
+import com.game.controller.eventData.EventRectangle;
+import com.game.controller.eventData.EventType;
 import com.game.data.GameState;
 import com.game.data.Properties;
 import com.game.efx.Sound;
+import com.game.ui.TeisPanel;
 import com.game.ui.UserInterface;
 import com.game.entity.collision.CollisionCheck;
 import com.game.entity.Entity;
-import com.game.controller.events.EventManager;
 import com.game.maptile.PiezaManager;
-import com.game.entity.Placer;
+import com.game.entity.EntityPlacer;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class GameController {
 
     // Controlador de colisiones
     public CollisionCheck collisionCheck;
-    public Placer placer;
+    public EntityPlacer entityPlacer;
 
     // Propiedades de cada entidad
     public Properties properties = Properties.getInstance();
@@ -65,7 +65,7 @@ public class GameController {
      *
      * @param piezaManager El gestor de piezas del juego.
      */
-    public GameController(PiezaManager piezaManager,TeisPanel teisPanel) {
+    public GameController(PiezaManager piezaManager, TeisPanel teisPanel) {
         this.piezaManager = piezaManager;
 
         initializeComponents(teisPanel);
@@ -85,7 +85,7 @@ public class GameController {
 
     private void initializeComponents(TeisPanel teisPanel) {
         ui = new UserInterface(teisPanel, properties);
-        placer = new Placer(teisPanel, properties);
+        entityPlacer = new EntityPlacer(teisPanel, properties);
         collisionCheck = new CollisionCheck(teisPanel);
     }
 
