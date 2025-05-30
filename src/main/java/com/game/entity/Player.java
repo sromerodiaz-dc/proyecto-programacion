@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Esta clase define la interacción del jugador con el entorno asi como su movimiento y uso de gráficos en 2D.
@@ -34,6 +35,7 @@ public class Player extends Entity implements EventListener {
     private final KeyboardController keyboardController;
     private final Weapon currentWeapon;
     private final Shield currentShield;
+    private Random random = new Random();
     private boolean tenPass = false;
     private final int screenX;
     private final int screenY;
@@ -290,15 +292,30 @@ public class Player extends Entity implements EventListener {
             int currentX = worldX;
             int currentY = worldY;
             int solidAreaW = solidArea.width;
-            int solidAreaH = solidArea.width;
+            int solidAreaH = solidArea.height;
+            int defaultSolidAreaX = this.defaultSolidAreaX; // Guardar valor original
+            int defaultSolidAreaY = this.defaultSolidAreaY; // Guardar valor original
 
             // Ajusta estas variables al área de ataque
             switch (sentido) {
-                case 'w': worldY -= attackArea.height; break;
-                case 's': worldY += attackArea.height; break;
-                case 'a': worldX -= attackArea.width; break;
-                case 'd': worldX += attackArea.width; break;
+                case 'w':
+                    worldY -= attackArea.height;
+                    solidArea.y = defaultSolidAreaY - attackArea.height; // Ajustar área sólida
+                    break;
+                case 's':
+                    worldY += attackArea.height;
+                    solidArea.y = defaultSolidAreaY + attackArea.height; // Ajustar área sólida
+                    break;
+                case 'a':
+                    worldX -= attackArea.width;
+                    solidArea.x = defaultSolidAreaX - attackArea.width; // Ajustar área sólida
+                    break;
+                case 'd':
+                    worldX += attackArea.width;
+                    solidArea.x = defaultSolidAreaX + attackArea.width; // Ajustar área sólida
+                    break;
             }
+
             // Transforma el área sólida del ataque
             solidArea.width = attackArea.width;
             solidArea.height = attackArea.height;
@@ -312,6 +329,8 @@ public class Player extends Entity implements EventListener {
             worldY = currentY;
             solidArea.width = solidAreaW;
             solidArea.height = solidAreaH;
+            solidArea.x = defaultSolidAreaX; // Restaurar posición X
+            solidArea.y = defaultSolidAreaY; // Restaurar posición Y
         } else {
             spriteCounter = 0;
             attack = false;
@@ -338,8 +357,11 @@ public class Player extends Entity implements EventListener {
 
                 // Aplica daño al enemigo
                 enemy.life -= realDamage;
-                // Llamamos al nuevo addMessage con el daño y la posición del enemigo
-                teisPanel.controller.ui.addMessage(realDamage, enemy, this);
+
+                // SOLO 1 DE CADA 10 ATAQUES MUESTRA EL MENSAJE
+                if (random.nextFloat() < 0.1f) {
+                    teisPanel.controller.ui.addMessage(realDamage, enemy, this);
+                }
 
                 // Hace que el enemigo sea invencible temporalmente
                 enemy.invencible = true;
