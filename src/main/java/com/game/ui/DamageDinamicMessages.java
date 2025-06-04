@@ -65,7 +65,9 @@ public class DamageDinamicMessages {
         this.enemy = enemy;
         this.player = player;
 
-        if (damageAmount == 0) {
+        float vidaPrev = enemy.life + damageAmount;
+
+        if (damageAmount <= 0.1f * vidaPrev) {
             this.isZeroDamage = true;
 
             if (random.nextFloat() < 0.25f) {
@@ -84,7 +86,7 @@ public class DamageDinamicMessages {
                 this.offsetX = 0;
                 this.offsetY = 0;
             } else {
-                // Daño 0 normal
+                // Daño normal
                 this.lines = new String[]{"0"};
                 this.currentSize = 30F;
                 this.color = Color.LIGHT_GRAY;

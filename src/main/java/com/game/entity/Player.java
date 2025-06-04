@@ -426,6 +426,11 @@ public class Player extends Entity implements EventListener {
     @Override
     public void onEvent(GameEvent event) {
         System.out.println("Evento recibido: " + event.message() + " " + event.type());
+
+        if (teisPanel.controller.currentTalkingNpc != null) {
+             teisPanel.controller.currentTalkingNpc = null;
+        }
+
         switch (event.type()) {
             case DAMAGE:
                 takeDamage(event.value());

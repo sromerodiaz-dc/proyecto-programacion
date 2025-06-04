@@ -195,7 +195,7 @@ public class UserInterface {
         int width = SCREEN_WIDTH - SIZE_FINAL * 4;
         int height = SIZE_FINAL * 5;
 
-        drawWindow(x, y, width, height); // Asumiendo que este método dibuja el fondo de la ventana
+        drawWindow(x, y, width, height); // Asumiendo que este metodo dibuja el fondo de la ventana
 
         g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22)); // Establecer la fuente una vez
 
@@ -206,14 +206,14 @@ public class UserInterface {
             int textY = y + SIZE_FINAL;
             g2.setColor(Color.WHITE);
 
-            // Mostrar mensaje almacenado en 'dialogo' (campo de la clase actual)
-            if (dialogo != null) { // 'dialogo' es una variable de esta clase de UI
+            // Mostrar mensaje de evento si existe
+            if (dialogo != null) {
                 for (String line : dialogo.split("\n")) {
                     g2.drawString(line, x + SIZE_FINAL, textY);
                     textY += g2.getFontMetrics().getHeight();
                 }
             }
-            return; // No hay más que hacer si no hay NPC
+            return;
         }
 
         // 3. Procesar si hay un NPC
