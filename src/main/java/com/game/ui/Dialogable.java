@@ -3,7 +3,9 @@ package com.game.ui;
 import java.util.List;
 
 public interface Dialogable {
-    List<String> getCurrentOptions();
+    String getDialogueId();
     String getCurrentMessage();
+    List<String> getCurrentOptions();
     void selectOption(int index);
+    List<String> getFallbackDialogues(); // Añadido para que Viello pueda proveer sus propios fallbacks
 }

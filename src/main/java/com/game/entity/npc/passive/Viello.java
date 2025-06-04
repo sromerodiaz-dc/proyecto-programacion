@@ -1,6 +1,5 @@
 package com.game.entity.npc.passive;
 
-import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.entity.Player;
@@ -8,6 +7,8 @@ import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
 import com.game.ui.Dialogable;
 import com.game.ui.TeisPanel;
+import com.game.ui.dialogue.Conversation;
+import com.game.ui.dialogue.DialogueSystem;
 
 import java.util.*;
 
@@ -23,19 +24,7 @@ import java.util.*;
 public class Viello extends Entity implements Dialogable {
     TeisPanel teisPanel;
     Properties properties;
-
-    // Estados de conversación
-    private boolean offended = false; // Si el jugador ofendió a Viello
-    private boolean knowsTeis = false; // Si el jugador respondió positivamente sobre Teis
-    private boolean hasWeapons = false; // Si ya se dieron las armas
-    private boolean dialogInProgress = false; // Si hay una conversación activa
-    private DialogNode currentNode;
-
-    // Nodos de diálogo
-    private final Map<String, DialogNode> dialogNodes = new HashMap<>();
-
-    // TODO patron Observer para los eventos
-    // ! Aplicar el patron para que cuando el jugador lance un evento este llegue a este npc
+    private final String dialogueId = "VIELLO";
 
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
@@ -43,23 +32,21 @@ public class Viello extends Entity implements Dialogable {
      * @param teisPanel panel donde se dibujará el anciano
      */
     public Viello(TeisPanel teisPanel, Properties properties, int worldX, int worldY) {
-        // Llama al constructor de la clase padre (suponiendo que es una entidad en el juego)
         super(teisPanel, properties);
         this.teisPanel = teisPanel;
         this.properties = properties;
         this.worldX = worldX;
         this.worldY = worldY;
 
-        // Pasa por parametro el identificador = 1;
         setPropierties("Viello");
-
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
-
-        // Carga las imágenes del anciano
         getVielloImage();
-        // Carga los dialogos
-        setDialogo();
+
+        // Configurar diálogos de reserva
+        addFallbackDialogue("a migración á Redondela está acabando con Teis");
+        addFallbackDialogue("Sonido de Teis foi á Doppler... eu non estaba");
+        setDialogueId(dialogueId);
     }
 
     public void getVielloImage() {
@@ -100,200 +87,100 @@ public class Viello extends Entity implements Dialogable {
         }
     }
 
-    public void setDialogo() {
-        // Crear nodos de diálogo
-        dialogNodes.put("start", new DialogNode(
-                "mozo... \nsabes o que din dos pimentitos de padrón...?",
-                Arrays.asList("qúe dices?", "AJJAJAJAJAJAJJAJAJA", "?"),
-                null
-        ));
-
-        dialogNodes.put("que_dices", new DialogNode(
-                "Deus deume o peor dos destinos deste mundo, \nser do Celta.",
-                Arrays.asList("Hueles raro", "la verdad que el celta es el amor de mi vida"),
-                null
-        ));
-
-        dialogNodes.put("offended", new DialogNode(
-                "Vete de aquí, mocoso malcriado!",
-                Collections.emptyList(),
-                (_) -> {
-                    offended = true;
-                    return true; // Cierra diálogo
-                }
-        ));
-
-        dialogNodes.put("celtalove", new DialogNode(
-                "unha cousa mi tigre, qué opinas de Teis",
-                Arrays.asList("Qué desagradable", "Nací en Teis, muero en Teis"),
-                null
-        ));
-
-        dialogNodes.put("teis_dislike", new DialogNode(
-                "...",
-                Collections.emptyList(),
-                (_) -> {
-                    knowsTeis = true; // Marcar como ya preguntado
-                    return true; // Cierra diálogo
-                }
-        ));
-
-        dialogNodes.put("teis_like", new DialogNode(
-                "te falta Teis bro",
-                Collections.emptyList(),
-                (_) -> {
-                    knowsTeis = true;
-                    return false; // Continúa diálogo
-                }
-        ));
-
-        dialogNodes.put("final_question", new DialogNode(
-                "sabes teis? diselo manin, diselo manin, la profe me dijo que iba a...?",
-                Arrays.asList("qué?", "la profe me dijo que iba a repetir, fuck Coia", "me tengo que ir bro"),
-                null
-        ));
-
-        dialogNodes.put("weapons_given", new DialogNode(
-                "tú eres mi hermano, tú eres mi colega",
-                Collections.emptyList(),
-                (player) -> {
-                    if (!hasWeapons) {
-                        player.setWeapon(new Weapon(player.getTeisPanel(), player.getProperties()));
-                        player.setShield(new Shield(player.getTeisPanel(), player.getProperties()));
-                        hasWeapons = true;
-                    }
-                    return true; // Cierra diálogo
-                }
-        ));
-
-        // Resetear al estado inicial
-        resetDialog();
-    }
-
-    public void resetDialog() {
-        DialogNode node;
-        if (offended) {
-            node = dialogNodes.get("offended");
-        } else if (knowsTeis) {
-            if (!hasWeapons) {
-                node = dialogNodes.get("final_question");
-            } else {
-                List<String> keys = new ArrayList<>(dialogNodes.keySet());
-                node = dialogNodes.get(keys.get(new Random().nextInt(keys.size())));
-            }
-        } else {
-            node = dialogNodes.get("start");
-        }
-
-        dialogInProgress = true;
-        selectedOption = 0;
-        isTyping = true;
-        typingIndex = 0;
-
-        if (node != null) {
-            currentNode = node; // FIJAR EL NODO ACTUAL
-            currentDialog = node.message();
-        } else {
-            currentDialog = "";
-        }
-    }
-
     @Override
     public void fala() {
-        if (!dialogInProgress) {
-            resetDialog();
-        } else {
-            // Solo reiniciar si no hay opciones disponibles
-            if (currentNode != null && currentNode.options().isEmpty()) {
-                resetDialog();
-            }
-        }
-
-        // Iniciar efecto de escritura
+        // Reiniciar estado de escritura
         isTyping = true;
         typingIndex = 0;
         typingCounter = 0;
         sentido = sentidoHablar();
+
+        // Establecer diálogo actual
+        currentDialog = getCurrentMessage();
     }
 
-    public void processOptionSelection(int selectedOption, Player player) {
-        if (currentNode == null) return;
-
-        // Guardar el nodo actual para transición
-        DialogNode previousNode = currentNode;
-
-        // Actualizar el nodo actual basado en la selección
-        switch (currentNode.message()) {
-            case "mozo... \nsabes o que din dos pimentitos de padrón...?":
-                if (selectedOption == 0) currentNode = dialogNodes.get("que_dices");
-                else if (selectedOption == 1) currentNode = dialogNodes.get("celtalove");
-                break;
-
-            case "Deus deume o peor dos destinos deste mundo, \nser do Celta.":
-                if (selectedOption == 0) currentNode = dialogNodes.get("offended");
-                else if (selectedOption == 1) currentNode = dialogNodes.get("celtalove");
-                break;
-
-            case "unha cousa mi tigre, qué opinas de Teis":
-                if (selectedOption == 0) currentNode = dialogNodes.get("teis_dislike");
-                else if (selectedOption == 1) currentNode = dialogNodes.get("teis_like");
-                break;
-
-            case "sabes teis? diselo manin, diselo manin, la profe me dijo que iba a...?":
-                if (selectedOption == 1) currentNode = dialogNodes.get("weapons_given");
-                else {
-                    // Cerrar diálogo para respuestas incorrectas
-                    teisPanel.controller.currentGameState = GameState.PLAY;
-                    dialogInProgress = false;
-                    return;
-                }
-                break;
-        }
-
-        // Verificar si realmente cambiamos de nodo
-        if (currentNode != null && currentNode != previousNode) {
-            currentDialog = currentNode.message();
-            isTyping = true;
-            typingIndex = 0;
-
-            // Ejecutar acción asociada si existe
-            if (currentNode.action() != null) {
-                boolean shouldClose = currentNode.action().execute(player);
-                if (shouldClose) {
-                    teisPanel.controller.currentGameState = GameState.PLAY;
-                    dialogInProgress = false;
-                }
-            }
-        } else {
-            // Si no hay cambio, cerrar el diálogo
-            teisPanel.controller.currentGameState = GameState.PLAY;
-            dialogInProgress = false;
-        }
+    @Override
+    public String getDialogueId() {
+        return "VIELLO";
     }
 
     @Override
     public List<String> getCurrentOptions() {
-        return (currentNode != null) ? currentNode.options() : Collections.emptyList();
+        // Asegurarse que teisPanel y su controller y dialogueSystem no son null
+        if (teisPanel == null || teisPanel.controller == null || teisPanel.controller.dialogueSystem == null) {
+            System.err.println("Viello: TeisPanel o DialogueSystem no inicializado en getCurrentOptions.");
+            return Collections.emptyList();
+        }
+        DialogueSystem dialogueSystem = teisPanel.controller.dialogueSystem;
+
+        Conversation.ConversationNode node = dialogueSystem.getCurrentNode(dialogueId);
+        if (node == null || node.options == null) { // Chequea también node.options
+            return Collections.emptyList();
+        }
+
+        List<String> optionsTexts = new ArrayList<>();
+
+        for (Conversation.DialogueOption option : node.options) { // Iterar sobre node.OPTIONS
+            optionsTexts.add(option.text);
+        }
+        return optionsTexts;
     }
 
     @Override
     public String getCurrentMessage() {
-        return currentDialog;
+        if (teisPanel == null || teisPanel.controller == null || teisPanel.controller.dialogueSystem == null) {
+            System.err.println("Viello: TeisPanel o DialogueSystem no inicializado en getCurrentMessage.");
+            return getFallbackDialogues().get(new Random().nextInt(getFallbackDialogues().size())); // Fallback si no hay sistema
+        }
+        DialogueSystem dialogueSystem = teisPanel.controller.dialogueSystem;
+
+        Conversation.ConversationNode node = dialogueSystem.getCurrentNode(dialogueId);
+        if (node != null) {
+            return node.npcText;
+        }
+        // Si no hay nodo actual en el sistema, usa los fallbacks locales de Viello
+        List<String> fallbacks = getFallbackDialogues();
+        return fallbacks.get(new Random().nextInt(fallbacks.size()));
     }
 
     @Override
     public void selectOption(int index) {
-        processOptionSelection(index, teisPanel.player);
+        if (teisPanel == null || teisPanel.controller == null || teisPanel.controller.dialogueSystem == null) {
+            System.err.println("Viello: TeisPanel o DialogueSystem no inicializado en selectOption.");
+            return;
+        }
+        DialogueSystem dialogueSystem = teisPanel.controller.dialogueSystem;
+
+        Conversation.ConversationNode currentNode = dialogueSystem.getCurrentNode(dialogueId);
+        // Chequeos más robustos
+        if (currentNode != null && currentNode.options != null && index >= 0 && index < currentNode.options.size()) {
+            Conversation.DialogueOption selectedOption = currentNode.options.get(index);
+
+            if (selectedOption.actions != null) {
+                for (String action : selectedOption.actions) {
+                    if (action.equals("GIVE_REWARD")) {
+                        giveReward();  // Llamar al método de recompensa
+                    } else {
+                        dialogueSystem.triggerAction(action);
+                    }
+                }
+            }
+            // Avanzar al siguiente nodo. Si selectedOption.nextNodeId es null,
+            // se limpiará el nodo actual para este NPC en el DialogueSystem.
+            dialogueSystem.setCurrentNode(dialogueId, selectedOption.nextNodeId);
+        } else {
+            System.err.println("Viello: Intento de seleccionar una opción inválida. Index: " + index + ", Node: " + (currentNode != null ? currentNode.nodeId : "null"));
+        }
     }
 
-    // Fix record access
-    public record DialogNode(
-            String message,
-            List<String> options, // Make public
-            DialogAction action
-    ) {}
+    private void giveReward() {
+        Player player = teisPanel.player;
 
-    private interface DialogAction {
-        boolean execute(Player player);
+        // Crear arma y escudo (valores de ejemplo)
+        Weapon arma = new Weapon(teisPanel, properties);
+        Shield escudo = new Shield(teisPanel, properties);
+
+        player.setWeapon(arma);
+        player.setShield(escudo);
     }
 }

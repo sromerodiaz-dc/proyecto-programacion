@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * CFP Daniel Castelao
  * Proyecto: Teis
  */
-public class Properties implements AutoCloseable {
+public class Properties implements AutoCloseable { //TODO para cada entidad un json diferente
     private static Properties instance;
     private List<Entidad> entidades;
 

@@ -1,4 +1,4 @@
-package com.game.entity.collision;
+package com.game.controller.collision;
 
 import com.game.ui.TeisPanel;
 import com.game.entity.Entity;
@@ -38,40 +38,40 @@ public class CollisionCheck {
         int entityTop = entity.worldY + entity.solidArea.y;
         int entityBottom = entityTop + entity.solidArea.height;
 
-        int sizeFinal = teisPanel.SIZE_FINAL;
+        int SIZE_FINAL = TeisPanel.SIZE_FINAL;
         PiezaManager pm = teisPanel.controller.getPiezaManager();
 
         switch (entity.sentido) {
             case 'w':
                 checkTileCollision(pm, entity,
-                        entityLeft / sizeFinal,
-                        entityRight / sizeFinal,
-                        (entityTop - entity.speed) / sizeFinal,
-                        (entityTop - entity.speed) / sizeFinal);
+                        entityLeft / SIZE_FINAL,
+                        entityRight / SIZE_FINAL,
+                        (entityTop - entity.speed) / SIZE_FINAL,
+                        (entityTop - entity.speed) / SIZE_FINAL);
                 break;
 
             case 's':
                 checkTileCollision(pm, entity,
-                        entityLeft / sizeFinal,
-                        entityRight / sizeFinal,
-                        (entityBottom + entity.speed) / sizeFinal,
-                        (entityBottom + entity.speed) / sizeFinal);
+                        entityLeft / SIZE_FINAL,
+                        entityRight / SIZE_FINAL,
+                        (entityBottom + entity.speed) / SIZE_FINAL,
+                        (entityBottom + entity.speed) / SIZE_FINAL);
                 break;
 
             case 'a':
                 checkTileCollision(pm, entity,
-                        (entityLeft - entity.speed) / sizeFinal,
-                        (entityLeft - entity.speed) / sizeFinal,
-                        entityTop / sizeFinal,
-                        entityBottom / sizeFinal);
+                        (entityLeft - entity.speed) / SIZE_FINAL,
+                        (entityLeft - entity.speed) / SIZE_FINAL,
+                        entityTop / SIZE_FINAL,
+                        entityBottom / SIZE_FINAL);
                 break;
 
             case 'd':
                 checkTileCollision(pm, entity,
-                        (entityRight + entity.speed) / sizeFinal,
-                        (entityRight + entity.speed) / sizeFinal,
-                        entityTop / sizeFinal,
-                        entityBottom / sizeFinal);
+                        (entityRight + entity.speed) / SIZE_FINAL,
+                        (entityRight + entity.speed) / SIZE_FINAL,
+                        entityTop / SIZE_FINAL,
+                        entityBottom / SIZE_FINAL);
                 break;
         }
     }

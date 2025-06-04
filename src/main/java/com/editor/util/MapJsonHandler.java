@@ -3,8 +3,8 @@ package com.editor.util;
 import com.editor.model.record.CeldaCoord;
 import com.editor.model.record.MapData;
 import com.editor.model.MapModel;
-import com.editor.model.event.EntitySpawnEvent;
-import com.editor.model.event.TeleportEvent;
+import com.editor.model.record.EntitySpawnEvent;
+import com.editor.model.record.TeleportEvent;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-
-import static com.fasterxml.jackson.core.util.DefaultIndenter.SYSTEM_LINEFEED_INSTANCE;
 
 public class MapJsonHandler {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -34,10 +32,12 @@ public class MapJsonHandler {
         // Cargar colisiones
         Set<CeldaCoord> collisions = new HashSet<>();
         JsonNode collisionsNode = mapNode.path("colisiones");
-        for (JsonNode node : collisionsNode) {
-            int row = node.get("row").asInt();
-            int col = node.get("col").asInt();
-            collisions.add(new CeldaCoord(row, col));
+        if (collisionsNode.isArray()) {
+            for (JsonNode node : collisionsNode) {
+                int row = node.path("row").asInt();
+                int col = node.path("col").asInt();
+                collisions.add(new CeldaCoord(row, col));
+            }
         }
 
         // Cargar eventos desde el objeto "eventos"
@@ -84,7 +84,7 @@ public class MapJsonHandler {
         return new MapData(rows, cols, matrix, collisions, playerSpawn, entitySpawns, teleports);
     }
 
-    public static void saveMapData(MapModel model) {
+    public static void saveMapData(MapModel model) { //TODO que las colisiones se guarden como [row,col],[...],etc. y no como {"row":row,"col":col}
         String mapName = JOptionPane.showInputDialog(null, "Ingrese el nombre del mapa:");
 
         if (mapName == null || mapName.trim().isEmpty()) {
@@ -127,9 +127,9 @@ public class MapJsonHandler {
             List<Map<String, Object>> entities = new ArrayList<>();
             for (EntitySpawnEvent entity : model.getEntitySpawns()) {
                 Map<String, Object> entityMap = new HashMap<>();
-                entityMap.put("entityId", entity.getId());
-                entityMap.put("row", entity.getRow());
-                entityMap.put("col", entity.getCol());
+                entityMap.put("entityId", entity.id());
+                entityMap.put("row", entity.row());
+                entityMap.put("col", entity.col());
                 entities.add(entityMap);
             }
             eventos.put("entities", entities);
@@ -138,10 +138,10 @@ public class MapJsonHandler {
             List<List<Integer>> teleports = new ArrayList<>();
             for (TeleportEvent teleport : model.getTeleports()) {
                 teleports.add(Arrays.asList(
-                        teleport.getRow(),
-                        teleport.getCol(),
-                        teleport.getTargetRow(),
-                        teleport.getTargetCol()
+                        teleport.row(),
+                        teleport.col(),
+                        teleport.targetRow(),
+                        teleport.targetCol()
                 ));
             }
             eventos.put("teleports", teleports);

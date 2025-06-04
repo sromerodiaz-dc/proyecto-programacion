@@ -25,21 +25,11 @@ public class KeyboardController implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (teisPanel.controller.getGameState()) {
-            case LOAD:
-                handleLoadScreenInput(e);
-                break;
-            case PLAY:
-                handlePlayInput(e);
-                break;
-            case PAUSE:
-                handlePauseInput(e);
-                break;
-            case DIALOG:
-                handleDialogInput(e);
-                break;
-            case STATS:
-                handleStatsState(e);
-                break;
+            case LOAD: handleLoadScreenInput(e); break;
+            case PLAY: handlePlayInput(e); break;
+            case PAUSE: handlePauseInput(e); break;
+            case DIALOG: handleDialogInput(e); break;
+            case STATS: handleStatsState(e); break;
         }
     }
 
@@ -96,7 +86,12 @@ public class KeyboardController implements KeyListener {
 
     private void handleDialogInput(KeyEvent e) {
         Entity npc = teisPanel.controller.currentTalkingNpc;
-        if (npc == null) return;
+        if (npc == null) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                teisPanel.controller.setGameState(GameState.PLAY);
+            }
+            return;
+        }
 
         // Si el NPC está escribiendo, al presionar SPACE se completa el texto
         if (npc.isTyping) {
@@ -112,28 +107,22 @@ public class KeyboardController implements KeyListener {
             List<String> options = dialogable.getCurrentOptions();
 
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
                     npc.selectedOption--;
                     if (npc.selectedOption < 0) {
                         npc.selectedOption = options.size() - 1;
                     }
                     break;
-
-                case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
                     npc.selectedOption++;
                     if (npc.selectedOption >= options.size()) {
                         npc.selectedOption = 0;
                     }
                     break;
-
                 case KeyEvent.VK_SPACE:
                     dialogable.selectOption(npc.selectedOption);
                     break;
-
                 case KeyEvent.VK_ESCAPE:
-                    // Permitir salir del diálogo con ESC
                     teisPanel.controller.setGameState(GameState.PLAY);
                     break;
             }

@@ -48,8 +48,8 @@ public class Player extends Entity implements EventListener {
         this.screenY = SCREEN_HEIGHT / 2 - (SIZE_FINAL / 2);
 
         this.stats = new EntityStats.Builder()
-                .strength(2)
-                .dexterity(2)
+                .strength(1)
+                .dexterity(1)
                 .baseAttack(0) // Inicialmente sin ataque
                 .baseDefense(0) // Inicialmente sin defensa
                 .baseSpeed(5)
@@ -347,7 +347,7 @@ public class Player extends Entity implements EventListener {
             // Verifica si el enemigo no es invencible
             if (!enemy.invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
-                int realDamage = this.getAttackVal() - enemy.defenseVal;
+                int realDamage = getAttackVal() - enemy.defenseVal;
                 System.out.println("Ataque");
                 if (realDamage < 0) {
                     realDamage = 0;

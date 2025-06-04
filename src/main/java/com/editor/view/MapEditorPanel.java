@@ -4,9 +4,9 @@ import com.editor.controller.TextureController;
 import com.editor.model.record.CeldaCoord;
 import com.editor.model.IModelChangeListener;
 import com.editor.model.MapModel;
-import com.editor.model.event.EntitySpawnEvent;
+import com.editor.model.record.EntitySpawnEvent;
 import com.editor.model.event.EventMode;
-import com.editor.model.event.TeleportEvent;
+import com.editor.model.record.TeleportEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -226,24 +226,24 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
 
         // Dibujar spawns de entidades (verde)
         for (EntitySpawnEvent spawn : model.getEntitySpawns()) {
-            drawEvent(g2d, new CeldaCoord(spawn.getRow(), spawn.getCol()), Color.GREEN);
+            drawEvent(g2d, new CeldaCoord(spawn.row(), spawn.col()), Color.GREEN);
         }
 
         // Dibujar teleports
         for (TeleportEvent teleport : model.getTeleports()) {
             // Origen (naranja)
-            drawEvent(g2d, new CeldaCoord(teleport.getRow(), teleport.getCol()), Color.ORANGE);
+            drawEvent(g2d, new CeldaCoord(teleport.row(), teleport.col()), Color.ORANGE);
 
             // Destino (cian)
-            drawEvent(g2d, new CeldaCoord(teleport.getTargetRow(), teleport.getTargetCol()), Color.CYAN);
+            drawEvent(g2d, new CeldaCoord(teleport.targetRow(), teleport.targetCol()), Color.CYAN);
 
             // Línea conectando
             g2d.setColor(Color.YELLOW);
             g2d.drawLine(
-                    teleport.getCol() * tileSize + tileSize / 2,
-                    teleport.getRow() * tileSize + tileSize / 2,
-                    teleport.getTargetCol() * tileSize + tileSize / 2,
-                    teleport.getTargetRow() * tileSize + tileSize / 2
+                    teleport.col() * tileSize + tileSize / 2,
+                    teleport.row() * tileSize + tileSize / 2,
+                    teleport.targetCol() * tileSize + tileSize / 2,
+                    teleport.targetRow() * tileSize + tileSize / 2
             );
         }
 

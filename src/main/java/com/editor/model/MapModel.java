@@ -1,8 +1,8 @@
 package com.editor.model;
 
 import com.editor.controller.TextureController;
-import com.editor.model.event.EntitySpawnEvent;
-import com.editor.model.event.TeleportEvent;
+import com.editor.model.record.EntitySpawnEvent;
+import com.editor.model.record.TeleportEvent;
 import com.editor.model.record.CeldaCoord;
 import com.editor.model.record.TileData;
 
@@ -112,8 +112,14 @@ public class MapModel { //TODO Arreglar modo de colision. Cuando se hace clic en
 
     public Set<CeldaCoord> getCollisions() {
         Set<CeldaCoord> allCollisions = new HashSet<>();
-        allCollisions.addAll(manualCollisions);
-        allCollisions.addAll(autoCollisions);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                CeldaCoord coord = new CeldaCoord(i, j);
+                if (isTileCollision(coord)) {
+                    allCollisions.add(coord);
+                }
+            }
+        }
         return allCollisions;
     }
 

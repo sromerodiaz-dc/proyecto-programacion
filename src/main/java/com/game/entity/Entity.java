@@ -1,7 +1,6 @@
 package com.game.entity;
 
 import com.game.data.GameState;
-import com.game.ui.Dialogable;
 import com.game.ui.TeisPanel;
 import com.game.data.Properties;
 import com.game.maptile.PiezaUtils;
@@ -10,10 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Esta clase registrará valores, atributos y propiedades que serán empleadas para las estadisticas
@@ -46,12 +42,6 @@ public class Entity {
     // ITEM ATTRIBUTES
     public int attackVal;
     public int defenseVal;
-
-    public int selectedOption = 0;
-    public boolean isTyping = false;
-    public int typingIndex = 0;
-    public int typingCounter = 0;
-    public String currentDialog = "";
 
     // Estados de entidad
     public boolean alive = true;
@@ -90,8 +80,19 @@ public class Entity {
     public int stopCounter = 0;
     public int spriteNum = 1;
 
+    // Dialogos y UI control
     public String[] dialogos = new String[25]; // Dialogos
     public int dialogoIndex = 0;
+
+    // Campos para el sistema de diálogo y UI
+    public String currentDialog;     // El texto que se está mostrando/tipeando actualmente (establecido por fala())
+    public boolean isTyping = false; // Estado del efecto de tipeo
+    public int typingIndex = 0;      // Índice actual del caracter en el efecto de tipeo
+    public int typingCounter = 0;    // Contador de frames para controlar la velocidad de tipeo
+    public int selectedOption = 0;   // Índice de la opción de diálogo seleccionada por el jugador (para la UI)
+
+    private String dialogueId;
+    private final ArrayList<String> fallbackDialogues = new ArrayList<>();
 
     /**
      * Rectangulo que define el área de colisión de la Entidad
@@ -106,8 +107,6 @@ public class Entity {
      * Esta variable define en que orientación se encuentra el personaje
      */
     public char sentido = '0';
-
-    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
     /**
      * Constructor parametrizado
@@ -335,7 +334,7 @@ public class Entity {
         int playerWorldY = teisPanel.player.worldY;
         int playerScreenX = teisPanel.player.getScreenX();
         int playerScreenY = teisPanel.player.getScreenY();
-        int size = SIZE_FINAL ;
+        int size = TeisPanel.SIZE_FINAL;
 
         // Coordenadas en pantalla relativas al jugador
         int screenX = worldX - playerWorldX + playerScreenX;
@@ -680,5 +679,20 @@ public class Entity {
 
     public void setDefenseVal(int defenseVal) {
         this.defenseVal = defenseVal;
+    }
+    public void setDialogueId(String id) {
+        this.dialogueId = id;
+    }
+
+    public void addFallbackDialogue(String dialogue) {
+        fallbackDialogues.add(dialogue);
+    }
+
+    public String getDialogueId() {
+        return dialogueId;
+    }
+
+    public ArrayList<String> getFallbackDialogues() {
+        return fallbackDialogues;
     }
 }

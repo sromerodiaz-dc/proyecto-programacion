@@ -3,6 +3,7 @@ package com.editor;
 import com.editor.controller.TextureController;
 import com.editor.model.MapModel;
 import com.editor.model.event.EventMode;
+import com.editor.model.record.CeldaCoord;
 import com.editor.model.record.MapData;
 import com.editor.util.MapJsonHandler;
 import com.editor.util.StartAction;
@@ -64,10 +65,15 @@ public class GUI extends JFrame {
                 MapData data = MapJsonHandler.loadMapData(action.mapName);
                 initMapComponents(data.rows(), data.cols());
                 editorPanel.loadMapData(data.matrix(), data.collisions());
-                model.getCollisions().addAll(data.collisions()); // Añadir colisiones
-                model.setPlayerSpawn(data.playerSpawn()); // Añadir spawn de jugador
-                model.addAllEntitySpawn(data.spawnEvent()); // Añadir spawn de entidades
-                model.getTeleports().addAll(data.teleports()); // Añadir teleports
+
+                // Restaurar colisiones correctamente
+                for (CeldaCoord coord : data.collisions()) {
+                    model.addCollision(coord.row(), coord.col());
+                }
+
+                model.setPlayerSpawn(data.playerSpawn());
+                model.addAllEntitySpawn(data.spawnEvent());
+                model.getTeleports().addAll(data.teleports());
             } catch (IOException | IllegalArgumentException e) {
                 handleMapError("Error al cargar el mapa", e);
                 return;

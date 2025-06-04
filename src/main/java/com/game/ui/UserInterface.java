@@ -4,8 +4,8 @@ import com.game.data.GameState;
 import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.entity.Player;
-import com.game.entity.npc.passive.Viello;
 import com.game.entity.stats.Vida;
+import com.game.ui.dialogue.DialogueSystem;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Iterator;
 
-public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, etc. Implementar niveles de experiencia
+public class UserInterface {
     private final int SCREEN_WIDTH = TeisPanel.screenWidth;
     private final int SCREEN_HEIGHT = TeisPanel.screenHeight;
 
@@ -48,9 +48,7 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
     private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
 
-    public String[] dialogOptions = new String[0];
-    public int selectedOption = 0;
-
+    private DialogueSystem dialogueSystem;
 
     public UserInterface(TeisPanel teisPanel, Properties properties) {
         this.teisPanel = teisPanel;
@@ -190,74 +188,95 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
         g2.drawString(text, getCenteredX(text), SCREEN_HEIGHT / 2);
     }
 
-    // Actualizar drawDialog()
     private void drawDialog() {
-        // Dibujar ventana de diálogo en la parte inferior
+        // 1. Dibujar ventana de diálogo
         int x = SIZE_FINAL * 2;
         int y = SCREEN_HEIGHT - SIZE_FINAL * 6;
         int width = SCREEN_WIDTH - SIZE_FINAL * 4;
         int height = SIZE_FINAL * 5;
 
-        drawWindow(x, y, width, height);
+        drawWindow(x, y, width, height); // Asumiendo que este método dibuja el fondo de la ventana
 
-        g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22));
-        g2.setColor(Color.WHITE);
+        g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22)); // Establecer la fuente una vez
 
-        Entity npc = teisPanel.controller.currentTalkingNpc;
-        if (npc == null) return;
+        Entity currentNpcEntity = teisPanel.controller.currentTalkingNpc;
 
-        // Manejo seguro de currentDialog
-        String dialogText = npc.currentDialog != null ? npc.currentDialog : "";
+        // 2. Manejar el caso de que no haya un NPC hablando
+        if (currentNpcEntity == null) {
+            int textY = y + SIZE_FINAL;
+            g2.setColor(Color.WHITE);
 
-        // Dibujar texto del diálogo con efecto de escritura
-        int textY = y + SIZE_FINAL;
-
-        // Manejo del efecto de escritura
-        if (npc.isTyping) {
-            npc.typingCounter++;
-            if (npc.typingCounter >= 0.5f) { // Velocidad de escritura
-                npc.typingCounter = 0;
-                if (npc.typingIndex < dialogText.length()) {
-                    npc.typingIndex++;
-                } else {
-                    npc.isTyping = false;
+            // Mostrar mensaje almacenado en 'dialogo' (campo de la clase actual)
+            if (dialogo != null) { // 'dialogo' es una variable de esta clase de UI
+                for (String line : dialogo.split("\n")) {
+                    g2.drawString(line, x + SIZE_FINAL, textY);
+                    textY += g2.getFontMetrics().getHeight();
                 }
             }
+            return; // No hay más que hacer si no hay NPC
+        }
 
-            // Mostrar texto parcial
-            String partialText = dialogText.substring(0, npc.typingIndex);
+        // 3. Procesar si hay un NPC
+        // Primero, asegurarse de que el NPC actual es Dialogable.
+        // Si currentTalkingNpc puede ser una entidad no dialogable, esto es importante.
+        if (!(currentNpcEntity instanceof Dialogable dialogableNpc)) {
+            // Opcional: dibujar el nombre del NPC o un mensaje genérico si no puede hablar.
+            // Por ahora, si no es Dialogable, no continuamos con la lógica de diálogo.
+            // System.err.println("Error: currentTalkingNpc no es Dialogable.");
+            return;
+        }
+
+        // El texto para el efecto de tipeo es 'currentNpcEntity.currentDialog'.
+        // Este campo DEBE ser establecido por el método 'fala()' del NPC,
+        // que también resetea 'isTyping', 'typingIndex', y 'typingCounter'.
+        // 'fala()' se llama cuando comienza un nuevo turno de diálogo para este NPC.
+        String textToDisplay = currentNpcEntity.currentDialog != null ? currentNpcEntity.currentDialog : "";
+
+        int textY = y + SIZE_FINAL;
+        g2.setColor(Color.WHITE); // Color por defecto para el texto del NPC
+
+        // 4. Lógica de tipeo
+        if (currentNpcEntity.isTyping) {
+            currentNpcEntity.typingCounter++; // Incrementar el contador de frames
+            if (currentNpcEntity.typingCounter >= 0.4f) {
+                currentNpcEntity.typingCounter = 0; // Resetear el contador de frames
+                if (currentNpcEntity.typingIndex < textToDisplay.length()) {
+                    currentNpcEntity.typingIndex++;
+                } else {
+                    currentNpcEntity.isTyping = false; // Terminar de tipear
+                }
+            }
+            // Dibujar el texto parcial
+            String partialText = textToDisplay.substring(0, currentNpcEntity.typingIndex);
             for (String line : partialText.split("\n")) {
                 g2.drawString(line, x + SIZE_FINAL, textY);
                 textY += g2.getFontMetrics().getHeight();
             }
         } else {
-            // Mostrar texto completo
-            for (String line : dialogText.split("\n")) {
+            // Si no está tipeando (o ya terminó), mostrar el texto completo
+            for (String line : textToDisplay.split("\n")) {
                 g2.drawString(line, x + SIZE_FINAL, textY);
                 textY += g2.getFontMetrics().getHeight();
             }
         }
 
-        // Dibujar opciones solo si no está escribiendo y hay opciones disponibles
-        if (!npc.isTyping && npc instanceof Dialogable dialogableNpc) {
-            List<String> options = dialogableNpc.getCurrentOptions();
+        // 5. Dibujar opciones del jugador (solo si el NPC terminó de tipear)
+        if (!currentNpcEntity.isTyping) {
+            List<String> options = dialogableNpc.getCurrentOptions(); // Obtener opciones del DialogueSystem
 
-            if (!options.isEmpty() && teisPanel.controller.currentGameState == GameState.DIALOG) {
-                int optionY = textY + SIZE_FINAL;
+            if (options != null && !options.isEmpty()) {
+                int optionY = textY + SIZE_FINAL / 2; // Un pequeño espacio después del texto del NPC
 
-                // Asegurarse de que hay opciones para mostrar
                 for (int i = 0; i < options.size(); i++) {
-                    String option = options.get(i);
-                    if (option != null) {
-                        if (i == npc.selectedOption) {
-                            g2.setColor(Color.YELLOW);
-                            g2.drawString("> " + option, x + SIZE_FINAL, optionY);
-                        } else {
-                            g2.setColor(Color.WHITE);
-                            g2.drawString(option, x + SIZE_FINAL, optionY);
-                        }
-                        optionY += g2.getFontMetrics().getHeight();
+                    String optionText = options.get(i);
+                    if (i == currentNpcEntity.selectedOption) { // 'selectedOption' debe estar en Entity/NPC
+                        g2.setColor(Color.YELLOW); // Resaltar opción seleccionada
+                        g2.drawString("> " + optionText, x + SIZE_FINAL, optionY);
+                    } else {
+                        g2.setColor(Color.WHITE);
+                        g2.drawString(optionText, x + SIZE_FINAL, optionY);
                     }
+                    optionY += g2.getFontMetrics().getHeight();
                 }
             }
         }
@@ -352,5 +371,9 @@ public class UserInterface { //TODO desarrollar mensajes de daño, experiencia, 
 
     public void setFinished(boolean finished) {
         isFinished = finished;
+    }
+
+    public void setDialogueSystem(DialogueSystem system) {
+        this.dialogueSystem = system;
     }
 }
