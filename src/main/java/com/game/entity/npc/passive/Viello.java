@@ -156,18 +156,21 @@ public class Viello extends Entity implements Dialogable {
         if (currentNode != null && currentNode.options != null && index >= 0 && index < currentNode.options.size()) {
             Conversation.DialogueOption selectedOption = currentNode.options.get(index);
 
+            // Actualizar el nodo PRIMERO antes de procesar acciones
+            dialogueSystem.setCurrentNode(dialogueId, selectedOption.nextNodeId);
+
             if (selectedOption.actions != null) {
                 for (String action : selectedOption.actions) {
                     if (action.equals("GIVE_REWARD")) {
-                        giveReward();  // Llamar al método de recompensa
+                        giveReward();
                     } else {
                         dialogueSystem.triggerAction(action);
                     }
                 }
             }
-            // Avanzar al siguiente nodo. Si selectedOption.nextNodeId es null,
-            // se limpiará el nodo actual para este NPC en el DialogueSystem.
-            dialogueSystem.setCurrentNode(dialogueId, selectedOption.nextNodeId);
+
+            // Forzar actualización del mensaje
+            fala(); // <-- Añadir esta línea para actualizar el texto
         } else {
             System.err.println("Viello: Intento de seleccionar una opción inválida. Index: " + index + ", Node: " + (currentNode != null ? currentNode.nodeId : "null"));
         }
@@ -182,5 +185,7 @@ public class Viello extends Entity implements Dialogable {
 
         player.setWeapon(arma);
         player.setShield(escudo);
+
+        System.out.println("personaje armado");
     }
 }

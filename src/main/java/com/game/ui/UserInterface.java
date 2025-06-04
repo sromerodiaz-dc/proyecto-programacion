@@ -226,10 +226,6 @@ public class UserInterface {
             return;
         }
 
-        // El texto para el efecto de tipeo es 'currentNpcEntity.currentDialog'.
-        // Este campo DEBE ser establecido por el método 'fala()' del NPC,
-        // que también resetea 'isTyping', 'typingIndex', y 'typingCounter'.
-        // 'fala()' se llama cuando comienza un nuevo turno de diálogo para este NPC.
         String textToDisplay = currentNpcEntity.currentDialog != null ? currentNpcEntity.currentDialog : "";
 
         int textY = y + SIZE_FINAL;
@@ -279,7 +275,7 @@ public class UserInterface {
                     optionY += g2.getFontMetrics().getHeight();
                 }
             }
-        }
+        } //TODO que cuando no haya opciones que responder A VECES se pueda reponder con un "simplemente teis"
     }
 
     public void drawCharacterScreen() {

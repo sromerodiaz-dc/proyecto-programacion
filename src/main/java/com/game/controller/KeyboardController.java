@@ -106,6 +106,13 @@ public class KeyboardController implements KeyListener {
         if (npc instanceof Dialogable dialogable) {
             List<String> options = dialogable.getCurrentOptions();
 
+            if (options == null || options.isEmpty()) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    teisPanel.controller.setGameState(GameState.PLAY);
+                }
+                return;
+            }
+
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
                     npc.selectedOption--;

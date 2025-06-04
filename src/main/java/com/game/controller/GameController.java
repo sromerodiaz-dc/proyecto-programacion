@@ -234,7 +234,7 @@ public class GameController {
         // Agregar nodo de recompensa
         vielloConv.addNode(new Conversation.ConversationNode(
                 "VIELLO_REWARD",
-                "estas armas son as que usaba eu\nna guerra Teis / Coia...\n Sonido de Teis antonte era un grupo armado\nToma, as armas que xa non usamos",
+                "estas armas son as que usaba eu\nna guerra Teis / Coia...\n\nSonido de Teis antonte era un grupo armado\nToma, as armas que xa non usamos",
                 Collections.emptyList(),
                 null
         ));

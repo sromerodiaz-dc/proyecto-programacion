@@ -348,7 +348,7 @@ public class Player extends Entity implements EventListener {
             if (!enemy.invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
                 int realDamage = getAttackVal() - enemy.defenseVal;
-                System.out.println("Ataque");
+                System.out.println("daño bruto: "+ getAttackVal());
                 if (realDamage < 0) {
                     realDamage = 0;
                 }
