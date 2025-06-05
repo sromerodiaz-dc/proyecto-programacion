@@ -53,15 +53,22 @@ public class DialogueSystem {
 
     public void setCurrentNode(String npcId, String nodeId) {
         Conversation conv = conversations.get(npcId);
-        if (nodeId == null) { // Permitir limpiar el nodo actual si el nextNodeId es null
+        if (nodeId == null) {
             currentNpcNodeIds.remove(npcId);
             return;
         }
-        if (conv != null && conv.getNodeById(nodeId) != null) {
-            currentNpcNodeIds.put(npcId, nodeId);
-        } else {
-            System.err.println("Error: Intento de establecer un nodo actual inválido ('" + nodeId + "') para NPC '" + npcId + "'");
+
+        if (conv == null) {
+            System.err.println("Error: No existe conversación para NPC '" + npcId + "'");
+            return;
         }
+
+        if (!conv.containsNode(nodeId)) {
+            System.err.println("Error: Nodo '" + nodeId + "' no existe en conversación de '" + npcId + "'");
+            return;
+        }
+
+        currentNpcNodeIds.put(npcId, nodeId);
     }
 
     public void clearCurrentNode(String npcId) {
@@ -95,7 +102,7 @@ public class DialogueSystem {
                 break;
             default:
                 if (npc != null) {
-                    npc.triggerCustomAction(command); // Delegar acción personalizada
+                    npc.triggerCustomAction(command);
                 }
                 break;
         }

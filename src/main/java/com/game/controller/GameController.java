@@ -13,9 +13,11 @@ import com.game.maptile.PiezaManager;
 import com.game.entity.EntityPlacer;
 import com.game.ui.dialogue.Conversation;
 import com.game.ui.dialogue.DialogueSystem;
+import com.game.ui.dialogue.LoadDialogueFromJson;
 import com.game.ui.dialogue.state.DialogueState;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -151,116 +153,29 @@ public class GameController {
         DialogueState dialogueState = new DialogueState(new HashSet<>());
         dialogueSystem = new DialogueSystem(dialogueState);
 
-        // --- Configurar conversación para Viello ---
-        // Debes proveer un ID para el nodo inicial de la conversación.
-        Conversation vielloConv = new Conversation("VIELLO_INTRO"); // <--- USA EL CONSTRUCTOR CON ID INICIAL
+        try (InputStream is = getClass().getResourceAsStream("/data/entity/viello/dialogue.json");
+        ) {
+            if (is == null) {
+                throw new RuntimeException("No se encontró el archivo de diálogo");
+            }
 
-        // NODO 1: "VIELLO_INTRO" - Agregar acción para establecer LAUGHED
-        List<Conversation.DialogueOption> introOptions = new ArrayList<>();
-        introOptions.add(new Conversation.DialogueOption(
-                "qúe dices?",
-                "VIELLO_CELTA_RESPONSE",
-                null
-        ));
-        introOptions.add(new Conversation.DialogueOption(
-                "AJJAJAJAJAJAJJAJAJA",
-                "VIELLO_TEIS_OPINION_PROMPT",
-                List.of("SET_FLAG:LAUGHED")  // ESTABLECER LA FLAG AQUÍ
-        ));
+            // Cargar diálogo desde JSON
+            Conversation vielloConv = LoadDialogueFromJson.loadFromJson(is);
+            dialogueSystem.registerConversation("VIELLO", vielloConv);
 
-        vielloConv.addNode(new Conversation.ConversationNode( // <--- USA addNode
-                "VIELLO_INTRO", // 1. ID de este nodo
-                "sabes o que din dos pimentitos de padrón? JAJJAJA \n\no sabes o qué??? CONTESTA XA!11!!!", // 2. Texto del NPC
-                introOptions, // 3. Opciones del jugador para este nodo
-                null // 4. Flags requeridas para VER este nodo (si aplica)
-        ));
+        } catch (Exception e) {
+            System.err.println("Error al cargar diálogo desde JSON: " + e.getMessage());
 
-        // NODO 2: "VIELLO_CELTA_RESPONSE" - "Deus deume o peor dos destinos deste mundo, \nser do Celta."
-        List<Conversation.DialogueOption> celtaResponseOptions = new ArrayList<>();
-        celtaResponseOptions.add(new Conversation.DialogueOption(
-                "Hueles raro",
-                "VIELLO_OFFENDED_RESPONSE", // ID del nodo ofendido
-                List.of("SET_FLAG:OFFENDED") // Acción: marcar como ofendido
-        ));
-        celtaResponseOptions.add(new Conversation.DialogueOption(
-                "la verdad que el celta es el amor de mi vida",
-                "VIELLO_TEIS_OPINION_PROMPT", // ID del nodo de opinión sobre Teis
-                null
-        ));
-        vielloConv.addNode(new Conversation.ConversationNode(
-                "VIELLO_CELTA_RESPONSE", // ID de este nodo
-                "Deus deume o peor dos destinos deste mundo, \nser do Celta.", // Texto del NPC
-                celtaResponseOptions,
-                null // Flags requeridas
-        ));
-
-        // NODO 3: "VIELLO_TEIS_OPINION_PROMPT" - "unha cousa mi tigre, qué opinas de Teis"
-        // Este nodo era referenciado por las opciones anteriores.
-        List<Conversation.DialogueOption> teisOpinionOptions = new ArrayList<>();
-        teisOpinionOptions.add(new Conversation.DialogueOption(
-                "Teis é incrible!",
-                "VIELLO_INTRO", // Volver al inicio, por ejemplo
-                List.of("SET_FLAG:PRAISED_TEIS")
-        ));
-        teisOpinionOptions.add(new Conversation.DialogueOption(
-                "Non sei que dicir...",
-                "VIELLO_RIDDLE", // Volver al inicio
-                null
-        ));
-        vielloConv.addNode(new Conversation.ConversationNode(
-                "VIELLO_TEIS_OPINION_PROMPT", // ID de este nodo
-                "Unha cousa, meu tigre, que opinas de Teis?", // Texto del NPC
-                teisOpinionOptions,
-                null
-        ));
-
-
-        // NODO 4: "VIELLO_OFFENDED_RESPONSE" - "Tira pralá' co teu flow manin"
-        // Este nodo se muestra si la flag "OFFENDED" está activa O si se llega a él por la opción.
-        // Si solo se llega por la opción, no necesitas 'requiredFlags' aquí,
-        // pero si es un estado al que el sistema puede volver si la flag está activa, entonces sí.
-        Map<String, Boolean> offendedFlags = new HashMap<>();
-        offendedFlags.put("OFFENDED", true); // Solo se muestra si la flag OFFENDED es true
-
-        vielloConv.addNode(new Conversation.ConversationNode(
-                "VIELLO_OFFENDED_RESPONSE", // ID de este nodo
-                "Tira pralá' co teu flow manin", // Texto del NPC
-                Collections.emptyList(), // Sin opciones, la conversación podría terminar aquí o necesitar un reset
-                offendedFlags // Este nodo se activará si la flag "OFFENDED" es true y el sistema busca un nodo.
-                // Si la transición es solo por la opción, y no quieres que sea un punto de entrada
-                // independiente basado en flags, puedes poner 'null' aquí.
-        ));
-
-        // Agregar nodo de recompensa
-        vielloConv.addNode(new Conversation.ConversationNode(
-                "VIELLO_REWARD",
-                "estas armas son as que usaba eu\nna guerra Teis / Coia...\n\nSonido de Teis antonte era un grupo armado\nToma, as armas que xa non usamos",
-                Collections.emptyList(),
-                null
-        ));
-
-        Map<String, Boolean> laughedFlags = new HashMap<>();
-        laughedFlags.put("LAUGHED", true); // Flag que se activa con la Opción B inicial
-
-        vielloConv.addNode(new Conversation.ConversationNode(
-                "VIELLO_RIDDLE",
-                "Diselo manin, diselo manin...",
-                Arrays.asList(
-                        new Conversation.DialogueOption(
-                                "diselo manin, que te quiero",
-                                "VIELLO_REWARD",
-                                Arrays.asList("GIVE_REWARD") // Acción personalizada
-                        ),
-                        new Conversation.DialogueOption(
-                                "diselo manin, que non sei",
-                                "VIELLO_INTRO",
-                                null
-                        )
-                ),
-                laughedFlags // Solo visible si tiene flag LAUGHED
-        ));
-
-        dialogueSystem.registerConversation("VIELLO", vielloConv);
+            // Crear diálogo de emergencia
+            Conversation fallbackConv = new Conversation("FALLBACK");
+            fallbackConv.addNode(new Conversation.ConversationNode(
+                    "FALLBACK",
+                    "Houbo un erro cargando o diálogo",
+                    Collections.emptyList(),
+                    null
+            ));
+            dialogueSystem.registerConversation("VIELLO", fallbackConv);
+        }
     }
 
     /**

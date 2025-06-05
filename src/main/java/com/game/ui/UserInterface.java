@@ -258,25 +258,41 @@ public class UserInterface {
         }
 
         // 5. Dibujar opciones del jugador (solo si el NPC terminó de tipear)
-        if (!currentNpcEntity.isTyping) {
-            List<String> options = dialogableNpc.getCurrentOptions(); // Obtener opciones del DialogueSystem
 
+        if (!currentNpcEntity.isTyping) {
+            List<String> options = dialogableNpc.getCurrentOptions();
             if (options != null && !options.isEmpty()) {
-                int optionY = textY + SIZE_FINAL / 2; // Un pequeño espacio después del texto del NPC
+                int optionY = textY + SIZE_FINAL / 2;
+                int maxOptionWidth = width - SIZE_FINAL * 3; // Ancho máximo permitido
 
                 for (int i = 0; i < options.size(); i++) {
                     String optionText = options.get(i);
-                    if (i == currentNpcEntity.selectedOption) { // 'selectedOption' debe estar en Entity/NPC
-                        g2.setColor(Color.YELLOW); // Resaltar opción seleccionada
-                        g2.drawString("> " + optionText, x + SIZE_FINAL, optionY);
-                    } else {
-                        g2.setColor(Color.WHITE);
-                        g2.drawString(optionText, x + SIZE_FINAL, optionY);
+                    List<String> optionLines = new ArrayList<>();
+
+                    // Dividir por saltos de línea explícitos primero
+                    for (String segment : optionText.split("\n")) {
+                        optionLines.addAll(wrapOptionText(segment, maxOptionWidth));
                     }
-                    optionY += g2.getFontMetrics().getHeight();
+
+                    // Dibujar cada línea de la opción
+                    for (int j = 0; j < optionLines.size(); j++) {
+                        String line = optionLines.get(j);
+                        if (i == currentNpcEntity.selectedOption) {
+                            g2.setColor(Color.YELLOW);
+                            // Solo mostrar el indicador de selección en la primera línea
+                            g2.drawString(j == 0 ? "> " + line : "  " + line, x + SIZE_FINAL, optionY);
+                        } else {
+                            g2.setColor(Color.WHITE);
+                            g2.drawString(line, x + SIZE_FINAL, optionY);
+                        }
+                        optionY += g2.getFontMetrics().getHeight();
+                    }
+
+                    // Espacio adicional entre opciones
+                    optionY += 5;
                 }
             }
-        } //TODO que cuando no haya opciones que responder A VECES se pueda reponder con un "simplemente teis"
+        }//TODO que cuando no haya opciones que responder A VECES se pueda reponder con un "simplemente teis"
     }
 
     public void drawCharacterScreen() {
@@ -328,14 +344,72 @@ public class UserInterface {
         return y + spacingAfter;      // añadimos el espacio extra
     }
 
+    private List<String> wrapOptionText(String text, int maxWidth) {
+        List<String> lines = new ArrayList<>();
+        FontMetrics fm = g2.getFontMetrics();
+
+        if (fm.stringWidth(text) <= maxWidth) {
+            lines.add(text);
+            return lines;
+        }
+
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            if (fm.stringWidth(currentLine + word) <= maxWidth) {
+                currentLine.append(word).append(" ");
+            } else {
+                lines.add(currentLine.toString().trim());
+                currentLine = new StringBuilder(word + " ");
+            }
+        }
+
+        if (!currentLine.isEmpty()) {
+            lines.add(currentLine.toString().trim());
+        }
+
+        return lines;
+    }
+
+    // UserInterface.java - Modificar drawWindow()
 
     private void drawWindow(int x, int y, int width, int height) {
+        // Calcular altura necesaria basada en el contenido
+        int neededHeight = calculateDialogHeight();
+        if (neededHeight > height) {
+            height = neededHeight;
+            // Mover hacia arriba para mantenerlo visible
+            y = SCREEN_HEIGHT - height - SIZE_FINAL;
+        }
+
         g2.setColor(new Color(0, 0, 0, 200));
         g2.fillRoundRect(x, y, width, height, 35, 35);
 
         g2.setColor(Color.WHITE);
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
+    }
+
+    private int calculateDialogHeight() {
+        int baseHeight = SIZE_FINAL * 5;
+        int extraHeight = 0;
+
+        if (teisPanel.controller.currentTalkingNpc instanceof Dialogable dialogableNpc) {
+            List<String> options = dialogableNpc.getCurrentOptions();
+            if (options != null) {
+                FontMetrics fm = g2.getFontMetrics();
+                int lineHeight = fm.getHeight();
+
+                for (String option : options) {
+                    // Estimar líneas necesarias
+                    int lines = (int) Math.ceil((double) fm.stringWidth(option) / (SCREEN_WIDTH - SIZE_FINAL * 6));
+                    extraHeight += (lines + 1) * lineHeight; // +1 para espacio entre opciones
+                }
+            }
+        }
+
+        return baseHeight + extraHeight;
     }
 
     private void drawEquipmentImages(int x, int y) {

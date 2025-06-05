@@ -3,7 +3,7 @@
   "nodes": [
     {
       "id": "VIELLO_INTRO",
-      "text": "sabes o que din dos pimentitos de padrón? JAJJAJA \n\no sabes o qué???",
+      "text": "sabes o que din dos pimentitos de padrón?...\nJAJJAJA...\no sabes o qué???",
       "options": [
         {
           "text": "...?",
@@ -13,14 +13,14 @@
         {
           "text": "AJJAJAJAJAJAJJAJAJA a ver que dicen???",
           "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
-          "actions": ["SET_FLAG:LAUGHED"]
+          "actions": []
         }
       ],
       "requiredFlags": {}
     },
     {
       "id": "PIMENTITOS_PADRON",
-      "text": "...pois que uns pican JAJSJDAJSJAJA\n...\nE OUTROS NON, OSTIA",
+      "text": "...pois que uns pican JAJSJDAJSJAJA\n...E OUTROS NON, OSTIA XA CAGHO EN DEUS",
       "options": [
         {
           "text": "...",
@@ -30,22 +30,22 @@
         {
           "text": "AJJAJAJAJAJAJJAJAJA\nextremadamente gracioso bro",
           "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
-          "actions": ["SET_FLAG:LAUGHED"]
+          "actions": []
         }
       ],
       "requiredFlags": {}
     },
     {
       "id": "VIELLO_CELTA_RESPONSE",
-      "text": "...\n...\nbueno, Deus deume o peor dos destinos deste mundo, \nser do Celta.",
+      "text": "...\n...\nbueno, Deus deume o peor dos destinos deste\nmundo, ser do Celta.",
       "options": [
         {
-          "text": "Hueles fatal hermano, tira palla' con tu rollo",
+          "text": "Hueles fatal bro, tira palla' con tu rollo",
           "nextNode": "VIELLO_OFFENDED_RESPONSE",
           "actions": ["SET_FLAG:OFFENDED"]
         },
         {
-          "text": "escúchame bien mi loco...\nser del Celta no es un destino. Es un estilo de vida:\nlloras cada domingo pero mañana sigues ahí con la tóxica",
+          "text": "escúchame bien mi loco...\nser del Celta no es un destino.\nEs un estilo de vida:\nlloras cada domingo pero mañana sigues ahí con la tóxica",
           "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
           "actions": []
         }
@@ -54,12 +54,12 @@
     },
     {
       "id": "VIELLO_TEIS_OPINION_PROMPT",
-      "text": "nótase que ti eres un real,\nunha cousa meu tigre recto.\n Qué opinas do barrio? Teis é precioso",
+      "text": "nótase que ti eres un real,\nunha cousa meu tigre recto.\nQué opinas do barrio? Teis é precioso",
       "options": [
         {
           "text": "Sonido de Teis RG4L",
           "nextNode": "VIELLO_RIDDLE",
-          "actions": ["SET_FLAG:PRAISED_TEIS"]
+          "actions": []
         },
         {
           "text": "Yo es que soy de Baiona sabes",
@@ -74,7 +74,7 @@
       "text": "Diselo manin, diselo manin...",
       "options": [
         {
-          "text": "diselo manin, diselo manin,\nla profe me dijo que iba a repetir.\nfok coia",
+          "text": "diselo manin, diselo manin, la profe me dijo que iba a repetir.\nfok coia",
           "nextNode": "VIELLO_REWARD",
           "actions": ["GIVE_REWARD"]
         },
@@ -84,9 +84,7 @@
           "actions": []
         }
       ],
-      "requiredFlags": {
-        "LAUGHED": true
-      }
+      "requiredFlags": {}
     },
     {
       "id": "MANIN_CONTEXT",
@@ -104,7 +102,7 @@
     },
     {
       "id": "VIELLO_REWARD",
-      "text": "estas armas son as que usaba eu\nna guerra Teis / Coia...\n\nSonido de Teis antonte era un grupo armado\n\n...toma, as armas que xa non usamos",
+      "text": "ti debes ser da agrupación conocida como Sonido de Teis...\nestas armas son as que usaba eu\nna guerra Teis / Coia...\n\nSonido de Teis antonte era un grupo armado\n\n...toma, as armas que xa non usamos",
       "options": [],
       "requiredFlags": {}
     }

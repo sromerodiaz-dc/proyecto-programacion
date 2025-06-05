@@ -37,6 +37,8 @@ public class Conversation {
         this.initialNodeId = initialNodeId;
     }
 
+    public Conversation() {}
+
     public void addNode(ConversationNode node) {
         if (node != null && node.nodeId != null) {
             this.nodes.put(node.nodeId, node);
@@ -66,5 +68,9 @@ public class Conversation {
         } else {
             System.err.println("Advertencia: El ID del nodo inicial '" + initialNodeId + "' no existe en la conversación.");
         }
+    }
+
+    public boolean containsNode(String nodeId) {
+        return nodes.containsKey(nodeId);
     }
 }
