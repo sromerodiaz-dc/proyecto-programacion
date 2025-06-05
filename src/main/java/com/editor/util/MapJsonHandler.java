@@ -29,14 +29,16 @@ public class MapJsonHandler {
         int rows = mapNode.path("height").asInt();
         int[][] matrix = parseDataMatrix(mapNode.path("data"), rows, cols);
 
-        // Cargar colisiones
+        // Cargar colisiones (ahora como listas [row, col])
         Set<CeldaCoord> collisions = new HashSet<>();
         JsonNode collisionsNode = mapNode.path("colisiones");
         if (collisionsNode.isArray()) {
             for (JsonNode node : collisionsNode) {
-                int row = node.path("row").asInt();
-                int col = node.path("col").asInt();
-                collisions.add(new CeldaCoord(row, col));
+                if (node.isArray() && node.size() == 2) {
+                    int row = node.get(0).asInt();
+                    int col = node.get(1).asInt();
+                    collisions.add(new CeldaCoord(row, col));
+                }
             }
         }
 
@@ -103,12 +105,9 @@ public class MapJsonHandler {
             mapData.put("data", new RawValue(matrixJson.toString()));
 
             // Sección "colisiones"
-            List<Map<String, Integer>> colisionesList = new ArrayList<>();
+            List<List<Integer>> colisionesList = new ArrayList<>();
             for (CeldaCoord coord : model.getCollisions()) {
-                Map<String, Integer> colision = new HashMap<>();
-                colision.put("row", coord.row());
-                colision.put("col", coord.col());
-                colisionesList.add(colision);
+                colisionesList.add(Arrays.asList(coord.row(), coord.col()));
             }
             mapData.put("colisiones", colisionesList);
 
