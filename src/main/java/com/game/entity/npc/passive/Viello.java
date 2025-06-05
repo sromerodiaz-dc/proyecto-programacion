@@ -161,18 +161,20 @@ public class Viello extends Entity implements Dialogable {
 
             if (selectedOption.actions != null) {
                 for (String action : selectedOption.actions) {
-                    if (action.equals("GIVE_REWARD")) {
-                        giveReward();
-                    } else {
-                        dialogueSystem.triggerAction(action);
-                    }
+                    dialogueSystem.triggerAction(action, this);
                 }
             }
 
-            // Forzar actualización del mensaje
-            fala(); // <-- Añadir esta línea para actualizar el texto
+            fala();
         } else {
             System.err.println("Viello: Intento de seleccionar una opción inválida. Index: " + index + ", Node: " + (currentNode != null ? currentNode.nodeId : "null"));
+        }
+    }
+
+    @Override
+    public void triggerCustomAction(String action) {
+        if ("GIVE_REWARD".equals(action)) {
+            giveReward();
         }
     }
 

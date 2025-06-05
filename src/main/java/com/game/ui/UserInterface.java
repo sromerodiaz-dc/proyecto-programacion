@@ -67,6 +67,7 @@ public class UserInterface {
     }
 
     public void addMessage(int damage, Entity enemy, Player player) {
+        System.out.println("daño: " + damage);
         damageMessages.add(new DamageDinamicMessages(damage, enemy, player));
     }
 
@@ -234,7 +235,7 @@ public class UserInterface {
         // 4. Lógica de tipeo
         if (currentNpcEntity.isTyping) {
             currentNpcEntity.typingCounter++; // Incrementar el contador de frames
-            if (currentNpcEntity.typingCounter >= 0.4f) {
+            if (currentNpcEntity.typingCounter >= 1f) {
                 currentNpcEntity.typingCounter = 0; // Resetear el contador de frames
                 if (currentNpcEntity.typingIndex < textToDisplay.length()) {
                     currentNpcEntity.typingIndex++;

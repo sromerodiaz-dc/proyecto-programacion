@@ -41,7 +41,7 @@
     "solidArea_y": 25,
     "solidArea_width": 66,
     "solidArea_height": 60,
-    "maxlife": 10,
-    "life": 8
+    "maxlife": 15,
+    "life": 15
   }
 ]

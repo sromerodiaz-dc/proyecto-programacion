@@ -49,7 +49,7 @@ public class Player extends Entity implements EventListener {
 
         this.stats = new EntityStats.Builder()
                 .strength(1)
-                .dexterity(1)
+                .dexterity(0)
                 .baseAttack(0) // Inicialmente sin ataque
                 .baseDefense(0) // Inicialmente sin defensa
                 .baseSpeed(5)
@@ -348,7 +348,7 @@ public class Player extends Entity implements EventListener {
             if (!enemy.invencible) {
                 // teisPanel.controller.playSE(); // Efecto de ataque
                 int realDamage = getAttackVal() - enemy.defenseVal;
-                System.out.println("daño bruto: "+ getAttackVal());
+
                 if (realDamage < 0) {
                     realDamage = 0;
                 }
@@ -356,8 +356,8 @@ public class Player extends Entity implements EventListener {
                 // Aplica daño al enemigo
                 enemy.life -= realDamage;
 
-                // SOLO 1 DE CADA 10 ATAQUES MUESTRA EL MENSAJE
-                if (random.nextFloat() < 0.1f) {
+                // SOLO 2 DE CADA 10 ATAQUES MUESTRA EL MENSAJE
+                if (random.nextFloat() < 0.2f) {
                     teisPanel.controller.ui.addMessage(realDamage, enemy, this);
                 }
 

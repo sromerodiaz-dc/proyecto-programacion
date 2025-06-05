@@ -8,4 +8,5 @@ public interface Dialogable {
     List<String> getCurrentOptions();
     void selectOption(int index);
     List<String> getFallbackDialogues(); // Añadido para que Viello pueda proveer sus propios fallbacks
+    void triggerCustomAction(String action);
 }

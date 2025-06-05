@@ -33,8 +33,8 @@ public class DamageDinamicMessages {
     private final Player player;
 
     // Offset radial para posición alrededor del enemigo
-    private final int offsetX;
-    private final int offsetY;
+    private int offsetX;
+    private int offsetY;
 
 
     // Lista de mensajes irónicos
@@ -67,9 +67,9 @@ public class DamageDinamicMessages {
 
         float vidaPrev = enemy.life + damageAmount;
 
-        if (damageAmount <= 0.1f * vidaPrev) {
+        if (damageAmount <= 0.2f * vidaPrev) {
             this.isZeroDamage = true;
-
+            System.out.println("Poco daño");
             if (random.nextFloat() < 0.25f) {
                 // Mensaje irónico (posición fija)
                 int messageIndex = random.nextInt(ZERO_DAMAGE_MESSAGES.length);
@@ -87,23 +87,25 @@ public class DamageDinamicMessages {
                 this.offsetY = 0;
             } else {
                 // Daño normal
-                this.lines = new String[]{"0"};
-                this.currentSize = 30F;
+                this.lines = new String[]{String.valueOf(damageAmount)};
+                float damageRatio = Math.min(1.0f, (float) damageAmount / 300.0f);
+                this.currentSize = initialSize + (maxSize - initialSize) * damageRatio;
                 this.color = Color.LIGHT_GRAY;
-                this.maxLifetime = 80;
+                this.maxLifetime = 50;
                 this.useRainbowEffect = false;
 
                 // Generar offset radial
                 this.offsetX = generateRadialOffsetX();
                 this.offsetY = generateRadialOffsetY();
             }
-        } else {
+        } else if (damageAmount >= 0.85f * vidaPrev){
+            System.out.println("daño mayor");
             // Daño normal
             this.isZeroDamage = false;
             this.lines = new String[]{String.valueOf(damageAmount)};
             this.color = Color.WHITE;
 
-            float damageRatio = Math.min(1.0f, (float) damageAmount / 500.0f);
+            float damageRatio = Math.min(1.0f, (float) damageAmount / 300.0f);
             this.currentSize = initialSize + (maxSize - initialSize) * damageRatio;
             this.maxLifetime = 60;
             this.useRainbowEffect = false;

@@ -170,7 +170,7 @@ public class GameController {
 
         vielloConv.addNode(new Conversation.ConversationNode( // <--- USA addNode
                 "VIELLO_INTRO", // 1. ID de este nodo
-                "mozo... \nsabes o que din dos pimentitos de padrón...?", // 2. Texto del NPC
+                "sabes o que din dos pimentitos de padrón? JAJJAJA \n\no sabes o qué??? CONTESTA XA!11!!!", // 2. Texto del NPC
                 introOptions, // 3. Opciones del jugador para este nodo
                 null // 4. Flags requeridas para VER este nodo (si aplica)
         ));

@@ -1,5 +1,6 @@
 package com.game.ui.dialogue;
 
+import com.game.ui.Dialogable;
 import com.game.ui.dialogue.state.DialogueState;
 
 import java.util.*;
@@ -26,7 +27,7 @@ public class DialogueSystem {
 
         if (currentNodeId != null) {
             potentialNode = conv.getNodeById(currentNodeId);
-            if (potentialNode != null && meetsConditions(potentialNode, npcId)) {
+            if (potentialNode != null && meetsConditions(potentialNode)) {
                 return potentialNode;
             }
             // currentNpcNodeIds.remove(npcId); // Opcional: si el nodo actual ya no es válido, fuerza la búsqueda.
@@ -35,14 +36,14 @@ public class DialogueSystem {
         String initialNodeId = conv.getInitialNodeId();
         if (initialNodeId != null) {
             Conversation.ConversationNode initialNode = conv.getNodeById(initialNodeId);
-            if (initialNode != null && meetsConditions(initialNode, npcId)) {
+            if (initialNode != null && meetsConditions(initialNode)) {
                 setCurrentNode(npcId, initialNode.nodeId);
                 return initialNode;
             }
         }
 
         for (Conversation.ConversationNode node : conv.getAllNodes()) {
-            if (meetsConditions(node, npcId)) {
+            if (meetsConditions(node)) {
                 setCurrentNode(npcId, node.nodeId);
                 return node;
             }
@@ -67,7 +68,7 @@ public class DialogueSystem {
         currentNpcNodeIds.remove(npcId);
     }
 
-    private boolean meetsConditions(Conversation.ConversationNode node, String npcId) {
+    private boolean meetsConditions(Conversation.ConversationNode node) {
         if (node == null || node.requiredFlags == null || node.requiredFlags.isEmpty()) {
             return true;
         }
@@ -78,7 +79,7 @@ public class DialogueSystem {
                 );
     }
 
-    public void triggerAction(String action) {
+    public void triggerAction(String action, Dialogable npc) {
         if (action == null || action.isEmpty()) return;
 
         String[] parts = action.split(":", 2);
@@ -87,15 +88,15 @@ public class DialogueSystem {
 
         switch (command) {
             case "SET_FLAG":
-                if (value != null) gameState.flags().add(value); // Acceso directo a flags del record
+                if (value != null) gameState.flags().add(value);
                 break;
             case "CLEAR_FLAG":
-                if (value != null) gameState.flags().remove(value); // Acceso directo
+                if (value != null) gameState.flags().remove(value);
                 break;
-            case "GIVE_REWARD":
-                // como ejecuto esto?
             default:
-
+                if (npc != null) {
+                    npc.triggerCustomAction(command); // Delegar acción personalizada
+                }
                 break;
         }
     }
