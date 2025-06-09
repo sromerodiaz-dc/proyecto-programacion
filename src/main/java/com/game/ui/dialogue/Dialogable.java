@@ -1,4 +1,4 @@
-package com.game.ui;
+package com.game.ui.dialogue;
 
 import java.util.List;
 

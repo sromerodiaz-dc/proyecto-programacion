@@ -1,6 +1,5 @@
 package com.game.ui.dialogue;
 
-import com.game.ui.Dialogable;
 import com.game.ui.dialogue.state.DialogueState;
 
 import java.util.*;

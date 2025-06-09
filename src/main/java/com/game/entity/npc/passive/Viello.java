@@ -5,7 +5,7 @@ import com.game.data.Properties;
 import com.game.entity.Player;
 import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
-import com.game.ui.Dialogable;
+import com.game.ui.dialogue.Dialogable;
 import com.game.ui.TeisPanel;
 import com.game.ui.dialogue.Conversation;
 import com.game.ui.dialogue.DialogueSystem;

@@ -2,7 +2,7 @@ package com.game.controller;
 
 import com.game.data.GameState;
 import com.game.entity.Entity;
-import com.game.ui.Dialogable;
+import com.game.ui.dialogue.Dialogable;
 import com.game.ui.TeisPanel;
 
 import java.awt.event.KeyEvent;

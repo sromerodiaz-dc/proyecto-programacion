@@ -5,6 +5,7 @@ import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.entity.Player;
 import com.game.entity.stats.Vida;
+import com.game.ui.dialogue.Dialogable;
 import com.game.ui.dialogue.DialogueSystem;
 
 import java.awt.*;
