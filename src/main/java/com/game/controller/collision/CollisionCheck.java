@@ -4,6 +4,7 @@ import com.game.ui.TeisPanel;
 import com.game.entity.Entity;
 import com.game.maptile.PiezaManager;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -42,72 +43,81 @@ public class CollisionCheck {
         PiezaManager pm = teisPanel.controller.getPiezaManager();
 
         switch (entity.sentido) {
-            case 'w':
+            case 'w': // Arriba
                 checkTileCollision(pm, entity,
                         entityLeft / SIZE_FINAL,
                         entityRight / SIZE_FINAL,
                         (entityTop - entity.speed) / SIZE_FINAL,
-                        (entityTop - entity.speed) / SIZE_FINAL);
+                        (entityTop - entity.speed) / SIZE_FINAL,
+                        true); // Vertical
                 break;
 
-            case 's':
+            case 's': // Abajo
                 checkTileCollision(pm, entity,
                         entityLeft / SIZE_FINAL,
                         entityRight / SIZE_FINAL,
                         (entityBottom + entity.speed) / SIZE_FINAL,
-                        (entityBottom + entity.speed) / SIZE_FINAL);
+                        (entityBottom + entity.speed) / SIZE_FINAL,
+                        true); // Vertical
                 break;
 
-            case 'a':
+            case 'a': // Izquierda
                 checkTileCollision(pm, entity,
                         (entityLeft - entity.speed) / SIZE_FINAL,
                         (entityLeft - entity.speed) / SIZE_FINAL,
                         entityTop / SIZE_FINAL,
-                        entityBottom / SIZE_FINAL);
+                        entityBottom / SIZE_FINAL,
+                        false); // Horizontal
                 break;
 
-            case 'd':
+            case 'd': // Derecha
                 checkTileCollision(pm, entity,
                         (entityRight + entity.speed) / SIZE_FINAL,
                         (entityRight + entity.speed) / SIZE_FINAL,
                         entityTop / SIZE_FINAL,
-                        entityBottom / SIZE_FINAL);
+                        entityBottom / SIZE_FINAL,
+                        false); // Horizontal
                 break;
         }
     }
 
+    private void checkTileCollision(PiezaManager pm, Entity entity,
+                                    int colStart, int colEnd,
+                                    int rowStart, int rowEnd,
+                                    boolean isVertical) {
 
-    /**
-     * Verifica la colisión de la entidad con las piezas del mapa en base a las coordenadas de su borde y dirección.
-     * Compara dos posiciones del mapa (usualmente esquinas) para determinar si hay colisión.
-     *
-     * @param pm El gestor de piezas que contiene el mapa y sus propiedades.
-     * @param entity La entidad que se está moviendo y se desea verificar.
-     * @param col1 Primera columna a comprobar (usualmente izquierda o derecha de la entidad).
-     * @param col2 Segunda columna a comprobar (puede ser la misma que col1 si solo ocupa una columna).
-     * @param row1 Primera fila a revisar (usualmente arriba o abajo de la entidad).
-     * @param row2 Segunda fila a revisar (puede ser igual a row1 si solo ocupa una fila).
-     * -
-     * Maneja colisiones con tiles en una dirección específica (sobrecarga para vertical/horizontal).
-     * ¿Cómo funciona?
-     *     En movimientos verticales, las filas (row1, row2) son iguales y las columnas son diferentes.
-     *     En movimientos horizontales, las columnas (col1, col2) son iguales y las filas son diferentes.
-     * -
-     */
-    private void checkTileCollision(PiezaManager pm, Entity entity, int col1, int col2, int row1, int row2) {
-        // Validar índices antes de acceder al array
-        if (col1 < 0 || col1 >= pm.mapaPiezaNum.length ||
-                col2 < 0 || col2 >= pm.mapaPiezaNum.length ||
-                row1 < 0 || row1 >= pm.mapaPiezaNum[0].length ||
-                row2 < 0 || row2 >= pm.mapaPiezaNum[0].length) {
-            entity.collisionOn = true; // Bloquear movimiento si está fuera del mapa
-            System.out.println("Collision Detected");
-            return;
+        // Para movimiento vertical: verificar todas las columnas en la fila objetivo
+        if (isVertical) {
+            for (int col = colStart; col <= colEnd; col++) {
+                Point tilePos = new Point(col, rowStart);
+                if (isCollidable(pm, tilePos)) {
+                    entity.collisionOn = true;
+                    return;
+                }
+            }
+        }
+        // Para movimiento horizontal: verificar todas las filas en la columna objetivo
+        else {
+            for (int row = rowStart; row <= rowEnd; row++) {
+                Point tilePos = new Point(colStart, row);
+                if (isCollidable(pm, tilePos)) {
+                    entity.collisionOn = true;
+                    return;
+                }
+            }
+        }
+        entity.collisionOn = false;
+    }
+
+    private boolean isCollidable(PiezaManager pm, Point tilePos) {
+        // Verificar si está fuera del mapa
+        if (tilePos.x < 0 || tilePos.x >= pm.mapa.width ||
+                tilePos.y < 0 || tilePos.y >= pm.mapa.height) {
+            return true;
         }
 
-        int pieza1 = pm.mapaPiezaNum[col1][row1];
-        int pieza2 = pm.mapaPiezaNum[col2][row2];
-        entity.collisionOn = pm.pieza[pieza1].colision || pm.pieza[pieza2].colision;
+        // Verificar colisión en el tile
+        return pm.mapa.capaColisiones.contains(tilePos);
     }
 
     /**

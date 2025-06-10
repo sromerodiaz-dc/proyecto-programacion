@@ -1,5 +1,8 @@
 package com.game.map;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.Objects;
@@ -89,37 +92,26 @@ public class MapSelector {
      * @return Un objeto MapSize con el tamaño del mapa.
      */
     public MapSize getMapSize() {
-        //String fileName = selectMap(); // Selecciona el nombre del archivo del mapa
+        String fileName = "data/maps/testExample.json"; // Ejemplo
+        int maxCol = 0, maxRow = 0;
 
-        String fileName = "graphic/maps/base.txt";
-
-        InputStream is; // Flujo de entrada para leer el archivo
-        BufferedReader br; // Lector de búfer para leer el archivo línea por línea
-        int maxCol = 0, maxRow = 0; // Variables para almacenar el tamaño del mapa
-
-        try {
-            is = getClass().getClassLoader().getResourceAsStream(fileName); // Obtiene el flujo de entrada para el archivo
-            if (is != null) {
-                br = new BufferedReader(new InputStreamReader(is)); // Crea un lector de búfer para leer el archivo
-
-                String linea; // Variable para almacenar cada línea del archivo
-                while ((linea = br.readLine()) != null) { // Lee cada línea del archivo
-                    String[] mapID = linea.split(" "); // Divide la línea por espacios en blanco
-                    if (mapID.length > maxCol) { // Si la longitud del array es mayor que el número de columnas actual
-                        maxCol = mapID.length; // Actualiza el número de columnas
-                    }
-                    maxRow++; // Incrementa el número de filas
-                }
-
-                br.close(); // Cierra el lector de búfer
-            } else {
-                System.out.println("Error: ¡No se encontró el archivo del mapa '" + fileName + "'!");
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName)) {
+            if (is == null) {
+                throw new RuntimeException("No se encontró el archivo del mapa: " + fileName);
             }
-        } catch (IOException e) { // Maneja las excepciones de entrada/salida
-            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
+
+            JSONTokener tokener = new JSONTokener(is);
+            JSONObject root = new JSONObject(tokener);
+            String firstKey = root.keys().next();
+            JSONObject mapData = root.getJSONObject(firstKey);
+
+            maxCol = mapData.getInt("width");
+            maxRow = mapData.getInt("height");
+        } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Error al leer el archivo del mapa: " + fileName);
         }
 
-        return new MapSize(maxCol, maxRow, fileName); // Devuelve un objeto MapSize con el tamaño del mapa
+        return new MapSize(maxCol, maxRow, fileName);
     }
 }

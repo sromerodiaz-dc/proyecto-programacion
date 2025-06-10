@@ -86,7 +86,7 @@ public class MapJsonHandler {
         return new MapData(rows, cols, matrix, collisions, playerSpawn, entitySpawns, teleports);
     }
 
-    public static void saveMapData(MapModel model) { //TODO que las colisiones se guarden como [row,col],[...],etc. y no como {"row":row,"col":col}
+    public static void saveMapData(MapModel model) {
         String mapName = JOptionPane.showInputDialog(null, "Ingrese el nombre del mapa:");
 
         if (mapName == null || mapName.trim().isEmpty()) {
@@ -95,21 +95,36 @@ public class MapJsonHandler {
         }
 
         try {
+            // Mapper principal para el formato general con indentación
+            ObjectMapper prettyMapper = new ObjectMapper();
+            // Mapper secundario para generar JSON compacto (en una sola línea)
+            ObjectMapper compactMapper = new ObjectMapper();
+
             // Crear estructura del mapa
             Map<String, Object> mapData = new LinkedHashMap<>();
             mapData.put("width", model.getCols());
             mapData.put("height", model.getRows());
 
-            // Serializar matriz manualmente en formato compacto con espaciado correcto
+            // Serializar matriz de datos (como ya lo haces)
             StringBuilder matrixJson = getStringBuilder(model);
             mapData.put("data", new RawValue(matrixJson.toString()));
+
+            // --- INICIO DE LA MODIFICACIÓN ---
 
             // Sección "colisiones"
             List<List<Integer>> colisionesList = new ArrayList<>();
             for (CeldaCoord coord : model.getCollisions()) {
                 colisionesList.add(Arrays.asList(coord.row(), coord.col()));
             }
-            mapData.put("colisiones", colisionesList);
+
+            // 1. Convertir la lista de colisiones a un String JSON compacto
+            String colisionesJsonString = compactMapper.writeValueAsString(colisionesList);
+
+            // 2. Insertar el String como un valor "crudo" (RawValue) para que no sea formateado
+            mapData.put("colisiones", new RawValue(colisionesJsonString));
+
+            // --- FIN DE LA MODIFICACIÓN ---
+
 
             // Crear objeto "eventos"
             Map<String, Object> eventos = new LinkedHashMap<>();
@@ -165,10 +180,12 @@ public class MapJsonHandler {
             prettyPrinter.indentArraysWith(new DefaultIndenter("  ", "\n"));
             prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\n"));
 
+            // Usamos el `prettyMapper` para escribir el archivo
             try (FileWriter fileWriter = new FileWriter(mapFile)) {
-                String jsonString = mapper.writer(prettyPrinter).writeValueAsString(rootNode);
+                String jsonString = prettyMapper.writer(prettyPrinter).writeValueAsString(rootNode);
 
-                // Ajustar el formato para coincidir exactamente con el ejemplo
+                // Los reemplazos manuales ya no deberían ser tan necesarios,
+                // pero se pueden mantener si ajustan otros detalles.
                 jsonString = jsonString
                         .replaceAll("\"data\" : \\[", "\"data\" : [")
                         .replaceAll("\"colisiones\" : \\[", "\"colisiones\" : [")
@@ -184,6 +201,7 @@ public class MapJsonHandler {
             e.printStackTrace();
         }
     }
+
 
     private static StringBuilder getStringBuilder(MapModel model) {
         StringBuilder matrixJson = new StringBuilder("[\n");

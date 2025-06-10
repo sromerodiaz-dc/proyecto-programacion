@@ -59,9 +59,6 @@ public class TeisPanel extends JPanel implements Runnable{
         // Implementación de la clase main.GAME.FX.KeyboardController (Lectura de acciones de teclado)
         KeyboardController key = new KeyboardController(this);
 
-        maxWorldCol = datos.maxCol;
-        maxWorldRow = datos.maxRow;
-
         // Implementacion de backgrounds y mecanicas de colision
         PiezaManager piezaM = new PiezaManager(this);
 

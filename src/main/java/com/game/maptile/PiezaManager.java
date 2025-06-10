@@ -1,188 +1,122 @@
 package com.game.maptile;
 
 import com.game.ui.TeisPanel;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.*;
+import java.io.InputStream;
 import java.util.Objects;
 
-/**
- * Esta clase define el algoritmo de mapeo del juego.
- * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
- * Proyecto: Teis
- * */
 public class PiezaManager {
-    // Atributos
     TeisPanel t;
     public Pieza[] pieza;
-    public int[][] mapaPiezaNum;
+    public Mapa mapa;
     public String mapName;
-    private final int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
-    // Crea un nuevo objeto PiezaUtils
     public PiezaUtils piezaUtils = new PiezaUtils();
-    public String[] imagePaths = piezaUtils.getImagePaths();
 
-    /**
-     * Constructor de la clase `PiezaManager`. Este constructor inicializa el gestor de piezas y el mapa.
-     */
     public PiezaManager(TeisPanel teis) {
         this.t = teis;
+        this.mapName = t.datos.fileName;
 
-        // Crea un arreglo de objetos `Pieza` con un tamaño de 10. Este arreglo contendrá diferentes tipos de piezas.
-        pieza = new Pieza[imagePaths.length];
+        // Primero cargamos el tileset
+        cargarTileset();
 
-        // Crea un arreglo bidimensional de enteros con dimensiones basadas en `TeisPanel.maxScreenColumnas` y `TeisPanel.maxScreenFilas`.
-        // Este arreglo representa un mapa donde cada entero corresponde a un tipo específico de pieza.
-        mapaPiezaNum = new int[teis.maxWorldCol][teis.maxWorldRow];
-
-        mapName = t.datos.fileName;
-
-        // Carga las imágenes de las piezas.
-        getPiezaImage();
-
-        // Carga el mapa.
-        loadMap();
+        // Luego cargamos el mapa
+        cargarMapa();
     }
 
-    /**
-     * Instancia un nuevo objeto Pieza que puede ser colisionable o no.
-     * Para saber si lo es o no lo es difirere entre los String que comienzan por asterisco y los que no.
-     */
-    public void getPiezaImage() {
-        for (int i = 0; i < pieza.length; i++) {
-            setEscaled(i);
-        }
-    }
+    private void cargarTileset() {
+        String tilesetPath = "graphic/tiles.json";
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(tilesetPath)) {
+            assert is != null;
+            JSONTokener tokener = new JSONTokener(is);
+            JSONObject root = new JSONObject(tokener);
+            JSONArray tiles = root.getJSONArray("tiles");
 
-    /**
-     * Establece la imagen escalada para el objeto Pieza en el índice dado.
-     *
-     * @param i el índice del objeto Pieza para establecer la imagen escalada
-     */
-    public void setEscaled(int i) {
-        try {
-            // Verifica si la ruta de la imagen comienza con un asterisco
-            if (imagePaths[i].startsWith("*")) {
-                // Elimina el asterisco de la ruta de la imagen
-                imagePaths[i] = imagePaths[i].substring(1);
-                // Crea un nuevo objeto Pieza con la bandera isMirrored establecida en true
-                pieza[i] = new Pieza(true);
-            } else {
-                // Crea un nuevo objeto Pieza con el constructor predeterminado
-                pieza[i] = new Pieza();
+            pieza = new Pieza[tiles.length()];
+            for (int i = 0; i < tiles.length(); i++) {
+                JSONObject tile = tiles.getJSONObject(i);
+                int id = tile.getInt("id");
+                String path = "graphic/background/" + tile.getString("path");
+
+                pieza[id] = new Pieza();
+                pieza[id].image = ImageIO.read(
+                        Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(path))
+                );
+                pieza[id].image = piezaUtils.escalado(pieza[id].image, 48, 48);
             }
-            // Lee la imagen desde el recurso especificado por la ruta de la imagen
-            pieza[i].image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePaths[i])));
-
-            // Escala la imagen al tamaño deseado (48x48 píxeles) utilizando el metodo escalado de PiezaUtils
-            pieza[i].image = piezaUtils.escalado(pieza[i].image, 48, 48);
-        } catch (IOException e) {
-            // Imprime el mensaje de error si ocurre una excepción al leer la imagen
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    public void cargarMapa() {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(mapName)) {
+            JSONTokener tokener = new JSONTokener(is);
+            JSONObject root = new JSONObject(tokener);
+            String firstKey = root.keys().next();
+            JSONObject mapData = root.getJSONObject(firstKey);
 
+            // 1. Cargar capa de terreno
+            int width = mapData.getInt("width");
+            int height = mapData.getInt("height");
+            mapa = new Mapa(width, height);
 
-
-    /**
-     * Carga el diseño del mapa desde un archivo ubicado en el classpath con el nombre especificado en `mapName`.
-     */
-    public void loadMap() {
-        InputStream is;
-        BufferedReader br;
-        try {
-            // Intenta obtener un InputStream para el archivo del mapa utilizando el classpath.
-            is = getClass().getClassLoader().getResourceAsStream(mapName);
-            if (is != null) {
-                // Encuentra el archivo del mapa, procede a leerlo.
-                br = new BufferedReader(new InputStreamReader(is));
-
-                // Variables para controlar la columna (col) y la fila (fil) en el mapa.
-                int col = 0, fil = 0;
-
-                // Bucle hasta que tanto las columnas como las filas alcancen sus límites máximos.
-                while (col < t.maxWorldCol && fil < t.maxWorldRow) {
-                    String linea = br.readLine();
-
-                    // Bucle por cada elemento (separado por espacios) en la línea actual.
-                    while (col < t.maxWorldCol) {
-                        String[] mapID = linea.split(" ");
-                        // Extrae el primer elemento (suponiendo que representa el ID del tipo de Pieza).
-                        int map = Integer.parseInt(mapID[col]);
-                        // Almacena el ID del tipo de Pieza en la posición correspondiente de mapaPiezaNum.
-                        mapaPiezaNum[col][fil] = map;
-                        col++;
-                    }
-                    // Reinicia la columna (col) e incrementa la fila (fil) para la siguiente línea.
-                    if (col == t.maxWorldCol) {
-                        col = 0;
-                        fil++;
-                    }
+            JSONArray data = mapData.getJSONArray("data");
+            for (int y = 0; y < height; y++) {
+                JSONArray row = data.getJSONArray(y);
+                for (int x = 0; x < width; x++) {
+                    mapa.capaTerreno[x][y] = row.getInt(x);
                 }
-                // Cierra el BufferedReader para liberar recursos.
-                br.close();
-            } else {
-                // No se encontró el archivo del mapa.
-                System.out.println("Error: ¡No se encontró el archivo del mapa '" + mapName + "'!");
             }
-        } catch (IOException e) {
-            // Maneja cualquier IOException que pueda ocurrir durante la lectura del archivo.
-            System.out.println("Error: ¡Ocurrió un error al leer el archivo del mapa!");
-            e.printStackTrace(); // Opcional: Imprime la traza de pila para depuración.
+
+            // 2. Cargar capa de colisiones
+            JSONArray collisions = mapData.getJSONArray("colisiones");
+            for (int i = 0; i < collisions.length(); i++) {
+                JSONArray coord = collisions.getJSONArray(i);
+                int x = coord.getInt(1);
+                int y = coord.getInt(0);
+                mapa.capaColisiones.add(new Point(x, y));
+            }
+
+            // Actualizar dimensiones en TeisPanel
+            t.maxWorldCol = width;
+            t.maxWorldRow = height;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Dibuja las piezas del mapa en el lienzo gráfico.
-     *
-     * @param g2 El objeto Graphics2D utilizado para dibujar en el lienzo.
-     */
     public void pinta(Graphics2D g2) {
-        // Variables para controlar las columnas (col) y las filas (fil) del mapa.
-        int worldCol = 0;
-        int worldFil = 0;
+        if (mapa == null) return;
 
-        // Bucle que recorre el mapa fila por fila, dibujando las piezas correspondientes.
-        while (worldCol < t.maxWorldCol && worldFil < t.maxWorldRow) {
-            // Obtiene el ID del tipo de Pieza en la posición actual del mapa.
-            int id = mapaPiezaNum[worldCol][worldFil];
+        int playerWorldX = t.player.getWorldX();
+        int playerWorldY = t.player.getWorldY();
+        int playerScreenX = t.player.getScreenX();
+        int playerScreenY = t.player.getScreenY();
+        int SIZE_FINAL = TeisPanel.SIZE_FINAL;
 
-            // Coordenadas relativas al jugador
-            int playerWorldX = t.player.getWorldX();
-            int playerWorldY = t.player.getWorldY();
-            int playerScreenX = t.player.getScreenX();
-            int playerScreenY = t.player.getScreenY();
+        for (int y = 0; y < mapa.height; y++) {
+            for (int x = 0; x < mapa.width; x++) {
+                int id = mapa.capaTerreno[x][y];
+                int worldX = x * SIZE_FINAL;
+                int worldY = y * SIZE_FINAL;
+                int screenX = worldX - playerWorldX + playerScreenX;
+                int screenY = worldY - playerWorldY + playerScreenY;
 
-            // Coordenadas de pantalla relativas al jugador
-            int worldX = worldCol * SIZE_FINAL;
-            int worldY = worldFil * SIZE_FINAL;
-            int screenX = worldX - playerWorldX + playerScreenX;
-            int screenY = worldY - playerWorldY + playerScreenY;
+                // Renderizar solo tiles visibles
+                if (worldX + SIZE_FINAL > playerWorldX - playerScreenX &&
+                        worldX - SIZE_FINAL < playerWorldX + playerScreenX &&
+                        worldY + SIZE_FINAL > playerWorldY - playerScreenY &&
+                        worldY - SIZE_FINAL < playerWorldY + playerScreenY) {
 
-            // Para que solo se renderice lo que está alrededor del PJ se calculan estas distancias
-            // empleando las coordenadas absolutas y las relativas al jugador.
-            if (worldX + SIZE_FINAL > playerWorldX - playerScreenX && worldX - SIZE_FINAL < playerWorldX + playerScreenX &&
-                worldY + SIZE_FINAL > playerWorldY - playerScreenY && worldY - SIZE_FINAL < playerWorldY + playerScreenY) {
-                // Dibuja la imagen de la Pieza correspondiente en la posición actual.
-                g2.drawImage(pieza[id].image, screenX, screenY, null);
-            }
-
-            // Incrementa la columna (col) para pasar a la siguiente posición horizontal.
-            worldCol++;
-
-            // Si se llega al final de la fila actual (col == TeisPanel.maxScreenColumnas),
-            // reinicia la columna (col) y la coordenada X, e incrementa la fila (fil)
-            // para pasar a la siguiente fila.
-            if (worldCol == t.maxWorldCol) {
-                worldCol = 0;
-                worldFil++;
+                    g2.drawImage(pieza[id].image, screenX, screenY, null);
+                }
             }
         }
     }
 }
-
-
-

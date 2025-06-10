@@ -534,7 +534,7 @@ public List<ImageIcon> loadSprites(String folderPath) {
     //...
 
     // Escribir la correspondencia entre el índice y la ruta de los sprites en un archivo de texto
-    File file = new File("graphic/maps_correspondencia/c_assets_user.txt");
+    File file = new File("data/maps_correspondencia/c_assets_user.txt");
     if (!file.exists()) {
         try {
             file.createNewFile();
@@ -545,7 +545,7 @@ public List<ImageIcon> loadSprites(String folderPath) {
         }
     }
 
-    file = new File("graphic/maps_correspondencia/c_assets.txt");
+    file = new File("data/maps_correspondencia/c_assets.txt");
     if (!file.exists()) {
         try {
             file.createNewFile();
@@ -567,7 +567,7 @@ Por otro lado, ``PiezaManager`` ya no realiza ningún filtrado de String:
 public String[] getImagePaths() {
     ArrayList<String> imagePaths = new ArrayList<>();
 
-    try (BufferedReader reader = new BufferedReader(new FileReader("graphic/maps_correspondencia/c_assets.txt"))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("data/maps_correspondencia/c_assets.txt"))) {
         String line;
         while ((line = reader.readLine()) != null) {
             imagePaths.add(line.trim());
@@ -1246,7 +1246,7 @@ public ImageIcon[] loadSprites() {
     List<ImageIcon> spriteList = new ArrayList<>();
 
     try (BufferedReader br = new BufferedReader(
-            new InputStreamReader(getClass().getClassLoader().getResourceAsStream("graphic/maps_correspondencia/c_assets_user.txt")))) {
+            new InputStreamReader(getClass().getClassLoader().getResourceAsStream("data/maps_correspondencia/c_assets_user.txt")))) {
 
         String line;
         while ((line = br.readLine()) != null) {
