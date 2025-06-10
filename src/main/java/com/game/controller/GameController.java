@@ -97,7 +97,9 @@ public class GameController {
         collisionCheck = new CollisionCheck(teisPanel);
     }
 
-    public void setupInitialEvents() { //TODO cargar eventos desde un JSON
+    public void setupInitialEvents() {
+        //TODO terminar de desarrollar el cargado de mapas añadiendo
+        // la carga de eventos desde el JSON
         eventManager = new EventManager();
         List<EventRectangle> events = new ArrayList<>();
 

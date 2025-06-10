@@ -413,6 +413,10 @@ public class UserInterface {
         return baseHeight + extraHeight;
     }
 
+    private void drawDarkSoulsYouDied() {
+        //TODO desarrollar pantalla de muerte del darksouls
+    }
+
     private void drawEquipmentImages(int x, int y) {
         g2.drawImage(teisPanel.player.getCurrentWeapon().down1, x, y, null);
         g2.drawImage(teisPanel.player.getCurrentShield().down1, x + SIZE_FINAL, y + 10, null);

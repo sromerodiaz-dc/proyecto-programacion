@@ -10,7 +10,10 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TilePalettePanel extends JScrollPane { //TODO meter un control con WASD para poder cambiar de tile sin necesidad del raton | Lo mismo para los botones colision y eventos. Que se pueda acceder a ellos mediante un KeyboardManager
+public class TilePalettePanel extends JScrollPane {
+    //TODO meter un control con WASD para poder cambiar de tile sin necesidad del raton.
+    // Lo mismo para los botones colision y eventos.
+    // Que se pueda acceder a ellos mediante un KeyboardManager
     private static final int BUTTON_SIZE = 64; // Tamaño base para los botones
     private static final int COLUMNAS = 5;     // Número de columnas
     private static final int BORDER_PADDING = 4;
