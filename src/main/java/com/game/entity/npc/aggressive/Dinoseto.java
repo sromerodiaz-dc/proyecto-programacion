@@ -4,6 +4,8 @@ import com.game.entity.Entity;
 import com.game.data.Properties;
 import com.game.ui.TeisPanel;
 
+import java.awt.image.BufferedImage;
+
 /**
  * Clase que representa al enemigo "Dinoseto" en el juego.
  * @author Santiago Agustin Romero Diaz
@@ -53,10 +55,10 @@ public class Dinoseto extends Entity {
         left2 = setEntitySprite("graphic/npc/dinoseto/dinoseto_left2.png", width, height);
         right1 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right1.png", width, height);
         right2 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right2.png", width, height);
-        up1 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right1.png", width, height);
-        up2 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right2.png", width, height);
-        down1 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right1.png", width, height);
-        down2 = setEntitySprite("graphic/npc/dinoseto/dinoseto_right2.png", width, height);
+
+        up1 = down1 = right1;
+        up2 = down2 = right2;
+
         stop = setEntitySprite("graphic/npc/dinoseto/dinoseto_stop1.png", width, height);
         stop2 = setEntitySprite("graphic/npc/dinoseto/dinoseto_stop2.png", width, height);
     }

@@ -174,7 +174,6 @@ public class TeisPanel extends JPanel implements Runnable{
                     }
                 }
             }
-
         }
     }
 

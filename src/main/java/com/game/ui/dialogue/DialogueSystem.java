@@ -5,7 +5,7 @@ import com.game.ui.dialogue.state.DialogueState;
 import java.util.*;
 
 public class DialogueSystem {
-    private final DialogueState gameState; // Usará el record directamente
+    private final DialogueState gameState;
     private final Map<String, Conversation> conversations = new HashMap<>();
     private final Map<String, String> currentNpcNodeIds = new HashMap<>();
 
@@ -21,33 +21,81 @@ public class DialogueSystem {
         Conversation conv = conversations.get(npcId);
         if (conv == null) return null;
 
+        // 1. Intentar obtener el nodo actual si existe y cumple condiciones
         String currentNodeId = currentNpcNodeIds.get(npcId);
-        Conversation.ConversationNode potentialNode = null;
-
         if (currentNodeId != null) {
-            potentialNode = conv.getNodeById(currentNodeId);
-            if (potentialNode != null && meetsConditions(potentialNode)) {
-                return potentialNode;
+            Conversation.ConversationNode baseNode = conv.getNodeById(currentNodeId);
+            if (baseNode != null) {
+                // Primero verificar si hay variante válida para el nodo actual
+                Conversation.ConversationNode variantNode = getVariantNode(baseNode);
+                if (variantNode != null && meetsConditions(variantNode, null)) {
+                    return variantNode;
+                }
+
+                // Si no hay variante válida, verificar si el nodo base cumple condiciones
+                if (meetsConditions(baseNode, null)) {
+                    return baseNode;
+                }
             }
-            // currentNpcNodeIds.remove(npcId); // Opcional: si el nodo actual ya no es válido, fuerza la búsqueda.
         }
 
+        // 2. Intentar con el nodo inicial
         String initialNodeId = conv.getInitialNodeId();
         if (initialNodeId != null) {
-            Conversation.ConversationNode initialNode = conv.getNodeById(initialNodeId);
-            if (initialNode != null && meetsConditions(initialNode)) {
-                setCurrentNode(npcId, initialNode.nodeId);
-                return initialNode;
+            Conversation.ConversationNode baseNode = conv.getNodeById(initialNodeId);
+            if (baseNode != null) {
+                // Verificar variante para nodo inicial
+                Conversation.ConversationNode variantNode = getVariantNode(baseNode);
+                if (variantNode != null && meetsConditions(variantNode, null)) {
+                    setCurrentNode(npcId, initialNodeId);
+                    return variantNode;
+                }
+
+                // Verificar nodo base inicial
+                if (meetsConditions(baseNode, null)) {
+                    setCurrentNode(npcId, initialNodeId);
+                    return baseNode;
+                }
             }
         }
 
+        // 3. Buscar cualquier nodo que cumpla las condiciones
         for (Conversation.ConversationNode node : conv.getAllNodes()) {
-            if (meetsConditions(node)) {
+            // Verificar variante primero
+            Conversation.ConversationNode variantNode = getVariantNode(node);
+            if (variantNode != null && meetsConditions(variantNode, null)) {
+                setCurrentNode(npcId, node.nodeId);
+                return variantNode;
+            }
+
+            // Luego verificar nodo base
+            if (meetsConditions(node, null)) {
                 setCurrentNode(npcId, node.nodeId);
                 return node;
             }
         }
+
         return null;
+    }
+
+    private Conversation.ConversationNode getVariantNode(Conversation.ConversationNode baseNode) {
+        if (baseNode == null) return null;
+
+        // Buscar variante que cumpla las condiciones
+        for (Conversation.ConversationNode.NodeVariant variant : baseNode.variants) {
+            if (meetsConditions(baseNode, variant.variantFlags)) {
+                return new Conversation.ConversationNode(
+                        baseNode.nodeId,
+                        variant.text != null ? variant.text : baseNode.npcText,
+                        variant.variantOptions != null ? variant.variantOptions : baseNode.options,
+                        baseNode.requiredFlags,
+                        Collections.emptyList() // No más variantes anidadas
+                );
+            }
+        }
+
+        // Si no hay variante válida, devolver nodo base
+        return baseNode;
     }
 
     public void setCurrentNode(String npcId, String nodeId) {
@@ -74,15 +122,26 @@ public class DialogueSystem {
         currentNpcNodeIds.remove(npcId);
     }
 
-    private boolean meetsConditions(Conversation.ConversationNode node) {
-        if (node == null || node.requiredFlags == null || node.requiredFlags.isEmpty()) {
+    private boolean meetsConditions(Conversation.ConversationNode node, Map<String, Boolean> variantFlags) {
+        // Combinar flags del nodo base y de la variante
+        Map<String, Boolean> allFlags = new HashMap<>();
+        if (node.requiredFlags != null) {
+            allFlags.putAll(node.requiredFlags);
+        }
+        if (variantFlags != null) {
+            allFlags.putAll(variantFlags);
+        }
+
+        if (allFlags.isEmpty()) {
             return true;
         }
-        return node.requiredFlags.entrySet().stream()
-                .allMatch(entry ->
-                        (entry.getValue() && gameState.hasFlag(entry.getKey())) ||
-                                (!entry.getValue() && !gameState.hasFlag(entry.getKey()))
-                );
+
+        return allFlags.entrySet().stream()
+                .allMatch(entry -> {
+                    boolean flagExists = gameState.hasFlag(entry.getKey());
+                    boolean flagRequired = entry.getValue();
+                    return flagRequired ? flagExists : !flagExists;
+                });
     }
 
     public void triggerAction(String action, Dialogable npc) {

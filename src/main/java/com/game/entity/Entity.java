@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Esta clase registrará valores, atributos y propiedades que serán empleadas para las estadisticas
@@ -92,7 +93,11 @@ public class Entity {
     public int selectedOption = 0;   // Índice de la opción de diálogo seleccionada por el jugador (para la UI)
 
     private String dialogueId;
-    private final ArrayList<String> fallbackDialogues = new ArrayList<>();
+    private final List<String> fallbackDialogues = new ArrayList<>();
+
+    public int dialogScrollOffset = 0; // Offset de scroll actual
+    public int maxDialogScroll = 0;    // Máximo scroll posible
+    public boolean isScrolling = false; // Si el diálogo requiere scrol
 
     /**
      * Rectangulo que define el área de colisión de la Entidad
@@ -692,7 +697,7 @@ public class Entity {
         return dialogueId;
     }
 
-    public ArrayList<String> getFallbackDialogues() {
+    public List<String> getFallbackDialogues() {
         return fallbackDialogues;
     }
 }

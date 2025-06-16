@@ -3,7 +3,7 @@
   "nodes": [
     {
       "id": "VIELLO_INTRO",
-      "text": "sabes o que din dos pimentitos de padrón?...\nJAJJAJA...\no sabes o qué???",
+      "text": "sabes o que din dos pimentitos de padrón?... JAJJAJA... o sabes o qué???",
       "options": [
         {
           "text": "...?",
@@ -20,7 +20,7 @@
     },
     {
       "id": "PIMENTITOS_PADRON",
-      "text": "...pois que uns pican JAJSJDAJSJAJA\n...E OUTROS NON, OSTIA XA CAGHO EN DEUS",
+      "text": "...pois que uns pican JAJSJDAJSJAJA... E OUTROS NON, OSTIA XA CAGHO EN DEUS",
       "options": [
         {
           "text": "...",
@@ -28,7 +28,7 @@
           "actions": []
         },
         {
-          "text": "AJJAJAJAJAJAJJAJAJA\nextremadamente gracioso bro",
+          "text": "AJJAJAJAJAJAJJAJAJA extremadamente gracioso bro",
           "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
           "actions": []
         }
@@ -37,7 +37,7 @@
     },
     {
       "id": "VIELLO_CELTA_RESPONSE",
-      "text": "...\n...\nbueno, Deus deume o peor dos destinos deste\nmundo, ser do Celta.",
+      "text": "...Deus deume o peor dos destinos deste mundo, ser do Celta.",
       "options": [
         {
           "text": "Hueles fatal bro, tira palla' con tu rollo",
@@ -45,36 +45,47 @@
           "actions": ["SET_FLAG:OFFENDED"]
         },
         {
-          "text": "escúchame bien mi loco...\nser del Celta no es un destino.\nEs un estilo de vida:\nlloras cada domingo pero mañana sigues ahí con la tóxica",
+          "text": "escúchame bien mi loco... ser del Celta es un estilo de vida: lloras cada domingo pero mañana sigues ahí con la tóxica",
           "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
+          "actions": []
+        },
+        {
+          "text": "...",
+          "nextNode": "VIELLO_OFFENDED_RESPONSE",
           "actions": []
         }
       ],
       "requiredFlags": {}
     },
     {
-      "id": "VIELLO_TEIS_OPINION_PROMPT",
-      "text": "nótase que ti eres un real,\nunha cousa meu tigre recto.\nQué opinas do barrio? Teis é precioso",
-      "options": [
+      "id": "VIELLO_OFFENDED_RESPONSE",
+      "text": "es un merdas ti, fok u bro",
+      "options": [],
+      "requiredFlags": {
+        "OFFENDED": true
+      },
+      "variants": [
         {
-          "text": "Sonido de Teis RG4L",
-          "nextNode": "VIELLO_RIDDLE",
-          "actions": []
-        },
-        {
-          "text": "Yo es que soy de Baiona sabes",
-          "nextNode": "VIELLO_RIDDLE",
-          "actions": []
+          "text": "es un merdas ti pero hai que disir que fixeches ben matando o bicho ese",
+          "variantFlags": {
+            "FB": true
+          },
+          "variantOptions": [
+            {
+              "text": "tú eres mi hermano, tú eres mi colega sabes?",
+              "nextNode": "MANIN_CONTEXT",
+              "actions": ["CLEAR_FLAG:OFFENDED"]
+            }
+          ]
         }
-      ],
-      "requiredFlags": {}
+      ]
     },
     {
       "id": "VIELLO_RIDDLE",
       "text": "Diselo manin, diselo manin...",
       "options": [
         {
-          "text": "diselo manin, diselo manin, la profe me dijo que iba a repetir.\nfok coia",
+          "text": "diselo manin, diselo manin, la profe me dijo que iba a repetir. fok coia",
           "nextNode": "VIELLO_REWARD",
           "actions": ["GIVE_REWARD"]
         },
@@ -88,7 +99,7 @@
     },
     {
       "id": "MANIN_CONTEXT",
-      "text": "ti es meu colegon sabes?\nse te chaman manin é que eres da squad sabes\n",
+      "text": "ti es meu colegon sabes? se te chaman manin é que eres da squad sabes",
       "options": [
         {
           "text": "Claro bro tu eres mi colega sabes jaja",
@@ -102,7 +113,7 @@
     },
     {
       "id": "VIELLO_REWARD",
-      "text": "ti debes ser da agrupación conocida\ncomo Sonido de Teis...\nestas armas son as que usaba eu\nna guerra Teis / Coia...\n\nSonido de Teis antonte era un grupo armado\n\n...toma, as armas que xa non usamos",
+      "text": "ti debes ser da agrupación conocida como Sonido de Teis... estas armas son as que usaba eu na guerra Teis / Coia... Sonido de Teis antonte era un grupo armado...toma, as armas que xa non usamos",
       "options": [],
       "requiredFlags": {}
     }

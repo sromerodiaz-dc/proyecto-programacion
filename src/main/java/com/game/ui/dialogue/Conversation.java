@@ -8,13 +8,36 @@ public class Conversation {
         public String npcText;
         public List<DialogueOption> options;
         public Map<String, Boolean> requiredFlags;
+        public List<NodeVariant> variants; // Nuevo: variantes del nodo
 
+        // Constructor existente (mantener para compatibilidad)
         public ConversationNode(String nodeId, String npcText, List<DialogueOption> options,
                                 Map<String, Boolean> requiredFlags) {
-            this.nodeId = nodeId; // ID único (ej: "INTRO")
-            this.npcText = npcText; // Texto del NPC
-            this.options = (options == null) ? new ArrayList<>() : options; // Opciones del jugador
-            this.requiredFlags = (requiredFlags == null) ? new HashMap<>() : requiredFlags; // Flags requeridas
+            this(nodeId, npcText, options, requiredFlags, new ArrayList<>());
+        }
+
+        // Nuevo constructor con variantes
+        public ConversationNode(String nodeId, String npcText, List<DialogueOption> options,
+                                Map<String, Boolean> requiredFlags, List<NodeVariant> variants) {
+            this.nodeId = nodeId;
+            this.npcText = npcText;
+            this.options = (options == null) ? new ArrayList<>() : options;
+            this.requiredFlags = (requiredFlags == null) ? new HashMap<>() : requiredFlags;
+            this.variants = (variants == null) ? new ArrayList<>() : variants;
+        }
+
+        // Clase para variantes de nodo
+        public static class NodeVariant {
+            public String text;
+            public Map<String, Boolean> variantFlags;
+            public List<DialogueOption> variantOptions;
+
+            public NodeVariant(String text, Map<String, Boolean> variantFlags,
+                               List<DialogueOption> variantOptions) {
+                this.text = text;
+                this.variantFlags = variantFlags;
+                this.variantOptions = variantOptions;
+            }
         }
     }
 

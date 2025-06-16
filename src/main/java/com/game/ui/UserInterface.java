@@ -21,6 +21,16 @@ public class UserInterface {
     private final int SCREEN_WIDTH = TeisPanel.screenWidth;
     private final int SCREEN_HEIGHT = TeisPanel.screenHeight;
 
+    private static final Color NPC_WINDOW_BG = new Color(0, 0, 0, 220);
+    private static final Color PLAYER_WINDOW_BG = new Color(0, 0, 0, 220);
+    private static final Color WINDOW_BORDER = Color.WHITE;
+    private static final Color SCROLL_INDICATOR = Color.YELLOW;
+    private static final int DIALOG_FONT_SIZE = 22;
+    private static final int OPTION_FONT_SIZE = 20;
+    private static final int TEXT_PADDING = 20;
+    private static final int LINE_SPACING = 25;
+    private static final int SCROLL_INDICATOR_OFFSET = 30;
+
     private static final List<String> DEFAULT_TITLES = List.of(
             "Teis non\né Chapela.",
             "\"É Vigo\nmáis ca\nun dinoseto?\"",
@@ -48,8 +58,6 @@ public class UserInterface {
     private ArrayList<Integer> messageCounter = new ArrayList<>();
     private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
-
-    private DialogueSystem dialogueSystem;
 
     public UserInterface(TeisPanel teisPanel, Properties properties) {
         this.teisPanel = teisPanel;
@@ -191,109 +199,183 @@ public class UserInterface {
     }
 
     private void drawDialog() {
-        // 1. Dibujar ventana de diálogo
-        int x = SIZE_FINAL * 2;
-        int y = SCREEN_HEIGHT - SIZE_FINAL * 6;
-        int width = SCREEN_WIDTH - SIZE_FINAL * 4;
-        int height = SIZE_FINAL * 5;
-
-        drawWindow(x, y, width, height); // Asumiendo que este metodo dibuja el fondo de la ventana
-
-        g2.setFont(pixeledFont.deriveFont(Font.PLAIN, 22)); // Establecer la fuente una vez
+        final int x = SIZE_FINAL * 2;
+        final int width = SCREEN_WIDTH - SIZE_FINAL * 4;
 
         Entity currentNpcEntity = teisPanel.controller.currentTalkingNpc;
+        updateTypingAnimation(currentNpcEntity);
 
-        // 2. Manejar el caso de que no haya un NPC hablando
+        // Precalcular métricas de fuente
+        g2.setFont(pixeledFont.deriveFont(Font.PLAIN, DIALOG_FONT_SIZE));
+        FontMetrics fm = g2.getFontMetrics();
+
         if (currentNpcEntity == null) {
-            int textY = y + SIZE_FINAL;
-            g2.setColor(Color.WHITE);
-
-            // Mostrar mensaje de evento si existe
-            if (dialogo != null) {
-                for (String line : dialogo.split("\n")) {
-                    g2.drawString(line, x + SIZE_FINAL, textY);
-                    textY += g2.getFontMetrics().getHeight();
-                }
-            }
+            drawEventDialog(x, SCREEN_HEIGHT - SIZE_FINAL * 10, width, SIZE_FINAL * 4, fm);
             return;
         }
 
-        // 3. Procesar si hay un NPC
-        // Primero, asegurarse de que el NPC actual es Dialogable.
-        // Si currentTalkingNpc puede ser una entidad no dialogable, esto es importante.
-        if (!(currentNpcEntity instanceof Dialogable dialogableNpc)) {
-            // Opcional: dibujar el nombre del NPC o un mensaje genérico si no puede hablar.
-            // Por ahora, si no es Dialogable, no continuamos con la lógica de diálogo.
-            // System.err.println("Error: currentTalkingNpc no es Dialogable.");
-            return;
-        }
+        // Ventana NPC
+        drawDialogWindow(
+                x, SCREEN_HEIGHT - SIZE_FINAL * 10,
+                width, SIZE_FINAL * 4,
+                getNpcDialogText(currentNpcEntity),
+                NPC_WINDOW_BG,
+                WINDOW_BORDER,
+                fm
+        );
 
-        String textToDisplay = currentNpcEntity.currentDialog != null ? currentNpcEntity.currentDialog : "";
-
-        int textY = y + SIZE_FINAL;
-        g2.setColor(Color.WHITE); // Color por defecto para el texto del NPC
-
-        // 4. Lógica de tipeo
-        if (currentNpcEntity.isTyping) {
-            currentNpcEntity.typingCounter++; // Incrementar el contador de frames
-            if (currentNpcEntity.typingCounter >= 1f) {
-                currentNpcEntity.typingCounter = 0; // Resetear el contador de frames
-                if (currentNpcEntity.typingIndex < textToDisplay.length()) {
-                    currentNpcEntity.typingIndex++;
-                } else {
-                    currentNpcEntity.isTyping = false; // Terminar de tipear
-                }
-            }
-            // Dibujar el texto parcial
-            String partialText = textToDisplay.substring(0, currentNpcEntity.typingIndex);
-            for (String line : partialText.split("\n")) {
-                g2.drawString(line, x + SIZE_FINAL, textY);
-                textY += g2.getFontMetrics().getHeight();
-            }
-        } else {
-            // Si no está tipeando (o ya terminó), mostrar el texto completo
-            for (String line : textToDisplay.split("\n")) {
-                g2.drawString(line, x + SIZE_FINAL, textY);
-                textY += g2.getFontMetrics().getHeight();
-            }
-        }
-
-        // 5. Dibujar opciones del jugador (solo si el NPC terminó de tipear)
-
-        if (!currentNpcEntity.isTyping) {
+        // Ventana jugador SOLO si se completó el texto
+        boolean typingComplete = !currentNpcEntity.isTyping;
+        if (typingComplete && currentNpcEntity instanceof Dialogable dialogableNpc) {
             List<String> options = dialogableNpc.getCurrentOptions();
             if (options != null && !options.isEmpty()) {
-                int optionY = textY + SIZE_FINAL / 2;
-                int maxOptionWidth = width - SIZE_FINAL * 3; // Ancho máximo permitido
-
-                for (int i = 0; i < options.size(); i++) {
-                    String optionText = options.get(i);
-                    List<String> optionLines = new ArrayList<>();
-
-                    // Dividir por saltos de línea explícitos primero
-                    for (String segment : optionText.split("\n")) {
-                        optionLines.addAll(wrapOptionText(segment, maxOptionWidth));
-                    }
-
-                    // Dibujar cada línea de la opción
-                    for (int j = 0; j < optionLines.size(); j++) {
-                        String line = optionLines.get(j);
-                        if (i == currentNpcEntity.selectedOption) {
-                            g2.setColor(Color.YELLOW);
-                            // Solo mostrar el indicador de selección en la primera línea
-                            g2.drawString(j == 0 ? "> " + line : "  " + line, x + SIZE_FINAL, optionY);
-                        } else {
-                            g2.setColor(Color.WHITE);
-                            g2.drawString(line, x + SIZE_FINAL, optionY);
-                        }
-                        optionY += g2.getFontMetrics().getHeight();
-                    }
-
-                    // Espacio adicional entre opciones
-                    optionY += 5;
-                }
+                drawOptionsWindow(
+                        x, SCREEN_HEIGHT - SIZE_FINAL * 5,
+                        width, SIZE_FINAL * 3,
+                        options,
+                        currentNpcEntity.selectedOption,
+                        PLAYER_WINDOW_BG,
+                        SCROLL_INDICATOR,
+                        fm
+                );
             }
-        }//TODO que cuando no haya opciones que responder A VECES se pueda reponder con un "simplemente teis"
+        }
+    }
+
+    private String getNpcDialogText(Entity npc) {
+        String text = npc.currentDialog != null ? npc.currentDialog : "";
+        return npc.isTyping ? text.substring(0, Math.min(npc.typingIndex, text.length())) : text;
+    }
+
+    private void drawDialogWindow(int x, int y, int width, int height,
+                                  String text, Color bgColor, Color borderColor,
+                                  FontMetrics fm) {
+        // Dibujar ventana
+        drawRoundedRect(x, y, width, height, 25, bgColor, borderColor, 3);
+
+        // Configurar texto
+        g2.setColor(Color.WHITE);
+        int textX = x + TEXT_PADDING;
+        int textY = y + TEXT_PADDING + fm.getAscent();
+        int maxWidth = width - TEXT_PADDING * 2;
+
+        // Procesar texto
+        List<String> wrappedLines = wrapText(text, maxWidth, fm);
+        int maxVisibleLines = (height - TEXT_PADDING * 2) / LINE_SPACING;
+
+        // Calcular inicio del scroll
+        int startLine = 0;
+        if (wrappedLines.size() > maxVisibleLines) {
+            startLine = wrappedLines.size() - maxVisibleLines;
+
+            // Ajustar para animación en progreso
+            if (teisPanel.controller.currentTalkingNpc != null &&
+                    teisPanel.controller.currentTalkingNpc.isTyping) {
+                startLine = Math.max(0, startLine - 1);
+            }
+        }
+
+        // Dibujar líneas visibles
+        for (int i = startLine; i < wrappedLines.size(); i++) {
+            if (textY > y + height - TEXT_PADDING) break;
+
+            g2.drawString(wrappedLines.get(i), textX, textY);
+            textY += LINE_SPACING;
+        }
+
+        // Indicador de scroll
+        if (wrappedLines.size() > maxVisibleLines) {
+            g2.setColor(SCROLL_INDICATOR);
+            if (startLine > 0) {
+                g2.drawString("▲", x + width - SCROLL_INDICATOR_OFFSET, y + TEXT_PADDING);
+            }
+            g2.drawString("▼", x + width - SCROLL_INDICATOR_OFFSET, y + height - TEXT_PADDING);
+        }
+    }
+
+    private void drawOptionsWindow(int x, int y, int width, int height,
+                                   List<String> options, int selectedOption,
+                                   Color bgColor, Color highlightColor,
+                                   FontMetrics fm) {
+        // Dibujar ventana
+        drawRoundedRect(x, y, width, height, 20, bgColor, WINDOW_BORDER, 3);
+
+        // Configurar texto
+        g2.setFont(pixeledFont.deriveFont(Font.PLAIN, OPTION_FONT_SIZE));
+        int textX = x + TEXT_PADDING;
+        int textY = y + TEXT_PADDING + fm.getAscent();
+        int maxWidth = width - TEXT_PADDING * 2;
+        int maxOptionsHeight = (height - TEXT_PADDING * 2);
+        int lineHeight = LINE_SPACING;
+        int linesDrawn = 0;
+        int maxVisibleLines = maxOptionsHeight / lineHeight;
+
+        // Dibujar opciones con envoltura de texto
+        for (int i = 0; i < options.size() && linesDrawn < maxVisibleLines; i++) {
+            boolean isSelected = (i == selectedOption);
+            String prefix = isSelected ? "> " : "  ";
+            String option = options.get(i);
+
+            // Envolver texto de la opción
+            List<String> wrappedLines = wrapOptionText(option, maxWidth - fm.stringWidth(prefix), fm);
+
+            // Dibujar cada línea de la opción
+            for (String line : wrappedLines) {
+                if (linesDrawn >= maxVisibleLines) break;
+
+                g2.setColor(isSelected ? highlightColor : Color.WHITE);
+                g2.drawString(prefix + line, textX, textY);
+                textY += lineHeight;
+                linesDrawn++;
+
+                // Solo mostrar prefijo en la primera línea
+                prefix = "  ";
+            }
+        }
+
+        // Indicador de más opciones
+        if (!options.isEmpty() && linesDrawn < options.size()) {
+            g2.setColor(highlightColor);
+            g2.drawString("▼", x + width - SCROLL_INDICATOR_OFFSET, y + height - TEXT_PADDING);
+        }
+    }
+
+    private void drawEventDialog(int x, int y, int width, int height, FontMetrics fm) {
+        if (dialogo == null) return;
+
+        drawDialogWindow(
+                x, y, width, height,
+                dialogo,
+                NPC_WINDOW_BG,
+                WINDOW_BORDER,
+                fm
+        );
+    }
+
+    private void drawRoundedRect(int x, int y, int width, int height, int arc,
+                                 Color fillColor, Color borderColor, int strokeWidth) {
+        g2.setColor(fillColor);
+        g2.fillRoundRect(x, y, width, height, arc, arc);
+
+        g2.setColor(borderColor);
+        g2.setStroke(new BasicStroke(strokeWidth));
+        g2.drawRoundRect(x, y, width, height, arc, arc);
+    }
+
+    private void updateTypingAnimation(Entity npc) {
+        if (npc == null) return;
+
+        if (npc.isTyping) {
+            // Calcular límite seguro
+            int safeIncrement = Math.min(2, npc.currentDialog.length() - npc.typingIndex);
+            npc.typingIndex += safeIncrement;
+
+            // Verificar si completó
+            if (npc.typingIndex >= npc.currentDialog.length()) {
+                npc.typingIndex = npc.currentDialog.length();
+                npc.isTyping = false;
+            }
+        }
     }
 
     public void drawCharacterScreen() {
@@ -345,35 +427,36 @@ public class UserInterface {
         return y + spacingAfter;      // añadimos el espacio extra
     }
 
-    private List<String> wrapOptionText(String text, int maxWidth) {
+    private List<String> wrapOptionText(String text, int maxWidth, FontMetrics fm) {
         List<String> lines = new ArrayList<>();
-        FontMetrics fm = g2.getFontMetrics();
+        if (text == null || text.isEmpty()) return lines;
 
-        if (fm.stringWidth(text) <= maxWidth) {
-            lines.add(text);
-            return lines;
-        }
-
-        String[] words = text.split(" ");
         StringBuilder currentLine = new StringBuilder();
 
-        for (String word : words) {
-            if (fm.stringWidth(currentLine + word) <= maxWidth) {
-                currentLine.append(word).append(" ");
-            } else {
-                lines.add(currentLine.toString().trim());
-                currentLine = new StringBuilder(word + " ");
-            }
+        for (String word : text.split("\\s+")) {
+            currentLine = getStringBuilder(maxWidth, fm, lines, currentLine, word);
         }
 
         if (!currentLine.isEmpty()) {
-            lines.add(currentLine.toString().trim());
+            lines.add(currentLine.toString());
         }
 
         return lines;
     }
 
-    // UserInterface.java - Modificar drawWindow()
+    private StringBuilder getStringBuilder(int maxWidth, FontMetrics fm, List<String> lines, StringBuilder currentLine, String word) {
+        String testLine = currentLine.isEmpty() ? word : currentLine + " " + word;
+
+        if (fm.stringWidth(testLine) <= maxWidth) {
+            currentLine = new StringBuilder(testLine);
+        } else {
+            if (!currentLine.isEmpty()) {
+                lines.add(currentLine.toString());
+            }
+            currentLine = new StringBuilder(word);
+        }
+        return currentLine;
+    }
 
     private void drawWindow(int x, int y, int width, int height) {
         // Calcular altura necesaria basada en el contenido
@@ -392,20 +475,73 @@ public class UserInterface {
         g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
 
+    private List<String> wrapText(String text, int maxWidth, FontMetrics fm) {
+        List<String> lines = new ArrayList<>();
+        if (text == null || text.isEmpty()) return lines;
+
+        // Dividir por saltos de línea explícitos primero
+        String[] hardLines = text.split("\n");
+        for (String hardLine : hardLines) {
+            StringBuilder currentLine = new StringBuilder();
+            String[] words = hardLine.split("\\s+");
+
+            for (String word : words) {
+                // Verificar si la palabra es demasiado larga
+                while (fm.stringWidth(word) > maxWidth) {
+                    int splitIndex = 1;
+                    while (splitIndex < word.length() &&
+                            fm.stringWidth(word.substring(0, splitIndex)) <= maxWidth) {
+                        splitIndex++;
+                    }
+                    splitIndex--; // Retroceder al último índice válido
+
+                    if (splitIndex == 0) splitIndex = 1; // Prevenir bucle infinito
+
+                    if (!currentLine.isEmpty()) {
+                        lines.add(currentLine.toString());
+                        currentLine = new StringBuilder();
+                    }
+
+                    lines.add(word.substring(0, splitIndex));
+                    word = word.substring(splitIndex);
+                }
+
+                currentLine = getStringBuilder(maxWidth, fm, lines, currentLine, word);
+            }
+
+            if (!currentLine.isEmpty()) {
+                lines.add(currentLine.toString());
+            }
+        }
+        return lines;
+    }
+
     private int calculateDialogHeight() {
-        int baseHeight = SIZE_FINAL * 5;
+        int baseHeight = 50; // Altura base reducida
         int extraHeight = 0;
+        FontMetrics fm = g2.getFontMetrics();
+        int lineHeight = fm.getHeight();
 
-        if (teisPanel.controller.currentTalkingNpc instanceof Dialogable dialogableNpc) {
-            List<String> options = dialogableNpc.getCurrentOptions();
-            if (options != null) {
-                FontMetrics fm = g2.getFontMetrics();
-                int lineHeight = fm.getHeight();
+        if (teisPanel.controller.currentTalkingNpc != null) {
+            // Calcular altura para texto NPC
+            String npcText = teisPanel.controller.currentTalkingNpc.currentDialog;
+            if (npcText != null) {
+                List<String> wrappedLines = wrapText(npcText, SCREEN_WIDTH - SIZE_FINAL * 6, fm);
+                extraHeight += wrappedLines.size() * lineHeight;
+            }
 
-                for (String option : options) {
-                    // Estimar líneas necesarias
-                    int lines = (int) Math.ceil((double) fm.stringWidth(option) / (SCREEN_WIDTH - SIZE_FINAL * 6));
-                    extraHeight += (lines + 1) * lineHeight; // +1 para espacio entre opciones
+            // Calcular altura para opciones
+            if (teisPanel.controller.currentTalkingNpc instanceof Dialogable dialogableNpc) {
+                List<String> options = dialogableNpc.getCurrentOptions();
+                if (options != null) {
+                    int maxVisibleOptions = 3;
+                    int optionCount = Math.min(options.size(), maxVisibleOptions);
+
+                    for (int i = 0; i < optionCount; i++) {
+                        String option = options.get(i);
+                        List<String> optionLines = wrapOptionText(option, SCREEN_WIDTH - SIZE_FINAL * 6, fm);
+                        extraHeight += optionLines.size() * lineHeight + 5; // +5 por espacio entre opciones
+                    }
                 }
             }
         }
@@ -450,6 +586,5 @@ public class UserInterface {
     }
 
     public void setDialogueSystem(DialogueSystem system) {
-        this.dialogueSystem = system;
     }
 }

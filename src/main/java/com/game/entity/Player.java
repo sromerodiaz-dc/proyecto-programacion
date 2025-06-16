@@ -5,10 +5,13 @@ import com.game.controller.eventData.GameEvent;
 import com.game.data.GameState;
 import com.game.data.Properties;
 import com.game.controller.KeyboardController;
+import com.game.entity.npc.aggressive.Dinoseto;
+import com.game.entity.npc.passive.Viello;
 import com.game.ui.TeisPanel;
 import com.game.entity.object.Shield;
 import com.game.entity.object.Weapon;
 import com.game.entity.stats.EntityStats;
+import com.game.ui.dialogue.globalState.GlobalGameState;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -50,7 +53,7 @@ public class Player extends Entity implements EventListener {
         this.stats = new EntityStats.Builder()
                 .strength(1)
                 .dexterity(0)
-                .baseAttack(0) // Inicialmente sin ataque
+                .baseAttack(5) // Inicialmente sin ataque
                 .baseDefense(0) // Inicialmente sin defensa
                 .baseSpeed(5)
                 .build();
@@ -232,49 +235,41 @@ public class Player extends Entity implements EventListener {
 
     /**
      * Interactúa con un NPC (Non-Player Character) específico.
-     *
-     * @param i El índice del NPC con el que se interactúa.
      */
-    public void interactuarNPC(int i) {
-        if (keyboardController.isPressed) {
-            if (i != NO_VALID_INDEX) {
-                teisPanel.controller.currentGameState = GameState.DIALOG;
-                teisPanel.controller.currentTalkingNpc = teisPanel.controller.npc.get(i);
+    public void interactuarNPC(int npcIndex) {
+        if (!keyboardController.isPressed) return;
 
-                if (teisPanel.controller.currentTalkingNpc != null) {
-                    teisPanel.controller.currentTalkingNpc.fala();
-                } else {
-                    teisPanel.controller.npc.get(i).fala();
-                }
-            } else {
-                attack = true;
-            }
+        if (npcIndex != NO_VALID_INDEX) {
+            startDialogueWith(teisPanel.controller.npc.get(npcIndex));
+        } else {
+            attack = true;
         }
+    }
+
+    private void startDialogueWith(Entity npc) {
+        teisPanel.controller.currentGameState = GameState.DIALOG;
+        teisPanel.controller.currentTalkingNpc = npc;
+
+        // Reset scroll state
+        npc.dialogScrollOffset = 0;
+        npc.maxDialogScroll = 0;
+        npc.isScrolling = false;
+
+        // Start NPC dialogue
+        npc.fala();
     }
 
     /**
      * Interactúa con un enemigo específico.
      *
-     * @param i El índice del enemigo con el que se interactúa.
+     * @param index El índice del enemigo con el que se interactúa.
      */
-    public void interactuarEnemy(int i) {
-        // Verifica si el índice es válido (no es 999)
-        if (i!= NO_VALID_INDEX) {
-            // Verifica si el enemigo no es invencible
-            if (!invencible) {
-                // teisPanel.controller.playSE(); // Efecto de ataque
+    public void interactuarEnemy(int index) {
+        if (index == NO_VALID_INDEX || invencible) return;
 
-                // Aplica daño al enemigo
-                int realDamage = teisPanel.controller.enemy.get(i).attackVal - defenseVal;
-                if (realDamage < 0) {
-                    realDamage = 0;
-                }
-                life -= realDamage;
-
-                // Hace que el enemigo sea invencible temporalmente
-                invencible = true;
-            }
-        }
+        int realDamage = Math.max(0, teisPanel.controller.enemy.get(index).attackVal - defenseVal);
+        life -= realDamage;
+        invencible = true;
     }
 
     /**
@@ -337,41 +332,41 @@ public class Player extends Entity implements EventListener {
     /**
      * Aplica daño a un enemigo específico.
      *
-     * @param i El índice del enemigo que recibirá el daño.
+     * @param enemyIndex El índice del enemigo que recibirá el daño.
      */
-    public void dealDamage(int i) {
-        // Verifica si el índice es válido (no es 999)
-        if (i!= NO_VALID_INDEX) {
+    public void dealDamage(int enemyIndex) {
+        if (enemyIndex == NO_VALID_INDEX) return;
 
-            Entity enemy = teisPanel.controller.enemy.get(i);
-            // Verifica si el enemigo no es invencible
-            if (!enemy.invencible) {
-                // teisPanel.controller.playSE(); // Efecto de ataque
-                int realDamage = getAttackVal() - enemy.defenseVal;
+        Entity enemy = teisPanel.controller.enemy.get(enemyIndex);
+        if (enemy.invencible) return;
 
-                if (realDamage < 0) {
-                    realDamage = 0;
-                }
+        // Calcular daño
+        int realDamage = Math.max(0, getAttackVal() - enemy.defenseVal);
+        enemy.life -= realDamage;
 
-                // Aplica daño al enemigo
-                enemy.life -= realDamage;
+        // Mostrar mensaje (20% de probabilidad)
+        if (random.nextFloat() < 0.2f) {
+            teisPanel.controller.ui.addMessage(realDamage, enemy, this);
+        }
 
-                // SOLO 2 DE CADA 10 ATAQUES MUESTRA EL MENSAJE
-                if (random.nextFloat() < 0.2f) {
-                    teisPanel.controller.ui.addMessage(realDamage, enemy, this);
-                }
+        // Activar invencibilidad
+        enemy.invencible = true;
+        enemy.timeInvencible = 0;
 
-                // Hace que el enemigo sea invencible temporalmente
-                enemy.invencible = true;
-                enemy.timeInvencible = 0; // Reinicia el contador de invencibilidad si lo usas
+        // Manejar muerte del enemigo
+        if (enemy.life <= 0) {
+            handleEnemyDeath(enemy);
+        }
+    }
 
-                // Verifica si la vida del enemigo ha llegado a cero
-                if (enemy.life <= 0) {
-                    enemy.dying = true;
-                    exp += enemy.exp;
-                    checkLvlUp();
-                }
-            }
+    private void handleEnemyDeath(Entity enemy) {
+        enemy.dying = true;
+        exp += enemy.exp;
+        checkLvlUp();
+
+        if (enemy instanceof Dinoseto) {
+            GlobalGameState state = GlobalGameState.getInstance();
+            state.setFlag("FB");
         }
     }
 
@@ -380,7 +375,7 @@ public class Player extends Entity implements EventListener {
             stats.levelUp();
             maxLife += 2;
             teisPanel.controller.setGameState(GameState.DIALOG);
-            teisPanel.controller.ui.dialogo = "Subiches de level manin ao nivel " + stats.getLevel();
+            teisPanel.controller.ui.dialogo = "Subiches de nivel (" + stats.getLevel() + ")";
         }
     }
 

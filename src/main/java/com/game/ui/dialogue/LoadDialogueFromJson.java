@@ -5,11 +5,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LoadDialogueFromJson {
     public static Conversation loadFromJson(InputStream jsonStream) {
@@ -44,7 +40,52 @@ public class LoadDialogueFromJson {
                 }
             }
 
-            conv.addNode(new Conversation.ConversationNode(id, text, options, requiredFlags));
+            // Procesar variantes
+            List<Conversation.ConversationNode.NodeVariant> variants = new ArrayList<>();
+            if (nodeJson.has("variants")) {
+                JSONArray variantsJson = nodeJson.getJSONArray("variants");
+                for (int k = 0; k < variantsJson.length(); k++) {
+                    JSONObject variantJson = variantsJson.getJSONObject(k);
+
+                    String variantText = variantJson.optString("text", null);
+
+                    // Flags para la variante
+                    Map<String, Boolean> variantFlags = new HashMap<>();
+                    if (variantJson.has("variantFlags")) {
+                        JSONObject flagsJson = variantJson.getJSONObject("variantFlags");
+                        for (String flag : flagsJson.keySet()) {
+                            variantFlags.put(flag, flagsJson.getBoolean(flag));
+                        }
+                    }
+
+                    // Opciones para la variante
+                    List<Conversation.DialogueOption> variantOptions = new ArrayList<>();
+                    if (variantJson.has("variantOptions")) {
+                        JSONArray optionsJsonVariant = variantJson.getJSONArray("variantOptions");
+                        for (int j = 0; j < optionsJsonVariant.length(); j++) {
+                            JSONObject optionJson = optionsJsonVariant.getJSONObject(j);
+                            variantOptions.add(new Conversation.DialogueOption(
+                                    optionJson.getString("text"),
+                                    optionJson.getString("nextNode"),
+                                    jsonArrayToList(optionJson.getJSONArray("actions"))
+                            ));
+                        }
+                    }
+
+                    variants.add(new Conversation.ConversationNode.NodeVariant(
+                            variantText, variantFlags, variantOptions
+                    ));
+                }
+            }
+
+            // Crear el nodo con las variantes
+            conv.addNode(new Conversation.ConversationNode(
+                    id,
+                    text,
+                    options,
+                    requiredFlags,
+                    variants
+            ));
         }
 
         return conv;

@@ -7,7 +7,7 @@ import javax.sound.sampled.LineUnavailableException;
  * Clase main se encarga de lanzar el programa
  *
  * @author Santiago Agustin Romero Diaz
- * CFP Daniel Castelao
+ * CFP Dani el Castelao
  * Proyecto: Teis
  * */
 public class Main {

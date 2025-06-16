@@ -86,6 +86,8 @@ public class KeyboardController implements KeyListener {
 
     private void handleDialogInput(KeyEvent e) {
         Entity npc = teisPanel.controller.currentTalkingNpc;
+
+        // Caso para diálogos sin NPC (eventos)
         if (npc == null) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 teisPanel.controller.setGameState(GameState.PLAY);
@@ -93,46 +95,52 @@ public class KeyboardController implements KeyListener {
             return;
         }
 
-        // Si el NPC está escribiendo, al presionar SPACE se completa el texto
-        if (npc.isTyping) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                npc.isTyping = false;
-                npc.typingIndex = npc.currentDialog.length();
-            }
+        // 1. Saltar animación de texto
+        if (npc.isTyping && e.getKeyCode() == KeyEvent.VK_SPACE) {
+            npc.isTyping = false;
+            npc.typingIndex = npc.currentDialog.length();
             return;
         }
 
-        // Manejar navegación y selección usando la interfaz Dialogable
-        if (npc instanceof Dialogable dialogable) {
-            List<String> options = dialogable.getCurrentOptions();
+        // 2. Manejar scroll de texto
+        if (e.getKeyCode() == KeyEvent.VK_UP && npc.dialogScrollOffset > 0) {
+            npc.dialogScrollOffset--;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN &&
+                npc.dialogScrollOffset < npc.maxDialogScroll) {
+            npc.dialogScrollOffset++;
+        }
 
-            if (options == null || options.isEmpty()) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    teisPanel.controller.setGameState(GameState.PLAY);
-                }
-                return;
-            }
+        // 3. Salir con SpaceBar cuando no hay opciones
+        boolean typingComplete = !npc.isTyping;
+        boolean hasOptions = npc instanceof Dialogable &&
+                ((Dialogable)npc).getCurrentOptions() != null &&
+                !((Dialogable)npc).getCurrentOptions().isEmpty();
 
+        // Nueva condición para salida con SpaceBar
+        if (typingComplete && !hasOptions && e.getKeyCode() == KeyEvent.VK_SPACE) {
+            teisPanel.controller.setGameState(GameState.PLAY);
+            return;
+        }
+
+        // 4. Navegación de opciones (solo si existen)
+        if (typingComplete && hasOptions) {
+            List<String> options = ((Dialogable) npc).getCurrentOptions();
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    npc.selectedOption--;
-                    if (npc.selectedOption < 0) {
-                        npc.selectedOption = options.size() - 1;
-                    }
+                    if (npc.selectedOption > 0) npc.selectedOption--;
                     break;
                 case KeyEvent.VK_S:
-                    npc.selectedOption++;
-                    if (npc.selectedOption >= options.size()) {
-                        npc.selectedOption = 0;
-                    }
+                    if (npc.selectedOption < options.size() - 1) npc.selectedOption++;
                     break;
                 case KeyEvent.VK_SPACE:
-                    dialogable.selectOption(npc.selectedOption);
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    teisPanel.controller.setGameState(GameState.PLAY);
+                    ((Dialogable) npc).selectOption(npc.selectedOption);
                     break;
             }
+        }
+
+        // 5. Salir con ESCAPE
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            teisPanel.controller.setGameState(GameState.PLAY);
         }
     }
 
