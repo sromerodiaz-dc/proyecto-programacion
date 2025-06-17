@@ -46,7 +46,7 @@
         },
         {
           "text": "escúchame bien mi loco... ser del Celta es un estilo de vida: lloras cada domingo pero mañana sigues ahí con la tóxica",
-          "nextNode": "VIELLO_TEIS_OPINION_PROMPT",
+          "nextNode": "MANIN_CONTEXT",
           "actions": []
         },
         {

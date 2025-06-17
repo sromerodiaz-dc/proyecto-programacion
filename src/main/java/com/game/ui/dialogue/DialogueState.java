@@ -1,4 +1,4 @@
-package com.game.ui.dialogue.state;
+package com.game.ui.dialogue;
 
 import java.util.HashSet;
 

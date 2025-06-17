@@ -30,10 +30,13 @@ import java.io.InputStream;
  * Proyecto: Teis
  * */
 public class Viello extends Entity implements Dialogable, FlagListener {
+    // TODO cuando el acabe los dialogos de manera TERMINAl entonces cuando se hable con el viello que el mensaje se
+    //  muestre encima del NPC como se mostraría un mensaje indicador de daño sin parar el estado de juego de PLAY a DIALOG
     TeisPanel teisPanel;
     Properties properties;
     private final String dialogueId = "VIELLO";
-    private ArrayList<String> fallbackDialogues = new ArrayList<>();
+    private final ArrayList<String> fallbackDialogues = new ArrayList<>();
+    private boolean dialogueCompleted = false;
 
     /**
      * Constructor de la clase Viello, que representa un anciano en el juego.
@@ -120,12 +123,18 @@ public class Viello extends Entity implements Dialogable, FlagListener {
 
     @Override
     public void fala() {
-        isTyping = true;
-        typingIndex = 0;
-        typingCounter = 0;
-        sentido = sentidoHablar();
-        currentDialog = getCurrentMessage();
-        dialogScrollOffset = 0; // Resetear scroll al comenzar nuevo diálogo
+        // Solo iniciar diálogo si no está completado
+        if (!dialogueCompleted) {
+            isTyping = true;
+            typingIndex = 0;
+            typingCounter = 0;
+            sentido = sentidoHablar();
+            currentDialog = getCurrentMessage();
+            dialogScrollOffset = 0;
+        } else {
+            // Cuando está completado, usar mensaje de fallback
+            currentDialog = getRandomFallback();
+        }
     }
 
     @Override
@@ -135,7 +144,7 @@ public class Viello extends Entity implements Dialogable, FlagListener {
 
     @Override
     public List<String> getCurrentOptions() {
-        if (teisPanel == null || teisPanel.controller == null || teisPanel.controller.dialogueSystem == null) {
+        if (teisPanel == null || teisPanel.controller == null || teisPanel.controller.dialogueSystem == null || dialogueCompleted) {
             return Collections.emptyList();
         }
 
@@ -200,6 +209,12 @@ public class Viello extends Entity implements Dialogable, FlagListener {
             return getRandomFallback();
         }
 
+        for (Conversation.ConversationNode.NodeVariant variant : node.variants) {
+            if (meetsVariantConditions(variant) && variant.text != null) {
+                return variant.text;
+            }
+        }
+
         return node.npcText;
     }
 
@@ -219,24 +234,86 @@ public class Viello extends Entity implements Dialogable, FlagListener {
         }
         DialogueSystem dialogueSystem = teisPanel.controller.dialogueSystem;
 
-        Conversation.ConversationNode currentNode = dialogueSystem.getCurrentNode(dialogueId);
-        // Chequeos más robustos
-        if (currentNode != null && currentNode.options != null && index >= 0 && index < currentNode.options.size()) {
-            Conversation.DialogueOption selectedOption = currentNode.options.get(index);
+        // Obtener las opciones VISIBLES (ya consideran variantes)
+        List<String> visibleOptions = getCurrentOptions();
+        if (index < 0 || index >= visibleOptions.size()) {
+            System.err.println("Viello: Índice de opción inválido: " + index);
+            return;
+        }
 
-            // Actualizar el nodo PRIMERO antes de procesar acciones
-            dialogueSystem.setCurrentNode(dialogueId, selectedOption.nextNodeId);
+        // Obtener el nodo base actual (no la variante temporal)
+        Conversation.ConversationNode baseNode = dialogueSystem.getCurrentNode(dialogueId);
+        if (baseNode == null) {
+            System.err.println("Viello: No se pudo obtener el nodo base.");
+            return;
+        }
 
-            if (selectedOption.actions != null) {
-                for (String action : selectedOption.actions) {
-                    dialogueSystem.triggerAction(action, this);
+        // Buscar la opción seleccionada en las opciones base o variantes
+        Conversation.DialogueOption selectedOption = findSelectedOption(baseNode, index);
+        if (selectedOption == null) {
+            System.err.println("Viello: No se encontró la opción seleccionada en el nodo.");
+            return;
+        }
+
+        // Actualizar nodo y procesar acciones
+        dialogueSystem.setCurrentNode(dialogueId, selectedOption.nextNodeId);
+        if (selectedOption.actions != null) {
+            for (String action : selectedOption.actions) {
+                dialogueSystem.triggerAction(action, this);
+            }
+        }
+
+        fala();
+
+        // Después de procesar la selección:
+        Conversation.ConversationNode nextNode = dialogueSystem.getCurrentNode(dialogueId);
+
+        // Verificar si el nuevo nodo es terminal (sin opciones)
+        if (nextNode != null &&
+                (nextNode.options == null || nextNode.options.isEmpty()) &&
+                (nextNode.variants == null || nextNode.variants.isEmpty())) {
+            dialogueCompleted = true;
+            dialogueSystem.clearCurrentNode(dialogueId); // Limpiar el estado actual
+        }
+    }
+
+    private Conversation.DialogueOption findSelectedOption(
+            Conversation.ConversationNode baseNode,
+            int selectedIndex
+    ) {
+        // 1. Buscar en variantes activas
+        if (baseNode.variants != null) {
+            for (Conversation.ConversationNode.NodeVariant variant : baseNode.variants) {
+                if (variant.variantOptions != null && meetsVariantConditions(variant)) {
+                    if (selectedIndex < variant.variantOptions.size()) {
+                        return variant.variantOptions.get(selectedIndex);
+                    }
+                    // Si estamos en una variante pero el índice está fuera de sus opciones,
+                    // buscar en las opciones base
+                    break;
                 }
             }
-
-            fala();
-        } else {
-            System.err.println("Viello: Intento de seleccionar una opción inválida. Index: " + index + ", Node: " + (currentNode != null ? currentNode.nodeId : "null"));
         }
+
+        // 2. Buscar en opciones base
+        if (baseNode.options != null && selectedIndex < baseNode.options.size()) {
+            return baseNode.options.get(selectedIndex);
+        }
+
+        return null;
+    }
+
+    private boolean meetsVariantConditions(Conversation.ConversationNode.NodeVariant variant) {
+        GlobalGameState globalState = GlobalGameState.getInstance();
+        if (variant.variantFlags == null) return true;
+
+        for (Map.Entry<String, Boolean> flagEntry : variant.variantFlags.entrySet()) {
+            boolean hasFlag = globalState.hasFlag(flagEntry.getKey());
+            if (hasFlag != flagEntry.getValue()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

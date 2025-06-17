@@ -1,7 +1,5 @@
 package com.game.ui.dialogue;
 
-import com.game.ui.dialogue.state.DialogueState;
-
 import java.util.*;
 
 public class DialogueSystem {
@@ -21,61 +19,44 @@ public class DialogueSystem {
         Conversation conv = conversations.get(npcId);
         if (conv == null) return null;
 
-        // 1. Intentar obtener el nodo actual si existe y cumple condiciones
+        // Obtener ID del nodo actual
         String currentNodeId = currentNpcNodeIds.get(npcId);
+
+        // Buscar nodo base (considerando variantes)
+        Conversation.ConversationNode baseNode = null;
         if (currentNodeId != null) {
-            Conversation.ConversationNode baseNode = conv.getNodeById(currentNodeId);
-            if (baseNode != null) {
-                // Primero verificar si hay variante válida para el nodo actual
-                Conversation.ConversationNode variantNode = getVariantNode(baseNode);
-                if (variantNode != null && meetsConditions(variantNode, null)) {
-                    return variantNode;
-                }
+            baseNode = conv.getNodeById(currentNodeId);
+        }
 
-                // Si no hay variante válida, verificar si el nodo base cumple condiciones
-                if (meetsConditions(baseNode, null)) {
-                    return baseNode;
+        // Si no hay nodo base válido, usar el inicial
+        if (baseNode == null) {
+            currentNodeId = conv.getInitialNodeId();
+            baseNode = conv.getNodeById(currentNodeId);
+        }
+
+        // Buscar variante aplicable
+        Conversation.ConversationNode.NodeVariant activeVariant = null;
+        if (baseNode != null && baseNode.variants != null) {
+            for (Conversation.ConversationNode.NodeVariant variant : baseNode.variants) {
+                if (meetsConditions(baseNode, variant.variantFlags)) {
+                    activeVariant = variant;
+                    break;
                 }
             }
         }
 
-        // 2. Intentar con el nodo inicial
-        String initialNodeId = conv.getInitialNodeId();
-        if (initialNodeId != null) {
-            Conversation.ConversationNode baseNode = conv.getNodeById(initialNodeId);
-            if (baseNode != null) {
-                // Verificar variante para nodo inicial
-                Conversation.ConversationNode variantNode = getVariantNode(baseNode);
-                if (variantNode != null && meetsConditions(variantNode, null)) {
-                    setCurrentNode(npcId, initialNodeId);
-                    return variantNode;
-                }
-
-                // Verificar nodo base inicial
-                if (meetsConditions(baseNode, null)) {
-                    setCurrentNode(npcId, initialNodeId);
-                    return baseNode;
-                }
-            }
+        // Crear nodo compuesto (base + variante) si es necesario
+        if (activeVariant != null) {
+            return new Conversation.ConversationNode(
+                    baseNode.nodeId,
+                    activeVariant.text != null ? activeVariant.text : baseNode.npcText,
+                    activeVariant.variantOptions != null ? activeVariant.variantOptions : baseNode.options,
+                    baseNode.requiredFlags,
+                    Collections.emptyList()
+            );
         }
 
-        // 3. Buscar cualquier nodo que cumpla las condiciones
-        for (Conversation.ConversationNode node : conv.getAllNodes()) {
-            // Verificar variante primero
-            Conversation.ConversationNode variantNode = getVariantNode(node);
-            if (variantNode != null && meetsConditions(variantNode, null)) {
-                setCurrentNode(npcId, node.nodeId);
-                return variantNode;
-            }
-
-            // Luego verificar nodo base
-            if (meetsConditions(node, null)) {
-                setCurrentNode(npcId, node.nodeId);
-                return node;
-            }
-        }
-
-        return null;
+        return baseNode;
     }
 
     private Conversation.ConversationNode getVariantNode(Conversation.ConversationNode baseNode) {

@@ -14,7 +14,7 @@ import com.game.entity.EntityPlacer;
 import com.game.ui.dialogue.Conversation;
 import com.game.ui.dialogue.DialogueSystem;
 import com.game.ui.dialogue.LoadDialogueFromJson;
-import com.game.ui.dialogue.state.DialogueState;
+import com.game.ui.dialogue.DialogueState;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.InputStream;
