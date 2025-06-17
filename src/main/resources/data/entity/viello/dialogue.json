@@ -36,6 +36,23 @@
       "requiredFlags": {}
     },
     {
+      "id": "VIELLO_TEIS_OPINION_PROMPT",
+      "text": "en poucas palabras se tiveras que recomendarlle a unha persoa de fora un barrio no que vivir en Vigo... qué lle dirías?",
+      "options": [
+        {
+          "text": "Teis é precioso",
+          "nextNode": "VIELLO_REWARD",
+          "actions": []
+        },
+        {
+          "text": "Probablemente Candeán o Coruxo por sus zonas tranquilas y altamente preciadas por sus vistas a la ría, las playas cercanas y en definitiva... la tranquilidad. La tranquilidad es lo que más se busca sabes?",
+          "nextNode": "VIELLO_OFFENDED_RESPONSE",
+          "actions": ["SET_FLAG:OFFENDED"]
+        }
+      ],
+      "requiredFlags": {}
+    },
+    {
       "id": "VIELLO_CELTA_RESPONSE",
       "text": "...Deus deume o peor dos destinos deste mundo, ser do Celta.",
       "options": [
@@ -91,7 +108,7 @@
         },
         {
           "text": "Qué es un \"manin\"",
-          "nextNode": "VIELLO_INTRO",
+          "nextNode": "MANIN_CONTEXT",
           "actions": []
         }
       ],

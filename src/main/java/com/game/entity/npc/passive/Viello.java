@@ -32,6 +32,8 @@ import java.io.InputStream;
 public class Viello extends Entity implements Dialogable, FlagListener {
     // TODO cuando el acabe los dialogos de manera TERMINAl entonces cuando se hable con el viello que el mensaje se
     //  muestre encima del NPC como se mostraría un mensaje indicador de daño sin parar el estado de juego de PLAY a DIALOG
+
+    // TODO crear clase abstracta para el cargado y manejo de diálogos de CADA entidad con opción al diálogo
     TeisPanel teisPanel;
     Properties properties;
     private final String dialogueId = "VIELLO";
@@ -132,8 +134,13 @@ public class Viello extends Entity implements Dialogable, FlagListener {
             currentDialog = getCurrentMessage();
             dialogScrollOffset = 0;
         } else {
-            // Cuando está completado, usar mensaje de fallback
-            currentDialog = getRandomFallback();
+            String fallback = getRandomFallback();
+            teisPanel.controller.ui.addDynamicMessage(fallback, this);
+
+            sentido = sentidoHablar();
+            capEvent = 0; // Reiniciar contador de movimiento aleatorio
+
+            selectedOption = 0;
         }
     }
 
@@ -350,5 +357,9 @@ public class Viello extends Entity implements Dialogable, FlagListener {
         player.setShield(escudo);
 
         System.out.println("personaje armado");
+    }
+
+    public boolean getIsDialogueCompleted() {
+        return dialogueCompleted;
     }
 }

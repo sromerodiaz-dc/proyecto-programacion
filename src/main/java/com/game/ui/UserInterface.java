@@ -7,6 +7,8 @@ import com.game.entity.Player;
 import com.game.entity.stats.Vida;
 import com.game.ui.dialogue.Dialogable;
 import com.game.ui.dialogue.DialogueSystem;
+import com.game.ui.message.DynamicDamageMessage;
+import com.game.ui.message.DynamicMessage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -35,12 +37,12 @@ public class UserInterface {
             "Teis non\né Chapela.",
             "\"É Vigo\nmáis ca\nun dinoseto?\"",
             "Concello de\nTeis:\nO XOGO",
-            "\"eres de Cangas\"",
+            "\"eres de Cangas?\"",
             "Bombardeen a\nUVigo",
             "Bombardeen o\nVialia",
             "\"Porriño pertence\na Mos\"",
             "V de Vitrasa!",
-            "\"Sonido de Teis\""
+            "Sonido de Teis"
     );
 
     private final TeisPanel teisPanel;
@@ -55,8 +57,9 @@ public class UserInterface {
     private int messageTime = 0;
     private boolean isFinished = false;
     private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<DynamicMessage> dynamicMessages = new ArrayList<>();
     private ArrayList<Integer> messageCounter = new ArrayList<>();
-    private ArrayList<DamageDinamicMessages> damageMessages = new ArrayList<>();
+    private ArrayList<DynamicDamageMessage> damageMessages = new ArrayList<>();
     public int titleCounter = 1;
 
     public UserInterface(TeisPanel teisPanel, Properties properties) {
@@ -75,9 +78,13 @@ public class UserInterface {
         messageCounter.add(1);
     }
 
+    public void addDynamicMessage(String message, Entity entity) {
+        dynamicMessages.add(new DynamicMessage(message, entity, teisPanel.player));
+    }
+
     public void addMessage(int damage, Entity enemy, Player player) {
         System.out.println("daño: " + damage);
-        damageMessages.add(new DamageDinamicMessages(damage, enemy, player));
+        damageMessages.add(new DynamicDamageMessage(damage, enemy, player));
     }
 
     private Font loadFont() {
@@ -109,6 +116,7 @@ public class UserInterface {
             case GameState.PLAY:
                 drawPlayerLife();
                 drawMessages();
+                drawDynamicMessages();
                 break;
             case GameState.PAUSE:
                 drawPlayerLife();
@@ -143,10 +151,10 @@ public class UserInterface {
     }
 
     private void drawMessages() {
-        Iterator<DamageDinamicMessages> iterator = damageMessages.iterator();
+        Iterator<DynamicDamageMessage> iterator = damageMessages.iterator();
 
         while (iterator.hasNext()) {
-            DamageDinamicMessages msg = iterator.next();
+            DynamicDamageMessage msg = iterator.next();
             msg.update(); // Actualiza la posición, lifetime, etc.
 
             if (msg.isAlive()) {
@@ -229,6 +237,11 @@ public class UserInterface {
         if (typingComplete && currentNpcEntity instanceof Dialogable dialogableNpc) {
             List<String> options = dialogableNpc.getCurrentOptions();
             if (options != null && !options.isEmpty()) {
+                // Asegurar que la selección esté dentro de los límites
+                if (currentNpcEntity.selectedOption >= options.size()) {
+                    currentNpcEntity.selectedOption = 0;
+                }
+
                 drawOptionsWindow(
                         x, SCREEN_HEIGHT - SIZE_FINAL * 5,
                         width, SIZE_FINAL * 3,
@@ -393,7 +406,7 @@ public class UserInterface {
         y = drawTextBlock("Nivel", labelX, y, 24f, 10);
         y = drawTextBlock("Vida", labelX, y, 24f, 10);
         y = drawTextBlock("Herramienta\ncorporativa", labelX, y, 24f, 15);
-        drawTextBlock("Fentanilo\nen sangre", labelX, y, 24f, 0);
+        drawTextBlock("THC\nen sangre", labelX, y, 24f, 0);
 
         // Ahora los valores, reiniciamos y o los desplazamos igual que etiquetas
         y = frameXY + 40;
@@ -563,6 +576,22 @@ public class UserInterface {
         g2.drawString(text, x + 5, y + 5);
         g2.setColor(Color.WHITE);
         g2.drawString(text, x, y);
+    }
+
+    private void drawDynamicMessages() {
+        Iterator<DynamicMessage> iterator = dynamicMessages.iterator();
+
+        while (iterator.hasNext()) {
+            DynamicMessage msg = iterator.next();
+            msg.update();
+
+            if (msg.isAlive()) {
+                msg.draw(g2);
+                System.out.println("Mensaje dibujado");
+            } else {
+                iterator.remove();
+            }
+        }
     }
 
     private int getCenteredX(String text) {

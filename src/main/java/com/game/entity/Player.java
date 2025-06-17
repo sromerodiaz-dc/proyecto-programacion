@@ -110,13 +110,13 @@ public class Player extends Entity implements EventListener {
     }
 
     /**
-     * Metodo MOVE
+     * Metodo update() privado
      * El juego al ser en 2D solo tiene dos dimensiones espaciales: X, Y
      * Moverse hacia arriba o hacia la derecha es equivalente a SUMAR en la posición
      * mientras que moverse hacia abajo o hacia la izquierda RESTA a la posición actual.
      * Además, controla los sprites por movimiento usados.
      */
-    public void move(KeyboardController e, TeisPanel teisPanel) {
+    private void update(KeyboardController e, TeisPanel teisPanel) {
         if (attack) {
             attack();
         } else if (e.up || e.down || e.left || e.right || e.isPressed) {
@@ -201,7 +201,7 @@ public class Player extends Entity implements EventListener {
      */
     @Override
     public void update() {
-        move(keyboardController, teisPanel);
+        update(keyboardController, teisPanel);
     }
 
     /**
@@ -247,13 +247,15 @@ public class Player extends Entity implements EventListener {
     }
 
     private void startDialogueWith(Entity npc) {
-        teisPanel.controller.currentGameState = GameState.DIALOG;
-        teisPanel.controller.currentTalkingNpc = npc;
+        if (npc instanceof Viello viello && !viello.getIsDialogueCompleted()) {
+            teisPanel.controller.currentGameState = GameState.DIALOG;
+            teisPanel.controller.currentTalkingNpc = npc;
 
-        // Reset scroll state
-        npc.dialogScrollOffset = 0;
-        npc.maxDialogScroll = 0;
-        npc.isScrolling = false;
+            // Reset scroll state
+            npc.dialogScrollOffset = 0;
+            npc.maxDialogScroll = 0;
+            npc.isScrolling = false;
+        }
 
         // Start NPC dialogue
         npc.fala();

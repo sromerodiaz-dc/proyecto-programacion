@@ -10,7 +10,7 @@ import javax.sound.sampled.LineUnavailableException;
  * CFP Dani el Castelao
  * Proyecto: Teis
  * */
-public class Main {
+public class  Main {
     public static void main(String[] args) throws LineUnavailableException {
         new MainWindow();
     }

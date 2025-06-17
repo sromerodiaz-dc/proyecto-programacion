@@ -1,7 +1,8 @@
-package com.game.ui;
+package com.game.ui.message;
 
 import com.game.entity.Entity;
 import com.game.entity.Player;
+import com.game.ui.TeisPanel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,7 +11,7 @@ import java.util.Random;
 
 import static java.lang.Math.clamp;
 
-public class DamageDinamicMessages {
+public class DynamicDamageMessage {
     String[] lines;
     int damageAmount;
     int msgX, msgY;
@@ -59,7 +60,7 @@ public class DamageDinamicMessages {
             "0 DMG, -100000000 aura, 0 InfoJobs,\n0 curriculums, 0 skill, 0 hoes,\n0 nómina, 0 kills, 0 racks"
     };
 
-    public DamageDinamicMessages(int damageAmount, Entity enemy, Player player) {
+    public DynamicDamageMessage(int damageAmount, Entity enemy, Player player) {
         this.damageAmount = damageAmount;
         this.lifetime = 0;
         this.enemy = enemy;
