@@ -286,6 +286,10 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener {
         repaint();
     }
 
+    public int getSelectedTexture() {
+        return selectedTextureId;
+    }
+
     @Override
     public void onModelChanged() {
         Set<CeldaCoord> modified = model.getModifiedCells();

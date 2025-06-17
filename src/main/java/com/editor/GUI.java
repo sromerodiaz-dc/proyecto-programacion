@@ -161,7 +161,7 @@ public class GUI extends JFrame {
         editorPanel.setCollisionMode(!editorPanel.isCollisionMode());
         collisionButton.setBackground(editorPanel.isCollisionMode() ? Color.RED : null);
         editorPanel.setSelectedTexture(-1); // Deseleccionar textura
-        tilePalettePanel.actualizarBordesColisionables(textureController);
+        tilePalettePanel.updateSelectionBorders();
     }
 
     private void handleEventAction() {
