@@ -1,5 +1,6 @@
 package com.editor;
 
+import com.editor.controller.KeyboardController;
 import com.editor.controller.TextureController;
 import com.editor.model.MapModel;
 import com.editor.model.event.EventMode;
@@ -18,6 +19,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
@@ -36,12 +38,15 @@ public class GUI extends JFrame {
     // - Los tiles repintados como colisionables son individuales e independientes, esto quiere decir que se
     // puede quitar el modo colisionable haciendo clic derecho en edicion modo colision
     //TODO teclado aplicado al programa para no tener que hacer clic para nada
-    private static final String CONFIG_PATH = "src/main/resources/tiles.json";
+    private static final String CONFIG_PATH = "src/main/resources/graphic/tiles.json";
     private static final Dimension WINDOW_SIZE = new Dimension(1600, 900);
     private static final Color BACKGROUND_COLOR = Color.BLACK;
     private static final int RIGHT_PANEL_BORDER = 14;
     private static final double LEFT_PANEL_WEIGHT = 0.80;
     private static final double RIGHT_PANEL_WEIGHT = 0.20;
+
+    private JButton complexEventButton;
+    private JButton collisionButton;
 
     private MapModel model;
     private MapEditorPanel editorPanel;
@@ -72,7 +77,9 @@ public class GUI extends JFrame {
         } else {
             try {
                 MapData data = MapJsonHandler.loadMapData(action.mapName);
+                // Usar dimensiones del JSON
                 initMapComponents(data.rows(), data.cols());
+
                 editorPanel.loadMapData(data.matrix(), data.collisions());
 
                 // Restaurar colisiones correctamente
@@ -125,9 +132,12 @@ public class GUI extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
-
         miniMap = new MiniMapView(model, editorScroll, textureController);
         palette = new TilePalettePanel(textureController, editorPanel, model);
+
+        KeyboardController keyboardController = new KeyboardController(palette, editorPanel);
+        editorPanel.addKeyListener(keyboardController);
+        editorPanel.setFocusable(true);
 
         // Panel para botones (Guardar, Colisión, Eventos)
         JPanel buttonPanel = getButtonPanel(palette);
@@ -141,26 +151,38 @@ public class GUI extends JFrame {
 
     private JPanel getButtonPanel(TilePalettePanel tilePalettePanel) {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        buttonPanel.setOpaque(false); // Mantiene el fondo del panel transparente
+        buttonPanel.setOpaque(false);
 
         JButton saveButton = new JButton("Guardar Mapa");
-        JButton collisionButton = new JButton("Colisión");
+        collisionButton = new JButton("Colisión"); // Usar variable de instancia
         JButton eventButton = new JButton("Eventos");
+        complexEventButton = new JButton("Eventos Complejos"); // Usar variable de instancia
 
+        complexEventButton.addActionListener(_ -> handleComplexEventAction());
         saveButton.addActionListener(_ -> MapJsonHandler.saveMapData(model));
-        collisionButton.addActionListener(_ -> handleCollisionAction(collisionButton, tilePalettePanel));
+        collisionButton.addActionListener(_ -> handleCollisionAction(tilePalettePanel)); // Eliminar parámetro
         eventButton.addActionListener(_ -> handleEventAction());
 
         buttonPanel.add(saveButton);
         buttonPanel.add(collisionButton);
         buttonPanel.add(eventButton);
+        buttonPanel.add(complexEventButton);
         return buttonPanel;
     }
 
-    private void handleCollisionAction(JButton collisionButton, TilePalettePanel tilePalettePanel) {
+    private void handleComplexEventAction() {
+        // Corregir lógica de toggle
+        boolean newState = !editorPanel.isComplexEventMode();
+        editorPanel.setEventMode(newState);
+        complexEventButton.setBackground(newState ? Color.GREEN : null);
+        collisionButton.setBackground(null);
+    }
+
+    private void handleCollisionAction(TilePalettePanel tilePalettePanel) {
         editorPanel.setCollisionMode(!editorPanel.isCollisionMode());
         collisionButton.setBackground(editorPanel.isCollisionMode() ? Color.RED : null);
-        editorPanel.setSelectedTexture(-1); // Deseleccionar textura
+        complexEventButton.setBackground(null); // Desactivar botón complejo
+        editorPanel.setSelectedTexture(-1);
         tilePalettePanel.updateSelectionBorders();
     }
 
@@ -168,6 +190,7 @@ public class GUI extends JFrame {
         // Cargar IDs de entidades desde JSON
         ArrayList<String> entityIds = loadEntityIds();
         entityIds.remove("player"); // Excluir jugador
+        complexEventButton.setBackground(null);
 
         // Crear diálogo de eventos
         JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -187,12 +210,12 @@ public class GUI extends JFrame {
         dialog.setLocationRelativeTo(this);
 
         // Manejar acciones
-        playerSpawnBtn.addActionListener(e -> {
+        playerSpawnBtn.addActionListener(_ -> {
             editorPanel.setEventMode(EventMode.PLAYER_SPAWN);
             dialog.dispose();
         });
 
-        entitySpawnBtn.addActionListener(e -> {
+        entitySpawnBtn.addActionListener(_ -> {
             if (entityIds.isEmpty()) {
                 showInformation("No hay entidades disponibles");
                 return;
@@ -214,7 +237,7 @@ public class GUI extends JFrame {
             }
         });
 
-        teleportBtn.addActionListener(e -> {
+        teleportBtn.addActionListener(_ -> {
             editorPanel.setEventMode(EventMode.TELEPORT_SOURCE);
             dialog.dispose();
         });
@@ -322,34 +345,30 @@ public class GUI extends JFrame {
     }
 
     private StartAction handleLoadMapChoice() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(new File(CONFIG_PATH));
-            JsonNode mapsNode = root.path("data/maps");
-
-            if (!mapsNode.isObject() || mapsNode.isEmpty()) {
-                showInformation("No hay mapas guardados para cargar.");
-                return null;
-            }
-
-            String[] mapOptions = StreamSupport.stream(
-                    Spliterators.spliteratorUnknownSize(
-                            mapsNode.fieldNames(),
-                            Spliterator.ORDERED
-                    ),
-                    false
-            ).toArray(String[]::new);
-
-            String mapChoice = showMapSelectionDialog(mapOptions);
-
-            return mapChoice != null ?
-                    new StartAction(StartAction.ActionType.LOAD, mapChoice) :
-                    null;
-
-        } catch (IOException e) {
-            handleLoadError(e);
+        File mapsDir = new File("src/main/resources/data/maps");
+        if (!mapsDir.exists() || !mapsDir.isDirectory()) {
+            showInformation("No hay mapas guardados para cargar.");
             return null;
         }
+
+        // Listar archivos .json en el directorio
+        File[] mapFiles = mapsDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+        if (mapFiles == null || mapFiles.length == 0) {
+            showInformation("No hay mapas guardados para cargar.");
+            return null;
+        }
+
+        // Extraer nombres sin extensión
+        String[] mapOptions = Arrays.stream(mapFiles)
+                .map(File::getName)
+                .map(name -> name.substring(0, name.lastIndexOf('.')))
+                .toArray(String[]::new);
+
+        String mapChoice = showMapSelectionDialog(mapOptions);
+
+        return mapChoice != null ?
+                new StartAction(StartAction.ActionType.LOAD, mapChoice) :
+                null;
     }
 
     private String showMapSelectionDialog(String[] mapOptions) {

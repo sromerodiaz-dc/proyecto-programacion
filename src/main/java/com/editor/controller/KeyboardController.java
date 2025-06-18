@@ -1,5 +1,6 @@
 package com.editor.controller;
 
+import com.editor.view.MapEditorPanel;
 import com.editor.view.TilePalettePanel;
 
 import java.awt.event.KeyEvent;
@@ -7,9 +8,11 @@ import java.awt.event.KeyListener;
 
 public class KeyboardController implements KeyListener {
     private final TilePalettePanel palettePanel;
+    private final MapEditorPanel editorPanel; // Nueva referencia
 
-    public KeyboardController(TilePalettePanel palettePanel) {
+    public KeyboardController(TilePalettePanel palettePanel, MapEditorPanel editorPanel) {
         this.palettePanel = palettePanel;
+        this.editorPanel = editorPanel; // Inicializar
     }
 
     @Override
@@ -24,24 +27,24 @@ public class KeyboardController implements KeyListener {
 
         switch (keyCode) {
             case KeyEvent.VK_W:
-                System.out.println("[KEY] Ejecutando navigateUp");
                 palettePanel.navigateUp();
                 break;
             case KeyEvent.VK_A:
-                System.out.println("[KEY] Ejecutando navigateLeft");
                 palettePanel.navigateLeft();
                 break;
             case KeyEvent.VK_S:
-                System.out.println("[KEY] Ejecutando navigateDown");
                 palettePanel.navigateDown();
                 break;
             case KeyEvent.VK_D:
-                System.out.println("[KEY] Ejecutando navigateRight");
                 palettePanel.navigateRight();
+                break;
+            case KeyEvent.VK_C: // Manejar tecla C
+                System.out.println("[KEY] Toggling complex event mode");
+                boolean newState = !editorPanel.isComplexEventMode();
+                editorPanel.setEventMode(newState);
                 break;
         }
     }
-
     @Override
     public void keyReleased(KeyEvent e) {
 

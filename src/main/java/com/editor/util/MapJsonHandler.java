@@ -1,15 +1,14 @@
 package com.editor.util;
 
-import com.editor.model.record.CeldaCoord;
-import com.editor.model.record.MapData;
+import com.editor.model.record.*;
 import com.editor.model.MapModel;
-import com.editor.model.record.EntitySpawnEvent;
-import com.editor.model.record.TeleportEvent;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.RawValue;
+import com.game.controller.eventData.EventType;
+
 import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.FileWriter;
@@ -46,6 +45,7 @@ public class MapJsonHandler {
         CeldaCoord playerSpawn = null;
         List<EntitySpawnEvent> entitySpawns = new ArrayList<>();
         List<TeleportEvent> teleports = new ArrayList<>();
+        List<EventData> events = new ArrayList<>(); // LISTA INICIALIZADA
 
         JsonNode eventosNode = mapNode.path("eventos");
         if (!eventosNode.isMissingNode()) {
@@ -83,7 +83,27 @@ public class MapJsonHandler {
             }
         }
 
-        return new MapData(rows, cols, matrix, collisions, playerSpawn, entitySpawns, teleports);
+        // Cargar eventos complejos (CORRECCIÓN PRINCIPAL)
+        JsonNode eventsNode = mapNode.path("events");
+        if (eventsNode.isArray()) {
+            for (JsonNode eventNode : eventsNode) {
+                events.add(new EventData(
+                        eventNode.path("row").asDouble(),
+                        eventNode.path("col").asDouble(),
+                        eventNode.path("width").asDouble(),
+                        eventNode.path("height").asDouble(),
+                        EventType.valueOf(eventNode.path("type").asText()),
+                        eventNode.path("message").asText(),
+                        eventNode.path("value").asInt(),
+                        eventNode.path("cooldown").asInt(),
+                        eventNode.path("texture").asText(), // RUTA COMPLETA
+                        eventNode.path("rotation").asDouble(),
+                        eventNode.path("scale").asDouble()
+                ));
+            }
+        }
+
+        return new MapData(rows, cols, matrix, collisions, playerSpawn, entitySpawns, teleports, events);
     }
 
     public static void saveMapData(MapModel model) {
@@ -161,6 +181,23 @@ public class MapJsonHandler {
             eventos.put("teleports", teleports);
 
             mapData.put("eventos", eventos);
+            List<Map<String, Object>> eventsList = new ArrayList<>();
+            for (EventData event : model.getEvents()) {
+                Map<String, Object> eventMap = new HashMap<>();
+                eventMap.put("row", event.row());
+                eventMap.put("col", event.col());
+                eventMap.put("width", event.width());
+                eventMap.put("height", event.height());
+                eventMap.put("type", event.type().name());
+                eventMap.put("message", event.message());
+                eventMap.put("value", event.value());
+                eventMap.put("cooldown", event.cooldown());
+                eventMap.put("texture", event.texturePath());
+                eventMap.put("rotation", event.rotation());
+                eventMap.put("scale", event.scale());
+                eventsList.add(eventMap);
+            }
+            mapData.put("events", eventsList);
 
             // Nodo raíz con nombre de mapa
             Map<String, Object> rootNode = new LinkedHashMap<>();
@@ -202,7 +239,6 @@ public class MapJsonHandler {
         }
     }
 
-
     private static StringBuilder getStringBuilder(MapModel model) {
         StringBuilder matrixJson = new StringBuilder("[\n");
         int[][] matrix = model.getMatrixForExport();
@@ -222,8 +258,20 @@ public class MapJsonHandler {
 
     private static int[][] parseDataMatrix(JsonNode dataNode, int rows, int cols) {
         int[][] matrix = new int[rows][cols];
+
+        // Verificar si el nodo tiene suficientes filas
+        if (dataNode.size() < rows) {
+            throw new IllegalArgumentException("Número de filas en el JSON (" + dataNode.size() + ") es menor que el especificado (" + rows + ")");
+        }
+
         for (int i = 0; i < rows; i++) {
             JsonNode rowNode = dataNode.get(i);
+
+            // Verificar si la fila tiene suficientes columnas
+            if (rowNode.size() < cols) {
+                throw new IllegalArgumentException("Fila " + i + " tiene solo " + rowNode.size() + " columnas, se esperaban " + cols);
+            }
+
             for (int j = 0; j < cols; j++) {
                 matrix[i][j] = rowNode.get(j).asInt();
             }

@@ -7,18 +7,16 @@ public class EventRectangle extends Rectangle {
     private int cooldown = 0;
     private final int cooldownLimit; // En frames (30 frames = 1 segundo)
     private boolean triggered = false;
-    private final char direction;
     private final EventType type;
     private final String message;
     private final int value;
     private boolean done = false; // Marca si el evento es de una sola vez
 
     public EventRectangle(int col, int row, int width, int height,
-                          EventType type, char direction, int cooldownLimit,
+                          EventType type, int cooldownLimit,
                           String message, int value) {
         super(col * TILE_SIZE, row * TILE_SIZE, width, height);
         this.type = type;
-        this.direction = direction;
         this.cooldownLimit = cooldownLimit * 30;
         this.message = message;
         this.value = value;
@@ -71,7 +69,6 @@ public class EventRectangle extends Rectangle {
 
     // Getters
     public boolean isTriggered() { return triggered; }
-    public char getDirection() { return direction; }
     public EventType getType() { return type; }
     public String getMessage() { return message; }
     public int getValue() { return value; }

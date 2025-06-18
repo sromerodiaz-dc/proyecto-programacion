@@ -221,4 +221,11 @@ public class TextureController {
             collisionTextures.remove(textureId);
         }
     }
+
+    public BufferedImage getTextureByPath(String path) {
+        if (path == null || path.isEmpty()) return null;
+        String fileName = new File(path).getName();
+        Integer id = fileToIdMap.get(fileName);
+        return id != null ? textures.get(id) : null;
+    }
 }

@@ -96,7 +96,7 @@ public class TilePalettePanel extends JScrollPane {
         }
 
         // Registrar el KeyListener
-        KeyboardController keyboardController = new KeyboardController(this);
+        KeyboardController keyboardController = new KeyboardController(this, editorPanel);
         gridPanel.addKeyListener(keyboardController);
         System.out.println("[DEBUG] KeyListener registrado en gridPanel");
 
@@ -130,6 +130,7 @@ public class TilePalettePanel extends JScrollPane {
         btn.setOpaque(false);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(true);
+        btn.setFocusable(false);
 
         // Borde base transparente
         Border fixedBorder = BorderFactory.createCompoundBorder(

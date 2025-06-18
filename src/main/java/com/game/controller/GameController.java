@@ -110,7 +110,6 @@ public class GameController {
                 32,
                 32,
                 EventType.DAMAGE,
-                '0',
                 0, // Cooldown irrelevante para eventos de un solo uso
                 "\"Encontras tirado no chan un periódico...\nO Celta volveu perder, non che sorprende,\nsó entrischécete\"",
                 5
@@ -123,7 +122,6 @@ public class GameController {
                 32,
                 32,
                 EventType.HEAL,
-                '0',
                 30, // 30 segundos de cooldown
                 "\"Bebiches unha estrela.\nSíntese coma se o Vialia nunca fora edificado\"",
                 3

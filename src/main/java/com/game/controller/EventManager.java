@@ -94,7 +94,6 @@ public class EventManager {
                             event.getType(),
                             event.getCol(),
                             event.getRow(),
-                            event.getDirection(),
                             event.getMessage(),
                             event.getValue()
                     ));

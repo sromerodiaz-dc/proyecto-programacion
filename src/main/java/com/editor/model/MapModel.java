@@ -1,10 +1,7 @@
 package com.editor.model;
 
 import com.editor.controller.TextureController;
-import com.editor.model.record.EntitySpawnEvent;
-import com.editor.model.record.TeleportEvent;
-import com.editor.model.record.CeldaCoord;
-import com.editor.model.record.TileData;
+import com.editor.model.record.*;
 
 import java.util.*;
 
@@ -17,6 +14,7 @@ public class MapModel {
     private final List<IModelChangeListener> listeners = new ArrayList<>();
     private final Set<CeldaCoord> manualCollisions = new HashSet<>(); // Colisiones manuales
     private final Set<CeldaCoord> autoCollisions = new HashSet<>(); // Colisiones por textura
+    private final List<EventData> events = new ArrayList<>();
     private final TileData DEFAULT_TILE = new TileData(0, false);
     private final int rows;
     private final int cols;
@@ -174,4 +172,10 @@ public class MapModel {
     public void clearTeleportSource() {
         this.teleportSource = null;
     }
+
+    public void addEvent(EventData event) {events.add(event);}
+
+    public List<EventData> getEvents() {return events;}
+
+    public void removeEvent(EventData event) {events.remove(event);}
 }
