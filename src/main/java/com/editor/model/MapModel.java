@@ -16,8 +16,8 @@ public class MapModel {
     private final Set<CeldaCoord> autoCollisions = new HashSet<>(); // Colisiones por textura
     private final List<EventData> events = new ArrayList<>();
     private final TileData DEFAULT_TILE = new TileData(0, false);
-    private final int rows;
-    private final int cols;
+    private int rows;
+    private int cols;
     private final TextureController textureController;
 
     // Nuevos campos para eventos
@@ -178,4 +178,19 @@ public class MapModel {
     public List<EventData> getEvents() {return events;}
 
     public void removeEvent(EventData event) {events.remove(event);}
+
+    public void setDimensions(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+        matrix.clear();
+        manualCollisions.clear();
+        autoCollisions.clear();
+        events.clear();
+        entitySpawns.clear();
+        teleports.clear();
+        playerSpawn = null;
+        teleportSource = null;
+        modifiedCells.clear();
+        notifyListeners();
+    }
 }

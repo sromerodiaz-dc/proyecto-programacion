@@ -15,6 +15,6 @@ public class Weapon extends Entity {
 
         name = "Corporative BarberCut";
         down1 = setEntitySprite("graphic/objects/sword.png",32,32);
-        attackVal = 5;
+        attackVal = 2;
     }
 }

@@ -51,9 +51,9 @@ public class Player extends Entity implements EventListener {
         this.screenY = SCREEN_HEIGHT / 2 - (SIZE_FINAL / 2);
 
         this.stats = new EntityStats.Builder()
-                .strength(1)
+                .strength(2)
                 .dexterity(0)
-                .baseAttack(5) // Inicialmente sin ataque
+                .baseAttack(0) // Inicialmente sin ataque
                 .baseDefense(0) // Inicialmente sin defensa
                 .baseSpeed(5)
                 .build();

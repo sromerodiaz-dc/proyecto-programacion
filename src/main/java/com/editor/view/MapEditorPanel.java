@@ -593,7 +593,7 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener, Mous
         int cols = data.length > 0 ? data[0].length : 0;
 
         // Actualizar modelo con nuevas dimensiones
-        model.setDimensions(rows, cols);
+        model.setDimensions(rows, cols); // ¡Ahora existe!
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -606,15 +606,6 @@ public class MapEditorPanel extends JPanel implements IModelChangeListener, Mous
         setPreferredSize(new Dimension(cols * tileSize, rows * tileSize));
         revalidate();
         repaint();
-    }
-
-    public void setDimensions(int rows, int cols) {
-        this.rows = rows;
-        this.cols = cols;
-        this.matrix = new int[rows][cols];
-        this.collisions.clear();
-        this.modifiedCells.clear();
-        fireModelChanged();
     }
 
     public void setSelectedTexture(int textureId) {

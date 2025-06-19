@@ -30,7 +30,9 @@ public class EntityPlacer {
 
     public void setEnemy() {
         Entity enemy = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, SIZE_FINAL * 5, SIZE_FINAL * 12);
+        Entity enemy2 = entityFactory.createEntity(EntityType.DINOSETO, teisPanel, propierties, SIZE_FINAL * 15, SIZE_FINAL * 10);
         teisPanel.controller.enemy.add(enemy);
+        teisPanel.controller.enemy.add(enemy2);
     }
 
     private Entity generateEntity(int x, int y) {
